@@ -1,0 +1,3 @@
+John Bates 		jtbates@lbl.gov 	- Author and developer
+Dylan Chivian 	dcchivian@lbl.gov 	- Corresponding author and work lead
+Adam Arkin 		aparkin@lbl.gov		- Principal investigator 
