@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+
+	<!-- Servlets -->
+
+	<servlet>
+		<servlet-name>glammRpcServlet</servlet-name>
+		<servlet-class>gov.lbl.glamm.server.GlammServiceImpl</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>glammRpcServlet</servlet-name>
+		<url-pattern>/glamm/rpc</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>glammServlet</servlet-name>
+		<servlet-class>gov.lbl.glamm.server.GlammServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>glammServlet</servlet-name>
+		<url-pattern>/glammServlet</url-pattern>
+	</servlet-mapping>
+
+	<!-- Default page to serve -->
+	<welcome-file-list>
+		<welcome-file>Glamm.html</welcome-file>
+	</welcome-file-list>
+
+</web-app>
