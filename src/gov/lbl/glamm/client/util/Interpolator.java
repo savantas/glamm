@@ -4,6 +4,11 @@ import gov.lbl.glamm.client.model.Sample;
 
 import java.util.HashMap;
 
+/**
+ * Linear interpolator between colors stored as RGB hex for ease of use as CSS attributes.
+ * @author jtbates
+ *
+ */
 public class Interpolator {
 
 	private int colorMin = 0x0099ff;
@@ -22,6 +27,11 @@ public class Interpolator {
 		return sample.getUnits() + Float.toString(sample.getClampMin()) + Float.toString(sample.getClampMid()) + Float.toString(sample.getClampMax());
 	}
 	
+	/**
+	 * Access cached Interpolator for a Sample with a given set of clamping values and units
+	 * @param sample 
+	 * @return the Interpolator
+	 */
 	public static final Interpolator getInterpolatorForSample(final Sample sample) {
 		String key = genKeyForSample(sample);
 		Interpolator interpolator = theInterpolators.get(key);
@@ -34,6 +44,13 @@ public class Interpolator {
 		return interpolator;
 	}
 	
+	/**
+	 * Constructor
+	 * @param units Measurement units for which this Interpolator should operate
+	 * @param clampMin The lower bound of the interpolation interval
+	 * @param clampMid The midpoint of the interpolation interval
+	 * @param clampMax The maximum of the interpolation interval
+	 */
 	public Interpolator(final String units, final float clampMin, final float clampMid, final float clampMax) {
 		this.units = units;
 		this.clampMin = clampMin;
@@ -41,10 +58,19 @@ public class Interpolator {
 		this.clampMax = clampMax;
 	}
 	
+	/**
+	 * Constructor
+	 * @param sample The Sample for which measurments are being interpolated
+	 */
 	public Interpolator(final Sample sample) {
 		this(sample.getUnits(), sample.getClampMin(), sample.getClampMid(), sample.getClampMax());
 	}
 	
+	/**
+	 * Maps a measurement value to a color specified by the Interpolator
+	 * @param value
+	 * @return The computed color as a RGB hex value
+	 */
 	public int calcColor(final float value) {	
 		
 		if(value <= clampMin)
@@ -97,6 +123,11 @@ public class Interpolator {
 		
 	}
 	
+	/**
+	 * Maps a measurement value to a color specified by the Interpolator
+	 * @param value
+	 * @return The computed color as a CSS attribute string
+	 */
 	public String calcCssColor(final float value) {
 		int color = calcColor(value);
 		String cssColor = Integer.toHexString(color);
@@ -108,6 +139,11 @@ public class Interpolator {
 		return "#" + cssColor;
 	}
 	
+	/**
+	 * Retrieves the CSS color attributes of several points along the scale including the clampMin, clampMid, and clampMax values,
+	 * suitable for display as a map legend
+	 * @return An array of CSS color values
+	 */
 	public final String[] getCssColorScale() {
 		
 		final String[] cssColorScale = {
@@ -123,18 +159,34 @@ public class Interpolator {
 		return cssColorScale;
 	}
 	
+	/**
+	 * Accessor
+	 * @return The minimum clamping value
+	 */
 	public final float getClampMin() {
 		return clampMin;
 	}
 
+	/**
+	 * Accessor
+	 * @return The clamping value midpoint
+	 */
 	public final float getClampMid() {
 		return clampMid;
 	}
 
+	/**
+	 * Accessor
+	 * @return The maximum clamping value.
+	 */
 	public final float getClampMax() {
 		return clampMax;
 	}
 
+	/**
+	 * Accessor
+	 * @return The units for this interpolator.
+	 */
 	public final String getUnits() {
 		return units;
 	}
