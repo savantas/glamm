@@ -7,20 +7,13 @@ import gov.lbl.glamm.server.dao.GeneDAO;
 import gov.lbl.glamm.server.dao.ReactionDAO;
 import gov.lbl.glamm.server.dao.impl.GeneDAOImpl;
 import gov.lbl.glamm.server.dao.impl.ReactionGlammDAOImpl;
-import gov.lbl.glamm.server.requesthandlers.RequestHandler;
-import gov.lbl.glamm.server.responsehandlers.ResponseHandler;
 import gov.lbl.glamm.server.session.SessionManager;
-import gov.lbl.glamm.shared.GlammConstants;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-public class GenRxnPopup implements RequestHandler {
+public class GenRxnPopup {
 
 	public static String genRxnPopup(SessionManager sm, HashSet<String> rxnIds, String extIdName, String taxonomyId) {
 
@@ -111,32 +104,6 @@ public class GenRxnPopup implements RequestHandler {
 		}
 		
 		return genRxnPopup(sm, rxnIds, extIdName, taxonomyId);
-	}
-
-	//********************************************************************************
-
-	@Override
-	public void handleRequest(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
-
-		String html = "<html>No reactions found.</html>";
-		String _rxnIds[] 	= request.getParameterValues(GlammConstants.PARAM_EXTID);
-		String extIdName 	= request.getParameter(GlammConstants.PARAM_EXTID_NAME);
-		String taxonomyId	= request.getParameter(GlammConstants.PARAM_TAXONOMY_ID);
-
-
-		if(_rxnIds == null || _rxnIds.length == 0 || extIdName == null || extIdName.isEmpty()) {
-			ResponseHandler.asHtml(response, html, HttpServletResponse.SC_OK);
-			return;
-		}
-
-		HashSet<String> rxnIds = new HashSet<String>();
-		for(int i = 0; i < _rxnIds.length; i++)
-			rxnIds.add(_rxnIds[i]);
-
-		html = genRxnPopup(SessionManager.getSessionManager(request, false), rxnIds, extIdName, taxonomyId);
-		ResponseHandler.asHtml(response, html, HttpServletResponse.SC_OK);
-
 	}
 
 	//********************************************************************************

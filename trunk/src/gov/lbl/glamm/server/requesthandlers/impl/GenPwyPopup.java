@@ -6,8 +6,6 @@ import gov.lbl.glamm.client.model.Pathway;
 import gov.lbl.glamm.client.model.Sample;
 import gov.lbl.glamm.server.dao.PathwayDAO;
 import gov.lbl.glamm.server.dao.impl.KeggPathwayDAOImpl;
-import gov.lbl.glamm.server.requesthandlers.RequestHandler;
-import gov.lbl.glamm.server.responsehandlers.ResponseHandler;
 import gov.lbl.glamm.shared.GlammConstants;
 
 import java.awt.image.BufferedImage;
@@ -15,10 +13,8 @@ import java.io.IOException;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-public class GenPwyPopup implements RequestHandler {
+public class GenPwyPopup {
 
 	public static String genPwyPopup(String mapId, String taxonomyId, String experimentId, String sampleId) {
 		String html			= "<html>No results found for " + mapId + ".</html>";
@@ -48,20 +44,6 @@ public class GenPwyPopup implements RequestHandler {
 		}
 		
 		return genPwyPopup(mapId, taxonomyId, experimentId, sampleId);
-	}
-
-	@Override
-	public void handleRequest(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
-
-		String mapId		= request.getParameter(GlammConstants.PARAM_KEGG_MAP_ID);
-		String taxonomyId	= request.getParameter(GlammConstants.PARAM_TAXONOMY_ID);
-		String experimentId = request.getParameter(GlammConstants.PARAM_EXPERIMENT);
-		String sampleId		= request.getParameter(GlammConstants.PARAM_SAMPLE);
-
-		String html = genPwyPopup(mapId, taxonomyId, experimentId, sampleId);
-
-		ResponseHandler.asHtml(response, html, HttpServletResponse.SC_OK);
 	}
 
 	//********************************************************************************

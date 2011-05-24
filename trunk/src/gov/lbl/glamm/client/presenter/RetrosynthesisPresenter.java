@@ -62,6 +62,13 @@ import com.google.gwt.view.client.SingleSelectionModel;
 
 public class RetrosynthesisPresenter {
 
+	public enum State {
+		INITIAL,
+		CALCULATING,
+		HAS_ROUTES,
+		NO_ROUTES;
+	}
+
 	public interface View {
 
 		public static String STRING_STATUS_CALCULATING		= "Calculating...";
@@ -84,45 +91,51 @@ public class RetrosynthesisPresenter {
 		public HasClickHandlers 	getExportRoutes();
 		public HasClickHandlers 	getFindRoutes();
 		public HasClickHandlers 	getNextRouteButton();
-		public Label 				getStatusLabel();
 		public HTML					getPhyloProfileLink();
 		public HasClickHandlers 	getPrevRouteButton();
 		public Label				getRoutesLabel();
 		public Panel 				getRoutesPanel();
 		public CellTable<Reaction> 	getRoutesTable();
 		public SuggestBox 			getSearchSuggestBox();
-	}
-
-	public enum State {
-		INITIAL,
-		CALCULATING,
-		HAS_ROUTES,
-		NO_ROUTES;
+		public Label 				getStatusLabel();
 	}
 
 
 
+	private static String genEcNumLink(String ecNum, String taxonomyId) {
+
+		String link = "<b>No EC</b>";
+
+		// annotate ecNum
+		if(ecNum != null && !ecNum.equals("NULL")) {
+			link = "<a href=\"http://microbesonline.org/cgi-bin/fetchEC2.cgi?ec=" + ecNum + 
+			"&taxId=" + taxonomyId + "\" target=\"_new\">" + ecNum + "</a>";
+		}
+
+		return link;
+	}
 	private GlammServiceAsync rpc = null;
 	private View view = null;
+
 	private SimpleEventBus eventBus = null;
-
 	private AnnotatedMapData mapData = null;
-	private Organism organism = null;
 
+	private Organism organism = null;
 	// these two collections are not organism-specific and hence should ideally be retrieved only once
 	private ArrayList<Compound> compounds = null;
-	private ArrayList<Reaction> reactions = null;
 
+	private ArrayList<Reaction> reactions = null;
 	// mapping between ids in the suggest boxes and their respective primitives
 	private HashMap<String, HashSet<GlammPrimitive>> cpdHash = null;
 	private HashMap<String, HashSet<GlammPrimitive>> rxnHash = null;
+
 	private HashMap<String, HashSet<GlammPrimitive>> locHash = null;
-
 	private Compound cpdSrc = null;
-	private Compound cpdDst = null;
 
+	private Compound cpdDst = null;
 	private ArrayList<Pathway> routes = null;
 	private int routeIndex = -1;
+
 	private ListDataProvider<Reaction> routeDataProvider = null;
 
 	private State viewState;
@@ -298,17 +311,44 @@ public class RetrosynthesisPresenter {
 
 	}
 
-	private static String genEcNumLink(String ecNum, String taxonomyId) {
+	private String genPhyloProfileLink(final Pathway route) {
 
-		String link = "<b>No EC</b>";
+		String html = "No phylogenetic profile";
 
-		// annotate ecNum
-		if(ecNum != null && !ecNum.equals("NULL")) {
-			link = "<a href=\"http://microbesonline.org/cgi-bin/fetchEC2.cgi?ec=" + ecNum + 
-			"&taxId=" + taxonomyId + "\" target=\"_new\">" + ecNum + "</a>";
+		if(route != null) {
+
+			UrlBuilder builder = new UrlBuilder();
+			HashSet<String> argSet = new HashSet<String>();
+
+			builder.setHost("www.microbesonline.org");
+			builder.setPath("/cgi-bin/phyloprofile.cgi");
+			builder.setParameter("download", "0");
+			builder.setParameter("show", "astree");
+
+			ArrayList<Reaction> reactions = route.getReactions();
+			if(reactions != null) {
+				for(Reaction reaction : reactions) {
+					HashSet<String> ecNums = reaction.getEcNums();
+					if(ecNums != null) {
+						for(String ecNum : ecNums) 
+							argSet.add("EC" + ecNum);
+					}
+				}
+			}
+
+			if(!argSet.isEmpty()) {
+				String[] args = new String[argSet.size()];
+				int i = 0;
+				for(String arg : argSet)
+					args[i++] = arg;
+				builder.setParameter("group", args);
+				html = "<a href=\"" + builder.buildString() + "\" target=\"new\">Phylogenetic profile</a>";
+			}
+
+
 		}
 
-		return link;
+		return html;
 	}
 
 	private HashSet<GlammPrimitive> getPrimitivesForId(String id) {
@@ -323,6 +363,7 @@ public class RetrosynthesisPresenter {
 
 		return locHash.get(id);
 	}
+
 
 	private void initTable(CellTable<Reaction> table, ListDataProvider<Reaction> dataProvider) {
 
@@ -419,7 +460,6 @@ public class RetrosynthesisPresenter {
 		final SingleSelectionModel<Reaction> selectionModel = new SingleSelectionModel<Reaction>(Reaction.KEY_PROVIDER);
 		table.setSelectionModel(selectionModel);
 	}
-
 
 	public void populate() {
 
@@ -538,7 +578,7 @@ public class RetrosynthesisPresenter {
 			}
 		}
 	}
-
+	
 	private void populateWithReactions(final Collection<Reaction> reactions, final boolean populateHash) {
 		MultiWordSuggestOracle searchOracle = (MultiWordSuggestOracle) view.getSearchSuggestBox().getSuggestOracle();
 
@@ -553,7 +593,7 @@ public class RetrosynthesisPresenter {
 			}
 		}
 	}
-	
+
 	public void reset() {
 		view.getCpdDstSuggestBox().setText("");
 		view.getCpdSrcSuggestBox().setText("");
@@ -591,46 +631,6 @@ public class RetrosynthesisPresenter {
 		}
 
 		populate();
-	}
-
-	private String genPhyloProfileLink(final Pathway route) {
-
-		String html = "No phylogenetic profile";
-
-		if(route != null) {
-
-			UrlBuilder builder = new UrlBuilder();
-			HashSet<String> argSet = new HashSet<String>();
-
-			builder.setHost("www.microbesonline.org");
-			builder.setPath("/cgi-bin/phyloprofile.cgi");
-			builder.setParameter("download", "0");
-			builder.setParameter("show", "astree");
-
-			ArrayList<Reaction> reactions = route.getReactions();
-			if(reactions != null) {
-				for(Reaction reaction : reactions) {
-					HashSet<String> ecNums = reaction.getEcNums();
-					if(ecNums != null) {
-						for(String ecNum : ecNums) 
-							argSet.add("EC" + ecNum);
-					}
-				}
-			}
-
-			if(!argSet.isEmpty()) {
-				String[] args = new String[argSet.size()];
-				int i = 0;
-				for(String arg : argSet)
-					args[i++] = arg;
-				builder.setParameter("group", args);
-				html = "<a href=\"" + builder.buildString() + "\" target=\"new\">Phylogenetic profile</a>";
-			}
-
-
-		}
-
-		return html;
 	}
 
 	private void setRoute(final Pathway route) {

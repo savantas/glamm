@@ -39,7 +39,7 @@ public class OrganismPickedEvent extends GwtEvent<OrganismPickedEvent.Handler> {
 	}
 
 	/**
-	 * 
+	 * Accessor
 	 * @return The organism that has been picked
 	 */
 	public final Organism getOrganism() {

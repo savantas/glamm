@@ -6,7 +6,6 @@ import gov.lbl.glamm.client.model.MetabolicNetwork;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Pathway;
 import gov.lbl.glamm.client.model.Reaction;
-import gov.lbl.glamm.client.model.ReactionFunData;
 import gov.lbl.glamm.server.dao.GeneDAO;
 import gov.lbl.glamm.server.dao.MetabolicNetworkDAO;
 import gov.lbl.glamm.server.dao.OrganismDAO;
@@ -101,8 +100,6 @@ public class GetDirections implements RequestHandler {
 		String asText		= request.getParameter(GlammConstants.PARAM_AS_TEXT);
 		
 		if(cpdSrcExtId == null || cpdDstExtId == null || mapTitle == null || algorithm == null || asText == null) {
-			// return a null document if any parameter is missing
-			ResponseHandler.asXStreamXml(response, new ReactionFunData(), HttpServletResponse.SC_OK);
 			return;
 		}
 		
@@ -117,8 +114,6 @@ public class GetDirections implements RequestHandler {
 		
 		if(Boolean.parseBoolean(asText))
 			handleTextResponse(response, routes);
-		else
-			handleXmlResponse(response, routes);
 
 
 	}
@@ -154,23 +149,6 @@ public class GetDirections implements RequestHandler {
 		}
 
 		ResponseHandler.asPlainTextAttachment(response, content, HttpServletResponse.SC_OK, "routes.txt");
-	}
-
-	private void handleXmlResponse(HttpServletResponse response, ArrayList<Route> routes)
-	throws IOException {
-		ReactionFunData content = new ReactionFunData();
-
-		// convert routes to pathways and add them to content
-		if(routes != null && !routes.isEmpty()) {
-
-			ArrayList<Pathway> pathways = toPathways(routes);
-
-			for(Pathway pathway : pathways) {
-				content.addPrimitive(pathway);
-			}
-		}
-
-		ResponseHandler.asXStreamXml(response, content, HttpServletResponse.SC_OK);
 	}
 
 	private static ArrayList<Pathway> toPathways(ArrayList<Route> routes) {

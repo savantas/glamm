@@ -100,23 +100,42 @@ public class AnnotatedMapData implements Serializable {
 		init();
 	}
 	
+	/**
+	 * Accessor
+	 * @return The name of the database of compounds associated with this map.
+	 */
 	public String getCpdDbName() {
 		return cpdDbName;
 	}
 	
+	/**
+	 * Accessor
+	 * @return The SVG elements corresponding to compounds on this map.
+	 */
 	public HashSet<OMSVGElement> getCpdSvgElements() {
 		return cpdSvgElements;
 	}
 	
+	/**
+	 * Accessor
+	 * @return The map's ID.
+	 */
 	public String getMapId() {
 		return mapId;
 	}
 	
+	/**
+	 * Accessor
+	 * @return The name of the database of reactions associated with this map.
+	 */
 	public String getRxnDbName() {
 		return rxnDbName;
 	}
 	
-	
+	/**
+	 * Accessor
+	 * @return The SVG elements corresponding to reactions on this map.
+	 */
 	public HashSet<OMSVGElement> getRxnSvgElements() {
 		return rxnSvgElements;
 	}
@@ -138,6 +157,11 @@ public class AnnotatedMapData implements Serializable {
 		return id2SvgElements.get(id);
 	}
 	
+	/**
+	 * Gets the set of SVG elements associated with this GlammPrimitive
+	 * @param primitive
+	 * @return HashSet<OMSVGElement> the elements associated with this primitive, null if none.
+	 */
 	public HashSet<OMSVGElement> getSvgElementsForGlammPrimitive(final GlammPrimitive primitive) {
 		String id = null;
 		
@@ -155,6 +179,11 @@ public class AnnotatedMapData implements Serializable {
 		return null;
 	}
 	
+	/**
+	 * Gets the set of SVG elements associated with this collection of GlammPrimitives
+	 * @param primitive - The collection of GlammPrimitives
+	 * @return HashSet<OMSVGElement> the elements associated with this collection, null if none.
+	 */
 	public HashSet<OMSVGElement> getSvgElementsForGlammPrimitives(final Collection<? extends GlammPrimitive> primitives) {
 		HashSet<OMSVGElement> svgElements = null;
 		for(GlammPrimitive primitive : primitives) {
@@ -307,14 +336,14 @@ public class AnnotatedMapData implements Serializable {
 		
 	}
 	
-	public static void parseCpdQuery(final String query, String cpdId, String extIdName) {
-		String[] tokens = query.split("&");
-		for(String token : tokens) {
-			String[] kv = token.split("=");
-			if(kv[0].equals("extId"))
-				cpdId = new String(kv[1]);
-			else if(kv[0].equals("extIdName"))
-				extIdName = new String(kv[1]);
-		}
-	}
+//	public static void parseCpdQuery(final String query, String cpdId, String extIdName) {
+//		String[] tokens = query.split("&");
+//		for(String token : tokens) {
+//			String[] kv = token.split("=");
+//			if(kv[0].equals("extId"))
+//				cpdId = new String(kv[1]);
+//			else if(kv[0].equals("extIdName"))
+//				extIdName = new String(kv[1]);
+//		}
+//	}
 }

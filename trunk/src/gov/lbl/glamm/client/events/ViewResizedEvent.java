@@ -3,6 +3,11 @@ package gov.lbl.glamm.client.events;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
+/**
+ * Event indicating that a View has been resized.
+ * @author jtbates
+ *
+ */
 public class ViewResizedEvent extends GwtEvent<ViewResizedEvent.Handler> {
 	
 	public interface Handler extends EventHandler {

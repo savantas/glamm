@@ -5,6 +5,11 @@ import gov.lbl.glamm.client.model.Sample;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
+/**
+ * Event indicating an experiment Sample has been selected.
+ * @author jtbates
+ *
+ */
 public class SamplePickedEvent extends GwtEvent<SamplePickedEvent.Handler> {
 	public interface Handler extends EventHandler {
 		public void onSamplePicked(SamplePickedEvent event);
