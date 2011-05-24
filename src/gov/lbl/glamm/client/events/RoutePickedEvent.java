@@ -6,6 +6,11 @@ import gov.lbl.glamm.client.model.Pathway;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
+/**
+ * Event indicating a route has been selected
+ * @author jtbates
+ *
+ */
 public class RoutePickedEvent extends GwtEvent<RoutePickedEvent.Handler> {
 	
 	public interface Handler extends EventHandler {

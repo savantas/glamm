@@ -5,20 +5,15 @@ import gov.lbl.glamm.client.model.GlammPrimitive.Xref;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.server.dao.CompoundDAO;
 import gov.lbl.glamm.server.dao.impl.CompoundGlammDAOImpl;
-import gov.lbl.glamm.server.requesthandlers.RequestHandler;
-import gov.lbl.glamm.server.responsehandlers.ResponseHandler;
 import gov.lbl.glamm.server.session.SessionManager;
-import gov.lbl.glamm.shared.GlammConstants;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-public class GenCpdPopup implements RequestHandler {
+public class GenCpdPopup {
 	
 	public static String genCpdPopup(SessionManager sm, Compound cpd, String taxonomyId) {
 		String html			= "<html>No results found for compound.</html>";
@@ -90,19 +85,6 @@ public class GenCpdPopup implements RequestHandler {
 		
 		return genCpdPopup(sm, cpdId, extIdName, taxonomyId);
 		
-	}
-
-	@Override
-	public void handleRequest(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
-
-		String cpdId 		= request.getParameter(GlammConstants.PARAM_EXTID);
-		String extIdName 	= request.getParameter(GlammConstants.PARAM_EXTID_NAME);
-		String taxonomyId 	= request.getParameter(GlammConstants.PARAM_TAXONOMY_ID);
-		String html 		= genCpdPopup(SessionManager.getSessionManager(request, false), cpdId, extIdName, taxonomyId);
-
-		ResponseHandler.asHtml(response, html, HttpServletResponse.SC_OK);
-
 	}
 
 	//********************************************************************************

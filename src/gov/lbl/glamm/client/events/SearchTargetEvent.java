@@ -7,6 +7,11 @@ import java.util.HashSet;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
+/**
+ * Event indicating a search target has been found.
+ * @author jtbates
+ *
+ */
 public class SearchTargetEvent extends GwtEvent<SearchTargetEvent.Handler> {
 	public interface Handler extends EventHandler {
 		public void onPicked(SearchTargetEvent event);

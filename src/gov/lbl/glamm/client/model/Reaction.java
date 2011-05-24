@@ -15,15 +15,75 @@ import com.google.gwt.view.client.ProvidesKey;
 
 @SuppressWarnings("serial")
 public class Reaction extends GlammPrimitive implements Serializable, RowDependentSelectionCell.HasOptions {
+	
+	public enum Direction {
+		BOTH("both"),
+		FORWARD("forward"),
+		REVERSE("reverse"),
+		UNSPECIFIED("unspecified");
+		
+		private String theString = null;
+		
+		private Direction(final String theString) {
+			this.theString = theString;
+		}
+		
+		@Override
+		public String toString() {
+			return theString;
+		}
+	}
 
+	public static class Participant {
+		
+		public enum KeggRpairRole {
+			MAIN("main"),
+			OTHER("other");
+			
+			private String theString = null;
+			
+			private KeggRpairRole(final String theString) {
+				this.theString = theString;
+			}
+			
+			@Override
+			public String toString() {
+				return theString;
+			}
+		}
+		
+		private String coefficient = null;
+		private Compound compound = null;
+		private KeggRpairRole role = null;
+		
+		public Participant(final Compound compound, final String coefficient, final KeggRpairRole role) {
+			this.compound = compound;
+			this.coefficient = coefficient;
+			this.role = role;
+		}
+
+		public final String getCoefficient() {
+			return coefficient;
+		}
+
+		public final Compound getCompound() {
+			return compound;
+		}
+
+		public final KeggRpairRole getRole() {
+			return role;
+		}
+		
+	}
 	//********************************************************************************
 
 	public static transient GlammPrimitive.Type TYPE = new GlammPrimitive.Type();
 	private HashSet<String> 	ecNums = null;
 	private String definition = null;
+	private Direction direction = Direction.BOTH;
 	private boolean isNative = true;
-	private HashSet<Product>	products 	= null;
-	private HashSet<Reactant> 	reactants 	= null;
+	private HashSet<Participant>	products 	= null;
+	private HashSet<Participant> 	reactants 	= null;
 	private HashSet<GlammPrimitive.Reference> geneRefs = null;
 	private transient Organism selectedTransgenicCandidate = null;
 	private ArrayList<Organism> transgenicCandidates = null;
@@ -43,6 +103,16 @@ public class Reaction extends GlammPrimitive implements Serializable, RowDepende
 
 	//********************************************************************************
 
+	public void addEcNum(String ecNum) {
+		if(ecNum != null && !ecNum.isEmpty()) {
+			if(ecNums == null)
+				ecNums = new HashSet<String>();
+			ecNums.add(ecNum);
+		}
+	}
+
+	//********************************************************************************
+
 	public void addGeneReference(GlammPrimitive.Reference reference) {
 		if(reference != null) {
 			if(geneRefs == null) 
@@ -53,22 +123,22 @@ public class Reaction extends GlammPrimitive implements Serializable, RowDepende
 
 	//********************************************************************************
 
-	public void addProduct(Product rp) {
-		if(rp != null) {
-			if(products == null)
-				products = new HashSet<Product>();
-			products.add( rp );
-		}
+	public void addProduct(Participant rp) {
+		if(rp == null)
+			return;
+		if(products == null)
+			products = new HashSet<Participant>();
+		products.add(rp);
 	}
 
 	//********************************************************************************
 
-	public void addReactant(Reactant rp) {
-		if(rp != null) {
-			if(reactants == null)
-				reactants = new HashSet<Reactant>();
-			reactants.add(rp);
-		}
+	public void addReactant(Participant rp) {
+		if(rp == null)
+			return;
+		if(reactants == null)
+			reactants = new HashSet<Participant>();
+		reactants.add(rp);
 	}
 
 	//********************************************************************************
@@ -99,116 +169,6 @@ public class Reaction extends GlammPrimitive implements Serializable, RowDepende
 	}
 
 	//********************************************************************************
-
-	public void addEcNum(String ecNum) {
-		if(ecNum != null && !ecNum.isEmpty()) {
-			if(ecNums == null)
-				ecNums = new HashSet<String>();
-			ecNums.add(ecNum);
-		}
-	}
-
-	//********************************************************************************
-
-	public void setDefinition(String definition) {
-		this.definition = definition;
-	}
-
-	//********************************************************************************
-
-	public HashSet<String> getEcNums() {
-		return ecNums;
-	}
-
-	//********************************************************************************
-
-	public String getDefinition() {
-		return definition;
-	}
-
-	//********************************************************************************
-
-	public HashSet<String> getEcNumsForTransgenicCandidate(Organism organism) {
-		return transgenicCandidate2EcNums.get(organism);
-	}
-
-	//********************************************************************************
-
-	public ReactionColor getReactionColor() {
-		return color;
-	}
-
-	//********************************************************************************
-
-	public Organism getSelectedTransgenicCandidate() {
-		return selectedTransgenicCandidate;
-	}
-
-	//********************************************************************************
-
-	public ArrayList<Organism> getTransgenicCandidates() {
-		return transgenicCandidates;
-	}
-
-	//********************************************************************************
-
-	public boolean isNative() {
-		return isNative;
-	}
-
-	//********************************************************************************
-
-	public void setNative(boolean isNative) {
-		this.isNative = isNative;
-	}
-
-	//********************************************************************************
-
-	public void setColor(ReactionColor color) {
-		this.color = color;
-	}
-
-	//********************************************************************************
-
-	public void setSelectedTransgenicCandidate(String name) {
-		selectedTransgenicCandidate = name2TransgenicCandidate.get(name);
-	}
-
-	//********************************************************************************
-
-	public void sortTransgenicCandidates() {
-		if(transgenicCandidates != null) 
-			Collections.sort(transgenicCandidates, new Organism.OrganismComparator());
-	}
-
-	//********************************************************************************
-
-
-	public HashSet<Reactant> getReactants() {
-		return reactants;
-	}
-
-	//********************************************************************************
-
-	public HashSet<Product> getProducts() {
-		return products;
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result
-		+ ((definition == null) ? 0 : definition.hashCode());
-		result = prime * result + ((ecNums == null) ? 0 : ecNums.hashCode());
-		result = prime * result
-		+ ((geneRefs == null) ? 0 : geneRefs.hashCode());
-		result = prime * result
-		+ ((products == null) ? 0 : products.hashCode());
-		result = prime * result
-		+ ((reactants == null) ? 0 : reactants.hashCode());
-		return result;
-	}
 
 	@Override
 	public boolean equals(Object obj) {
@@ -247,15 +207,42 @@ public class Reaction extends GlammPrimitive implements Serializable, RowDepende
 		return true;
 	}
 
-	@Override
-	public Type getType() {
-		return TYPE;
+	//********************************************************************************
+
+	public String getDefinition() {
+		return definition;
 	}
+
+	//********************************************************************************
+
+	public final Direction getDirection() {
+		return direction;
+	}
+
+	//********************************************************************************
+
+	public HashSet<String> getEcNums() {
+		return ecNums;
+	}
+
+	//********************************************************************************
+
+	public HashSet<String> getEcNumsForTransgenicCandidate(Organism organism) {
+		return transgenicCandidate2EcNums.get(organism);
+	}
+
+	//********************************************************************************
 
 	@Override
 	public String getNoOptionsString() {
+		if(ecNums == null || ecNums.isEmpty())
+			return "No EC";
+		if(!isNative && (transgenicCandidates == null || transgenicCandidates.isEmpty()))
+			return "No candidates";
 		return "Native";
 	}
+
+	//********************************************************************************
 
 	@Override
 	public List<String> getOptions() {
@@ -265,9 +252,96 @@ public class Reaction extends GlammPrimitive implements Serializable, RowDepende
 		return options;
 	}
 
+	//********************************************************************************
+
+	public HashSet<Participant> getProducts() {
+		return products;
+	}
+
+	//********************************************************************************
+
+	public HashSet<Participant> getReactants() {
+		return reactants;
+	}
+
+	//********************************************************************************
+
+	public ReactionColor getReactionColor() {
+		return color;
+	}
+
+	//********************************************************************************
+
+	public Organism getSelectedTransgenicCandidate() {
+		return selectedTransgenicCandidate;
+	}
+
+	//********************************************************************************
+
+	public ArrayList<Organism> getTransgenicCandidates() {
+		return transgenicCandidates;
+	}
+
+	//********************************************************************************
+
+
+	@Override
+	public Type getType() {
+		return TYPE;
+	}
+
+	//********************************************************************************
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result
+		+ ((definition == null) ? 0 : definition.hashCode());
+		result = prime * result + ((ecNums == null) ? 0 : ecNums.hashCode());
+		result = prime * result
+		+ ((geneRefs == null) ? 0 : geneRefs.hashCode());
+		result = prime * result
+		+ ((products == null) ? 0 : products.hashCode());
+		result = prime * result
+		+ ((reactants == null) ? 0 : reactants.hashCode());
+		return result;
+	}
+	
+	
+
 	@Override
 	public boolean hasOptions() {
 		return (transgenicCandidates != null && !transgenicCandidates.isEmpty());
+	}
+
+	public boolean isNative() {
+		return isNative;
+	}
+
+	public void setColor(ReactionColor color) {
+		this.color = color;
+	}
+
+	public void setDefinition(String definition) {
+		this.definition = definition;
+	}
+
+	public void setDirection(Direction direction) {
+		this.direction = direction;
+	}
+
+	public void setNative(boolean isNative) {
+		this.isNative = isNative;
+	}
+
+	public void setSelectedTransgenicCandidate(String name) {
+		selectedTransgenicCandidate = name2TransgenicCandidate.get(name);
+	}
+
+	public void sortTransgenicCandidates() {
+		if(transgenicCandidates != null) 
+			Collections.sort(transgenicCandidates, new Organism.OrganismComparator());
 	}
 
 	//********************************************************************************

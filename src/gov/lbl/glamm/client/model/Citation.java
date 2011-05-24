@@ -3,6 +3,11 @@ package gov.lbl.glamm.client.model;
 
 import java.io.Serializable;
 
+/**
+ * Representation of an external data source's citation
+ * @author jtbates
+ *
+ */
 @SuppressWarnings({"unused", "serial"})
 public class Citation extends GlammPrimitive implements Serializable {
 	
@@ -13,6 +18,12 @@ public class Citation extends GlammPrimitive implements Serializable {
 	
 	private Citation() {}
 	
+	/**
+	 * Constructor
+	 * @param dbVersion	The version of the cited data source
+	 * @param description A terse description of the data source
+	 * @param text The full text of the citation. 
+	 */
 	public Citation(String dbVersion, String description, String text) {
 		super();
 		this.dbVersion=dbVersion;

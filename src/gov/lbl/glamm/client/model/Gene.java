@@ -5,7 +5,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-
+/**
+ * Representation of a Gene
+ * @author jtbates
+ *
+ */
 @SuppressWarnings({ "unused", "serial" })
 public class Gene extends GlammPrimitive implements Serializable {
 
@@ -24,12 +28,19 @@ public class Gene extends GlammPrimitive implements Serializable {
 
 	//********************************************************************************
 
+	/**
+	 * @return The set of Enzyme Commission (EC) numbers associated with this Gene
+	 */
 	public HashSet<String> getEcNums() {
 		return ecNums;
 	}
 
 	//********************************************************************************
 
+	/**
+	 * Adds an EC number to the set of EC numbers associated with this Gene
+	 * @param ecNum The EC number
+	 */
 	public void addEcNum(String ecNum) {
 		if(ecNums == null)
 			ecNums = new HashSet<String>();
@@ -38,6 +49,9 @@ public class Gene extends GlammPrimitive implements Serializable {
 
 	//********************************************************************************
 
+	/**
+	 * @return The GlammPrimitive Type
+	 */
 	@Override
 	public Type getType() {
 		return TYPE;

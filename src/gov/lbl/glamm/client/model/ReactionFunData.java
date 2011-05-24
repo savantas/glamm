@@ -3,7 +3,7 @@ package gov.lbl.glamm.client.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-
+/*
 @SuppressWarnings("serial")
 public class ReactionFunData extends GlammPrimitive implements Serializable {
 	
@@ -42,3 +42,4 @@ public class ReactionFunData extends GlammPrimitive implements Serializable {
 		return TYPE;
 	}
 }
+*/

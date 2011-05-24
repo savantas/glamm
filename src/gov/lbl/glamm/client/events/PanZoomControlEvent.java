@@ -7,6 +7,11 @@ import java.util.Map;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
+/**
+ * Event fired from the PanZoomControl, indicating the intended transform to be applied to map.
+ * @author jtbates
+ *
+ */
 public class PanZoomControlEvent extends GwtEvent<PanZoomControlEvent.Handler> {
 	public interface Handler extends EventHandler {
 		public void onPanZoom(PanZoomControlEvent event);
