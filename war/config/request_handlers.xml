@@ -3,21 +3,7 @@
 	<RequestHandler action="downloadExperiment"		class="gov.lbl.glamm.server.requesthandlers.impl.DownloadExperiment"/>
 	<RequestHandler action="downloadOrganism"		class="gov.lbl.glamm.server.requesthandlers.impl.DownloadOrganism"/>
 	<RequestHandler action="genCitationsPopup" 		class="gov.lbl.glamm.server.requesthandlers.impl.GenCitationsPopup"/>
-	<RequestHandler action="genCpdPopup" 			class="gov.lbl.glamm.server.requesthandlers.impl.GenCpdPopup"/>
-	<RequestHandler action="genPwyPopup" 			class="gov.lbl.glamm.server.requesthandlers.impl.GenPwyPopup"/>
-	<RequestHandler action="genRxnPopup" 			class="gov.lbl.glamm.server.requesthandlers.impl.GenRxnPopup"/>
 	<RequestHandler action="getDirections"			class="gov.lbl.glamm.server.requesthandlers.impl.GetDirections"/>
-	<RequestHandler action="getExperiment"			class="gov.lbl.glamm.server.requesthandlers.impl.GetExperiment"/>
-	<RequestHandler action="getMapConnectivity" 	class="gov.lbl.glamm.server.requesthandlers.impl.GetMapConnectivity"/>
-	<RequestHandler action="getRxn2EcMapping" 		class="gov.lbl.glamm.server.requesthandlers.impl.GetRxn2EcMapping"/>
-	<RequestHandler action="getRxnsForOrganism" 	class="gov.lbl.glamm.server.requesthandlers.impl.GetRxnsForOrganism"/>
-	<RequestHandler action="hello" 					class="gov.lbl.glamm.server.requesthandlers.impl.Hello"/>
-	<RequestHandler action="populateCompoundSearch"	class="gov.lbl.glamm.server.requesthandlers.impl.PopulateCompoundSearch"/>
-	<RequestHandler action="populateExperiments"	class="gov.lbl.glamm.server.requesthandlers.impl.PopulateExperiments"/>
-	<RequestHandler action="populateSamples"		class="gov.lbl.glamm.server.requesthandlers.impl.PopulateSamples"/>
-	<RequestHandler action="populateOrganisms" 		class="gov.lbl.glamm.server.requesthandlers.impl.PopulateOrganisms"/>
-	<RequestHandler action="populateLocusSearch"	class="gov.lbl.glamm.server.requesthandlers.impl.PopulateLocusSearch"/>
-	<RequestHandler action="populateReactionSearch" class="gov.lbl.glamm.server.requesthandlers.impl.PopulateReactionSearch"/>
 	<RequestHandler action="uploadExperiment"		class="gov.lbl.glamm.server.requesthandlers.impl.UploadExperiment"/>
 	<RequestHandler action="uploadOrganism"			class="gov.lbl.glamm.server.requesthandlers.impl.UploadOrganism"/>
 </RequestHandlers>
