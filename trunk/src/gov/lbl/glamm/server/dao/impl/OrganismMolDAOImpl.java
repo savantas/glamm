@@ -34,7 +34,7 @@ public class OrganismMolDAOImpl implements OrganismDAO {
 				"join TaxParentChild tpc on (t.taxonomyId=tpc.childId) " +
 				"join Scaffold s on (s.taxonomyId=t.taxonomyId) " + 
 				"join ACL a on (a.resourceId=s.scaffoldId and a.resourceType='scaffold') " +
-				"where tpc.parentId in (2,2157) and s.isGenomic=1 and s.isActive=1 and s.length >= 1000 and " + 
+				"where tpc.parentId in (2,2157,2759) and s.isGenomic=1 and s.isActive=1 and s.length >= 1000 and " + 
 				"a.requesterId=1 and a.requesterType='group' and a.read=1 " +
 				"order by t.name;";
 			else
@@ -42,7 +42,7 @@ public class OrganismMolDAOImpl implements OrganismDAO {
 				"from Taxonomy t " + 
 				"join TaxParentChild tpc on (t.taxonomyId=tpc.childId) " +
 				"join Scaffold s on (s.taxonomyId=t.taxonomyId) " + 
-				"where tpc.parentId in (2,2157) and s.isGenomic=1 and s.isActive=1 and s.length >= 1000 " + 
+				"where tpc.parentId in (2,2157,2759) and s.isGenomic=1 and s.isActive=1 and s.length >= 1000 " + 
 				"order by t.name;";
 		}
 		else if(dataType.equals(Sample.DATA_TYPE_MRNA)) {

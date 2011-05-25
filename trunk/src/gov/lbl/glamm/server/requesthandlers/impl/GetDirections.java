@@ -7,6 +7,9 @@ import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Pathway;
 import gov.lbl.glamm.client.model.Reaction;
 import gov.lbl.glamm.client.presenter.RetrosynthesisPresenter;
+import gov.lbl.glamm.server.RequestHandler;
+import gov.lbl.glamm.server.ResponseHandler;
+import gov.lbl.glamm.server.SessionManager;
 import gov.lbl.glamm.server.dao.GeneDAO;
 import gov.lbl.glamm.server.dao.MetabolicNetworkDAO;
 import gov.lbl.glamm.server.dao.OrganismDAO;
@@ -15,12 +18,10 @@ import gov.lbl.glamm.server.dao.impl.GeneDAOImpl;
 import gov.lbl.glamm.server.dao.impl.MetabolicNetworkGlammDAOImpl;
 import gov.lbl.glamm.server.dao.impl.OrganismDAOImpl;
 import gov.lbl.glamm.server.dao.impl.ReactionGlammDAOImpl;
-import gov.lbl.glamm.server.requesthandlers.RequestHandler;
-import gov.lbl.glamm.server.responsehandlers.ResponseHandler;
 import gov.lbl.glamm.server.retrosynthesis.Route;
 import gov.lbl.glamm.server.retrosynthesis.Route.Step;
 import gov.lbl.glamm.server.retrosynthesis.algorithms.RetrosynthesisAlgorithm;
-import gov.lbl.glamm.server.session.SessionManager;
+import gov.lbl.glamm.shared.RequestParameters;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -92,12 +93,12 @@ public class GetDirections implements RequestHandler {
 	public void handleRequest(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 
-		String taxonomyId 	= request.getParameter(PARAM_TAXONOMY_ID);
-		String cpdSrcExtId	= request.getParameter(PARAM_CPD_SRC);
-		String cpdDstExtId	= request.getParameter(PARAM_CPD_DST);
-		String mapTitle		= request.getParameter(PARAM_MAP_TITLE);
-		String algorithm	= request.getParameter(PARAM_ALGORITHM);
-		String asText		= request.getParameter(PARAM_AS_TEXT);
+		String taxonomyId 	= request.getParameter(RequestParameters.PARAM_TAXONOMY_ID);
+		String cpdSrcExtId	= request.getParameter(RequestParameters.PARAM_CPD_SRC);
+		String cpdDstExtId	= request.getParameter(RequestParameters.PARAM_CPD_DST);
+		String mapTitle		= request.getParameter(RequestParameters.PARAM_MAP_TITLE);
+		String algorithm	= request.getParameter(RequestParameters.PARAM_ALGORITHM);
+		String asText		= request.getParameter(RequestParameters.PARAM_AS_TEXT);
 		
 		if(cpdSrcExtId == null || cpdDstExtId == null || mapTitle == null || algorithm == null || asText == null) {
 			return;

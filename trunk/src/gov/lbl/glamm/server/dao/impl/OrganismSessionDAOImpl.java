@@ -2,8 +2,8 @@ package gov.lbl.glamm.server.dao.impl;
 
 import gov.lbl.glamm.client.model.Gene;
 import gov.lbl.glamm.client.model.Organism;
+import gov.lbl.glamm.server.SessionManager;
 import gov.lbl.glamm.server.dao.OrganismDAO;
-import gov.lbl.glamm.server.session.SessionManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,11 +1,12 @@
 package gov.lbl.glamm.server.requesthandlers.impl;
 
 import gov.lbl.glamm.client.model.Measurement;
+import gov.lbl.glamm.server.RequestHandler;
+import gov.lbl.glamm.server.ResponseHandler;
+import gov.lbl.glamm.server.SessionManager;
 import gov.lbl.glamm.server.dao.ExperimentDAO;
 import gov.lbl.glamm.server.dao.impl.ExperimentDAOImpl;
-import gov.lbl.glamm.server.requesthandlers.RequestHandler;
-import gov.lbl.glamm.server.responsehandlers.ResponseHandler;
-import gov.lbl.glamm.server.session.SessionManager;
+import gov.lbl.glamm.shared.RequestParameters;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -22,10 +23,10 @@ public class DownloadExperiment implements RequestHandler {
 	public void handleRequest(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 
-		String experimentId = request.getParameter(PARAM_EXPERIMENT);
-		String sampleId		= request.getParameter(PARAM_SAMPLE);
-		String taxonomyId	= request.getParameter(PARAM_TAXONOMY_ID);
-		String expSource	= request.getParameter(PARAM_EXP_SOURCE);
+		String experimentId = request.getParameter(RequestParameters.PARAM_EXPERIMENT);
+		String sampleId		= request.getParameter(RequestParameters.PARAM_SAMPLE);
+		String taxonomyId	= request.getParameter(RequestParameters.PARAM_TAXONOMY_ID);
+		String expSource	= request.getParameter(RequestParameters.PARAM_EXP_SOURCE);
 
 		
 		if(experimentId != null && !experimentId.isEmpty() &&

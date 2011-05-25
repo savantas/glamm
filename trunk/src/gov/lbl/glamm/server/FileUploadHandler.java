@@ -1,4 +1,4 @@
-package gov.lbl.glamm.server.fileupload;
+package gov.lbl.glamm.server;
 
 import java.io.BufferedReader;
 import java.io.IOException;

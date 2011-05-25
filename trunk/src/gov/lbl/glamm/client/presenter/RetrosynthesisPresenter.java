@@ -18,7 +18,7 @@ import gov.lbl.glamm.client.model.Reaction;
 import gov.lbl.glamm.client.rpc.GlammServiceAsync;
 import gov.lbl.glamm.client.util.ReactionColor;
 import gov.lbl.glamm.client.util.RowDependentSelectionCell;
-import gov.lbl.glamm.server.requesthandlers.RequestHandler;
+import gov.lbl.glamm.shared.RequestParameters;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -217,14 +217,14 @@ public class RetrosynthesisPresenter {
 				UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
 				urlBuilder.setParameter("action", ACTION_GET_DIRECTIONS);
 				urlBuilder.setPath("glammServlet");
-				urlBuilder.setParameter(RequestHandler.PARAM_CPD_SRC, cpdSrcXref.getXrefId());
-				urlBuilder.setParameter(RequestHandler.PARAM_CPD_DST, cpdDstXref.getXrefId());
-				urlBuilder.setParameter(RequestHandler.PARAM_EXTID, mapData.getCpdDbName());
-				urlBuilder.setParameter(RequestHandler.PARAM_MAP_TITLE, mapData.getMapId());
-				urlBuilder.setParameter(RequestHandler.PARAM_ALGORITHM, algorithm);
-				urlBuilder.setParameter(RequestHandler.PARAM_AS_TEXT, "true");
+				urlBuilder.setParameter(RequestParameters.PARAM_CPD_SRC, cpdSrcXref.getXrefId());
+				urlBuilder.setParameter(RequestParameters.PARAM_CPD_DST, cpdDstXref.getXrefId());
+				urlBuilder.setParameter(RequestParameters.PARAM_EXTID, mapData.getCpdDbName());
+				urlBuilder.setParameter(RequestParameters.PARAM_MAP_TITLE, mapData.getMapId());
+				urlBuilder.setParameter(RequestParameters.PARAM_ALGORITHM, algorithm);
+				urlBuilder.setParameter(RequestParameters.PARAM_AS_TEXT, "true");
 				if(organism != null && !organism.isGlobalMap())
-					urlBuilder.setParameter(RequestHandler.PARAM_TAXONOMY_ID, organism.getTaxonomyId());
+					urlBuilder.setParameter(RequestParameters.PARAM_TAXONOMY_ID, organism.getTaxonomyId());
 				Window.open(urlBuilder.buildString(), "", "menubar=no,location=no,resizable=no,scrollbars=no,status=no,toolbar=false,width=0,height=0");
 			}
 		});

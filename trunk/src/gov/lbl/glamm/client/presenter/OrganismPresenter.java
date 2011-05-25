@@ -6,7 +6,7 @@ import gov.lbl.glamm.client.events.ViewResizedEvent;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Sample;
 import gov.lbl.glamm.client.rpc.GlammServiceAsync;
-import gov.lbl.glamm.server.requesthandlers.RequestHandler;
+import gov.lbl.glamm.shared.RequestParameters;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -151,7 +151,7 @@ public class OrganismPresenter {
 					UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
 					urlBuilder.setParameter("action", ACTION_DOWNLOAD_ORGANISM);
 					urlBuilder.setPath("glammServlet");
-					urlBuilder.setParameter(RequestHandler.PARAM_TAXONOMY_ID, organism.getTaxonomyId());
+					urlBuilder.setParameter(RequestParameters.PARAM_TAXONOMY_ID, organism.getTaxonomyId());
 
 					view.minimize();
 					Window.open(urlBuilder.buildString(), "", "menubar=no,location=no,resizable=no,scrollbars=no,status=no,toolbar=false,width=0,height=0");

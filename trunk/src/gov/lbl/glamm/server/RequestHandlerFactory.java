@@ -1,4 +1,7 @@
-package gov.lbl.glamm.server.requesthandlers;
+package gov.lbl.glamm.server;
+
+
+import gov.lbl.glamm.shared.RequestParameters;
 
 import java.util.HashMap;
 
@@ -57,7 +60,7 @@ public class RequestHandlerFactory {
 		
 		RequestHandler rh 			= null;
 		RequestHandlerElement rhp 	= null;
-		String action 				= request.getParameter(RequestHandler.PARAM_ACTION);
+		String action 				= request.getParameter(RequestParameters.PARAM_ACTION);
 		
 		if(action != null)
 			rhp = action2RequestHandlerElements.get(action);

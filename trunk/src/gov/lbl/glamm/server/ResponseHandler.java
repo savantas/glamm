@@ -1,4 +1,4 @@
-package gov.lbl.glamm.server.responsehandlers;
+package gov.lbl.glamm.server;
 
 import java.io.IOException;
 import java.io.PrintWriter;

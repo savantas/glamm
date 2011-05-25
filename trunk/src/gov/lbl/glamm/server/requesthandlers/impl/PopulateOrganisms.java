@@ -1,9 +1,9 @@
 package gov.lbl.glamm.server.requesthandlers.impl;
 
 import gov.lbl.glamm.client.model.Organism;
+import gov.lbl.glamm.server.SessionManager;
 import gov.lbl.glamm.server.dao.OrganismDAO;
 import gov.lbl.glamm.server.dao.impl.OrganismDAOImpl;
-import gov.lbl.glamm.server.session.SessionManager;
 
 import java.util.ArrayList;
 

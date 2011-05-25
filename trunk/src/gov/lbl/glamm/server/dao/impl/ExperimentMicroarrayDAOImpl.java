@@ -174,19 +174,29 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 
 		return experiments;
 	}
-	
+
 	@Override
 	public ArrayList<Sample> getAllSamples(String taxonomyId) {
 
 		ArrayList<Sample> samples = null;
 
-		String sql = "select R.expId, R.setId, E.stress, R.cFactor, R.tFactor, R.factorUnit, R.cTime, R.tTime " +
-		"from microarray.Exp E " +
-		"join microarray.Chip C on (E.chipId=C.id) " +
-		"join genomics_test.ACL A on (A.resourceId=E.id and A.resourceType='uarray') " +
-		"join microarray.Replicate R on (E.id=R.expId) " +
-		"where A.requesterId=1 and A.requesterType='group' and A.read=1 and C.taxonomyId=?" +
-		"order by R.expId, R.setId;";
+		String sql = "";
+
+		if(GlammDbConnectionPool.getDbConfig().isFilterOnAcl())
+			sql = "select R.expId, R.setId, E.stress, R.cFactor, R.tFactor, R.factorUnit, R.cTime, R.tTime " +
+			"from microarray.Exp E " +
+			"join microarray.Chip C on (E.chipId=C.id) " +
+			"join genomics_test.ACL A on (A.resourceId=E.id and A.resourceType='uarray') " +
+			"join microarray.Replicate R on (E.id=R.expId) " +
+			"where A.requesterId=1 and A.requesterType='group' and A.read=1 and C.taxonomyId=?" +
+			"order by R.expId, R.setId;";
+		else
+			sql = "select R.expId, R.setId, E.stress, R.cFactor, R.tFactor, R.factorUnit, R.cTime, R.tTime " +
+			"from microarray.Exp E " +
+			"join microarray.Chip C on (E.chipId=C.id) " +
+			"join microarray.Replicate R on (E.id=R.expId) " +
+			"where C.taxonomyId=?" +
+			"order by R.expId, R.setId;";
 
 		try {
 
@@ -221,7 +231,7 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 
 				if(samples == null)
 					samples = new ArrayList<Sample>();
-				
+
 				samples.add(sample);
 			}
 
