@@ -6,7 +6,7 @@ import gov.lbl.glamm.client.events.ViewResizedEvent;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Sample;
 import gov.lbl.glamm.client.rpc.GlammServiceAsync;
-import gov.lbl.glamm.shared.GlammConstants;
+import gov.lbl.glamm.server.requesthandlers.RequestHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -221,10 +221,10 @@ public class ExperimentPresenter {
 					UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
 					urlBuilder.setParameter("action", ACTION_DOWNLOAD_EXPERIMENT);
 					urlBuilder.setPath("glammServlet");
-					urlBuilder.setParameter(GlammConstants.PARAM_EXPERIMENT, experimentTableSelection.getExperimentId());
-					urlBuilder.setParameter(GlammConstants.PARAM_SAMPLE, experimentTableSelection.getSampleId());
-					urlBuilder.setParameter(GlammConstants.PARAM_TAXONOMY_ID, experimentTableSelection.getTaxonomyId());
-					urlBuilder.setParameter(GlammConstants.PARAM_EXP_SOURCE, experimentTableSelection.getSource());
+					urlBuilder.setParameter(RequestHandler.PARAM_EXPERIMENT, experimentTableSelection.getExperimentId());
+					urlBuilder.setParameter(RequestHandler.PARAM_SAMPLE, experimentTableSelection.getSampleId());
+					urlBuilder.setParameter(RequestHandler.PARAM_TAXONOMY_ID, experimentTableSelection.getTaxonomyId());
+					urlBuilder.setParameter(RequestHandler.PARAM_EXP_SOURCE, experimentTableSelection.getSource());
 
 					Window.open(urlBuilder.buildString(), "", "menubar=no,location=no,resizable=no,scrollbars=no,status=no,toolbar=false,width=0,height=0");
 				}

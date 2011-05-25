@@ -1,5 +1,6 @@
 package gov.lbl.glamm.server.requesthandlers.impl;
 
+import gov.lbl.glamm.client.model.Experiment;
 import gov.lbl.glamm.client.model.GlammPrimitive;
 import gov.lbl.glamm.client.model.GlammPrimitive.Synonym;
 import gov.lbl.glamm.client.model.Measurement;
@@ -8,7 +9,6 @@ import gov.lbl.glamm.server.dao.GeneDAO;
 import gov.lbl.glamm.server.dao.impl.ExperimentDAOImpl;
 import gov.lbl.glamm.server.dao.impl.GeneDAOImpl;
 import gov.lbl.glamm.server.session.SessionManager;
-import gov.lbl.glamm.shared.GlammConstants;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,11 +37,11 @@ public class GetExperiment  {
 		Set<String> ids = id2Measurements.keySet();
 
 		// get primitives for measurements - will vary with source
-		if(expSource.equals(GlammConstants.EXP_SRC_MOL_UARRAY)) {
+		if(expSource.equals(Experiment.EXP_SRC_MOL_UARRAY)) {
 			GeneDAO geneDao = new GeneDAOImpl(sm);
 			primitives = geneDao.getGenesForVimssIds(taxonomyId, ids);
 		}
-		else if(expSource.equals(GlammConstants.EXP_SRC_SESSION)) {
+		else if(expSource.equals(Experiment.EXP_SRC_SESSION)) {
 			GeneDAO geneDao = new GeneDAOImpl(sm);
 			primitives = geneDao.getGenesForSynonyms(taxonomyId, ids);
 		}

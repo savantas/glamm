@@ -1,7 +1,6 @@
 package gov.lbl.glamm.client.view;
 
 import gov.lbl.glamm.client.presenter.OrganismUploadPresenter;
-import gov.lbl.glamm.shared.GlammConstants;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Button;
@@ -52,10 +51,10 @@ implements OrganismUploadPresenter.View {
 		
 		// set up form elements
 		nameTextBox.setWidth("90%");
-		nameTextBox.setName(GlammConstants.FIELD_ORGANISM_UPLOAD_NAME);
+		nameTextBox.setName(FIELD_ORGANISM_UPLOAD_NAME);
 
 		// set up the file upload
-		fileUpload.setName(GlammConstants.FIELD_ORGANISM_UPLOAD_FILE);
+		fileUpload.setName(FIELD_ORGANISM_UPLOAD_FILE);
 		
 		// set up grid
 		grid.setWidget(0, 0, new Label(STRING_LABEL_NAME + ":"));

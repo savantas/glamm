@@ -5,7 +5,6 @@ import gov.lbl.glamm.client.model.Measurement;
 import gov.lbl.glamm.client.model.Sample;
 import gov.lbl.glamm.server.dao.ExperimentDAO;
 import gov.lbl.glamm.server.session.SessionManager;
-import gov.lbl.glamm.shared.GlammConstants;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,11 +27,11 @@ public class ExperimentDAOImpl implements ExperimentDAO {
 	public Experiment getExperiment(String experimentId, String sampleId, String taxonomyId, String source) {
 		Experiment experiment = null;
 		
-		if(source.equals(GlammConstants.EXP_SRC_SESSION)) {
+		if(source.equals(Experiment.EXP_SRC_SESSION)) {
 			if(sm != null)
 				experiment = expSessionDao.getExperiment(experimentId, sampleId, taxonomyId, source);
 		}
-		else if(source.equals(GlammConstants.EXP_SRC_MOL_UARRAY))
+		else if(source.equals(Experiment.EXP_SRC_MOL_UARRAY))
 			experiment = expUArrayDao.getExperiment(experimentId, sampleId, taxonomyId, source);
 		
 		return experiment;
@@ -76,12 +75,12 @@ public class ExperimentDAOImpl implements ExperimentDAO {
 
 		HashMap<String, HashSet<Measurement>> id2Measurement = null;
 		
-		if(source.equals(GlammConstants.EXP_SRC_SESSION)) {
+		if(source.equals(Experiment.EXP_SRC_SESSION)) {
 			if(sm != null)
 				id2Measurement = expSessionDao.getMeasurements(experimentId, sampleId, taxonomyId, source);
 		}
 		
-		else if(source.equals(GlammConstants.EXP_SRC_MOL_UARRAY))
+		else if(source.equals(Experiment.EXP_SRC_MOL_UARRAY))
 			id2Measurement= expUArrayDao.getMeasurements(experimentId, sampleId, taxonomyId, source);
 		
 		return id2Measurement;

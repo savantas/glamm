@@ -6,7 +6,6 @@ import gov.lbl.glamm.server.dao.GeneDAO;
 import gov.lbl.glamm.server.dao.impl.GeneGlammDAOImpl;
 import gov.lbl.glamm.server.requesthandlers.RequestHandler;
 import gov.lbl.glamm.server.responsehandlers.ResponseHandler;
-import gov.lbl.glamm.shared.GlammConstants;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,7 +23,7 @@ public class DownloadOrganism implements RequestHandler {
 			HttpServletResponse response) throws IOException {
 
 		String content		= "";
-		String taxonomyId	= request.getParameter(GlammConstants.PARAM_TAXONOMY_ID);
+		String taxonomyId	= request.getParameter(PARAM_TAXONOMY_ID);
 
 		GeneDAO geneDao = new GeneGlammDAOImpl();
 

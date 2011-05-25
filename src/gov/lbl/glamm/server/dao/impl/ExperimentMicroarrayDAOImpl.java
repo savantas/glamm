@@ -5,7 +5,6 @@ import gov.lbl.glamm.client.model.Measurement;
 import gov.lbl.glamm.client.model.Sample;
 import gov.lbl.glamm.server.GlammDbConnectionPool;
 import gov.lbl.glamm.server.dao.ExperimentDAO;
-import gov.lbl.glamm.shared.GlammConstants;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -30,7 +29,7 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 	public Experiment getExperiment(String experimentId, String sampleId, String taxonomyId, String source) {
 
 		// sanity check on the source
-		if(!source.equals(GlammConstants.EXP_SRC_MOL_UARRAY))
+		if(!source.equals(Experiment.EXP_SRC_MOL_UARRAY))
 			return null;
 
 		Experiment experiment = null;
@@ -74,8 +73,8 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 				String factorUnit	= rs.getString("factorUnit");
 
 
-				experiment = new Experiment(experimentId, taxonomyId, GlammConstants.EXP_SRC_MOL_UARRAY);
-				sample = new Sample(experimentId, sampleId, taxonomyId, GlammConstants.EXP_SRC_MOL_UARRAY);
+				experiment = new Experiment(experimentId, taxonomyId, Experiment.EXP_SRC_MOL_UARRAY);
+				sample = new Sample(experimentId, sampleId, taxonomyId, Experiment.EXP_SRC_MOL_UARRAY);
 
 				sample.setStress(stress);
 				sample.setControl(cFactor, cTime);
@@ -147,11 +146,11 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 
 				Experiment exp = expId2Experiment.get(expId);
 				if(exp == null) {
-					exp = new Experiment(expId, taxonomyId, GlammConstants.EXP_SRC_MOL_UARRAY);
+					exp = new Experiment(expId, taxonomyId, Experiment.EXP_SRC_MOL_UARRAY);
 					expId2Experiment.put(expId, exp);
 				}
 
-				Sample sample = new Sample(expId, setId, taxonomyId, GlammConstants.EXP_SRC_MOL_UARRAY);
+				Sample sample = new Sample(expId, setId, taxonomyId, Experiment.EXP_SRC_MOL_UARRAY);
 
 				sample.setStress(stress);
 				sample.setControl(cFactor, cTime);
@@ -210,7 +209,7 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 				String factorUnit	= rs.getString("factorUnit");
 
 
-				Sample sample = new Sample(expId, setId, taxonomyId, GlammConstants.EXP_SRC_MOL_UARRAY);
+				Sample sample = new Sample(expId, setId, taxonomyId, Experiment.EXP_SRC_MOL_UARRAY);
 
 				sample.setStress(stress);
 				sample.setControl(cFactor, cTime);
@@ -243,7 +242,7 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 
 
 		// sanity check on the source
-		if(!source.equals(GlammConstants.EXP_SRC_MOL_UARRAY))
+		if(!source.equals(Experiment.EXP_SRC_MOL_UARRAY))
 			return null;
 
 		HashMap<String, HashSet<Measurement>> id2Measurement = null;

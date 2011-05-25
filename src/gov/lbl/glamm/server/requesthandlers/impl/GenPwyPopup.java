@@ -6,7 +6,6 @@ import gov.lbl.glamm.client.model.Pathway;
 import gov.lbl.glamm.client.model.Sample;
 import gov.lbl.glamm.server.dao.PathwayDAO;
 import gov.lbl.glamm.server.dao.impl.KeggPathwayDAOImpl;
-import gov.lbl.glamm.shared.GlammConstants;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -77,20 +76,20 @@ public class GenPwyPopup {
 		if(	experimentId != null && !experimentId.equals(Experiment.DEFAULT_EXPERIMENT_ID) &&
 				sampleId != null && !sampleId.equals(Sample.DEFAULT_SAMPLE_ID) &&
 				taxonomyId != null && !taxonomyId.equals(Organism.GLOBAL_MAP_TAXONOMY_ID)) {
-
-			url = GlammConstants.MOL_SERVER_URL_PREFIX + GlammConstants.MOL_CGI_UARRAY_PREFIX;
-			url += GlammConstants.MOL_PARAM_MAPID + "=" + mapId;
-			url += "&" + GlammConstants.MOL_PARAM_TAXID + "=" + taxonomyId;
-			url += "&" + GlammConstants.MOL_PARAM_EXPID + "=" + experimentId;
-			url += "&" + GlammConstants.MOL_PARAM_SETID + "=" + sampleId;
-			url += GlammConstants.MOL_CGI_UARRAY_SUFFIX;
+			
+			url = "http://www.microbesonline.org/cgi-bin/microarray/reportSet.cgi?disp=3&";
+			url += "mapId=" + mapId;
+			url += "&taxId=" + taxonomyId;
+			url += "&expId=" + experimentId;
+			url += "&setId=" + sampleId;
+			url += "&z=0.5&n=-1";
 
 		}
 		else {
 
-			url = GlammConstants.MOL_SERVER_URL_PREFIX + GlammConstants.MOL_CGI_BROWSEKEGG;
-			url += GlammConstants.MOL_PARAM_MAPID + "=map" + mapId;
-			url += taxonomyId != null && !taxonomyId.equals(Organism.GLOBAL_MAP_TAXONOMY_ID) ? "&" + GlammConstants.MOL_PARAM_TAXID + "=" + taxonomyId : "";
+			url = "http://www.microbesonline.org/cgi-bin/browseKegg?";
+			url += "mapId=map" + mapId;
+			url += taxonomyId != null && !taxonomyId.equals(Organism.GLOBAL_MAP_TAXONOMY_ID) ? "&taxId=" + taxonomyId : "";
 
 		}
 		return url;

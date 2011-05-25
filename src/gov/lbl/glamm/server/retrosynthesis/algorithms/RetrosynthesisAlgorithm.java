@@ -2,9 +2,9 @@ package gov.lbl.glamm.server.retrosynthesis.algorithms;
 
 import gov.lbl.glamm.client.model.MNNode;
 import gov.lbl.glamm.client.model.MetabolicNetwork;
+import gov.lbl.glamm.client.presenter.RetrosynthesisPresenter;
 import gov.lbl.glamm.server.retrosynthesis.Route;
 import gov.lbl.glamm.server.retrosynthesis.Route.RouteComparator;
-import gov.lbl.glamm.shared.GlammConstants;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,11 +51,11 @@ public abstract class RetrosynthesisAlgorithm {
 	public static RetrosynthesisAlgorithm create(String algorithm, String taxonomyId, MetabolicNetwork network) {
 		RetrosynthesisAlgorithm ra = null;
 		
-		if(algorithm.equals(GlammConstants.ALGORITHM_DFS_VALUE)) {
+		if(algorithm.equals(RetrosynthesisPresenter.View.ALGORITHM_DFS_VALUE)) {
 			ra = new RADepthFirstSearch(algorithm, taxonomyId, network);
 		}
 		
-		else if(algorithm.equals(GlammConstants.ALGORITHM_TW_DFS_VALUE)) {
+		else if(algorithm.equals(RetrosynthesisPresenter.View.ALGORITHM_TW_DFS_VALUE)) {
 			ra = new RATaxonWeightedDFS(algorithm, taxonomyId, network);
 		}
 		

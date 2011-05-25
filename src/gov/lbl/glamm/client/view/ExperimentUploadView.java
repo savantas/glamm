@@ -1,7 +1,6 @@
 package gov.lbl.glamm.client.view;
 
 import gov.lbl.glamm.client.presenter.ExperimentUploadPresenter;
-import gov.lbl.glamm.shared.GlammConstants;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.DOM;
@@ -79,23 +78,23 @@ implements ExperimentUploadPresenter.View {
 		submitButton		= new Button(STRING_BUTTON_SUBMIT);
 		cancelButton		= new Button(STRING_BUTTON_CANCEL);
 		
-		taxonomyIdHidden.setName(GlammConstants.FIELD_EXP_UPLOAD_TAXONOMY_ID);  
+		taxonomyIdHidden.setName(FIELD_EXP_UPLOAD_TAXONOMY_ID);  
 		
 		// set up the text boxes
 		stressTextBox.setWidth("90%");
-		stressTextBox.setName(GlammConstants.FIELD_EXP_UPLOAD_STRESS);
+		stressTextBox.setName(FIELD_EXP_UPLOAD_STRESS);
 
 		treatmentTextBox.setWidth("90%");
-		treatmentTextBox.setName(GlammConstants.FIELD_EXP_UPLOAD_TREATMENT);
+		treatmentTextBox.setName(FIELD_EXP_UPLOAD_TREATMENT);
 
 		controlTextBox.setWidth("90%");
-		controlTextBox.setName(GlammConstants.FIELD_EXP_UPLOAD_CONTROL);
+		controlTextBox.setName(FIELD_EXP_UPLOAD_CONTROL);
 
 		unitsTextBox.setWidth("90%");
-		unitsTextBox.setName(GlammConstants.FIELD_EXP_UPLOAD_UNITS);
+		unitsTextBox.setName(FIELD_EXP_UPLOAD_UNITS);
 
 		// set up the file upload
-		fileUpload.setName(GlammConstants.FIELD_EXP_UPLOAD_FILE);
+		fileUpload.setName(FIELD_EXP_UPLOAD_FILE);
 
 		// set up grid
 		experimentGrid.setWidget(0, 0, new Label(STRING_LABEL_STRESS + ":"));
@@ -121,11 +120,11 @@ implements ExperimentUploadPresenter.View {
 		clampValuesGrid.setWidget(1, 2, clampMax);
 
 		clampMin.setWidth("5em");
-		clampMin.setName(GlammConstants.FIELD_EXP_UPLOAD_CLAMP_MIN);
+		clampMin.setName(FIELD_EXP_UPLOAD_CLAMP_MIN);
 		clampMid.setWidth("5em");
-		clampMid.setName(GlammConstants.FIELD_EXP_UPLOAD_CLAMP_MID);
+		clampMid.setName(FIELD_EXP_UPLOAD_CLAMP_MID);
 		clampMax.setWidth("5em");
-		clampMax.setName(GlammConstants.FIELD_EXP_UPLOAD_CLAMP_MAX);
+		clampMax.setName(FIELD_EXP_UPLOAD_CLAMP_MAX);
 
 		// set up button panel
 		buttonPanel.setSpacing(5);

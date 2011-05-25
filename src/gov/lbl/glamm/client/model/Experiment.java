@@ -16,6 +16,9 @@ public class Experiment extends GlammPrimitive implements Serializable {
 	
 	public static transient final String DEFAULT_EXPERIMENT_ID = "-1";
 	
+	public static transient final String EXP_SRC_MOL_UARRAY		= "molUarray";
+	public static transient final String EXP_SRC_SESSION		= "session";
+	
 	public static transient GlammPrimitive.Type TYPE = new GlammPrimitive.Type();
 	private String expId = null;
 	private String taxonomyId = null;
