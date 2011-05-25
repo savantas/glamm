@@ -1,7 +1,5 @@
 package gov.lbl.glamm.server;
 
-import gov.lbl.glamm.server.requesthandlers.RequestHandler;
-import gov.lbl.glamm.server.requesthandlers.RequestHandlerFactory;
 
 import java.io.IOException;
 import java.net.MalformedURLException;

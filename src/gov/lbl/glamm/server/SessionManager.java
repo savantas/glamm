@@ -1,4 +1,4 @@
-package gov.lbl.glamm.server.session;
+package gov.lbl.glamm.server;
 
 import gov.lbl.glamm.client.model.Experiment;
 import gov.lbl.glamm.client.model.Gene;

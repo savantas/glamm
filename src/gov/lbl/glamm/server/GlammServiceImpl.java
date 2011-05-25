@@ -23,7 +23,6 @@ import gov.lbl.glamm.server.requesthandlers.impl.PopulateLocusSearch;
 import gov.lbl.glamm.server.requesthandlers.impl.PopulateOrganisms;
 import gov.lbl.glamm.server.requesthandlers.impl.PopulateReactionSearch;
 import gov.lbl.glamm.server.requesthandlers.impl.PopulateSamples;
-import gov.lbl.glamm.server.session.SessionManager;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;

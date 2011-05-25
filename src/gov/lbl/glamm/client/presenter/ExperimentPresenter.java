@@ -6,7 +6,7 @@ import gov.lbl.glamm.client.events.ViewResizedEvent;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Sample;
 import gov.lbl.glamm.client.rpc.GlammServiceAsync;
-import gov.lbl.glamm.server.requesthandlers.RequestHandler;
+import gov.lbl.glamm.shared.RequestParameters;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,6 +19,8 @@ import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.user.cellview.client.CellTable;
@@ -30,6 +32,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SuggestBox;
+import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
@@ -221,10 +224,10 @@ public class ExperimentPresenter {
 					UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
 					urlBuilder.setParameter("action", ACTION_DOWNLOAD_EXPERIMENT);
 					urlBuilder.setPath("glammServlet");
-					urlBuilder.setParameter(RequestHandler.PARAM_EXPERIMENT, experimentTableSelection.getExperimentId());
-					urlBuilder.setParameter(RequestHandler.PARAM_SAMPLE, experimentTableSelection.getSampleId());
-					urlBuilder.setParameter(RequestHandler.PARAM_TAXONOMY_ID, experimentTableSelection.getTaxonomyId());
-					urlBuilder.setParameter(RequestHandler.PARAM_EXP_SOURCE, experimentTableSelection.getSource());
+					urlBuilder.setParameter(RequestParameters.PARAM_EXPERIMENT, experimentTableSelection.getExperimentId());
+					urlBuilder.setParameter(RequestParameters.PARAM_SAMPLE, experimentTableSelection.getSampleId());
+					urlBuilder.setParameter(RequestParameters.PARAM_TAXONOMY_ID, experimentTableSelection.getTaxonomyId());
+					urlBuilder.setParameter(RequestParameters.PARAM_EXP_SOURCE, experimentTableSelection.getSource());
 
 					Window.open(urlBuilder.buildString(), "", "menubar=no,location=no,resizable=no,scrollbars=no,status=no,toolbar=false,width=0,height=0");
 				}
@@ -319,6 +322,34 @@ public class ExperimentPresenter {
 			}
 		});
 		
+		view.getExperimentSuggestBox().addSelectionHandler(new SelectionHandler<Suggestion>() {
+			@Override
+			public void onSelection(SelectionEvent<Suggestion> event) {
+				Suggestion suggestion = event.getSelectedItem();
+				String summary = suggestion.getReplacementString();
+				
+				if(summary == null)
+					return;
+				
+				Sample sample = summary2Sample.get(summary);
+				
+				if(sample == null)
+					return;
+				
+				List<Sample> dpList = viewSubsetDataProvider.getList();
+				if(!dpList.contains(sample)) {
+					viewSubsetDataProvider.getList().add(sample);
+					setViewSubsetVisible(true);
+				}
+				
+				view.getViewSubsetTable().getSelectionModel().setSelected(sample, true);
+				view.getExperimentSuggestBox().setText(sample.getSummary());
+				view.minimize();
+				eventBus.fireEvent(new SamplePickedEvent(sample));
+				
+			}
+		});
+		
 		view.getDisclosurePanel().addOpenHandler(new OpenHandler<DisclosurePanel>() {
 			@Override
 			public void onOpen(OpenEvent<DisclosurePanel> event) {
@@ -347,7 +378,7 @@ public class ExperimentPresenter {
 		view.getExperimentSuggestBox().setText("");
 	}
 
-	public void populate() {
+	private void populate() {
 		clear();
 
 		if(organism == null || organism.isGlobalMap())
@@ -377,6 +408,7 @@ public class ExperimentPresenter {
 	
 	public void setOrganism(final Organism organism) {
 		this.organism = organism;
+		populate();
 	}
 
 	private void setViewState(final State state) {

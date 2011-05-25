@@ -427,12 +427,11 @@ public class AppController {
 	 */
 	private void loadExperimentPicker() {
 		mainPanel.add(experimentView, 0, 0);
-
+		
 		eventBus.addHandler(OrganismPickedEvent.TYPE, new OrganismPickedEvent.Handler() {
 			@Override
 			public void onOrganismPicked(OrganismPickedEvent event) {
 				experimentPresenter.setOrganism(event.getOrganism());
-				experimentPresenter.populate();
 			}
 		});
 
@@ -440,7 +439,6 @@ public class AppController {
 			@Override
 			public void onSuccess(ExperimentUploadEvent event) {
 				experimentPresenter.setOrganism(event.getOrganism());
-				experimentPresenter.populate();
 			}
 
 			@Override

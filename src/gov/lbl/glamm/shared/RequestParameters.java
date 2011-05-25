@@ -1,12 +1,6 @@
-package gov.lbl.glamm.server.requesthandlers;
+package gov.lbl.glamm.shared;
 
-import java.io.IOException;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-public interface RequestHandler {
-	
+public abstract class RequestParameters {
 	public static final String PARAM_ACTION						= "action";
 	public static final String PARAM_ALGORITHM					= "algorithm";
 	public static final String PARAM_AS_TEXT					= "asText";
@@ -18,6 +12,4 @@ public interface RequestHandler {
 	public static final String PARAM_MAP_TITLE					= "mapTitle";
 	public static final String PARAM_SAMPLE						= "sample";
 	public static final String PARAM_TAXONOMY_ID				= "taxonomyId";
-	
-	public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws IOException;
 }

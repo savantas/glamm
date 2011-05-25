@@ -3,11 +3,11 @@ package gov.lbl.glamm.server.requesthandlers.impl;
 import gov.lbl.glamm.client.model.Gene;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.presenter.OrganismUploadPresenter;
-import gov.lbl.glamm.server.fileupload.FileUploadHandler;
-import gov.lbl.glamm.server.fileupload.FileUploadHandler.LineParser;
-import gov.lbl.glamm.server.requesthandlers.RequestHandler;
-import gov.lbl.glamm.server.responsehandlers.ResponseHandler;
-import gov.lbl.glamm.server.session.SessionManager;
+import gov.lbl.glamm.server.FileUploadHandler;
+import gov.lbl.glamm.server.RequestHandler;
+import gov.lbl.glamm.server.ResponseHandler;
+import gov.lbl.glamm.server.SessionManager;
+import gov.lbl.glamm.server.FileUploadHandler.LineParser;
 
 import java.io.IOException;
 import java.util.ArrayList;

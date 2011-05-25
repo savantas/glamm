@@ -109,14 +109,6 @@ public class GeneGlammDAOImpl implements GeneDAO {
 		ArrayList<Gene> genes = null;
 
 		if(taxonomyId != null && !taxonomyId.isEmpty()) {
-//			String sql = "select distinct L2E.ecNum, L2E.locusId, Syn.name, Syn.type " +
-//			"from Locus2Ec L2E " + 
-//			"join Locus L on (L2E.locusId=L.locusId) " +
-//			"join Scaffold S on (L.scaffoldId=S.scaffoldId) " +
-//			"left outer join Synonym Syn on (Syn.locusId=L2E.locusId) " +
-//			"where S.taxonomyId=\"" + taxonomyId + "\" and " +
-//			"L.priority=1 and " +
-//			"(Syn.type=0 or Syn.type=1);";
 			
 			String sql = "select distinct L2E.ecNum, L2E.locusId, Syn.name, Syn.type " +
 			"from Locus2Ec L2E " + 

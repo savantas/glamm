@@ -3,8 +3,8 @@ package gov.lbl.glamm.server.dao.impl;
 import gov.lbl.glamm.client.model.Experiment;
 import gov.lbl.glamm.client.model.Measurement;
 import gov.lbl.glamm.client.model.Sample;
+import gov.lbl.glamm.server.SessionManager;
 import gov.lbl.glamm.server.dao.ExperimentDAO;
-import gov.lbl.glamm.server.session.SessionManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -2,11 +2,11 @@ package gov.lbl.glamm.server.requesthandlers.impl;
 
 import gov.lbl.glamm.client.model.Gene;
 import gov.lbl.glamm.client.model.Reaction;
+import gov.lbl.glamm.server.SessionManager;
 import gov.lbl.glamm.server.dao.GeneDAO;
 import gov.lbl.glamm.server.dao.ReactionDAO;
 import gov.lbl.glamm.server.dao.impl.GeneDAOImpl;
 import gov.lbl.glamm.server.dao.impl.ReactionGlammDAOImpl;
-import gov.lbl.glamm.server.session.SessionManager;
 
 import java.util.ArrayList;
 import java.util.HashSet;

@@ -2,10 +2,11 @@ package gov.lbl.glamm.server.requesthandlers.impl;
 
 import gov.lbl.glamm.client.model.Gene;
 import gov.lbl.glamm.client.model.GlammPrimitive.Synonym;
+import gov.lbl.glamm.server.RequestHandler;
+import gov.lbl.glamm.server.ResponseHandler;
 import gov.lbl.glamm.server.dao.GeneDAO;
 import gov.lbl.glamm.server.dao.impl.GeneGlammDAOImpl;
-import gov.lbl.glamm.server.requesthandlers.RequestHandler;
-import gov.lbl.glamm.server.responsehandlers.ResponseHandler;
+import gov.lbl.glamm.shared.RequestParameters;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class DownloadOrganism implements RequestHandler {
 			HttpServletResponse response) throws IOException {
 
 		String content		= "";
-		String taxonomyId	= request.getParameter(PARAM_TAXONOMY_ID);
+		String taxonomyId	= request.getParameter(RequestParameters.PARAM_TAXONOMY_ID);
 
 		GeneDAO geneDao = new GeneGlammDAOImpl();
 
