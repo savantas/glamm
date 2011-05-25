@@ -3,12 +3,12 @@ package gov.lbl.glamm.server.requesthandlers.impl;
 import gov.lbl.glamm.client.model.Experiment;
 import gov.lbl.glamm.client.model.Measurement;
 import gov.lbl.glamm.client.model.Sample;
+import gov.lbl.glamm.client.presenter.ExperimentUploadPresenter;
 import gov.lbl.glamm.server.fileupload.FileUploadHandler;
 import gov.lbl.glamm.server.fileupload.FileUploadHandler.LineParser;
 import gov.lbl.glamm.server.requesthandlers.RequestHandler;
 import gov.lbl.glamm.server.responsehandlers.ResponseHandler;
 import gov.lbl.glamm.server.session.SessionManager;
-import gov.lbl.glamm.shared.GlammConstants;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -73,18 +73,18 @@ public class UploadExperiment implements RequestHandler {
 		});
 
 		// get relevant fields
-		final float clampMin 	= Float.parseFloat(fuh.getFormField(GlammConstants.FIELD_EXP_UPLOAD_CLAMP_MIN));
-		final float clampMid 	= Float.parseFloat(fuh.getFormField(GlammConstants.FIELD_EXP_UPLOAD_CLAMP_MID));
-		final float clampMax 	= Float.parseFloat(fuh.getFormField(GlammConstants.FIELD_EXP_UPLOAD_CLAMP_MAX));
-		final String stress 	= fuh.getFormField(GlammConstants.FIELD_EXP_UPLOAD_STRESS);
-		final String treatment 	= fuh.getFormField(GlammConstants.FIELD_EXP_UPLOAD_TREATMENT);
-		final String control 	= fuh.getFormField(GlammConstants.FIELD_EXP_UPLOAD_CONTROL);
-		final String taxonomyId = fuh.getFormField(GlammConstants.FIELD_EXP_UPLOAD_TAXONOMY_ID);
-		final String units 		= fuh.getFormField(GlammConstants.FIELD_EXP_UPLOAD_UNITS);
+		final float clampMin 	= Float.parseFloat(fuh.getFormField(ExperimentUploadPresenter.View.FIELD_EXP_UPLOAD_CLAMP_MIN));
+		final float clampMid 	= Float.parseFloat(fuh.getFormField(ExperimentUploadPresenter.View.FIELD_EXP_UPLOAD_CLAMP_MID));
+		final float clampMax 	= Float.parseFloat(fuh.getFormField(ExperimentUploadPresenter.View.FIELD_EXP_UPLOAD_CLAMP_MAX));
+		final String stress 	= fuh.getFormField(ExperimentUploadPresenter.View.FIELD_EXP_UPLOAD_STRESS);
+		final String treatment 	= fuh.getFormField(ExperimentUploadPresenter.View.FIELD_EXP_UPLOAD_TREATMENT);
+		final String control 	= fuh.getFormField(ExperimentUploadPresenter.View.FIELD_EXP_UPLOAD_CONTROL);
+		final String taxonomyId = fuh.getFormField(ExperimentUploadPresenter.View.FIELD_EXP_UPLOAD_TAXONOMY_ID);
+		final String units 		= fuh.getFormField(ExperimentUploadPresenter.View.FIELD_EXP_UPLOAD_UNITS);
 
 
 		// construct the sample
-		Sample sample = new Sample(expId, sampleId, taxonomyId, GlammConstants.EXP_SRC_SESSION);
+		Sample sample = new Sample(expId, sampleId, taxonomyId, Experiment.EXP_SRC_SESSION);
 		sample.setClampValues(clampMin, clampMid, clampMax);
 		sample.setStress(stress);
 		sample.setTreatment(treatment, null);
@@ -92,7 +92,7 @@ public class UploadExperiment implements RequestHandler {
 		sample.setUnits(units);
 
 		// construct the experiment
-		Experiment experiment = new Experiment(expId, taxonomyId, GlammConstants.EXP_SRC_SESSION);
+		Experiment experiment = new Experiment(expId, taxonomyId, Experiment.EXP_SRC_SESSION);
 		experiment.addSample(sample);
 
 		// add the experiment to the session

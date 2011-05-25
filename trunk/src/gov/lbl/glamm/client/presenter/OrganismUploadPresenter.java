@@ -18,6 +18,10 @@ import com.google.gwt.user.client.ui.HasText;
 public class OrganismUploadPresenter {
 
 	public interface View {
+		
+		public static final String FIELD_ORGANISM_UPLOAD_NAME		= "name";
+		public static final String FIELD_ORGANISM_UPLOAD_FILE		= "file";
+		
 		public HasClickHandlers	getCancelButton();
 		public FileUpload		getFileUpload();
 		public FormPanel		getForm();

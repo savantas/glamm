@@ -6,6 +6,7 @@ import gov.lbl.glamm.client.model.MetabolicNetwork;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Pathway;
 import gov.lbl.glamm.client.model.Reaction;
+import gov.lbl.glamm.client.presenter.RetrosynthesisPresenter;
 import gov.lbl.glamm.server.dao.GeneDAO;
 import gov.lbl.glamm.server.dao.MetabolicNetworkDAO;
 import gov.lbl.glamm.server.dao.OrganismDAO;
@@ -20,7 +21,6 @@ import gov.lbl.glamm.server.retrosynthesis.Route;
 import gov.lbl.glamm.server.retrosynthesis.Route.Step;
 import gov.lbl.glamm.server.retrosynthesis.algorithms.RetrosynthesisAlgorithm;
 import gov.lbl.glamm.server.session.SessionManager;
-import gov.lbl.glamm.shared.GlammConstants;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -49,7 +49,7 @@ public class GetDirections implements RequestHandler {
 
 		// in the event of taxon-weighted depth first search, set up the metabolic network
 		// to indicate which reactions are native and which aren't
-		if(taxonomyId != null && algorithm.equals(GlammConstants.ALGORITHM_TW_DFS_VALUE)) {
+		if(taxonomyId != null && algorithm.equals(RetrosynthesisPresenter.View.ALGORITHM_TW_DFS_VALUE)) {
 
 			geneDao = new GeneDAOImpl(sm);
 			rxnDao = new ReactionGlammDAOImpl();
@@ -92,12 +92,12 @@ public class GetDirections implements RequestHandler {
 	public void handleRequest(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 
-		String taxonomyId 	= request.getParameter(GlammConstants.PARAM_TAXONOMY_ID);
-		String cpdSrcExtId	= request.getParameter(GlammConstants.PARAM_CPD_SRC);
-		String cpdDstExtId	= request.getParameter(GlammConstants.PARAM_CPD_DST);
-		String mapTitle		= request.getParameter(GlammConstants.PARAM_MAP_TITLE);
-		String algorithm	= request.getParameter(GlammConstants.PARAM_ALGORITHM);
-		String asText		= request.getParameter(GlammConstants.PARAM_AS_TEXT);
+		String taxonomyId 	= request.getParameter(PARAM_TAXONOMY_ID);
+		String cpdSrcExtId	= request.getParameter(PARAM_CPD_SRC);
+		String cpdDstExtId	= request.getParameter(PARAM_CPD_DST);
+		String mapTitle		= request.getParameter(PARAM_MAP_TITLE);
+		String algorithm	= request.getParameter(PARAM_ALGORITHM);
+		String asText		= request.getParameter(PARAM_AS_TEXT);
 		
 		if(cpdSrcExtId == null || cpdDstExtId == null || mapTitle == null || algorithm == null || asText == null) {
 			return;

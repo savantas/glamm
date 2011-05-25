@@ -18,7 +18,7 @@ import gov.lbl.glamm.client.model.Reaction;
 import gov.lbl.glamm.client.rpc.GlammServiceAsync;
 import gov.lbl.glamm.client.util.ReactionColor;
 import gov.lbl.glamm.client.util.RowDependentSelectionCell;
-import gov.lbl.glamm.shared.GlammConstants;
+import gov.lbl.glamm.server.requesthandlers.RequestHandler;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -70,6 +70,11 @@ public class RetrosynthesisPresenter {
 	}
 
 	public interface View {
+		
+		public static final String ALGORITHM_DFS_TEXT				= "Depth-first Search";
+		public static final String ALGORITHM_DFS_VALUE				= "dfs";
+		public static final String ALGORITHM_TW_DFS_TEXT			= "Taxon-weighted Depth-first Search";
+		public static final String ALGORITHM_TW_DFS_VALUE			= "twdfs";
 
 		public static String STRING_STATUS_CALCULATING		= "Calculating...";
 		public static String STRING_BUTTON_EXPORT_ROUTES	= "Export Routes";
@@ -212,14 +217,14 @@ public class RetrosynthesisPresenter {
 				UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
 				urlBuilder.setParameter("action", ACTION_GET_DIRECTIONS);
 				urlBuilder.setPath("glammServlet");
-				urlBuilder.setParameter(GlammConstants.PARAM_CPD_SRC, cpdSrcXref.getXrefId());
-				urlBuilder.setParameter(GlammConstants.PARAM_CPD_DST, cpdDstXref.getXrefId());
-				urlBuilder.setParameter(GlammConstants.PARAM_EXTID, mapData.getCpdDbName());
-				urlBuilder.setParameter(GlammConstants.PARAM_MAP_TITLE, mapData.getMapId());
-				urlBuilder.setParameter(GlammConstants.PARAM_ALGORITHM, algorithm);
-				urlBuilder.setParameter(GlammConstants.PARAM_AS_TEXT, "true");
+				urlBuilder.setParameter(RequestHandler.PARAM_CPD_SRC, cpdSrcXref.getXrefId());
+				urlBuilder.setParameter(RequestHandler.PARAM_CPD_DST, cpdDstXref.getXrefId());
+				urlBuilder.setParameter(RequestHandler.PARAM_EXTID, mapData.getCpdDbName());
+				urlBuilder.setParameter(RequestHandler.PARAM_MAP_TITLE, mapData.getMapId());
+				urlBuilder.setParameter(RequestHandler.PARAM_ALGORITHM, algorithm);
+				urlBuilder.setParameter(RequestHandler.PARAM_AS_TEXT, "true");
 				if(organism != null && !organism.isGlobalMap())
-					urlBuilder.setParameter(GlammConstants.PARAM_TAXONOMY_ID, organism.getTaxonomyId());
+					urlBuilder.setParameter(RequestHandler.PARAM_TAXONOMY_ID, organism.getTaxonomyId());
 				Window.open(urlBuilder.buildString(), "", "menubar=no,location=no,resizable=no,scrollbars=no,status=no,toolbar=false,width=0,height=0");
 			}
 		});
@@ -623,11 +628,11 @@ public class RetrosynthesisPresenter {
 		view.getAlgorithmsListBox().clear();
 
 		if(this.organism == null || this.organism.isGlobalMap()) {
-			view.getAlgorithmsListBox().addItem(GlammConstants.ALGORITHM_DFS_TEXT, GlammConstants.ALGORITHM_DFS_VALUE);
+			view.getAlgorithmsListBox().addItem(View.ALGORITHM_DFS_TEXT, View.ALGORITHM_DFS_VALUE);
 		}
 		else {
-			view.getAlgorithmsListBox().addItem(GlammConstants.ALGORITHM_TW_DFS_TEXT, GlammConstants.ALGORITHM_TW_DFS_VALUE);
-			view.getAlgorithmsListBox().addItem(GlammConstants.ALGORITHM_DFS_TEXT, GlammConstants.ALGORITHM_DFS_VALUE);
+			view.getAlgorithmsListBox().addItem(View.ALGORITHM_TW_DFS_TEXT, View.ALGORITHM_TW_DFS_VALUE);
+			view.getAlgorithmsListBox().addItem(View.ALGORITHM_DFS_TEXT, View.ALGORITHM_DFS_VALUE);
 		}
 
 		populate();

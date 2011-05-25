@@ -20,6 +20,17 @@ import com.google.gwt.user.client.ui.Hidden;
 public class ExperimentUploadPresenter {
 
 	public interface View {
+		
+		public static final String FIELD_EXP_UPLOAD_CLAMP_MIN		= "clampMin";
+		public static final String FIELD_EXP_UPLOAD_CLAMP_MID		= "clampMid";
+		public static final String FIELD_EXP_UPLOAD_CLAMP_MAX		= "clampMax";
+		public static final String FIELD_EXP_UPLOAD_STRESS			= "stress";
+		public static final String FIELD_EXP_UPLOAD_TREATMENT		= "treatment";
+		public static final String FIELD_EXP_UPLOAD_CONTROL			= "control";
+		public static final String FIELD_EXP_UPLOAD_FILE			= "file";
+		public static final String FIELD_EXP_UPLOAD_TAXONOMY_ID		= "taxonomyId";
+		public static final String FIELD_EXP_UPLOAD_UNITS			= "units";
+		
 		public HasClickHandlers getCancelButton();
 		public HasText			getClampMaxField();
 		public HasText			getClampMidField();

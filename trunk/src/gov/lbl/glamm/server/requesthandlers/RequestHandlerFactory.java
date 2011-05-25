@@ -1,7 +1,5 @@
 package gov.lbl.glamm.server.requesthandlers;
 
-import gov.lbl.glamm.shared.GlammConstants;
-
 import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -59,7 +57,7 @@ public class RequestHandlerFactory {
 		
 		RequestHandler rh 			= null;
 		RequestHandlerElement rhp 	= null;
-		String action 				= request.getParameter(GlammConstants.PARAM_ACTION);
+		String action 				= request.getParameter(RequestHandler.PARAM_ACTION);
 		
 		if(action != null)
 			rhp = action2RequestHandlerElements.get(action);
