@@ -11,42 +11,61 @@ import java.util.Map.Entry;
 
 public class OrganismDAOImpl implements OrganismDAO {
 	
+	private OrganismMetaMolDAOImpl	metaMolDao	= null;
 	private OrganismMolDAOImpl 		molDao 		= null;
 	private OrganismSessionDAOImpl 	sessionDao 	= null;
 	
 	public OrganismDAOImpl(SessionManager sm) {
+		metaMolDao 	= new OrganismMetaMolDAOImpl();
 		molDao 		= new OrganismMolDAOImpl();
 		sessionDao 	= new OrganismSessionDAOImpl(sm);
 	}
 
 	@Override
 	public ArrayList<Organism> getAllOrganisms() {
-		ArrayList<Organism> organisms = sessionDao.getAllOrganisms();
-		if(organisms != null)
-			organisms.addAll(molDao.getAllOrganisms());
-		else
-			organisms = molDao.getAllOrganisms();
+		
+		ArrayList<Organism> sessionOrganisms	= sessionDao.getAllOrganisms();
+		ArrayList<Organism> molOrganisms 		= molDao.getAllOrganisms();
+		ArrayList<Organism> metaMolOrganisms 	= metaMolDao.getAllOrganisms();
+		
+		if(sessionOrganisms == null &&
+				molOrganisms == null &&
+				metaMolOrganisms == null)
+			return null;
+		
+		ArrayList<Organism> organisms = new ArrayList<Organism>();
+		
+		if(sessionOrganisms != null)
+			organisms.addAll(sessionOrganisms);
+		if(molOrganisms != null)
+			organisms.addAll(molOrganisms);
+		if(metaMolOrganisms != null)
+			organisms.addAll(metaMolOrganisms);
+		
+		
 		return organisms;
 	}
 
 	@Override
 	public ArrayList<Organism> getAllOrganismsWithDataForType(String dataType) {
 		
-		final int MAX_RETRIES = 5;
+		ArrayList<Organism> sessionOrganisms	= sessionDao.getAllOrganismsWithDataForType(dataType);
+		ArrayList<Organism> molOrganisms 		= molDao.getAllOrganismsWithDataForType(dataType);
+		ArrayList<Organism> metaMolOrganisms 	= metaMolDao.getAllOrganismsWithDataForType(dataType);
+			
+		if(sessionOrganisms == null &&
+				molOrganisms == null &&
+				metaMolOrganisms == null)
+			return null;
 		
-		ArrayList<Organism> organisms = sessionDao.getAllOrganismsWithDataForType(dataType);
-		ArrayList<Organism> molOrganisms = null;
+		ArrayList<Organism> organisms = new ArrayList<Organism>();
 		
-		for(int i = 0; i < MAX_RETRIES; i++) {
-			molOrganisms = molDao.getAllOrganismsWithDataForType(dataType);
-			if(molOrganisms != null && !molOrganisms.isEmpty()) {
-				if(organisms != null)
-					organisms.addAll(molOrganisms);
-				else
-					organisms = molOrganisms;
-				break;
-			}
-		}
+		if(sessionOrganisms != null)
+			organisms.addAll(sessionOrganisms);
+		if(molOrganisms != null)
+			organisms.addAll(molOrganisms);
+		if(metaMolOrganisms != null)
+			organisms.addAll(metaMolOrganisms);
 		
 		
 		return organisms;
@@ -54,24 +73,37 @@ public class OrganismDAOImpl implements OrganismDAO {
 
 	@Override
 	public HashMap<String, HashSet<Organism>> getTransgenicCandidatesForEcNums(HashSet<String> ecNums) {
-		HashMap<String, HashSet<Organism>> sResults = sessionDao.getTransgenicCandidatesForEcNums(ecNums);
-		HashMap<String, HashSet<Organism>> mResults = molDao.getTransgenicCandidatesForEcNums(ecNums);
 		
-		if(sResults == null)
-			return mResults;
-		else if(mResults == null)
-			return sResults;
+		HashMap<String, HashSet<Organism>> sessionResults	= sessionDao.getTransgenicCandidatesForEcNums(ecNums);
+		HashMap<String, HashSet<Organism>> molResults 		= molDao.getTransgenicCandidatesForEcNums(ecNums);
+		HashMap<String, HashSet<Organism>> metaMolResults 	= metaMolDao.getTransgenicCandidatesForEcNums(ecNums);
 		
-		// merge hashes - put sResults into mResults, since sResults will be smaller
-		for(Entry<String, HashSet<Organism>> entry : sResults.entrySet()) {
-			HashSet<Organism> organisms = mResults.get(entry.getKey());
-			if(organisms == null)
-				mResults.put(entry.getKey(), entry.getValue());
-			else
-				organisms.addAll(entry.getValue());
+		if(sessionResults == null &&
+				molResults == null &&
+				metaMolResults == null)
+			return null;
+		
+		HashMap<String, HashSet<Organism>> results = new HashMap<String, HashSet<Organism>>();
+		
+		if(sessionResults != null)
+			merge(results, sessionResults);
+		if(molResults != null)
+			merge(results, molResults);
+		if(metaMolResults != null)
+			merge(results, metaMolResults);
+		
+		return results;
+	}
+	
+	private void merge(HashMap<String, HashSet<Organism>> dst, HashMap<String, HashSet<Organism>> src) {
+		for(Entry<String, HashSet<Organism>> srcEntry : src.entrySet()) {
+			HashSet<Organism> dstOrganisms = dst.get(srcEntry.getKey());
+			if(dstOrganisms == null) {
+				dstOrganisms = new HashSet<Organism>();
+				dst.put(srcEntry.getKey(), dstOrganisms);
+			}
+			dstOrganisms.addAll(srcEntry.getValue());
 		}
-		
-		return mResults;
 	}
 
 }

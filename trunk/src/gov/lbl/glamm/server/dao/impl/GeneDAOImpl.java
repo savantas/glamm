@@ -11,12 +11,14 @@ import java.util.HashSet;
 public class GeneDAOImpl implements GeneDAO {
 	
 	private SessionManager 		sm			= null;
-	private GeneMolDAOImpl 	glammDao 	= null;
+	private GeneMetaMolDAOImpl	metaMolDao	= null;
+	private GeneMolDAOImpl 		molDao 		= null;
 	private GeneSessionDAOImpl 	sessionDao 	= null;
 
 	public GeneDAOImpl(SessionManager sm) {
 		this.sm = sm;
-		glammDao = new GeneMolDAOImpl();
+		metaMolDao = new GeneMetaMolDAOImpl();
+		molDao = new GeneMolDAOImpl();
 		sessionDao = new GeneSessionDAOImpl(sm);
 	}
 	
@@ -24,7 +26,10 @@ public class GeneDAOImpl implements GeneDAO {
 	public HashSet<String> getEcNumsForOrganism(String taxonomyId) {
 		if(sm != null && sm.isSessionOrganism(taxonomyId))
 			return sessionDao.getEcNumsForOrganism(taxonomyId);
-		return glammDao.getEcNumsForOrganism(taxonomyId);
+		HashSet<String> ecNums = molDao.getEcNumsForOrganism(taxonomyId);
+		if(ecNums == null)
+			ecNums = metaMolDao.getEcNumsForOrganism(taxonomyId);
+		return ecNums;
 	}
 	
 	@Override
@@ -32,13 +37,18 @@ public class GeneDAOImpl implements GeneDAO {
 			Collection<String> ecNums) {
 		ArrayList<Gene> genes = sessionDao.getGenesForEcNums(taxonomyId, ecNums);
 		if(genes == null) 
-			genes = glammDao.getGenesForEcNums(taxonomyId, ecNums);
+			genes = molDao.getGenesForEcNums(taxonomyId, ecNums);
+		if(genes == null)
+			genes = metaMolDao.getGenesForEcNums(taxonomyId, ecNums);
 		return genes;
 	}
 	
 	@Override
 	public ArrayList<Gene> getGenesForVimssIds(String taxonomyId, Collection<String> extIds) {
-		return glammDao.getGenesForVimssIds(taxonomyId, extIds);
+		ArrayList<Gene> genes = molDao.getGenesForVimssIds(taxonomyId, extIds);
+		if(genes == null)
+			genes = metaMolDao.getGenesForVimssIds(taxonomyId, extIds);
+		return genes;
 	}
 
 
@@ -46,24 +56,32 @@ public class GeneDAOImpl implements GeneDAO {
 	public ArrayList<Gene> getGenesForOrganism(String taxonomyId) {
 		ArrayList<Gene> genes = sessionDao.getGenesForOrganism(taxonomyId);
 		if(genes == null)
-			genes = glammDao.getGenesForOrganism(taxonomyId);
+			genes = molDao.getGenesForOrganism(taxonomyId);
+		if(genes == null)
+			genes = metaMolDao.getGenesForOrganism(taxonomyId);
 		return genes;
 	}
 
 	@Override
 	public ArrayList<Gene> getGenesForRxnIds(String taxonomyId, String[] rxnIds) {
-		if(sm == null || !sm.isSessionOrganism(taxonomyId))
-			return glammDao.getGenesForRxnIds(taxonomyId, rxnIds);
+		if(sm == null || !sm.isSessionOrganism(taxonomyId)) {
+			ArrayList<Gene> genes = molDao.getGenesForRxnIds(taxonomyId, rxnIds);
+			if(genes == null)
+				genes = metaMolDao.getGenesForRxnIds(taxonomyId, rxnIds);
+			return genes;
+		}
 		return null;
 	}
 
 	@Override
 	public ArrayList<Gene> getGenesForSynonyms(String taxonomyId,
 			Collection<String> synonyms) {
-		// TODO Auto-generated method stub
 		if(sm != null && sm.isSessionOrganism(taxonomyId))
 			return sessionDao.getGenesForSynonyms(taxonomyId, synonyms);
-		return glammDao.getGenesForSynonyms(taxonomyId, synonyms);
+		ArrayList<Gene> genes = molDao.getGenesForSynonyms(taxonomyId, synonyms);
+		if(genes == null)
+			genes = metaMolDao.getGenesForSynonyms(taxonomyId, synonyms);
+		return genes;
 	}
 
 }
