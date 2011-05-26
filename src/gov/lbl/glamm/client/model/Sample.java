@@ -12,11 +12,11 @@ public class Sample extends GlammPrimitive implements Serializable {
 
 	public static transient final String DEFAULT_SAMPLE_ID 	= "-1";
 
-	public static transient final String DATA_TYPE_FLUX		= "flux";
+	public static transient final String DATA_TYPE_FLUX			= "flux";
 	public static transient final String DATA_TYPE_METABOLITE	= "metabolite";
-	public static transient final String DATA_TYPE_MRNA		= "mRNA";
-	public static transient final String DATA_TYPE_NONE		= "none";
-	public static transient final String DATA_TYPE_PROTEIN	= "protein";
+	public static transient final String DATA_TYPE_MRNA			= "mRNA";
+	public static transient final String DATA_TYPE_NONE			= "none";
+	public static transient final String DATA_TYPE_PROTEIN		= "protein";
 
 	private float clampMin			= 0f;
 	private float clampMid			= 0f;

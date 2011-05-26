@@ -15,6 +15,17 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public class OrganismMolDAOImpl implements OrganismDAO {
+	
+	/*
+	 * To get a count of organisms for each available expType:
+	 * 
+	 * select count(distinct(c.taxonomyId)), et.expType 
+	 * from microarray.Exp e 
+	 * join microarray.Chip c on (e.chipId=c.id) 
+	 * join genomics_test.Taxonomy t on (c.taxonomyId=t.taxonomyId) 
+	 * join ExpType et on (et.expType=e.expType) 
+	 * group by expType;
+	 */
 
 	@Override
 	public ArrayList<Organism> getAllOrganisms() {
@@ -108,7 +119,7 @@ public class OrganismMolDAOImpl implements OrganismDAO {
 			"join Scaffold S on (S.taxonomyId=T.taxonomyId) " +
 			"join Locus2Ec L2E on (L2E.scaffoldId=S.scaffoldId) " +
 			"join ACL A on(A.resourceId=S.ScaffoldId and A.resourceType='scaffold') " +
-			"where TPC.parentId in (2,2157) " +
+			"where TPC.parentId in (2,2157,2759) " +
 			"and S.isGenomic=1 and S.isActive=1 and S.length >= 1000 and " +
 			"A.requesterId=1 and A.requesterType='group' and A.read=1 and " +
 			"L2E.ecNum in (" + GlammUtils.joinCollection(ecNums) + ") " +
@@ -119,7 +130,7 @@ public class OrganismMolDAOImpl implements OrganismDAO {
 			"join TaxParentChild TPC on (T.taxonomyId=TPC.childId) " +
 			"join Scaffold S on (S.taxonomyId=T.taxonomyId) " +
 			"join Locus2Ec L2E on (L2E.scaffoldId=S.scaffoldId) " +
-			"where TPC.parentId in (2,2157) " +
+			"where TPC.parentId in (2,2157,2759) " +
 			"and S.isGenomic=1 and S.isActive=1 and S.length >= 1000 and " +
 			"L2E.ecNum in (" + GlammUtils.joinCollection(ecNums) + ") " +
 			"order by T.name;";

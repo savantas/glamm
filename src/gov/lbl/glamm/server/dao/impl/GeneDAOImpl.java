@@ -11,12 +11,12 @@ import java.util.HashSet;
 public class GeneDAOImpl implements GeneDAO {
 	
 	private SessionManager 		sm			= null;
-	private GeneGlammDAOImpl 	glammDao 	= null;
+	private GeneMolDAOImpl 	glammDao 	= null;
 	private GeneSessionDAOImpl 	sessionDao 	= null;
 
 	public GeneDAOImpl(SessionManager sm) {
 		this.sm = sm;
-		glammDao = new GeneGlammDAOImpl();
+		glammDao = new GeneMolDAOImpl();
 		sessionDao = new GeneSessionDAOImpl(sm);
 	}
 	
