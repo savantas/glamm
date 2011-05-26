@@ -1,12 +1,7 @@
 package gov.lbl.glamm.server;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -80,8 +75,6 @@ public class GlammDbConnectionPool {
 
 	private static final String MY_HOSTNAME_PREFIX		= "jtbates-m";
 
-	//private static final String GLAMM_JBEI_HOSTNAME_PREFIX = "glamm";
-
 	//********************************************************************************
 
 	private ComboPooledDataSource	dataSource 		= null;
@@ -149,77 +142,6 @@ public class GlammDbConnectionPool {
 		return null;
 	}
 	
-	//********************************************************************************
-
-	public static ArrayList<HashMap<String, Object>> executeQuery(String query) {
-
-		ArrayList<HashMap<String, Object>> results = null;
-
-		if(query != null) {
-
-			try {
-
-				Connection connection = INSTANCE.dataSource.getConnection();
-
-				Statement	statement	= connection.createStatement();
-				ResultSet	rs			= statement.executeQuery( query );
-
-				results = getQueryArrayListFromResultSet( rs );
-
-				rs.close();
-				statement.close();
-				connection.close();
-
-			} catch ( SQLException e ) {
-				System.err.println ( e.getMessage() );
-				e.printStackTrace();
-			} catch ( NullPointerException e ) {
-				System.err.println ( e.getMessage() );
-				e.printStackTrace();
-			}
-		}
-
-		return results;
-	}
-
-	//********************************************************************************
-
-	private static ArrayList<HashMap<String, Object>> getQueryArrayListFromResultSet ( ResultSet rs ) {
-
-		ArrayList<HashMap<String, Object>> results = null;
-
-		if ( rs != null ) {
-
-			try {
-
-				ResultSetMetaData	rsmd 			= rs.getMetaData();
-				int					columnCount		= rsmd.getColumnCount();
-
-				results = new ArrayList<HashMap<String, Object>>();
-
-				rs.beforeFirst();
-
-				while ( rs.next() ) {
-					HashMap<String, Object> record = new HashMap<String, Object>();
-
-					for ( int i = 1; i <= columnCount; i++ ) {
-						String key 		= rsmd.getColumnLabel( i );
-						Object value 	= rs.getObject( i );
-
-						record.put( key, value );
-					}
-
-					results.add ( record );
-				}
-
-			} catch ( SQLException e ) {
-				System.err.println ( e.getMessage() );
-				e.printStackTrace();
-			}	
-		}
-		return results;
-	}
-
 	//********************************************************************************
 
 	public static void destroy() {

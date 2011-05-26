@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 
-public class GeneGlammDAOImpl implements GeneDAO {
+public class GeneMolDAOImpl implements GeneDAO {
 
 	//********************************************************************************
 	
