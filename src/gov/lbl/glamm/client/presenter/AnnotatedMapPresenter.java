@@ -565,6 +565,9 @@ public class AnnotatedMapPresenter {
 						}
 					}
 				});
+				
+				if(result == null)
+					return;
 
 				// get all reactions from the RPC call
 				for(final Reaction rxn : result) {

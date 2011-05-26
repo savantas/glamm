@@ -64,6 +64,7 @@ public class GeneMolDAOImpl implements GeneDAO {
 	
 	//********************************************************************************
 
+	@Override
 	public ArrayList<Gene> getGenesForEcNums(String taxonomyId, Collection<String> ecNums) {
 
 		ArrayList<Gene> genes = null;
@@ -104,6 +105,7 @@ public class GeneMolDAOImpl implements GeneDAO {
 	
 	//********************************************************************************
 
+	@Override
 	public ArrayList<Gene> getGenesForOrganism(String taxonomyId) {
 
 		ArrayList<Gene> genes = null;
@@ -141,6 +143,7 @@ public class GeneMolDAOImpl implements GeneDAO {
 
 	//********************************************************************************
 
+	@Override
 	public ArrayList<Gene> getGenesForRxnIds(String taxonomyId, String[] rxnIds) {
 
 		ArrayList<Gene> genes = null;
