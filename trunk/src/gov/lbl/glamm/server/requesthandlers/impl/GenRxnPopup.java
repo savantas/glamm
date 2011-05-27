@@ -86,10 +86,10 @@ public class GenRxnPopup {
 	}
 
 	public static String genRxnPopupFromQueryString(SessionManager sm, String query, String taxonomyId) {
-		
+
 		HashSet<String> rxnIds = null;
-		HashSet<String> extIdNames = null;
-		
+		HashSet<String> dbNames = null;
+
 		for(String token : query.split("&")) {
 			String[] kv = token.split("=");
 			if(kv.length != 2)
@@ -99,14 +99,15 @@ public class GenRxnPopup {
 					rxnIds = new HashSet<String>();
 				rxnIds.add(kv[1]);
 			}
-			else if(kv[0].equals("extIdName"))
-				if(extIdNames == null)
-					extIdNames = new HashSet<String>();
-				extIdNames.add(kv[1]);
+			else if(kv[0].equals("extIdName")) {
+				if(dbNames == null)
+					dbNames = new HashSet<String>();
+				dbNames.add(kv[1]);
+			}
 		}
-		
 
-		return genRxnPopup(sm, rxnIds, extIdNames, taxonomyId);
+
+		return genRxnPopup(sm, rxnIds, dbNames, taxonomyId);
 	}
 
 	//********************************************************************************
