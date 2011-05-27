@@ -5,12 +5,13 @@ import gov.lbl.glamm.server.dao.CompoundDAO;
 import gov.lbl.glamm.server.dao.impl.CompoundGlammDAOImpl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class PopulateCompoundSearch {
 
-	public static ArrayList<Compound> populateCompoundSearch(String extIdName) {
+	public static ArrayList<Compound> populateCompoundSearch(HashSet<String> dbNames) {
 		CompoundDAO cpdDao = new CompoundGlammDAOImpl();
-		return cpdDao.getCompoundsForSearch(extIdName);
+		return cpdDao.getCompoundsForSearch(dbNames);
 	}
 
 }

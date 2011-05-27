@@ -11,6 +11,7 @@ import gov.lbl.glamm.client.model.Reaction;
 import gov.lbl.glamm.client.model.Sample;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -23,11 +24,11 @@ public interface GlammServiceAsync {
 	public void getDirections(String taxonomyId, Compound cpdSrc, Compound cpdDst, String mapTitle, String algorithm, AsyncCallback<ArrayList<Pathway>> callback);
 	public void getMapConnectivity(String mapId, AsyncCallback<MetabolicNetwork> callback);
 	public void getMeasurementsForExperiment(String experimentId, String sampleId, String taxonomyId, String expSource, AsyncCallback<ArrayList<? extends GlammPrimitive>> callback);
-	public void getRxnsForOrganism(String taxonomyId, String dbName, AsyncCallback<ArrayList<Reaction>> callback);
-	public void populateCompoundSearch(String extIdName, AsyncCallback<ArrayList<Compound>> callback);
+	public void getRxnsForOrganism(String taxonomyId, HashSet<String> rxnDbNames, AsyncCallback<ArrayList<Reaction>> callback);
+	public void populateCompoundSearch(HashSet<String> cpdDbNames, AsyncCallback<ArrayList<Compound>> callback);
 	public void populateExperiments(String taxonomyId, AsyncCallback<ArrayList<Experiment>> callback);
 	public void populateLocusSearch(String taxonomyId, AsyncCallback<ArrayList<Gene>> callback);
 	public void populateOrganisms(String dataType, AsyncCallback<ArrayList<Organism>> callback);
-	public void populateReactionSearch(String extIdName, AsyncCallback<ArrayList<Reaction>> callback);
+	public void populateReactionSearch(HashSet<String> rxnDbNames, AsyncCallback<ArrayList<Reaction>> callback);
 	public void populateSamples(String taxonomyId, AsyncCallback<ArrayList<Sample>> callback);
 }

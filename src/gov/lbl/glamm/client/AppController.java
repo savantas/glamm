@@ -142,7 +142,10 @@ public class AppController {
 		mainPanel = new AbsolutePanel();
 
 		// start with global map
-		mapData = new AnnotatedMapData(GlammClientBundle.INSTANCE.globalMap(), "map01100", "LIGAND-CPD", "LIGAND-RXN");
+		mapData = new AnnotatedMapData(GlammClientBundle.INSTANCE.globalMap(), 
+				"map01100", 
+				new String[]{ "LIGAND-CPD", "GLYCAN"}, 
+				new String[]{"LIGAND-RXN"});
 
 		cpdDisambiguationView = new CpdDisambiguationView();
 		cpdDisambiguationPresenter = new CpdDisambiguationPresenter(rpc, cpdDisambiguationView, eventBus);

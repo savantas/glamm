@@ -15,17 +15,17 @@ import java.util.HashSet;
 
 public class GenRxnPopup {
 
-	public static String genRxnPopup(SessionManager sm, HashSet<String> rxnIds, String extIdName, String taxonomyId) {
+	public static String genRxnPopup(SessionManager sm, HashSet<String> rxnIds, HashSet<String> dbNames, String taxonomyId) {
 
 		String html = "<html>No reactions found.</html>";
 		HashMap<String, ArrayList<Reaction>>	def2Rxns	= null;
 		HashMap<String, ArrayList<Gene>> 		ecNum2Genes	= null;
 
-		if(rxnIds == null || rxnIds.isEmpty() || extIdName == null)
+		if(rxnIds == null || rxnIds.isEmpty() || dbNames == null)
 			return html;
 
 		ReactionDAO rxnDao = new ReactionGlammDAOImpl();
-		ArrayList<Reaction> rxns = rxnDao.getReactions(rxnIds, extIdName);
+		ArrayList<Reaction> rxns = rxnDao.getReactions(rxnIds, dbNames);
 		HashSet<String> ecNums = new HashSet<String>();
 
 		if(rxns == null) 
@@ -88,7 +88,7 @@ public class GenRxnPopup {
 	public static String genRxnPopupFromQueryString(SessionManager sm, String query, String taxonomyId) {
 		
 		HashSet<String> rxnIds = null;
-		String extIdName = null;
+		HashSet<String> extIdNames = null;
 		
 		for(String token : query.split("&")) {
 			String[] kv = token.split("=");
@@ -100,10 +100,13 @@ public class GenRxnPopup {
 				rxnIds.add(kv[1]);
 			}
 			else if(kv[0].equals("extIdName"))
-				extIdName = kv[1];
+				if(extIdNames == null)
+					extIdNames = new HashSet<String>();
+				extIdNames.add(kv[1]);
 		}
 		
-		return genRxnPopup(sm, rxnIds, extIdName, taxonomyId);
+
+		return genRxnPopup(sm, rxnIds, extIdNames, taxonomyId);
 	}
 
 	//********************************************************************************

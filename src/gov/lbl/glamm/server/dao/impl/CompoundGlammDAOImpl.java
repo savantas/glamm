@@ -3,11 +3,14 @@ package gov.lbl.glamm.server.dao.impl;
 import gov.lbl.glamm.client.model.Compound;
 import gov.lbl.glamm.server.GlammDbConnectionPool;
 import gov.lbl.glamm.server.dao.CompoundDAO;
+import gov.lbl.glamm.shared.GlammUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class CompoundGlammDAOImpl implements CompoundDAO {
 	
@@ -183,19 +186,21 @@ public class CompoundGlammDAOImpl implements CompoundDAO {
 	}
 	
 	@Override
-	public ArrayList<Compound> getCompoundsForSearch(String dbName) {
+	public ArrayList<Compound> getCompoundsForSearch(HashSet<String> dbNames) {
 		
 		ArrayList<Compound> cpds = null;
-		String query = "select X.toXrefId, C.commonName as synonym " +
+		String dbNamesString = GlammUtils.joinCollection(dbNames);
+		
+		String sql = "select X.toXrefId, X.xrefDbName, C.commonName as synonym " +
 		"from glamm.GlammCompound C " +
 		"join glamm.GlammXref X on (C.guid=X.fromGuid) " +
-		"where X.xrefDbName in (?) " +
+		"where X.xrefDbName in (" + dbNamesString + ") " +
 		"and X.toXrefId in (" + GLOBAL_MAP_CPD_IDS + ") " +
 		"union " +
-		"select X.toXrefId, S.synonym " +
+		"select X.toXrefId, X.xrefDbName, S.synonym " +
 		"from glamm.GlammXref X " +
 		"join glamm.GlammSynonym S on (X.fromGuid=S.forGuid) " +
-		"where X.xrefDbName in (?) " +
+		"where X.xrefDbName in (" + dbNamesString + ") " +
 		"and S.synonym not like \"%<%\" " +
 		"and S.synonym not like \"%>%\" " +
 		"and S.synonym not like \"%&%\" " +
@@ -204,19 +209,16 @@ public class CompoundGlammDAOImpl implements CompoundDAO {
 		try {
 			
 			Connection connection = GlammDbConnectionPool.getConnection();
-			PreparedStatement ps = connection.prepareStatement(query);
+			Statement statement = connection.createStatement();
 
-			ps.setString(1, dbName);
-			ps.setString(2, dbName);
-
-			ResultSet rs = ps.executeQuery();
+			ResultSet rs = statement.executeQuery(sql);
 
 			while(rs.next()) {
 
 				Compound cpd = new Compound();
 
 				cpd.setName(rs.getString("synonym"));
-				cpd.addXref(rs.getString("toXrefId"), dbName);
+				cpd.addXref(rs.getString("toXrefId"), rs.getString("xrefDbName"));
 				
 				if(cpds == null)
 					cpds = new ArrayList<Compound>();

@@ -530,7 +530,7 @@ public class AnnotatedMapPresenter {
 		}
 		
 		eventBus.fireEvent(new LoadingEvent(false));
-		rpc.getRxnsForOrganism(organism.getTaxonomyId(), mapData.getRxnDbName(), new AsyncCallback<ArrayList<Reaction>>() {
+		rpc.getRxnsForOrganism(organism.getTaxonomyId(), mapData.getRxnDbNames(), new AsyncCallback<ArrayList<Reaction>>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -575,7 +575,7 @@ public class AnnotatedMapPresenter {
 
 					// get the xref that corresponds with the mapData's reaction database
 					for(final GlammPrimitive.Xref xref : xrefs) {
-						if(xref.getXrefDbName().equals(mapData.getRxnDbName())) {
+						if(mapData.getRxnDbNames().contains(xref.getXrefDbName())) {
 							String rxnId = xref.getXrefId();
 
 							// set all svg elements corresponding with this xref to present

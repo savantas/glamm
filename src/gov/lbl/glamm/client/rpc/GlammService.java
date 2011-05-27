@@ -11,6 +11,7 @@ import gov.lbl.glamm.client.model.Reaction;
 import gov.lbl.glamm.client.model.Sample;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -25,11 +26,11 @@ public interface GlammService extends RemoteService {
 	public ArrayList<Pathway> getDirections(String taxonomyId, Compound cpdSrc, Compound cpdDst, String mapTitle, String algorithm);
 	public MetabolicNetwork getMapConnectivity(String mapId);
 	public ArrayList<? extends GlammPrimitive> getMeasurementsForExperiment(String experimentId, String sampleId, String taxonomyId, String expSource);
-	public ArrayList<Reaction> getRxnsForOrganism(String taxonomyId, String dbName);
-	public ArrayList<Compound> populateCompoundSearch(String extIdName);
+	public ArrayList<Reaction> getRxnsForOrganism(String taxonomyId, HashSet<String> rxnDbNames);
+	public ArrayList<Compound> populateCompoundSearch(HashSet<String> cpdDbNames);
 	public ArrayList<Experiment> populateExperiments(String taxonomyId);
 	public ArrayList<Gene> populateLocusSearch(String taxonomyId);
-	public ArrayList<Reaction> populateReactionSearch(String extIdName);
+	public ArrayList<Reaction> populateReactionSearch(HashSet<String> rxnDbNames);
 	public ArrayList<Organism> populateOrganisms(String dataType);
 	public ArrayList<Sample> populateSamples(String taxonomyId);
 }

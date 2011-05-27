@@ -13,7 +13,7 @@ import java.util.HashSet;
 
 public class GetRxnsForOrganism {
 	
-	public static ArrayList<Reaction> getRxnsForOrganism(final SessionManager sm, final String taxonomyId, final String dbName) {
+	public static ArrayList<Reaction> getRxnsForOrganism(final SessionManager sm, final String taxonomyId, final HashSet<String> dbNames) {
 		
 		GeneDAO geneDao = new GeneDAOImpl(sm);
 		ReactionDAO rxnDao = new ReactionGlammDAOImpl();
@@ -28,7 +28,7 @@ public class GetRxnsForOrganism {
 				if(ecNumsForGene != null)
 					ecNums.addAll(ecNumsForGene);
 			}
-			rxns = rxnDao.getReactionsForEcNums(ecNums, dbName);
+			rxns = rxnDao.getReactionsForEcNums(ecNums, dbNames);
 		}
 		
 		return rxns;

@@ -182,21 +182,21 @@ public class ReactionGlammDAOImpl implements ReactionDAO {
 		"\"R01911\",\"R04708\",\"R07236\",\"R04707\",\"R00858\",\"R00859\",\"R00851\"";
 
 	@Override
-	public ArrayList<Reaction> getReactions(Collection<String> rxnIds, String dbName) {
+	public ArrayList<Reaction> getReactions(Collection<String> rxnIds, HashSet<String> dbNames) {
 
 		HashMap<String, Reaction> guid2Reaction = new HashMap<String, Reaction>();
 		
 		if(rxnIds != null && !rxnIds.isEmpty() && 
-				dbName != null && !dbName.isEmpty()) {
+				dbNames != null && !dbNames.isEmpty()) {
 
-			String sql = "select R.guid, E.ecNum, R.definition, X.toXrefId " +
+			String sql = "select R.guid, E.ecNum, R.definition, X.toXrefId, X.xrefDbName " +
 			"from glamm.GlammEnzyme E " +
 			"right outer join glamm.GlammReaction R on (E.reactionGuid=R.guid) " +
 			"join glamm.GlammXref X on (X.fromGuid=R.guid) " +
 			"join glamm.GlammEntity2DataSource E2DS on (E2DS.entityGuid=R.guid) " +
 			"join glamm.GlammDataSource DS on (DS.guid=E2DS.dataSourceGuid) " +
 			"where X.toXrefId in (" + GlammUtils.joinCollection(rxnIds) + ") " + 
-			"and DS.dbName=\"" + dbName + "\";";
+			"and DS.dbName in (" + GlammUtils.joinCollection(dbNames) + ");";
 
 			try {
 
@@ -211,11 +211,12 @@ public class ReactionGlammDAOImpl implements ReactionDAO {
 					String ecNum 		= rs.getString("ecNum");
 					String definition 	= rs.getString("definition");
 					String xrefId		= rs.getString("toXrefId");
+					String xrefDbName	= rs.getString("xrefDbName");
 					
 					Reaction reaction = guid2Reaction.get(guid);
 					if(reaction == null) { 
 						reaction = new Reaction();
-						reaction.addXref(xrefId, dbName);
+						reaction.addXref(xrefId, xrefDbName);
 						guid2Reaction.put(guid, reaction);
 					}
 				
@@ -239,15 +240,15 @@ public class ReactionGlammDAOImpl implements ReactionDAO {
 	}
 
 	@Override
-	public ArrayList<Reaction> getReactionsForEcNums(Collection<String> ecNums, String dbName) {
+	public ArrayList<Reaction> getReactionsForEcNums(Collection<String> ecNums, HashSet<String> dbNames) {
 		ArrayList<Reaction> reactions = null;
 		
 		if(ecNums != null && !ecNums.isEmpty()) {
-			String sql = "select distinct(X.toXrefId), E.ecNum " +
+			String sql = "select distinct(X.toXrefId), X.xrefDbName, E.ecNum " +
 			"from glamm.GlammEnzyme E " +
 			"join glamm.GlammXref X on (E.reactionGuid=X.fromGuid) " +
 			"where E.ecNum in (" + GlammUtils.joinCollection(ecNums) + ") " +
-			"and X.xrefDbName=\"" + dbName + "\";";
+			"and X.xrefDbName in (" + GlammUtils.joinCollection(dbNames) + ");";
 			
 			try {
 
@@ -259,7 +260,7 @@ public class ReactionGlammDAOImpl implements ReactionDAO {
 				while(rs.next()) {
 
 					Reaction reaction = new Reaction();
-					reaction.addXref(rs.getString("toXrefId"), dbName);
+					reaction.addXref(rs.getString("toXrefId"), rs.getString("xrefDbName"));
 					reaction.addEcNum(rs.getString("ecNum"));
 
 					if(reactions == null)
@@ -281,28 +282,26 @@ public class ReactionGlammDAOImpl implements ReactionDAO {
 	
 
 	@Override
-	public ArrayList<Reaction> getReactionsForSearch(String dbName) {
+	public ArrayList<Reaction> getReactionsForSearch(HashSet<String> dbNames) {
 	
 		// TODO: Generalize for other maps besides global
 
 		HashMap<String, Reaction> guid2Reaction = new HashMap<String, Reaction>();
 
-		if(dbName != null && !dbName.isEmpty()) {
+		if(dbNames != null && !dbNames.isEmpty()) {
 
-			String sql = "select E.reactionGuid, E.ecNum, X.toXrefId " +
+			String sql = "select E.reactionGuid, E.ecNum, X.toXrefId, X.xrefDbName " +
 			"from glamm.GlammEnzyme E " +
 			"join glamm.GlammXref X on (E.reactionGuid=X.fromGuid) " +
-			"where X.xrefDbName=? " +
+			"where X.xrefDbName in (" + GlammUtils.joinCollection(dbNames) + ") " +
 			"and X.toXrefId in (" + GLOBAL_MAP_RXN_IDS + ");";
 
 			try {
 
 				Connection connection = GlammDbConnectionPool.getConnection();
-				PreparedStatement ps = connection.prepareStatement(sql);
+				Statement statement = connection.createStatement();
 
-				ps.setString(1, dbName);
-
-				ResultSet rs = ps.executeQuery();
+				ResultSet rs = statement.executeQuery(sql);
 
 				while(rs.next()) {
 
@@ -310,6 +309,7 @@ public class ReactionGlammDAOImpl implements ReactionDAO {
 					String guid 		= rs.getString("reactionGuid");
 					String ecNum 		= rs.getString("ecNum");
 					String xrefId		= rs.getString("toXrefId");
+					String xrefDbName	= rs.getString("xrefDbName");
 					
 					Reaction reaction = guid2Reaction.get(guid);
 					if(reaction == null) { 
@@ -318,7 +318,7 @@ public class ReactionGlammDAOImpl implements ReactionDAO {
 					}
 				
 					reaction.addEcNum(ecNum);
-					reaction.addXref(xrefId, dbName);
+					reaction.addXref(xrefId, xrefDbName);
 					
 				}
 
@@ -337,22 +337,22 @@ public class ReactionGlammDAOImpl implements ReactionDAO {
 
 	}
 
-	public ArrayList<Reaction> getRxn2EcMapping(String mapId, String dbName) {
+	public ArrayList<Reaction> getRxn2EcMapping(String mapId, HashSet<String> dbNames) {
 		// TODO: Generalize for other maps besides global
-		return getReactionsForSearch(dbName);
+		return getReactionsForSearch(dbNames);
 	}
 
 	@Override
 	public HashSet<String> getRxnIdsForEcNums(Collection<String> ecNums,
-			String dbName) {
+			HashSet<String> dbNames) {
 		HashSet<String> rxnIds = null;
 		
-		if(ecNums != null && !ecNums.isEmpty() && dbName != null && !dbName.isEmpty()) {
-			ArrayList<Reaction> rxns = getReactionsForEcNums(ecNums, dbName);
+		if(ecNums != null && !ecNums.isEmpty() && dbNames != null && !dbNames.isEmpty()) {
+			ArrayList<Reaction> rxns = getReactionsForEcNums(ecNums, dbNames);
 			for(Reaction rxn : rxns) {
 				HashSet<Xref> xrefs = rxn.getXrefs();
 				for(Xref xref : xrefs) {
-					if(xref.getXrefDbName().equals(dbName)) {
+					if(dbNames.contains(xref.getXrefDbName())) {
 						if(rxnIds == null)
 							rxnIds = new HashSet<String>();
 						rxnIds.add(xref.getXrefId());

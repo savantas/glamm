@@ -57,9 +57,9 @@ public class AnnotatedMapData implements Serializable {
 	
 	private OMSVGSVGElement	svgRoot 	= null;
 	private OMSVGGElement 	viewport 	= null;
-	private String cpdDbName = null;
+	private HashSet<String> cpdDbNames = null;
 	private String mapId = null;
-	private String rxnDbName = null;
+	private HashSet<String> rxnDbNames = null;
 
 	private HashMap<String, HashSet<OMSVGElement>> id2SvgElements = null;
 	private HashSet<OMSVGElement> cpdSvgElements = null;
@@ -72,7 +72,7 @@ public class AnnotatedMapData implements Serializable {
 	 * Constructor
 	 * @param resource The SVGResource containing the annotated map
 	 */
-	public AnnotatedMapData(final SVGResource resource, String mapId, String cpdDbName, String rxnDbName) {
+	public AnnotatedMapData(final SVGResource resource, String mapId, String[] cpdDbNames, String[] rxnDbNames) {
 		// get svgRoot from resource
 		svgRoot = resource.getSvg();
 		
@@ -94,18 +94,27 @@ public class AnnotatedMapData implements Serializable {
 		rxnSvgElements = new HashSet<OMSVGElement>();
 		
 		this.mapId = mapId;
-		this.cpdDbName = cpdDbName;
-		this.rxnDbName = rxnDbName;
+		if(cpdDbNames != null && cpdDbNames.length > 0) {
+			this.cpdDbNames = new HashSet<String>();
+			for(int i = 0; i < cpdDbNames.length; i++) 
+				this.cpdDbNames.add(cpdDbNames[i]);
+		}
+		
+		if(rxnDbNames != null && rxnDbNames.length > 0) {
+			this.rxnDbNames = new HashSet<String>();
+			for(int i = 0; i < rxnDbNames.length; i++) 
+				this.rxnDbNames.add(rxnDbNames[i]);
+		}
 		
 		init();
 	}
 	
 	/**
 	 * Accessor
-	 * @return The name of the database of compounds associated with this map.
+	 * @return The names of the databases of compounds associated with this map.
 	 */
-	public String getCpdDbName() {
-		return cpdDbName;
+	public HashSet<String> getCpdDbNames() {
+		return cpdDbNames;
 	}
 	
 	/**
@@ -126,10 +135,10 @@ public class AnnotatedMapData implements Serializable {
 	
 	/**
 	 * Accessor
-	 * @return The name of the database of reactions associated with this map.
+	 * @return The names of the databases of reactions associated with this map.
 	 */
-	public String getRxnDbName() {
-		return rxnDbName;
+	public HashSet<String> getRxnDbNames() {
+		return rxnDbNames;
 	}
 	
 	/**
@@ -166,11 +175,11 @@ public class AnnotatedMapData implements Serializable {
 		String id = null;
 		
 		if(primitive.getType() == Compound.TYPE) {
-			Xref xref = primitive.getXrefForDbName(getCpdDbName());
+			Xref xref = primitive.getXrefForDbNames(getCpdDbNames());
 			id = xref.getXrefId();
 		}
 		else if(primitive.getType() == Reaction.TYPE){
-			Xref xref = primitive.getXrefForDbName(getRxnDbName());
+			Xref xref = primitive.getXrefForDbNames(getRxnDbNames());
 			id = xref.getXrefId();
 		}
 		
@@ -335,15 +344,4 @@ public class AnnotatedMapData implements Serializable {
 		}
 		
 	}
-	
-//	public static void parseCpdQuery(final String query, String cpdId, String extIdName) {
-//		String[] tokens = query.split("&");
-//		for(String token : tokens) {
-//			String[] kv = token.split("=");
-//			if(kv[0].equals("extId"))
-//				cpdId = new String(kv[1]);
-//			else if(kv[0].equals("extIdName"))
-//				extIdName = new String(kv[1]);
-//		}
-//	}
 }
