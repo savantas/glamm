@@ -1,4 +1,4 @@
-package gov.lbl.glamm.server.requesthandlers.impl;
+package gov.lbl.glamm.server.actions;
 
 import gov.lbl.glamm.client.model.Reaction;
 import gov.lbl.glamm.server.dao.ReactionDAO;

@@ -1,4 +1,4 @@
-package gov.lbl.glamm.server.requesthandlers.impl;
+package gov.lbl.glamm.server.actions.requesthandlers;
 
 import gov.lbl.glamm.client.model.Citation;
 import gov.lbl.glamm.server.RequestHandler;
