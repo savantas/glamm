@@ -32,6 +32,7 @@ import java.util.HashSet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+// TODO: this entire action is very KEGG-centric
 public class GetDirections implements RequestHandler {
 
 	private static GeneDAO 				geneDao 	= null;
@@ -56,8 +57,10 @@ public class GetDirections implements RequestHandler {
 			rxnDao = new ReactionGlammDAOImpl();
 			organismDao = new OrganismDAOImpl(sm);
 
+			HashSet<String> dbNames = new HashSet<String>();
+			dbNames.add("LIGAND-RXN");
 			HashSet<String> ecNums = geneDao.getEcNumsForOrganism(taxonomyId);
-			HashSet<String> rxnIds = rxnDao.getRxnIdsForEcNums(ecNums, "LIGAND-RXN");
+			HashSet<String> rxnIds = rxnDao.getRxnIdsForEcNums(ecNums, dbNames);
 
 			network.setNativeRxns(taxonomyId, rxnIds);
 		}
@@ -127,7 +130,9 @@ public class GetDirections implements RequestHandler {
 		// get rxnIds for all routes
 		HashSet<String> rxnIds = getRxnIdsForRoutes(routes);
 		ReactionDAO rxnDao = new ReactionGlammDAOImpl();
-		ArrayList<Reaction> rxns = rxnDao.getReactions(rxnIds, "LIGAND-RXN");
+		HashSet<String> dbNames = new HashSet<String>();
+		dbNames.add("LIGAND-RXN");
+		ArrayList<Reaction> rxns = rxnDao.getReactions(rxnIds, dbNames);
 
 		// hash resulting reactions by xrefId
 		HashMap<String, Reaction> rxnId2Rxn = hashReactionsById(rxns);
@@ -158,7 +163,9 @@ public class GetDirections implements RequestHandler {
 		// get rxnIds for all routes
 		HashSet<String> rxnIds = getRxnIdsForRoutes(routes);
 		ReactionDAO rxnDao = new ReactionGlammDAOImpl();
-		ArrayList<Reaction> rxns = rxnDao.getReactions(rxnIds, "LIGAND-RXN");
+		HashSet<String> dbNames = new HashSet<String>();
+		dbNames.add("LIGAND-RXN");
+		ArrayList<Reaction> rxns = rxnDao.getReactions(rxnIds, dbNames);
 
 		// hash resulting reactions by xrefId
 		HashMap<String, Reaction> rxnId2Rxn = hashReactionsById(rxns);

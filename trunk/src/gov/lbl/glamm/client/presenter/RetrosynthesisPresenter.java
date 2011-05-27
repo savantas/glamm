@@ -205,8 +205,8 @@ public class RetrosynthesisPresenter {
 				if(cpdSrc == null || cpdDst == null || mapData == null)
 					return;
 
-				Xref cpdSrcXref = cpdSrc.getXrefForDbName(mapData.getCpdDbName());
-				Xref cpdDstXref = cpdDst.getXrefForDbName(mapData.getCpdDbName());
+				Xref cpdSrcXref = cpdSrc.getXrefForDbNames(mapData.getCpdDbNames());
+				Xref cpdDstXref = cpdDst.getXrefForDbNames(mapData.getCpdDbNames());
 
 				if(cpdSrcXref == null || cpdDstXref == null)
 					return;
@@ -219,7 +219,8 @@ public class RetrosynthesisPresenter {
 				urlBuilder.setPath("glammServlet");
 				urlBuilder.setParameter(RequestParameters.PARAM_CPD_SRC, cpdSrcXref.getXrefId());
 				urlBuilder.setParameter(RequestParameters.PARAM_CPD_DST, cpdDstXref.getXrefId());
-				urlBuilder.setParameter(RequestParameters.PARAM_EXTID, mapData.getCpdDbName());
+				for(String dbName : mapData.getCpdDbNames()) 
+					urlBuilder.setParameter(RequestParameters.PARAM_DBNAME, dbName);
 				urlBuilder.setParameter(RequestParameters.PARAM_MAP_TITLE, mapData.getMapId());
 				urlBuilder.setParameter(RequestParameters.PARAM_ALGORITHM, algorithm);
 				urlBuilder.setParameter(RequestParameters.PARAM_AS_TEXT, "true");
@@ -493,7 +494,7 @@ public class RetrosynthesisPresenter {
 	}
 
 	private void populateCompoundSearch() {
-		rpc.populateCompoundSearch(mapData.getCpdDbName(), new AsyncCallback<ArrayList<Compound>>() {
+		rpc.populateCompoundSearch(mapData.getCpdDbNames(), new AsyncCallback<ArrayList<Compound>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				// Show the RPC error message to the user
@@ -526,7 +527,7 @@ public class RetrosynthesisPresenter {
 	}
 
 	private void populateReactionSearch() {
-		rpc.populateReactionSearch(mapData.getRxnDbName(), new AsyncCallback<ArrayList<Reaction>>() {
+		rpc.populateReactionSearch(mapData.getRxnDbNames(), new AsyncCallback<ArrayList<Reaction>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				// Show the RPC error message to the user

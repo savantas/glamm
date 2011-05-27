@@ -2,6 +2,7 @@ package gov.lbl.glamm.client.model;
 
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashSet;
 
 /**
@@ -327,7 +328,16 @@ public abstract class GlammPrimitive implements Serializable {
 	}
 	
 	//********************************************************************************
-
+	
+	public Xref getXrefForDbNames(Collection<String> dbNames) {
+		for(Xref xref : xrefs) {
+			if(dbNames.contains(xref.getXrefDbName()))
+				return xref;
+		}
+		return null;
+	}
+	
+	//********************************************************************************
 
 	public void setId(final String id) {
 		this.id = id;

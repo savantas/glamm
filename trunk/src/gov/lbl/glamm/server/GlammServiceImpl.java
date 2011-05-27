@@ -26,6 +26,7 @@ import gov.lbl.glamm.server.requesthandlers.impl.PopulateSamples;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -102,13 +103,13 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	}
 	
 	@Override
-	public ArrayList<Reaction> getRxnsForOrganism(String taxonomyId, String dbName) {
-		return GetRxnsForOrganism.getRxnsForOrganism(getSessionManager(false), taxonomyId, dbName);
+	public ArrayList<Reaction> getRxnsForOrganism(String taxonomyId, HashSet<String> dbNames) {
+		return GetRxnsForOrganism.getRxnsForOrganism(getSessionManager(false), taxonomyId, dbNames);
 	}
 	
 	@Override
-	public ArrayList<Compound> populateCompoundSearch(String extIdName) {
-		return PopulateCompoundSearch.populateCompoundSearch(extIdName);
+	public ArrayList<Compound> populateCompoundSearch(HashSet<String> dbNames) {
+		return PopulateCompoundSearch.populateCompoundSearch(dbNames);
 	}
 	
 	@Override
@@ -127,8 +128,8 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	}
 	
 	@Override
-	public ArrayList<Reaction> populateReactionSearch(String extIdName) {
-		return PopulateReactionSearch.populateReactionSearch(extIdName);
+	public ArrayList<Reaction> populateReactionSearch(HashSet<String> dbNames) {
+		return PopulateReactionSearch.populateReactionSearch(dbNames);
 	}
 	
 	@Override

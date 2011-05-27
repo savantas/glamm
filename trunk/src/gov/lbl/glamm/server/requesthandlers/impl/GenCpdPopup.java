@@ -10,6 +10,7 @@ import gov.lbl.glamm.server.dao.impl.CompoundGlammDAOImpl;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashSet;
 
 import javax.imageio.ImageIO;
 
@@ -21,7 +22,10 @@ public class GenCpdPopup {
 		if(cpd == null)
 			return html;
 		
-		Xref xref = cpd.getXrefForDbName("LIGAND-CPD"); // only KEGG compounds need apply
+		HashSet<String> dbNames = new HashSet<String>();
+		dbNames.add("LIGAND-CPD");
+		dbNames.add("GLYCAN");
+		Xref xref = cpd.getXrefForDbNames(dbNames); // only KEGG compounds need apply
 		
 		if(xref == null)
 			return html;
