@@ -1,5 +1,10 @@
 package gov.lbl.glamm.server.dao.impl;
 
+import gov.lbl.glamm.client.model.Gene;
+import gov.lbl.glamm.server.GlammDbConnectionPool;
+import gov.lbl.glamm.server.dao.GeneDAO;
+import gov.lbl.glamm.shared.GlammUtils;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,11 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-
-import gov.lbl.glamm.client.model.Gene;
-import gov.lbl.glamm.server.GlammDbConnectionPool;
-import gov.lbl.glamm.server.dao.GeneDAO;
-import gov.lbl.glamm.shared.GlammUtils;
 
 public class GeneMetaMolDAOImpl implements GeneDAO {
 
@@ -71,7 +71,7 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 			String sql = "select distinct L2E.ecNum, L2E.locusId, Syn.name, Syn.type " +
 			"from meta2010jul.Locus2Ec L2E " + 
 			"join meta2010jul.Locus L on (L2E.locusId=L.locusId) " +
-			"join meta2010julScaffold S on (L.scaffoldId=S.scaffoldId) " +
+			"join meta2010jul.Scaffold S on (L.scaffoldId=S.scaffoldId) " +
 			"left outer join meta2010jul.Synonym Syn on (Syn.locusId=L2E.locusId) " +
 			"where S.taxonomyId=" + taxonomyId + " and " +
 			"L.priority=1 and " +

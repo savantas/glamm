@@ -56,7 +56,6 @@ public class GenRxnPopup {
 				!taxonomyId.equals(Organism.GLOBAL_MAP_TAXONOMY_ID)) {
 
 			GeneDAO geneDao = new GeneDAOImpl(sm);
-			//genes = geneDao.getGenesForRxnIds(taxonomyId, rxnIds);
 			genes = geneDao.getGenesForEcNums(taxonomyId, ecNums);
 
 			if(genes != null) {
