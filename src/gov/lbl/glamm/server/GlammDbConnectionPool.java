@@ -72,8 +72,7 @@ public class GlammDbConnectionPool {
 	//********************************************************************************
 
 	private static GlammDbConnectionPool INSTANCE = null;
-
-	private static final String MY_HOSTNAME_PREFIX		= "jtbates-m";
+	private static final String ENV_GLAMM_DEBUG			= "GLAMM_DEBUG";
 
 	//********************************************************************************
 
@@ -98,14 +97,11 @@ public class GlammDbConnectionPool {
 			INSTANCE = new GlammDbConnectionPool();
 			INSTANCE.parseConfigFile(dbConfigFileName);
 
-			try {
-				java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
-				String hostName = localMachine.getHostName();
-
-				if(hostName.startsWith(MY_HOSTNAME_PREFIX)) 
+			try {				
+				INSTANCE.dbConfig = INSTANCE.defaultDbConfig;
+				String envGlammDebug = System.getenv(ENV_GLAMM_DEBUG);
+				if(envGlammDebug != null && envGlammDebug.equals("true"))
 					INSTANCE.dbConfig = INSTANCE.debugDbConfig;
-				else
-					INSTANCE.dbConfig = INSTANCE.defaultDbConfig;
 
 				INSTANCE.dataSource = new ComboPooledDataSource();
 				INSTANCE.dataSource.setDriverClass(INSTANCE.dbConfig.getDriver());
