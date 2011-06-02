@@ -79,8 +79,7 @@ public class GeneMolDAOImpl implements GeneDAO {
 			"left outer join Synonym Syn on (Syn.locusId=L2E.locusId) " +
 			"where S.taxonomyId=" + taxonomyId + " and " +
 			"L.priority=1 and " +
-			"L2E.ecNum in (" + GlammUtils.joinArray(ecNums.toArray()) + ") and " +
-			"(Syn.type=0 or Syn.type=1);";
+			"L2E.ecNum in (" + GlammUtils.joinArray(ecNums.toArray()) + ");";
 
 			try {
 
@@ -160,8 +159,7 @@ public class GeneMolDAOImpl implements GeneDAO {
 					"join Locus L on (L2E.locusId=L.locusId) " +
 					"where S.taxonomyId=" + taxonomyId + " and " +
 					"L.priority=1 and " +
-					"X.toXrefId in (" + GlammUtils.joinArray(rxnIds) + ") " +
-					"and (Syn.type=0 or Syn.type=1);";
+					"X.toXrefId in (" + GlammUtils.joinArray(rxnIds) + ");";
 
 			try {
 
@@ -246,8 +244,7 @@ public class GeneMolDAOImpl implements GeneDAO {
 			"left outer join Synonym Syn on (Syn.locusId=L2E.locusId) " +
 			"where S.taxonomyId=" + taxonomyId + " and " +
 			"L.priority=1 and " +
-			"L2E.locusId in (" + GlammUtils.joinArray(extIds.toArray()) + ") and " +
-			"(Syn.type=0 or Syn.type=1);";
+			"L2E.locusId in (" + GlammUtils.joinArray(extIds.toArray()) + ");";
 
 			try {
 

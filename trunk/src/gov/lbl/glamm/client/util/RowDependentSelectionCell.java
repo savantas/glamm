@@ -55,7 +55,9 @@ public class RowDependentSelectionCell extends AbstractInputCell<String, String>
 			String newValue = null;
 			if(key.hasOptions()) {
 				List<String> options = key.getOptions();
-				newValue = options.get(select.getSelectedIndex());
+				int selectedOptionIndex = select.getSelectedIndex() - 2;
+				if(selectedOptionIndex >= 0)
+					newValue = options.get(selectedOptionIndex);
 			}
 			else
 				newValue = key.getNoOptionsString();
@@ -84,13 +86,13 @@ public class RowDependentSelectionCell extends AbstractInputCell<String, String>
 			else
 				sb.appendHtmlConstant("<select tabindex=\"-1\">");
 			
-			int selectedIndex = getSelectedIndex(key, viewData == null ? value : viewData);
+			int selectedOptionIndex = getSelectedOptionIndex(key, viewData == null ? value : viewData);
 
 			int index = 0;
 			sb.append(template.deselected(Integer.toString(key.getOptions().size()) + " candidates"));
 			sb.append(template.deselected("-"));
 			for (String option : key.getOptions()) {
-				if (index++ == selectedIndex) {
+				if (index++ == selectedOptionIndex) {
 					sb.append(template.selected(option));
 				} else {
 					sb.append(template.deselected(option));
@@ -103,7 +105,7 @@ public class RowDependentSelectionCell extends AbstractInputCell<String, String>
 		
 	}
 
-	private int getSelectedIndex(HasOptions key, String value) {
+	private int getSelectedOptionIndex(HasOptions key, String value) {
 		if(key.hasOptions()) {
 			int index = 0;
 			for(String option : key.getOptions()) {

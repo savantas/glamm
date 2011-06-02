@@ -25,9 +25,8 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 			String sql = "select distinct L2E.ecNum " +
 			"from meta2010jul.Locus2Ec L2E " + 
 			"join meta2010jul.Locus L on (L2E.locusId=L.locusId) " +
-			"join meta2010jul.Scaffold S on (L.scaffoldId=S.scaffoldId) " +
 			"where L.priority=1 and " +
-			"S.taxonomyId=?";
+			"L.taxonomyId=?";
 			
 			try {
 
@@ -71,12 +70,10 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 			String sql = "select distinct L2E.ecNum, L2E.locusId, Syn.name, Syn.type " +
 			"from meta2010jul.Locus2Ec L2E " + 
 			"join meta2010jul.Locus L on (L2E.locusId=L.locusId) " +
-			"join meta2010jul.Scaffold S on (L.scaffoldId=S.scaffoldId) " +
 			"left outer join meta2010jul.Synonym Syn on (Syn.locusId=L2E.locusId) " +
-			"where S.taxonomyId=" + taxonomyId + " and " +
+			"where L.taxonomyId=" + taxonomyId + " and " +
 			"L.priority=1 and " +
-			"L2E.ecNum in (" + GlammUtils.joinArray(ecNums.toArray()) + ") and " +
-			"(Syn.type=0 or Syn.type=1);";
+			"L2E.ecNum in (" + GlammUtils.joinArray(ecNums.toArray()) + ");";
 
 			try {
 
@@ -109,12 +106,10 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 			String sql = "select distinct L2E.ecNum, L2E.locusId, Syn.name, Syn.type " +
 			"from meta2010jul.Locus2Ec L2E " + 
 			"join meta2010jul.Locus L on (L2E.locusId=L.locusId) " +
-			"join meta2010jul.Scaffold S on (L.scaffoldId=S.scaffoldId) " +
 			"left outer join meta2010jul.Synonym Syn on (Syn.locusId=L2E.locusId) " +
-			"where S.taxonomyId=" + taxonomyId + " and " +
+			"where L.taxonomyId=" + taxonomyId + " and " +
 			"L.priority=1 and " +
-			"L2E.locusId in (" + GlammUtils.joinArray(extIds.toArray()) + ") and " +
-			"(Syn.type=0 or Syn.type=1);";
+			"L2E.locusId in (" + GlammUtils.joinArray(extIds.toArray()) + ");";
 
 			try {
 
@@ -147,9 +142,8 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 			String sql = "select distinct L2E.ecNum, L2E.locusId, Syn.name, Syn.type " +
 			"from meta2010jul.Locus2Ec L2E " + 
 			"join meta2010jul.Locus L on (L2E.locusId=L.locusId) " +
-			"join meta2010jul.Scaffold S on (L.scaffoldId=S.scaffoldId) " +
 			"left outer join meta2010jul.Synonym Syn on (Syn.locusId=L2E.locusId) " +
-			"where S.taxonomyId=\"" + taxonomyId + "\" and " +
+			"where L.taxonomyId=\"" + taxonomyId + "\" and " +
 			"L.priority=1;";
 
 			try {
@@ -183,15 +177,13 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 
 			String sql = "select distinct L2E.locusId, L2E.ecNum, Syn.name, Syn.type " +
 					"from metajul2010.Locus2Ec L2E " +
-					"join metajul2010.Scaffold S on (L2E.scaffoldId=S.scaffoldId) " +
 					"join glamm.GlammEnzyme E on (E.ecNum=L2E.ecNum) " +
 					"join glamm.GlammXref X on (E.reactionGuid=X.fromGuid) " +
 					"left outer join metajul2010.Synonym Syn on (Syn.locusId=L2E.locusId) " +
 					"join metajul2010.Locus L on (L2E.locusId=L.locusId) " +
-					"where S.taxonomyId=" + taxonomyId + " and " +
+					"where L.taxonomyId=" + taxonomyId + " and " +
 					"L.priority=1 and " +
-					"X.toXrefId in (" + GlammUtils.joinArray(rxnIds) + ") " +
-					"and (Syn.type=0 or Syn.type=1);";
+					"X.toXrefId in (" + GlammUtils.joinArray(rxnIds) + ");";
 
 			try {
 

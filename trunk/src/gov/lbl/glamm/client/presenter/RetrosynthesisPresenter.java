@@ -376,7 +376,7 @@ public class RetrosynthesisPresenter {
 	}
 
 
-	private void initTable(CellTable<Reaction> table, ListDataProvider<Reaction> dataProvider) {
+	private void initTable(final CellTable<Reaction> table, ListDataProvider<Reaction> dataProvider) {
 
 		if(table == null || dataProvider == null)
 			return;
@@ -440,6 +440,7 @@ public class RetrosynthesisPresenter {
 		speciesColumn.setFieldUpdater(new FieldUpdater<Reaction, String>() {
 			public void update(int index, Reaction reaction, String value) {
 				reaction.setSelectedTransgenicCandidate(value);
+				table.redraw();
 			}
 		});
 

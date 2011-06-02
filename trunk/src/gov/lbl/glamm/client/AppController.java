@@ -594,6 +594,7 @@ public class AppController {
 
 		retrosynthesisPresenter.setMapData(mapData);
 		retrosynthesisPresenter.setOrganism(Organism.globalMap());
+//		retrosynthesisPresenter.setOrganism(new Organism("224914","Brucella melitensis 16M"));
 
 		eventBus.addHandler(OrganismPickedEvent.TYPE, new OrganismPickedEvent.Handler() {
 			@Override
