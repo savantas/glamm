@@ -112,8 +112,13 @@ public class RetrosynthesisPresenter {
 		String link = "<b>No EC</b>";
 
 		// annotate ecNum
+		if(taxonomyId == null || taxonomyId.equals(Organism.GLOBAL_MAP_TAXONOMY_ID))
+			return ecNum;
+		
 		if(ecNum != null && !ecNum.equals("NULL")) {
-			link = "<a href=\"http://microbesonline.org/cgi-bin/fetchEC2.cgi?ec=" + ecNum + 
+			link = "<a href=\"http://";
+			link += Long.parseLong(taxonomyId) >= Organism.MIN_METAGENOME_TAXID ? "meta." : "";
+			link += "microbesonline.org/cgi-bin/fetchEC2.cgi?ec=" + ecNum + 
 			"&taxId=" + taxonomyId + "\" target=\"_new\">" + ecNum + "</a>";
 		}
 

@@ -156,8 +156,11 @@ public class GenRxnPopup {
 		// annotate ecNum
 		if(ecNum != null && !ecNum.equals("NULL")) {
 			if(numLoci > 0  && (sm == null || !sm.isSessionOrganism(taxonomyId))) {
-				link = "<a href=\"http://microbesonline.org/cgi-bin/fetchEC2.cgi?ec=" + ecNum;
-				link += taxonomyId != null ? "&taxId=" + taxonomyId + "\" target=\"_new\">": "\" target=\"_new\">";
+				link = "<a href=\"http://";
+				link += Long.parseLong(taxonomyId) >= Organism.MIN_METAGENOME_TAXID ? "meta." : "";
+				link += "microbesonline.org/cgi-bin/fetchEC2.cgi?ec=" + ecNum;
+				link += taxonomyId != null ? "&taxId=" + taxonomyId : "";
+				link += "\" target=\"_new\">";
 				link += "<b>" + ecNum + "</b></a>";
 			}
 			else {
