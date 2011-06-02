@@ -1,3 +1,8 @@
 John Bates 		jtbates@lbl.gov 	- Author and developer
 Dylan Chivian 	dcchivian@lbl.gov 	- Corresponding author and work lead
 Adam Arkin 		aparkin@lbl.gov		- Principal investigator 
+
+Please cite:
+
+GLAMM: Genome-Linked Application for Metabolic Maps John T. Bates; Dylan Chivian; Adam P. Arkin Nucleic Acids Research 2011; doi: 10.1093/nar/gkr433
+http://nar.oxfordjournals.org/content/early/2011/05/28/nar.gkr433.abstract?keytype=ref&ijkey=gq2WfcnBO41li0K
