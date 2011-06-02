@@ -19,9 +19,9 @@ public class GenCitationsPopup implements RequestHandler {
 
 	private final String PREAMBLE = "GLAMM: The Genome-Linked Application for Metabolic Maps";
 
-	@SuppressWarnings("unused")
-	private final String CITATION = "";
-
+	private final String CITATION = "GLAMM: Genome-Linked Application for Metabolic Maps John T. Bates; Dylan Chivian; Adam P. Arkin Nucleic Acids Research 2011; doi: 10.1093/nar/gkr433";
+	private final String CITATION_URL = "http://nar.oxfordjournals.org/content/early/2011/05/28/nar.gkr433.abstract?keytype=ref&ijkey=gq2WfcnBO41li0K";
+	
 	private final String ACKNOWLEDGEMENTS = "This work was part of the DOE <a href=\"http://www.jbei.org\">Joint BioEnergy Institute</a>, " +
 	"the ENIGMA Scientific Focus Area Program, and Genomics:GTL Foundational " +
 	"Science supported by the U. S. Department of Energy, Office of Science, Office of Biological " +
@@ -50,6 +50,10 @@ public class GenCitationsPopup implements RequestHandler {
 		html += PREAMBLE;
 		html += "<br><br>";
 		html += ACKNOWLEDGEMENTS;
+		html += "<br><br>";
+		html += "Please cite:<br>";
+		html += "<a href=\"" + CITATION_URL + "\" target=\"_new\">" + CITATION + "</a>";
+		html += "<br><br>";
 		
 		if(citationsDao.getCitationsTableName() != null) {
 			
