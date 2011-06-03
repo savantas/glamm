@@ -172,19 +172,37 @@ public class AnnotatedMapData implements Serializable {
 	 * @return HashSet<OMSVGElement> the elements associated with this primitive, null if none.
 	 */
 	public HashSet<OMSVGElement> getSvgElementsForGlammPrimitive(final GlammPrimitive primitive) {
-		String id = null;
 		
 		if(primitive.getType() == Compound.TYPE) {
 			Xref xref = primitive.getXrefForDbNames(getCpdDbNames());
-			id = xref.getXrefId();
+			String id = xref.getXrefId();
+			if(id != null)
+				return getSvgElementsForId(id);
 		}
-		else if(primitive.getType() == Reaction.TYPE){
+		else if(primitive.getType() == Reaction.TYPE) {
 			Xref xref = primitive.getXrefForDbNames(getRxnDbNames());
-			id = xref.getXrefId();
+			String id = xref.getXrefId();
+			if(id != null)
+				return getSvgElementsForId(id);
+		}
+		else if(primitive.getType() == Gene.TYPE) {
+			Gene gene = (Gene) primitive;
+			HashSet<String> ecNums = gene.getEcNums();
+			if(ecNums == null)
+				return null;
+			HashSet<OMSVGElement> allSvgElements = null;
+			for(String ecNum : ecNums) {
+				HashSet<OMSVGElement> svgElements = getSvgElementsForId(ecNum);
+				if(svgElements == null || svgElements.isEmpty())
+					continue;
+				if(allSvgElements == null) 
+					allSvgElements = new HashSet<OMSVGElement>();
+				allSvgElements.addAll(svgElements);
+			}
+			return allSvgElements;
 		}
 		
-		if(id != null)
-			return getSvgElementsForId(id);
+		
 		return null;
 	}
 	

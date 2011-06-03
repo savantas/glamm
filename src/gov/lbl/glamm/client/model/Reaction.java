@@ -251,6 +251,18 @@ public class Reaction extends GlammPrimitive implements Serializable, RowDepende
 			options.add(organism.getName());
 		return options;
 	}
+	
+	//********************************************************************************
+
+	@Override
+	public List<String> getOptionsPreamble() {
+		if(!this.hasOptions())
+			return null;
+		List<String> optionsPreamble = new ArrayList<String>();
+		optionsPreamble.add(Integer.toString(transgenicCandidates.size()) + " candidates");
+		optionsPreamble.add("-");
+		return optionsPreamble;
+	}
 
 	//********************************************************************************
 
