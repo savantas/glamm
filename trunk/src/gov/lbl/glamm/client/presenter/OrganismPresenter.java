@@ -24,6 +24,7 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.http.client.UrlBuilder;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.DisclosurePanel;
@@ -164,6 +165,8 @@ public class OrganismPresenter {
 
 		final MultiWordSuggestOracle suggestOracle = (MultiWordSuggestOracle) view.getOrganismSuggestBox().getSuggestOracle();
 
+		updatePopulatingStatus(false);
+		
 		suggestOracle.clear();
 		view.getOrganismListBox().clear();
 		name2Organism.clear();
@@ -191,6 +194,8 @@ public class OrganismPresenter {
 					view.getOrganismListBox().addItem(name);
 					name2Organism.put(name, organism);
 				}
+				
+				updatePopulatingStatus(true);
 			}
 		});
 	}
@@ -211,6 +216,21 @@ public class OrganismPresenter {
 			}
 			view.minimize();
 			eventBus.fireEvent(new OrganismPickedEvent(organism));
+		}
+	}
+	
+	private void updatePopulatingStatus(final boolean donePopulating) {
+		final String POPULATING_TEXT = "Populating...";
+		if(donePopulating) {
+			if(organism != null)
+				view.getOrganismSuggestBox().setText(organism.getName());
+			else
+				view.getOrganismSuggestBox().setText("No organism selected");
+			DOM.setElementPropertyBoolean(view.getOrganismSuggestBox().getElement(), "disabled", false);
+		}
+		else {
+			view.getOrganismSuggestBox().setText(POPULATING_TEXT);
+			DOM.setElementPropertyBoolean(view.getOrganismSuggestBox().getElement(), "disabled", true);
 		}
 	}
 }

@@ -17,6 +17,7 @@ public class RowDependentSelectionCell extends AbstractInputCell<String, String>
 	public interface HasOptions {
 		public String getNoOptionsString();
 		public List<String> getOptions();
+		public List<String> getOptionsPreamble();
 		public boolean hasOptions();
 	}
 
@@ -55,7 +56,8 @@ public class RowDependentSelectionCell extends AbstractInputCell<String, String>
 			String newValue = null;
 			if(key.hasOptions()) {
 				List<String> options = key.getOptions();
-				int selectedOptionIndex = select.getSelectedIndex() - 2;
+				int optionsPreambleSize = key.getOptionsPreamble() == null ? 0 : key.getOptionsPreamble().size();
+				int selectedOptionIndex = select.getSelectedIndex() - optionsPreambleSize;
 				if(selectedOptionIndex >= 0)
 					newValue = options.get(selectedOptionIndex);
 			}
@@ -89,8 +91,15 @@ public class RowDependentSelectionCell extends AbstractInputCell<String, String>
 			int selectedOptionIndex = getSelectedOptionIndex(key, viewData == null ? value : viewData);
 
 			int index = 0;
-			sb.append(template.deselected(Integer.toString(key.getOptions().size()) + " candidates"));
-			sb.append(template.deselected("-"));
+			
+			// append options preamble
+			List<String> optionsPreamble = key.getOptionsPreamble();
+			if(optionsPreamble != null) {
+				for(String option : optionsPreamble)
+					sb.append(template.deselected(option));
+			}
+			
+			// append the rest of the options
 			for (String option : key.getOptions()) {
 				if (index++ == selectedOptionIndex) {
 					sb.append(template.selected(option));

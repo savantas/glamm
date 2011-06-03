@@ -46,6 +46,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.DisclosurePanel;
@@ -151,6 +152,8 @@ public class RetrosynthesisPresenter {
 	private State viewState;
 
 	private static final String ACTION_GET_DIRECTIONS = "getDirections";
+	
+	private int populatingCount = 0;
 
 	public RetrosynthesisPresenter(final GlammServiceAsync rpc, final View view, final SimpleEventBus eventBus) {
 		this.rpc = rpc;
@@ -484,19 +487,24 @@ public class RetrosynthesisPresenter {
 		cpdDstOracle.clear();
 
 		if(mapData != null) {
+			
+			updatePopulatingStatus(false);
 			if(compounds == null)
 				populateCompoundSearch();
 			else
 				populateWithCompounds(compounds, false);
 
+			updatePopulatingStatus(false);
 			if(reactions == null)
 				populateReactionSearch();
 			else
 				populateWithReactions(reactions, false);
 		}
 
-		if(organism != null && !organism.isGlobalMap())
+		if(organism != null && !organism.isGlobalMap()) {
+			updatePopulatingStatus(false);
 			populateLocusSearch();
+		}
 	}
 
 	private void populateCompoundSearch() {
@@ -575,6 +583,8 @@ public class RetrosynthesisPresenter {
 				}
 			}
 		}
+		
+		updatePopulatingStatus(true);
 	}
 
 	private void populateWithGenes(final Collection<Gene> genes) {
@@ -589,6 +599,8 @@ public class RetrosynthesisPresenter {
 				}
 			}
 		}
+		
+		updatePopulatingStatus(true);
 	}
 	
 	private void populateWithReactions(final Collection<Reaction> reactions, final boolean populateHash) {
@@ -604,6 +616,8 @@ public class RetrosynthesisPresenter {
 				}
 			}
 		}
+		
+		updatePopulatingStatus(true);
 	}
 
 	public void reset() {
@@ -688,6 +702,29 @@ public class RetrosynthesisPresenter {
 			view.getStatusLabel().setVisible(true);
 			eventBus.fireEvent(new ViewResizedEvent());
 			break;
+		}
+	}
+	
+	private void updatePopulatingStatus(final boolean donePopulating) {
+		final String POPULATING_TEXT = "Populating...";
+		populatingCount = donePopulating ? --populatingCount : ++populatingCount;
+		
+		if(populatingCount == 1) {
+			view.getSearchSuggestBox().setText(POPULATING_TEXT);
+			DOM.setElementPropertyBoolean(view.getSearchSuggestBox().getElement(), "disabled", true);
+			view.getCpdSrcSuggestBox().setText(POPULATING_TEXT);
+			DOM.setElementPropertyBoolean(view.getCpdSrcSuggestBox().getElement(), "disabled", true);
+			view.getCpdDstSuggestBox().setText(POPULATING_TEXT);
+			DOM.setElementPropertyBoolean(view.getCpdDstSuggestBox().getElement(), "disabled", true);
+		}
+		else if(populatingCount <= 0) {
+			populatingCount = 0;
+			view.getSearchSuggestBox().setText("");
+			DOM.setElementPropertyBoolean(view.getSearchSuggestBox().getElement(), "disabled", false);
+			view.getCpdSrcSuggestBox().setText("");
+			DOM.setElementPropertyBoolean(view.getCpdSrcSuggestBox().getElement(), "disabled", false);
+			view.getCpdDstSuggestBox().setText("");
+			DOM.setElementPropertyBoolean(view.getCpdDstSuggestBox().getElement(), "disabled", false);
 		}
 	}
 
