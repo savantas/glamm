@@ -27,6 +27,7 @@ public class PanZoomControlEvent extends GwtEvent<PanZoomControlEvent.Handler> {
 	public static final short ACTION_PAN_LEFT 		= 5;
 	public static final short ACTION_PAN_RIGHT 		= 6;
 	public static final short ACTION_ZOOM_SLIDER	= 7;
+	public static final short ACTION_ZOOM_TO_FIT	= 8;
 	
 	private static final String ACTION_DESC_NONE 		= "none";
 	private static final String ACTION_DESC_ZOOM_IN 	= "zoom in";
@@ -36,6 +37,7 @@ public class PanZoomControlEvent extends GwtEvent<PanZoomControlEvent.Handler> {
 	private static final String ACTION_DESC_PAN_LEFT 	= "pan left";
 	private static final String ACTION_DESC_PAN_RIGHT 	= "pan right";
 	private static final String ACTION_DESC_ZOOM_SLIDER = "zoom slider";
+	private static final String ACTION_DESC_ZOOM_TO_FIT	= "zoom to fit";
 	
 	private static final Map<Short, String> action2Desc;
 	static {
@@ -48,6 +50,7 @@ public class PanZoomControlEvent extends GwtEvent<PanZoomControlEvent.Handler> {
 		aMap.put(ACTION_PAN_LEFT, ACTION_DESC_PAN_LEFT);
 		aMap.put(ACTION_PAN_RIGHT, ACTION_DESC_PAN_RIGHT);
 		aMap.put(ACTION_ZOOM_SLIDER, ACTION_DESC_ZOOM_SLIDER);
+		aMap.put(ACTION_ZOOM_TO_FIT, ACTION_DESC_ZOOM_TO_FIT);
 		action2Desc = Collections.unmodifiableMap(aMap);
 	}
 	

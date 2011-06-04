@@ -346,6 +346,8 @@ public class AppController {
 					mapPresenter.translateNorm(0.05f, 0.0f);
 				else if(action == PanZoomControlEvent.ACTION_PAN_RIGHT)
 					mapPresenter.translateNorm(-0.05f, 0.0f);
+				else if(action == PanZoomControlEvent.ACTION_ZOOM_TO_FIT)
+					mapPresenter.fitMapToPanel();
 				else
 					mapPresenter.setZoomNormAboutPoint(event.getZoomNorm(), Window.getClientWidth() >> 1, Window.getClientHeight() >> 1);
 

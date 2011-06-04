@@ -329,7 +329,7 @@ public class AnnotatedMapPresenter {
 
 
 
-	private void fitMapToPanel() {
+	public void fitMapToPanel() {
 
 		float sx = ((float) Window.getClientWidth()) / mapData.getSvgWidth();
 		float sy = sx;
@@ -339,7 +339,7 @@ public class AnnotatedMapPresenter {
 
 		// set up limits for scaling
 		scaleMin = 0.9f * sx;
-		scaleMax = 5.0f * sx;
+		scaleMax = 2.5f * sx;
 
 		OMSVGMatrix m = mapData.getSvg().createSVGMatrix(sx, 0, 0, sy, tx, ty);
 		setTransform(mapData.getViewport(), m);

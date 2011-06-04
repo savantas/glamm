@@ -35,6 +35,7 @@ public class PanZoomControlPresenter {
 	private static final String G_ID_ZOOM_SLIDER	= "zoom_slider";
 	private static final String G_ID_ZOOM_PLUS		= "zoom_plus";
 	private static final String G_ID_ZOOM_MINUS		= "zoom_minus";
+	private static final String G_ID_ZOOM_TO_FIT	= "zoom_to_fit";
 	private static final String G_ID_PAN_UP			= "pan_up";
 	private static final String G_ID_PAN_DOWN		= "pan_down";
 	private static final String G_ID_PAN_LEFT		= "pan_left";
@@ -93,6 +94,9 @@ public class PanZoomControlPresenter {
 						setSliderValue(getSliderValue() * 0.9f);
 					}
 				});
+			}
+			else if(groupId.equals(G_ID_ZOOM_TO_FIT)) {
+				initButtonEvents(group, PanZoomControlEvent.ACTION_ZOOM_TO_FIT, null);
 			}
 			else if(groupId.equals(G_ID_PAN_UP)) {  
 				initButtonEvents(group, PanZoomControlEvent.ACTION_PAN_UP, null);
