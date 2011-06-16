@@ -176,11 +176,11 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 				rxnIds != null && rxnIds.length > 0) {
 
 			String sql = "select distinct L2E.locusId, L2E.ecNum, Syn.name, Syn.type " +
-					"from metajul2010.Locus2Ec L2E " +
+					"from meta2010jul.Locus2Ec L2E " +
 					"join glamm.GlammEnzyme E on (E.ecNum=L2E.ecNum) " +
 					"join glamm.GlammXref X on (E.reactionGuid=X.fromGuid) " +
-					"left outer join metajul2010.Synonym Syn on (Syn.locusId=L2E.locusId) " +
-					"join metajul2010.Locus L on (L2E.locusId=L.locusId) " +
+					"left outer join meta2010jul.Synonym Syn on (Syn.locusId=L2E.locusId) " +
+					"join meta2010jul.Locus L on (L2E.locusId=L.locusId) " +
 					"where L.taxonomyId=" + taxonomyId + " and " +
 					"L.priority=1 and " +
 					"X.toXrefId in (" + GlammUtils.joinArray(rxnIds) + ");";
@@ -246,6 +246,72 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 		}
 
 		return genes;
+	}
+	
+	public HashMap<String, String> getVimssId2TaxonomyIdMapping(Collection<String> vimssIds) {
+		if(vimssIds == null || vimssIds.isEmpty())
+			return null;
+		
+		HashMap<String, String> mapping = null;
+		String sql = "select L.locusId, L.taxonomyId " +
+				"from meta2010jul.Locus L " +
+				"where L.locusId in ("+ GlammUtils.joinCollection(vimssIds) + ") " +
+				"and L.isActive=1;";
+		
+		try {
+			Connection connection = GlammDbConnectionPool.getConnection();
+			Statement statement = connection.createStatement();
+			
+			ResultSet rs = statement.executeQuery(sql);
+			
+			while(rs.next()) {
+				String locusId = rs.getString("locusId");
+				String taxonomyId = rs.getString("taxonomyId");
+				
+				if(mapping == null)
+					mapping = new HashMap<String, String>();
+				
+				mapping.put(locusId, taxonomyId);
+			}
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return mapping;
+	}
+	
+	public HashSet<String> getTaxonomyIdsForVimssIds(Collection<String> vimssIds) {
+		if(vimssIds == null || vimssIds.isEmpty())
+			return null;
+		
+		HashSet<String> taxonomyIds = null;
+		String sql = "select distinct(L.taxonomyId) " +
+				"from meta2010jul.Locus L " +
+				"where L.locusId in ("+ GlammUtils.joinCollection(vimssIds) + ") " +
+				"and L.isActive=1;";
+		
+		try {
+			Connection connection = GlammDbConnectionPool.getConnection();
+			Statement statement = connection.createStatement();
+			
+			ResultSet rs = statement.executeQuery(sql);
+			
+			while(rs.next()) {
+
+				String taxonomyId = rs.getString("taxonomyId");
+				
+				if(taxonomyIds == null)
+					taxonomyIds = new HashSet<String>();
+				
+				taxonomyIds.add(taxonomyId);
+			}
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return taxonomyIds;
 	}
 
 }

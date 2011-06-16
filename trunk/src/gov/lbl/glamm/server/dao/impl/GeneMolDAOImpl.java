@@ -270,4 +270,38 @@ public class GeneMolDAOImpl implements GeneDAO {
 
 	//********************************************************************************
 	
+	public HashMap<String, String> getVimssId2TaxonomyIdMapping(Collection<String> vimssIds) {
+		if(vimssIds == null || vimssIds.isEmpty())
+			return null;
+		
+		HashMap<String, String> mapping = null;
+		String sql = "select L.locusId, S.taxonomyId " +
+				"from Locus L " +
+				"join Scaffold S on (L.scaffoldId=S.scaffoldId) " +
+				"where L.locusId in ("+ GlammUtils.joinCollection(vimssIds) + ") " +
+				"and S.isActive=1;";
+		
+		try {
+			Connection connection = GlammDbConnectionPool.getConnection();
+			Statement statement = connection.createStatement();
+			
+			ResultSet rs = statement.executeQuery(sql);
+			
+			while(rs.next()) {
+				String locusId = rs.getString("locusId");
+				String taxonomyId = rs.getString("taxonomyId");
+				
+				if(mapping == null)
+					mapping = new HashMap<String, String>();
+				
+				mapping.put(locusId, taxonomyId);
+			}
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return mapping;
+	}
+	
 }

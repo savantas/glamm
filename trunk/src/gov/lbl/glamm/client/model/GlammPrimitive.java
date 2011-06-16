@@ -354,18 +354,18 @@ public abstract class GlammPrimitive implements Serializable {
 	public void setSource(final String source) {
 		this.source = source;
 	}
-	
-	//********************************************************************************
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((source == null) ? 0 : source.hashCode());
+		result = prime * result
+				+ ((synonyms == null) ? 0 : synonyms.hashCode());
+		result = prime * result + ((xrefs == null) ? 0 : xrefs.hashCode());
 		return result;
 	}
-	
-	//********************************************************************************
 
 	@Override
 	public boolean equals(Object obj) {
@@ -381,9 +381,24 @@ public abstract class GlammPrimitive implements Serializable {
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
+		if (source == null) {
+			if (other.source != null)
+				return false;
+		} else if (!source.equals(other.source))
+			return false;
+		if (synonyms == null) {
+			if (other.synonyms != null)
+				return false;
+		} else if (!synonyms.equals(other.synonyms))
+			return false;
+		if (xrefs == null) {
+			if (other.xrefs != null)
+				return false;
+		} else if (!xrefs.equals(other.xrefs))
+			return false;
 		return true;
 	}
 	
-	//********************************************************************************
+	
 	
 }

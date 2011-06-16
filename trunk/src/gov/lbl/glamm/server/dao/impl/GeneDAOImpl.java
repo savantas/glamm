@@ -81,5 +81,6 @@ public class GeneDAOImpl implements GeneDAO {
 			return metaMolDao.getGenesForSynonyms(taxonomyId, synonyms);
 		return molDao.getGenesForSynonyms(taxonomyId, synonyms);
 	}
+	
 
 }

@@ -71,7 +71,7 @@ public class RetrosynthesisPresenter {
 	}
 
 	public interface View {
-		
+
 		public static final String ALGORITHM_DFS_TEXT				= "Depth-first Search";
 		public static final String ALGORITHM_DFS_VALUE				= "dfs";
 		public static final String ALGORITHM_TW_DFS_TEXT			= "Taxon-weighted Depth-first Search";
@@ -107,24 +107,50 @@ public class RetrosynthesisPresenter {
 	}
 
 
+	private static String genEcNumLinkForMolOrganism(String ecNum, Organism organism) {
 
-	private static String genEcNumLink(String ecNum, String taxonomyId) {
+		String taxonomyId = organism.getTaxonomyId();
 
-		String link = "<b>No EC</b>";
-
-		// annotate ecNum
-		if(taxonomyId == null || taxonomyId.equals(Organism.GLOBAL_MAP_TAXONOMY_ID))
-			return ecNum;
-		
-		if(ecNum != null && !ecNum.equals("NULL")) {
-			link = "<a href=\"http://";
-			link += Long.parseLong(taxonomyId) >= Organism.MIN_METAGENOME_TAXID ? "meta." : "";
-			link += "microbesonline.org/cgi-bin/fetchEC2.cgi?ec=" + ecNum + 
-			"&taxId=" + taxonomyId + "\" target=\"_new\">" + ecNum + "</a>";
-		}
+		String link = "<a href=\"http://";
+		link += Long.parseLong(taxonomyId) >= Organism.MIN_METAGENOME_TAXID ? "meta." : "";
+		link += "microbesonline.org/cgi-bin/fetchEC2.cgi?ec=" + ecNum + 
+		"&taxId=" + taxonomyId + "\" target=\"_new\">" + ecNum + "</a>";
 
 		return link;
 	}
+
+	private static String genEcNumLinkForSessionOrganism(String ecNum, Organism organism) {
+		String link = "<b>" + ecNum + "</b>";
+		
+		// get set of all molTaxonomyIds
+		HashSet<String> metaMolTaxonomyIds = organism.getMolTaxonomyIds();
+		
+		if(metaMolTaxonomyIds == null || metaMolTaxonomyIds.isEmpty())
+			return link;
+		
+		link = "<a href=\"http://meta.microbesonline.org/cgi-bin/fetchEC2.cgi?ec=" + ecNum;
+		for(String taxonomyId : metaMolTaxonomyIds) 
+			link += taxonomyId != null ? "&taxId=" + taxonomyId : "";
+		link += "\" target=\"_new\">";
+		link += "<b>" + ecNum + "</b></a>";
+	
+		return link;
+	}
+
+	private static String genEcNumLink(String ecNum, Organism organism) {
+
+		if(ecNum == null || ecNum.isEmpty())
+			return "<b>No EC</b>";
+
+		// annotate ecNum
+		if(organism == null || organism.isGlobalMap())
+			return ecNum;
+		
+		if(organism.isSessionOrganism())
+			return genEcNumLinkForSessionOrganism(ecNum, organism);
+		return genEcNumLinkForMolOrganism(ecNum, organism);
+	}
+	
 	private GlammServiceAsync rpc = null;
 	private View view = null;
 
@@ -152,7 +178,7 @@ public class RetrosynthesisPresenter {
 	private State viewState;
 
 	private static final String ACTION_GET_DIRECTIONS = "getDirections";
-	
+
 	private int populatingCount = 0;
 
 	public RetrosynthesisPresenter(final GlammServiceAsync rpc, final View view, final SimpleEventBus eventBus) {
@@ -408,10 +434,10 @@ public class RetrosynthesisPresenter {
 
 					for(String ecNum : ecNums) {
 						if(reaction.isNative())
-							builder.appendHtmlConstant(genEcNumLink(ecNum, organism.getTaxonomyId()));
+							builder.appendHtmlConstant(genEcNumLink(ecNum, organism));
 						else {
 							if(ecNumsForCandidate != null && ecNumsForCandidate.contains(ecNum))
-								builder.appendHtmlConstant(genEcNumLink(ecNum, candidate.getTaxonomyId()));
+								builder.appendHtmlConstant(genEcNumLink(ecNum, candidate));
 							else
 								builder.appendHtmlConstant(ecNum);
 						}
@@ -487,7 +513,7 @@ public class RetrosynthesisPresenter {
 		cpdDstOracle.clear();
 
 		if(mapData != null) {
-			
+
 			updatePopulatingStatus(false);
 			if(compounds == null)
 				populateCompoundSearch();
@@ -583,7 +609,7 @@ public class RetrosynthesisPresenter {
 				}
 			}
 		}
-		
+
 		updatePopulatingStatus(true);
 	}
 
@@ -599,10 +625,10 @@ public class RetrosynthesisPresenter {
 				}
 			}
 		}
-		
+
 		updatePopulatingStatus(true);
 	}
-	
+
 	private void populateWithReactions(final Collection<Reaction> reactions, final boolean populateHash) {
 		MultiWordSuggestOracle searchOracle = (MultiWordSuggestOracle) view.getSearchSuggestBox().getSuggestOracle();
 
@@ -616,7 +642,7 @@ public class RetrosynthesisPresenter {
 				}
 			}
 		}
-		
+
 		updatePopulatingStatus(true);
 	}
 
@@ -624,10 +650,10 @@ public class RetrosynthesisPresenter {
 		view.getCpdDstSuggestBox().setText("");
 		view.getCpdSrcSuggestBox().setText("");
 		view.getSearchSuggestBox().setText("");
-		
+
 		cpdSrc = null;
 		cpdDst = null;
-		
+
 		setViewState(State.INITIAL);
 	}
 
@@ -704,11 +730,11 @@ public class RetrosynthesisPresenter {
 			break;
 		}
 	}
-	
+
 	private void updatePopulatingStatus(final boolean donePopulating) {
 		final String POPULATING_TEXT = "Populating...";
 		populatingCount = donePopulating ? --populatingCount : ++populatingCount;
-		
+
 		if(populatingCount == 1) {
 			view.getSearchSuggestBox().setText(POPULATING_TEXT);
 			DOM.setElementPropertyBoolean(view.getSearchSuggestBox().getElement(), "disabled", true);
