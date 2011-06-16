@@ -2,7 +2,9 @@ package gov.lbl.glamm.client.model;
 
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashSet;
 
 @SuppressWarnings({"unused", "serial"})
 public class Organism extends GlammPrimitive implements Serializable {
@@ -26,6 +28,9 @@ public class Organism extends GlammPrimitive implements Serializable {
 	
 	private String taxonomyId = "";
 	private String name = "";
+	private boolean isSessionOrganism = false;
+	
+	private HashSet<String> molTaxonomyIds = null;
 	
 	//********************************************************************************
 
@@ -34,17 +39,36 @@ public class Organism extends GlammPrimitive implements Serializable {
 	//********************************************************************************
 
 	public static Organism globalMap() {
-		return new Organism(GLOBAL_MAP_TAXONOMY_ID, GLOBAL_MAP_NAME);
+		return new Organism(GLOBAL_MAP_TAXONOMY_ID, GLOBAL_MAP_NAME, false);
 	}
 	
 	//********************************************************************************
 	
-	public Organism(String taxonomyId, String name) {		
+	public Organism(String taxonomyId, String name, boolean isSessionOrganism) {		
 		this.taxonomyId = taxonomyId;
 		this.name = name;
+		this.isSessionOrganism = isSessionOrganism;
+		
+		
 	}
 	
 	//********************************************************************************
+	
+	public void addMolTaxonomyId(String taxonomyId) {
+		if(molTaxonomyIds == null)
+			molTaxonomyIds = new HashSet<String>();
+		molTaxonomyIds.add(taxonomyId);
+	}
+	
+	public void addMolTaxonomyIds(Collection<String> taxonomyIds) {
+		if(molTaxonomyIds == null)
+			molTaxonomyIds = new HashSet<String>();
+		molTaxonomyIds.addAll(taxonomyIds);
+	}
+	
+	public HashSet<String> getMolTaxonomyIds() {
+		return molTaxonomyIds;
+	}
 	
 	public String getName() {
 		return this.name;
@@ -65,6 +89,12 @@ public class Organism extends GlammPrimitive implements Serializable {
 
 	public final boolean isGlobalMap() {
 		return taxonomyId.equals(GLOBAL_MAP_TAXONOMY_ID);
+	}
+	
+	//********************************************************************************
+	
+	public final boolean isSessionOrganism() {
+		return isSessionOrganism;
 	}
 	
 	//********************************************************************************

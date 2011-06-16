@@ -126,14 +126,15 @@ public class GenRxnPopup {
 				if(ecNums != null) {
 					for(String ecNum : ecNums) {
 						int numLoci = 0;
+						ArrayList<Gene> genes = null;
 
 						if(ecNum2Genes != null) {
-							ArrayList<Gene> genes = ecNum2Genes.get(ecNum);
+							genes = ecNum2Genes.get(ecNum);
 							if(genes != null)
 								numLoci = genes.size();
 						}
 
-						html += genEcNumLink(sm, ecNum, taxonomyId, numLoci);
+						html += genEcNumLink(sm, ecNum, taxonomyId, genes);
 						html += ": " + numLoci + (numLoci == 1 ? " gene" : " genes") + "<br>";
 					}
 				}
@@ -149,22 +150,20 @@ public class GenRxnPopup {
 
 	//********************************************************************************
 
-	private static String genEcNumLink(SessionManager sm, String ecNum, String taxonomyId, int numLoci) {
+	private static String genEcNumLink(SessionManager sm, String ecNum, String taxonomyId, ArrayList<Gene> genes) {
 
 		String link = "<b>No EC</b>";
 
 		// annotate ecNum
 		if(ecNum != null && !ecNum.equals("NULL")) {
-			if(numLoci > 0  && (sm == null || !sm.isSessionOrganism(taxonomyId))) {
-				link = "<a href=\"http://";
-				link += Long.parseLong(taxonomyId) >= Organism.MIN_METAGENOME_TAXID ? "meta." : "";
-				link += "microbesonline.org/cgi-bin/fetchEC2.cgi?ec=" + ecNum;
-				link += taxonomyId != null ? "&taxId=" + taxonomyId : "";
-				link += "\" target=\"_new\">";
-				link += "<b>" + ecNum + "</b></a>";
+			if(genes != null && !genes.isEmpty()) {
+				if(sm != null && sm.isSessionOrganism(taxonomyId))
+					link = genEcNumLinkForSessionOrganism(ecNum, sm.getOrganismForTaxonomyId(taxonomyId));
+				else
+					link = genEcNumLinkForMolOrganism(ecNum, taxonomyId, genes);
 			}
 			else {
-				link = "<b>" + ecNum + "</b>";
+				link = "<b>" + ecNum + "</b>"; 
 			}
 		}
 
@@ -172,5 +171,36 @@ public class GenRxnPopup {
 	}
 
 	//********************************************************************************
-
+	
+	private static String genEcNumLinkForMolOrganism(String ecNum, String taxonomyId, ArrayList<Gene> genes) {
+		String link = "<b>" + ecNum + "</b>";
+		if(genes != null && !genes.isEmpty()) {
+			link = "<a href=\"http://";
+			link += Long.parseLong(taxonomyId) >= Organism.MIN_METAGENOME_TAXID ? "meta." : "";
+			link += "microbesonline.org/cgi-bin/fetchEC2.cgi?ec=" + ecNum;
+			link += taxonomyId != null ? "&taxId=" + taxonomyId : "";
+			link += "\" target=\"_new\">";
+			link += "<b>" + ecNum + "</b></a>";
+		}
+		return link;
+	}
+	
+	private static String genEcNumLinkForSessionOrganism(String ecNum, Organism organism) {
+		String link = "<b>" + ecNum + "</b>";
+		
+			// get set of all molTaxonomyIds
+			HashSet<String> metaMolTaxonomyIds = organism.getMolTaxonomyIds();
+			
+			if(metaMolTaxonomyIds == null || metaMolTaxonomyIds.isEmpty())
+				return link;
+			
+			
+			link = "<a href=\"http://meta.microbesonline.org/cgi-bin/fetchEC2.cgi?ec=" + ecNum;
+			for(String taxonomyId : metaMolTaxonomyIds) 
+				link += taxonomyId != null ? "&taxId=" + taxonomyId : "";
+			link += "\" target=\"_new\">";
+			link += "<b>" + ecNum + "</b></a>";
+		
+		return link;
+	}
 }

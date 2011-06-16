@@ -85,7 +85,7 @@ public class OrganismMolDAOImpl implements OrganismDAO {
 				String taxonomyId = rs.getString("taxonomyId");
 
 				if(name != null && taxonomyId != null) {
-					Organism organism = new Organism(taxonomyId, name);
+					Organism organism = new Organism(taxonomyId, name, false);
 					if(organisms == null)
 						organisms = new ArrayList<Organism>();
 					if(!organisms.contains(organism))
@@ -156,7 +156,7 @@ public class OrganismMolDAOImpl implements OrganismDAO {
 					ecNum2Organisms.put(ecNum, organisms);
 				}
 
-				Organism organism = new Organism(taxonomyId, name);
+				Organism organism = new Organism(taxonomyId, name, false);
 				organisms.add(organism);
 
 			}
