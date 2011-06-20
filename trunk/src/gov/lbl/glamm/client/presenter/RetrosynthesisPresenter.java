@@ -179,7 +179,9 @@ public class RetrosynthesisPresenter {
 
 	private static final String ACTION_GET_DIRECTIONS = "getDirections";
 
-	private int populatingCount = 0;
+	private boolean compoundsPopulated = false;
+	private boolean genesPopulated = false;
+	private boolean reactionsPopulated = false;
 
 	public RetrosynthesisPresenter(final GlammServiceAsync rpc, final View view, final SimpleEventBus eventBus) {
 		this.rpc = rpc;
@@ -512,25 +514,29 @@ public class RetrosynthesisPresenter {
 		cpdSrcOracle.clear();
 		cpdDstOracle.clear();
 
-		if(mapData != null) {
+		compoundsPopulated = false;
+		genesPopulated = false;
+		reactionsPopulated = false;
+		
+		updatePopulatingStatus();
 
-			updatePopulatingStatus(false);
+		if(mapData != null) {
+			
 			if(compounds == null)
 				populateCompoundSearch();
 			else
 				populateWithCompounds(compounds, false);
 
-			updatePopulatingStatus(false);
 			if(reactions == null)
 				populateReactionSearch();
 			else
 				populateWithReactions(reactions, false);
 		}
 
-		if(organism != null && !organism.isGlobalMap()) {
-			updatePopulatingStatus(false);
+		if(organism != null && !organism.isGlobalMap())
 			populateLocusSearch();
-		}
+		else
+			genesPopulated = true;
 	}
 
 	private void populateCompoundSearch() {
@@ -610,7 +616,8 @@ public class RetrosynthesisPresenter {
 			}
 		}
 
-		updatePopulatingStatus(true);
+		compoundsPopulated = true;
+		updatePopulatingStatus();
 	}
 
 	private void populateWithGenes(final Collection<Gene> genes) {
@@ -626,7 +633,8 @@ public class RetrosynthesisPresenter {
 			}
 		}
 
-		updatePopulatingStatus(true);
+		genesPopulated = true;
+		updatePopulatingStatus();
 	}
 
 	private void populateWithReactions(final Collection<Reaction> reactions, final boolean populateHash) {
@@ -643,7 +651,8 @@ public class RetrosynthesisPresenter {
 			}
 		}
 
-		updatePopulatingStatus(true);
+		reactionsPopulated = true;
+		updatePopulatingStatus();
 	}
 
 	public void reset() {
@@ -731,11 +740,11 @@ public class RetrosynthesisPresenter {
 		}
 	}
 
-	private void updatePopulatingStatus(final boolean donePopulating) {
+	private void updatePopulatingStatus() {
 		final String POPULATING_TEXT = "Populating...";
-		populatingCount = donePopulating ? --populatingCount : ++populatingCount;
+		boolean donePopulating = compoundsPopulated && genesPopulated && reactionsPopulated;
 
-		if(populatingCount == 1) {
+		if(!donePopulating) {
 			view.getSearchSuggestBox().setText(POPULATING_TEXT);
 			DOM.setElementPropertyBoolean(view.getSearchSuggestBox().getElement(), "disabled", true);
 			view.getCpdSrcSuggestBox().setText(POPULATING_TEXT);
@@ -743,8 +752,7 @@ public class RetrosynthesisPresenter {
 			view.getCpdDstSuggestBox().setText(POPULATING_TEXT);
 			DOM.setElementPropertyBoolean(view.getCpdDstSuggestBox().getElement(), "disabled", true);
 		}
-		else if(populatingCount <= 0) {
-			populatingCount = 0;
+		else {
 			view.getSearchSuggestBox().setText("");
 			DOM.setElementPropertyBoolean(view.getSearchSuggestBox().getElement(), "disabled", false);
 			view.getCpdSrcSuggestBox().setText("");

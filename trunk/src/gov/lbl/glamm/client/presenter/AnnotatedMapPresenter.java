@@ -101,11 +101,12 @@ public class AnnotatedMapPresenter {
 	private int dyThreshold;
 
 	public AnnotatedMapPresenter(final GlammServiceAsync rpc, final View view, final SimpleEventBus eventBus) {
+		
 		this.rpc = rpc;
 		this.view = view;
 		this.eventBus = eventBus;
 
-		dyThreshold = 10;
+		dyThreshold = 3;
 		if(Window.Navigator.getUserAgent().contains("Chrome") || Window.Navigator.getUserAgent().contains("Safari"))
 			dyThreshold = 1;
 		
