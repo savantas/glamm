@@ -19,6 +19,16 @@ public class ExperimentSessionDAOImpl implements ExperimentDAO {
 	}
 	
 	@Override
+	public ArrayList<Sample.DataType> getAvailableExperimentTypes() {
+		if(sm != null && sm.hasExperiments()) {
+			ArrayList<Sample.DataType> types = new ArrayList<Sample.DataType>();
+			types.add(Sample.DataType.SESSION);
+			return types;
+		}
+		return null;
+	}
+	
+	@Override
 	public ArrayList<Experiment> getAllExperiments(String taxonomyId) {
 		if(sm != null)
 			return sm.getExperimentsForTaxonomyId(taxonomyId);

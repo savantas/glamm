@@ -27,6 +27,7 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
@@ -68,6 +69,7 @@ public class ExperimentPresenter {
 		public HasClickHandlers		getRemoveFromSubsetButton();
 		public HasClickHandlers 	getResetSubsetButton();
 		public Label				getStatusLabel();
+		public Button				getStatusUploadButton();
 		public HasClickHandlers 	getUploadButton();
 		public HasClickHandlers		getViewExperimentButton();
 		public Panel				getViewSubsetPanel();
@@ -161,14 +163,14 @@ public class ExperimentPresenter {
 		TextColumn<Sample> treatmentColumn = new TextColumn<Sample>() {
 			@Override
 			public String getValue(Sample sample) {
-				return sample.getTreatment();
+				return sample.getTreatment() + sample.getUnitString();
 			}
 		};
 
 		TextColumn<Sample> controlColumn = new TextColumn<Sample>() {
 			@Override
 			public String getValue(Sample sample) {
-				return sample.getControl();
+				return sample.getControl() + sample.getUnitString();
 			}
 		};
 
@@ -231,6 +233,13 @@ public class ExperimentPresenter {
 
 					Window.open(urlBuilder.buildString(), "", "menubar=no,location=no,resizable=no,scrollbars=no,status=no,toolbar=false,width=0,height=0");
 				}
+			}
+		});
+		
+		view.getStatusUploadButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				eventBus.fireEvent(new ExperimentUploadEvent(organism, ExperimentUploadEvent.Action.REQUEST));
 			}
 		});
 
@@ -418,23 +427,27 @@ public class ExperimentPresenter {
 			view.getExperimentPanel().setVisible(false);
 			view.getStatusLabel().setText(View.STRING_SELECT_ORGANISM);
 			view.getStatusLabel().setVisible(true);
+			view.getStatusUploadButton().setVisible(false);
 			view.getExperimentSuggestBox().setText(View.STRING_NO_EXPERIMENT_SELECTED);
 			break;
 		case POPULATING:
 			view.getExperimentPanel().setVisible(false);
 			view.getStatusLabel().setText(View.STRING_POPULATING);
 			view.getStatusLabel().setVisible(true);
+			view.getStatusUploadButton().setVisible(false);
 			eventBus.fireEvent(new ViewResizedEvent());
 			break;
 		case NO_EXPERIMENTS:
 			view.getExperimentPanel().setVisible(false);
 			view.getStatusLabel().setText(View.STRING_NO_EXPERIMENTS);
 			view.getStatusLabel().setVisible(true);
+			view.getStatusUploadButton().setVisible(true);
 			eventBus.fireEvent(new ViewResizedEvent());
 			break;
 		case HAS_EXPERIMENTS:
 			view.getExperimentPanel().setVisible(true);
 			view.getStatusLabel().setVisible(false);
+			view.getStatusUploadButton().setVisible(false);
 			eventBus.fireEvent(new ViewResizedEvent());
 			break;
 		}

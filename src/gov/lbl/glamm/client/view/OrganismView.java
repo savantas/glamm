@@ -105,6 +105,12 @@ public class OrganismView extends Composite implements OrganismPresenter.View {
 	}
 	
 	@Override
+	public void clearDataTypeChoices() {
+		while(radioButtonPanel.getWidgetCount() > 0)
+			radioButtonPanel.remove(0);
+	}
+	
+	@Override
 	public DisclosurePanel getDisclosurePanel() {
 		return disclosurePanel;
 	}
@@ -143,11 +149,4 @@ public class OrganismView extends Composite implements OrganismPresenter.View {
 	public void minimize() {
 		disclosurePanel.setOpen(false);
 	}
-
-//	@Override
-//	public HandlerRegistration addResizeHandler(ResizeHandler handler) {
-//		return addHandler(handler, ResizeEvent.getType());
-//	}
-
-	
 }

@@ -24,6 +24,48 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 
 
 	//********************************************************************************
+	
+	@Override
+	public ArrayList<Sample.DataType> getAvailableExperimentTypes() {
+
+		ArrayList<Sample.DataType> types = null;
+		String sql = "";
+
+		if(GlammDbConnectionPool.getDbConfig().isFilterOnAcl())
+			sql = "select distinct(e.expType) " +
+			"from microarray.Exp e " +
+			"join microarray.ExpType et on (et.expType=e.expType) " +
+			"join genomics_test.ACL a on (a.resourceId=e.id and a.resourceType='uarray') " +
+			"where a.requesterId=1 and a.requesterType='group' and a.read=1 " +
+			"order by et.expType;";
+		else
+			sql = "select distinct(e.expType) " +
+			"from microarray.Exp e " +
+			"join microarray.ExpType et on (et.expType=e.expType) " +
+			"order by et.expType;";
+
+		try {
+
+			Connection connection = GlammDbConnectionPool.getConnection();
+			PreparedStatement ps = connection.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+
+			while(rs.next()) {
+				if(types == null)
+					types = new ArrayList<Sample.DataType>();
+				types.add(Sample.DataType.dataTypeForMolExpType(rs.getString("expType")));
+			}
+
+			rs.close();
+			connection.close();
+
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+
+		return types;
+
+	}
 
 	@Override
 	public Experiment getExperiment(String experimentId, String sampleId, String taxonomyId, String source) {
@@ -189,14 +231,14 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 			"join genomics_test.ACL A on (A.resourceId=E.id and A.resourceType='uarray') " +
 			"join microarray.Replicate R on (E.id=R.expId) " +
 			"where A.requesterId=1 and A.requesterType='group' and A.read=1 and C.taxonomyId=?" +
-			"order by R.expId, R.setId;";
+			"group by R.expId, R.setId;";
 		else
 			sql = "select R.expId, R.setId, E.stress, R.cFactor, R.tFactor, R.factorUnit, R.cTime, R.tTime " +
 			"from microarray.Exp E " +
 			"join microarray.Chip C on (E.chipId=C.id) " +
 			"join microarray.Replicate R on (E.id=R.expId) " +
 			"where C.taxonomyId=?" +
-			"order by R.expId, R.setId;";
+			"group by R.expId, R.setId;";
 
 		try {
 
@@ -299,5 +341,7 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 	}
 
 	//********************************************************************************
+
+	
 
 }

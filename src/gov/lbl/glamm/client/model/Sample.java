@@ -3,6 +3,7 @@ package gov.lbl.glamm.client.model;
 
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 import com.google.gwt.view.client.ProvidesKey;
 
@@ -12,11 +13,36 @@ public class Sample extends GlammPrimitive implements Serializable {
 
 	public static transient final String DEFAULT_SAMPLE_ID 	= "-1";
 
-	public static transient final String DATA_TYPE_FLUX			= "flux";
-	public static transient final String DATA_TYPE_METABOLITE	= "metabolite";
-	public static transient final String DATA_TYPE_MRNA			= "mRNA";
-	public static transient final String DATA_TYPE_NONE			= "none";
-	public static transient final String DATA_TYPE_PROTEIN		= "protein";
+	public enum DataType {
+
+		NONE("None"),
+		FITNESS("Fitness"),
+		PROTEIN("Protein"),
+		RNA("RNA"),
+		RNASEQ("RNASeq"),
+		SESSION("Session");
+
+		private static HashMap<String, DataType> molExpType2DataType = new HashMap<String, DataType>();
+		
+		static {
+			for(DataType dataType : DataType.values())
+				molExpType2DataType.put(dataType.molExpType, dataType);
+		}
+
+		private String molExpType = null;
+
+		private DataType(final String molExpType) {
+			this.molExpType = molExpType;
+		}
+		
+		public static DataType dataTypeForMolExpType(final String molExpType) {
+			return molExpType2DataType.get(molExpType);
+		}
+		
+		public String getMolExpType() {
+			return molExpType;
+		}
+	}
 
 	private float clampMin			= 0f;
 	private float clampMid			= 0f;
@@ -119,7 +145,8 @@ public class Sample extends GlammPrimitive implements Serializable {
 	}
 
 	public final String getSummary() {
-		return stress + " - " + treatment + " - " + control;
+		String unitString = getUnitString();
+		return stress + " - " + treatment + unitString + " - " + control + unitString;
 	}
 
 	public final String getTaxonomyId() {
@@ -137,6 +164,17 @@ public class Sample extends GlammPrimitive implements Serializable {
 
 	public final String getUnits() {
 		return units;
+	}
+	
+	public final String getUnitString() {
+		String unitString = "";
+		
+		if(factorUnit != null)
+			unitString = "(" + factorUnit + ")";
+		else if(units != null)
+			unitString = "(" + units + ")";
+		
+		return unitString;
 	}
 
 	public void setClampValues(final float clampMin, final float clampMid, final float clampMax) {

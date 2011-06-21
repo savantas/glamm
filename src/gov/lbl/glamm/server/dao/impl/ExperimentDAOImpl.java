@@ -24,6 +24,21 @@ public class ExperimentDAOImpl implements ExperimentDAO {
 	}
 	
 	@Override
+	public ArrayList<Sample.DataType> getAvailableExperimentTypes() {
+		ArrayList<Sample.DataType> types = null;
+		
+		if(sm != null)
+			types = expSessionDao.getAvailableExperimentTypes();
+		
+		if(types == null)
+			types = expUArrayDao.getAvailableExperimentTypes();
+		else
+			types.addAll(expUArrayDao.getAvailableExperimentTypes());
+		
+		return types;
+	}
+	
+	@Override
 	public Experiment getExperiment(String experimentId, String sampleId, String taxonomyId, String source) {
 		Experiment experiment = null;
 		
@@ -56,15 +71,22 @@ public class ExperimentDAOImpl implements ExperimentDAO {
 	@Override
 	public ArrayList<Sample> getAllSamples(String taxonomyId) {
 		
-		ArrayList<Sample> samples = null;
+		ArrayList<Sample> sessionSamples = null;
+		ArrayList<Sample> molSamples = expUArrayDao.getAllSamples(taxonomyId);
 		
 		if(sm != null) 
-			samples = expSessionDao.getAllSamples(taxonomyId);
+			sessionSamples = expSessionDao.getAllSamples(taxonomyId);
 		
-		if(samples == null)
-			samples = expUArrayDao.getAllSamples(taxonomyId);
-		else
-			samples.addAll(expUArrayDao.getAllSamples(taxonomyId));
+		if(sessionSamples == null && molSamples == null)
+			return null;
+		
+		ArrayList<Sample> samples = new ArrayList<Sample>();
+		
+		if(sessionSamples != null)
+			samples.addAll(sessionSamples);
+		
+		if(molSamples != null)
+			samples.addAll(molSamples);
 		
 		return samples;
 	}

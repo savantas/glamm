@@ -2,6 +2,7 @@ package gov.lbl.glamm.server.dao.impl;
 
 import gov.lbl.glamm.client.model.Gene;
 import gov.lbl.glamm.client.model.Organism;
+import gov.lbl.glamm.client.model.Sample;
 import gov.lbl.glamm.server.SessionManager;
 import gov.lbl.glamm.server.dao.OrganismDAO;
 
@@ -25,8 +26,17 @@ public class OrganismSessionDAOImpl implements OrganismDAO {
 	}
 
 	@Override
-	public ArrayList<Organism> getAllOrganismsWithDataForType(String dataType) {
-		return getAllOrganisms();
+	public ArrayList<Organism> getAllOrganismsWithDataForType(Sample.DataType dataType) {
+		if(sm == null)
+			return null;
+		
+		if(dataType == Sample.DataType.NONE)
+			return sm.getOrganisms();
+		
+		if(dataType == Sample.DataType.SESSION)
+			return sm.getOrganismsWithUserData();
+	
+		return null;
 	}
 
 	@Override
@@ -62,6 +72,13 @@ public class OrganismSessionDAOImpl implements OrganismDAO {
 
 		}
 		return ecNum2Organisms;
+	}
+	
+	@Override
+	public Organism getOrganismForTaxonomyId(final String taxonomyId) {
+		if(sm == null)
+			return null;
+		return sm.getOrganismForTaxonomyId(taxonomyId);
 	}
 
 }

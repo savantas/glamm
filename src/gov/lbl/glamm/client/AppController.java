@@ -424,6 +424,18 @@ public class AppController {
 				organismPresenter.populate();
 			}
 		});
+		
+		eventBus.addHandler(ExperimentUploadEvent.TYPE, new ExperimentUploadEvent.Handler() {
+			@Override
+			public void onRequest(ExperimentUploadEvent event) {
+				return;
+			}
+
+			@Override
+			public void onSuccess(ExperimentUploadEvent event) {
+				organismPresenter.updateDataTypeChoices();
+			}
+		});
 
 	}
 
