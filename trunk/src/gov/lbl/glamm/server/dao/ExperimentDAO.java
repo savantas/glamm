@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public interface ExperimentDAO {
+	public ArrayList<Sample.DataType> getAvailableExperimentTypes();
 	public Experiment getExperiment(String experimentId, String sampleId, String taxonomyId, String source);
 	public ArrayList<Experiment> getAllExperiments(String taxonomyId);
 	public ArrayList<Sample> getAllSamples(String taxonomyId);

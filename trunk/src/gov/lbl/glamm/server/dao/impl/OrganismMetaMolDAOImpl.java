@@ -22,11 +22,11 @@ public class OrganismMetaMolDAOImpl implements OrganismDAO {
 	}
 
 	@Override
-	public ArrayList<Organism> getAllOrganismsWithDataForType(String dataType) {
+	public ArrayList<Organism> getAllOrganismsWithDataForType(Sample.DataType dataType) {
 		ArrayList<Organism> organisms = null;
 
 		String sql = "";
-		if(dataType == null || dataType.isEmpty() || dataType.equals(Sample.DATA_TYPE_NONE)) {
+		if(dataType == Sample.DataType.NONE) {
 			if(GlammDbConnectionPool.getDbConfig().isFilterOnAcl())
 				sql = "select distinct(taxonomyId), name " +
 				"from meta2010jul.Taxonomy t " +
@@ -138,6 +138,53 @@ public class OrganismMetaMolDAOImpl implements OrganismDAO {
 		}
 
 		return ecNum2Organisms;
+	}
+
+	@Override
+	public Organism getOrganismForTaxonomyId(final String taxonomyId) {
+		Organism organism = null;
+
+		String sql = "";
+
+		if(GlammDbConnectionPool.getDbConfig().isFilterOnAcl())
+			sql = "select distinct(name) " +
+			"from meta2010jul.Taxonomy t " +
+			"join meta2010jul.Scaffold s using (taxonomyId) " +
+			"join meta2010jul.ACL a on (a.resourceId=s.scaffoldId and a.resourceType='scaffold') " +
+			"where t.taxonomyId=? " +
+			"and s.isGenomic=1 and s.isActive=1 and s.length >= 1000 " +
+			"and a.requesterId=1 and a.requesterType='group' and a.read=1 " +
+			"order by t.name;";
+		else
+			sql = "select distinct(name) " +
+			"from meta2010jul.Taxonomy t " +
+			"join meta2010jul.Scaffold s " +
+			"using (taxonomyId) " +
+			"where t.taxonomyId=? " +
+			"and s.isGenomic=1 and s.isActive=1 and s.length >= 1000 order by t.name;";
+
+
+		try {
+
+			Connection connection = GlammDbConnectionPool.getConnection();
+			PreparedStatement ps = connection.prepareStatement(sql);
+			ps.setString(1, taxonomyId);
+			
+			ResultSet rs = ps.executeQuery();
+
+			if(rs.next()) {
+				String name = rs.getString("name");
+				organism = new Organism(taxonomyId, name, false);
+			}
+
+			rs.close();
+			connection.close();
+
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+
+		return organism;
 	}
 
 }

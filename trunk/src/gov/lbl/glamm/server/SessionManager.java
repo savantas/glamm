@@ -26,6 +26,7 @@ public class SessionManager {
 	private HashMap<String, Experiment> 			experimentId2Experiment	= null;
 	private HashMap<String, HashMap<String, HashSet<Measurement>>> 
 													measurements 			= null;
+	private ArrayList<Organism>						organismsWithUserData	= null;
 	private HashMap<String, ArrayList<Route>>		routes					= null;
 	private HashMap<String, ArrayList<Experiment>> 	taxonomyId2Experiments 	= null;
 	private HashMap<String, ArrayList<Gene>>		taxonomyId2Genes 		= null;
@@ -51,6 +52,7 @@ public class SessionManager {
 	protected SessionManager() {
 		experimentId2Experiment		= new HashMap<String, Experiment>();
 		measurements				= new HashMap<String, HashMap<String, HashSet<Measurement>>>();
+		organismsWithUserData		= new ArrayList<Organism>();
 		routes						= new HashMap<String, ArrayList<Route>>();
 		taxonomyId2Experiments		= new HashMap<String, ArrayList<Experiment>>();
 		taxonomyId2Genes 			= new HashMap<String, ArrayList<Gene>>();
@@ -59,8 +61,9 @@ public class SessionManager {
 	
 	//********************************************************************************
 	
-	public void addExperiment(Experiment experiment, String taxonomyId) {
-		if(experiment != null && taxonomyId != null) {
+	public void addExperiment(Experiment experiment, Organism organism) {
+		if(experiment != null && organism != null) {
+			String taxonomyId = organism.getTaxonomyId();
 			experimentId2Experiment.put(experiment.getExperimentId(), experiment);
 			ArrayList<Experiment> experiments = taxonomyId2Experiments.get(taxonomyId);
 			if(experiments == null) {
@@ -68,6 +71,8 @@ public class SessionManager {
 				taxonomyId2Experiments.put(taxonomyId, experiments);
 			}
 			experiments.add(experiment);
+			if(!organismsWithUserData.contains(organism))
+				organismsWithUserData.add(organism);
 		}
 	}
 
@@ -89,8 +94,9 @@ public class SessionManager {
 	
 	//********************************************************************************
 	
-	public void addMeasurements(String expId, String sampleId, String taxonomyId, 
+	public void addMeasurements(String expId, String sampleId, Organism organism, 
 			HashMap<String, HashSet<Measurement>> id2Measurement) {
+		String taxonomyId = organism.getTaxonomyId();
 		String key = composeMeasurementsKey(expId, sampleId, taxonomyId);
 		measurements.put(key, id2Measurement);
 	}
@@ -182,6 +188,12 @@ public class SessionManager {
 	}
 	
 	//********************************************************************************
+	
+	public ArrayList<Organism> getOrganismsWithUserData() {
+		return organismsWithUserData;
+	}
+	
+	//********************************************************************************
 
 	public ArrayList<Route> getRoutes(String taxonomyId, String cpdSrcId, String cpdDstId, String algorithm, String mapTitle) {
 		String key = composeDirectionsKey(taxonomyId, cpdSrcId, cpdDstId, algorithm, mapTitle);
@@ -189,7 +201,13 @@ public class SessionManager {
 	}
 	
 	//********************************************************************************
+
+	public boolean hasExperiments() {
+		return !(experimentId2Experiment == null || experimentId2Experiment.isEmpty());
+	}
 	
+	//********************************************************************************
+
 	public boolean isSessionExperiment(String experimentId) {
 		return (getExperimentForId(experimentId) != null);
 	}

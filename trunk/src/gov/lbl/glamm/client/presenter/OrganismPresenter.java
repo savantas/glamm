@@ -5,6 +5,7 @@ import gov.lbl.glamm.client.events.OrganismUploadEvent;
 import gov.lbl.glamm.client.events.ViewResizedEvent;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Sample;
+import gov.lbl.glamm.client.model.Sample.DataType;
 import gov.lbl.glamm.client.rpc.GlammServiceAsync;
 import gov.lbl.glamm.shared.RequestParameters;
 
@@ -37,6 +38,7 @@ public class OrganismPresenter {
 
 	public interface View {
 		public HasClickHandlers		addDataTypeChoice(final String caption, final boolean isDefault);
+		public void					clearDataTypeChoices();
 		public DisclosurePanel		getDisclosurePanel();
 		public HasClickHandlers 	getDownloadButton();
 		public ListBox 				getOrganismListBox();
@@ -48,13 +50,22 @@ public class OrganismPresenter {
 	}
 
 	private static final String ACTION_DOWNLOAD_ORGANISM	= "downloadOrganism";
+	private static final HashMap<Sample.DataType, String> dataType2Caption = new HashMap<Sample.DataType, String>();
+	static {
+		dataType2Caption.put(Sample.DataType.NONE, "Show all organisms");
+		dataType2Caption.put(Sample.DataType.FITNESS, "Show only organisms with fitness data");
+		dataType2Caption.put(Sample.DataType.PROTEIN, "Show only organisms with proteomics data");
+		dataType2Caption.put(Sample.DataType.RNA, "Show only organisms with mRNA data");
+		dataType2Caption.put(Sample.DataType.RNASEQ, "Show only organisms with RNASeq data");
+		dataType2Caption.put(Sample.DataType.SESSION, "Show only organisms uploaded experiment data");
+	}
 
 	private GlammServiceAsync rpc 		= null;
 	private View view = null;
 	private SimpleEventBus eventBus = null;
 
 	private Organism organism	= null;
-	private String dataType		= Sample.DATA_TYPE_NONE;
+	private Sample.DataType dataType		= Sample.DataType.NONE;
 
 	private HashMap<String, Organism> name2Organism = null;
 
@@ -65,19 +76,41 @@ public class OrganismPresenter {
 		this.eventBus = eventBus;
 
 		name2Organism	= new HashMap<String, Organism>();
-		dataType		= Sample.DATA_TYPE_NONE;
+		dataType		= Sample.DataType.NONE;
 
-		addDataTypeChoice(Sample.DATA_TYPE_NONE, "Show all organisms", true);
-		addDataTypeChoice(Sample.DATA_TYPE_MRNA, "Show only organisms with mRNA data", false);
-
+		updateDataTypeChoices();
+		
 		setOrganism(Organism.globalMap(), true);
 
 		bindView();
 	}
 
-	private void addDataTypeChoice(final String dataType, final String caption, final boolean isDefault) {
-		final OrganismPresenter thePresenter = this;
+	public void updateDataTypeChoices() {
+		
+		view.clearDataTypeChoices();
+		
+		addDataTypeChoice(Sample.DataType.NONE, true);
+		rpc.getAvailableExperimentTypes(new AsyncCallback<ArrayList<Sample.DataType>>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert("Remote procedure call failure: getAvailableExperimentTypes");
+			}
 
+			@Override
+			public void onSuccess(ArrayList<DataType> result) {
+				if(result == null)
+					return;
+				for(Sample.DataType dataType : result) {
+					addDataTypeChoice(dataType, false);
+				}
+			}
+		});
+	}
+	
+	private void addDataTypeChoice(final Sample.DataType dataType, final boolean isDefault) {
+		final OrganismPresenter thePresenter = this;
+		final String caption = dataType2Caption.get(dataType);
+		
 		HasClickHandlers dataTypeChoice = view.addDataTypeChoice(caption, isDefault);
 
 		dataTypeChoice.addClickHandler(new ClickHandler() {

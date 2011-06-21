@@ -10,7 +10,7 @@ import java.util.HashSet;
  * @author jtbates
  *
  */
-@SuppressWarnings({ "unused", "serial" })
+@SuppressWarnings("serial")
 public class Gene extends GlammPrimitive implements Serializable {
 
 	public static transient GlammPrimitive.Type TYPE = new GlammPrimitive.Type();

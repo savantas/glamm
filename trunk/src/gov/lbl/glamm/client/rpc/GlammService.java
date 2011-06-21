@@ -23,6 +23,7 @@ public interface GlammService extends RemoteService {
 	public String genCpdPopup(String query, String taxonomyId);
 	public String genKeggPwyPopup(String query, String taxonomyId, String experimentId, String sampleId);
 	public String genRxnPopup(String query, String taxonomyId);
+	public ArrayList<Sample.DataType> getAvailableExperimentTypes();
 	public ArrayList<Pathway> getDirections(String taxonomyId, Compound cpdSrc, Compound cpdDst, String mapTitle, String algorithm);
 	public MetabolicNetwork getMapConnectivity(String mapId);
 	public ArrayList<? extends GlammPrimitive> getMeasurementsForExperiment(String experimentId, String sampleId, String taxonomyId, String expSource);
@@ -31,6 +32,6 @@ public interface GlammService extends RemoteService {
 	public ArrayList<Experiment> populateExperiments(String taxonomyId);
 	public ArrayList<Gene> populateLocusSearch(String taxonomyId);
 	public ArrayList<Reaction> populateReactionSearch(HashSet<String> rxnDbNames);
-	public ArrayList<Organism> populateOrganisms(String dataType);
+	public ArrayList<Organism> populateOrganisms(Sample.DataType dataType);
 	public ArrayList<Sample> populateSamples(String taxonomyId);
 }

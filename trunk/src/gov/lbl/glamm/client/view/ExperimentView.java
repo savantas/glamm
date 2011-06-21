@@ -33,7 +33,9 @@ public class ExperimentView extends Composite
 	// disclosure panel
 	private DisclosurePanel		disclosurePanel				= null;
 	private VerticalPanel		browsePanel					= null;
+	private HorizontalPanel		statusPanel					= null;
 	private Label				statusLabel					= null;
+	private Button				statusUploadButton			= null;
 	private VerticalPanel		experimentPanel				= null;
 	private ScrollPanel			experimentTableScrollPanel	= null;
 	private CellTable<Sample> 	experimentTable				= null;
@@ -68,6 +70,8 @@ public class ExperimentView extends Composite
 		disclosurePanel				= new DisclosurePanel(STRING_DISCLOSURE_PANEL);
 		browsePanel					= new VerticalPanel();
 		statusLabel					= new Label();
+		statusPanel					= new HorizontalPanel();
+		statusUploadButton			= new Button(STRING_UPLOAD_BUTTON);
 		experimentPanel				= new VerticalPanel();
 		experimentTableScrollPanel	= new ScrollPanel();
 		experimentTable				= new CellTable<Sample>();
@@ -116,7 +120,10 @@ public class ExperimentView extends Composite
 		experimentPanel.add(expButtonPanel);
 		experimentPanel.add(viewSubsetPanel);
 		
-		browsePanel.add(statusLabel);
+		statusPanel.setSpacing(5);
+		statusPanel.add(statusLabel);
+		statusPanel.add(statusUploadButton);
+		browsePanel.add(statusPanel);
 		browsePanel.add(experimentPanel);
 		disclosurePanel.setContent(browsePanel);
 		
@@ -192,6 +199,11 @@ public class ExperimentView extends Composite
 	@Override
 	public Label getStatusLabel() {
 		return statusLabel;
+	}
+	
+	@Override
+	public Button getStatusUploadButton() {
+		return statusUploadButton;
 	}
 
 	@Override

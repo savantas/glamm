@@ -16,29 +16,18 @@ import java.util.HashSet;
 
 public class OrganismMolDAOImpl implements OrganismDAO {
 	
-	/*
-	 * To get a count of organisms for each available expType:
-	 * 
-	 * select count(distinct(c.taxonomyId)), et.expType 
-	 * from microarray.Exp e 
-	 * join microarray.Chip c on (e.chipId=c.id) 
-	 * join genomics_test.Taxonomy t on (c.taxonomyId=t.taxonomyId) 
-	 * join ExpType et on (et.expType=e.expType) 
-	 * group by expType;
-	 */
-
 	@Override
 	public ArrayList<Organism> getAllOrganisms() {
 		return getAllOrganismsWithDataForType(null);
 	}
 
 	@Override
-	public ArrayList<Organism> getAllOrganismsWithDataForType(String dataType) {
+	public ArrayList<Organism> getAllOrganismsWithDataForType(Sample.DataType dataType) {
 
 		ArrayList<Organism> organisms = null;
 
 		String sql = "";
-		if(dataType == null || dataType.isEmpty() || dataType.equals(Sample.DATA_TYPE_NONE)) {
+		if(dataType == Sample.DataType.NONE) {
 			if(GlammDbConnectionPool.getDbConfig().isFilterOnAcl())
 				sql = "select distinct(t.taxonomyId), t.name " +
 				"from Taxonomy t " + 
@@ -56,22 +45,28 @@ public class OrganismMolDAOImpl implements OrganismDAO {
 				"where tpc.parentId in (2,2157,2759) and s.isGenomic=1 and s.isActive=1 and s.length >= 1000 " + 
 				"order by t.name;";
 		}
-		else if(dataType.equals(Sample.DATA_TYPE_MRNA)) {
+		else if(dataType != Sample.DataType.SESSION) {
 			if(GlammDbConnectionPool.getDbConfig().isFilterOnAcl())
 				sql = "select distinct(c.taxonomyId), t.name " + 
 				"from microarray.Exp e " +
+				"join microarray.ExpType et on (e.expType=et.expType) " +
 				"join microarray.Chip c on (e.chipId=c.id) " +
 				"join Taxonomy t on (c.taxonomyId=t.taxonomyId) " +
 				"join ACL a on (a.resourceId=e.id AND a.resourceType='uarray') " +
 				"where a.requesterId=1 and a.requesterType='group' and a.read=1 " +
+				"and et.expType=\"" + dataType.getMolExpType() + "\" " +
 				"order by t.name;";
 			else
 				sql = "select distinct(c.taxonomyId), t.name " + 
 				"from microarray.Exp e " +
+				"join microarray.ExpType et on (e.expType=et.expType) " +
 				"join microarray.Chip c on (e.chipId=c.id) " +
 				"join Taxonomy t on (c.taxonomyId=t.taxonomyId) " +
+				"where et.expType=\"" + dataType.getMolExpType() + "\" " +
 				"order by t.name;";
 		}
+		else 
+			return null;
 
 		try {
 
@@ -169,6 +164,52 @@ public class OrganismMolDAOImpl implements OrganismDAO {
 		}
 
 		return ecNum2Organisms;
+	}
+	
+	@Override
+	public Organism getOrganismForTaxonomyId(final String taxonomyId) {
+		Organism organism = null;
+
+		String sql = "";
+		
+			if(GlammDbConnectionPool.getDbConfig().isFilterOnAcl())
+				sql = "select distinct(t.name) " +
+				"from Taxonomy t " + 
+				"join Scaffold s on (s.taxonomyId=t.taxonomyId) " + 
+				"join ACL a on (a.resourceId=s.scaffoldId and a.resourceType='scaffold') " +
+				"where t.taxonomyId=? and " +
+				"s.isGenomic=1 and s.isActive=1 and s.length >= 1000 and " + 
+				"a.requesterId=1 and a.requesterType='group' and a.read=1 " +
+				"order by t.name;";
+			else
+				sql = "select distinct(t.name) " +
+				"from Taxonomy t " + 
+				"join Scaffold s on (s.taxonomyId=t.taxonomyId) " + 
+				"where t.taxonomyId=? and " +
+				"s.isGenomic=1 and s.isActive=1 and s.length >= 1000 " + 
+				"order by t.name;";
+	
+		try {
+
+			Connection connection = GlammDbConnectionPool.getConnection();
+			PreparedStatement ps = connection.prepareStatement(sql);
+			ps.setString(1, taxonomyId);
+			
+			ResultSet rs = ps.executeQuery();
+
+			if(rs.next()) {
+				String name = rs.getString("name");
+				organism = new Organism(taxonomyId, name, false);
+			}
+
+			rs.close();
+			connection.close();
+
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+
+		return organism;
 	}
 
 }

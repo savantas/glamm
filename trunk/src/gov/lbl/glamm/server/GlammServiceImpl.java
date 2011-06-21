@@ -13,6 +13,7 @@ import gov.lbl.glamm.client.rpc.GlammService;
 import gov.lbl.glamm.server.actions.GenCpdPopup;
 import gov.lbl.glamm.server.actions.GenPwyPopup;
 import gov.lbl.glamm.server.actions.GenRxnPopup;
+import gov.lbl.glamm.server.actions.GetAvailableExperimentTypes;
 import gov.lbl.glamm.server.actions.GetExperiment;
 import gov.lbl.glamm.server.actions.GetMapConnectivity;
 import gov.lbl.glamm.server.actions.GetRxnsForOrganism;
@@ -88,6 +89,11 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	}
 	
 	@Override
+	public ArrayList<Sample.DataType> getAvailableExperimentTypes() {
+		return GetAvailableExperimentTypes.getAvailableExperimentTypes(getSessionManager(false));
+	}
+	
+	@Override
 	public ArrayList<Pathway> getDirections(String taxonomyId, Compound cpdSrc, Compound cpdDst, String mapTitle, String algorithm) {
 		return GetDirections.getDirections(getSessionManager(true), taxonomyId, cpdSrc, cpdDst, mapTitle, algorithm);
 	}
@@ -123,7 +129,7 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	}
 
 	@Override
-	public ArrayList<Organism> populateOrganisms(String dataType) {
+	public ArrayList<Organism> populateOrganisms(Sample.DataType dataType) {
 		return PopulateOrganisms.populateOrganisms(getSessionManager(false), dataType);
 	}
 	

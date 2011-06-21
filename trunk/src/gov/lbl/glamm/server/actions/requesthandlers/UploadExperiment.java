@@ -2,13 +2,16 @@ package gov.lbl.glamm.server.actions.requesthandlers;
 
 import gov.lbl.glamm.client.model.Experiment;
 import gov.lbl.glamm.client.model.Measurement;
+import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Sample;
 import gov.lbl.glamm.client.presenter.ExperimentUploadPresenter;
 import gov.lbl.glamm.server.FileUploadHandler;
+import gov.lbl.glamm.server.FileUploadHandler.LineParser;
 import gov.lbl.glamm.server.RequestHandler;
 import gov.lbl.glamm.server.ResponseHandler;
 import gov.lbl.glamm.server.SessionManager;
-import gov.lbl.glamm.server.FileUploadHandler.LineParser;
+import gov.lbl.glamm.server.dao.OrganismDAO;
+import gov.lbl.glamm.server.dao.impl.OrganismDAOImpl;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -94,12 +97,16 @@ public class UploadExperiment implements RequestHandler {
 		// construct the experiment
 		Experiment experiment = new Experiment(expId, taxonomyId, Experiment.EXP_SRC_SESSION);
 		experiment.addSample(sample);
+		
+		// get the organism associated with this taxonomyId
+		OrganismDAO organismDao = new OrganismDAOImpl(sm);
+		Organism organism = organismDao.getOrganismForTaxonomyId(taxonomyId);
 
 		// add the experiment to the session
-		sm.addExperiment(experiment, taxonomyId);
+		sm.addExperiment(experiment, organism);
 
 		// add the id2Measurement map to the session
-		sm.addMeasurements(expId, sampleId, taxonomyId, id2Measurement);
+		sm.addMeasurements(expId, sampleId, organism, id2Measurement);
 
 		// handle response
 		ResponseHandler.asHtml(response, fuh.getErrorMessages(), HttpServletResponse.SC_OK);

@@ -21,6 +21,7 @@ public interface GlammServiceAsync {
 	public void genCpdPopup(String query, String taxonomyId, AsyncCallback<String> callback);
 	public void genKeggPwyPopup(String query, String taxonomyId, String experimentId, String sampleId, AsyncCallback<String> callback);
 	public void genRxnPopup(String query, String taxonomyId, AsyncCallback<String> callback);
+	public void getAvailableExperimentTypes(AsyncCallback<ArrayList<Sample.DataType>> callback);
 	public void getDirections(String taxonomyId, Compound cpdSrc, Compound cpdDst, String mapTitle, String algorithm, AsyncCallback<ArrayList<Pathway>> callback);
 	public void getMapConnectivity(String mapId, AsyncCallback<MetabolicNetwork> callback);
 	public void getMeasurementsForExperiment(String experimentId, String sampleId, String taxonomyId, String expSource, AsyncCallback<ArrayList<? extends GlammPrimitive>> callback);
@@ -28,7 +29,7 @@ public interface GlammServiceAsync {
 	public void populateCompoundSearch(HashSet<String> cpdDbNames, AsyncCallback<ArrayList<Compound>> callback);
 	public void populateExperiments(String taxonomyId, AsyncCallback<ArrayList<Experiment>> callback);
 	public void populateLocusSearch(String taxonomyId, AsyncCallback<ArrayList<Gene>> callback);
-	public void populateOrganisms(String dataType, AsyncCallback<ArrayList<Organism>> callback);
+	public void populateOrganisms(Sample.DataType dataType, AsyncCallback<ArrayList<Organism>> callback);
 	public void populateReactionSearch(HashSet<String> rxnDbNames, AsyncCallback<ArrayList<Reaction>> callback);
 	public void populateSamples(String taxonomyId, AsyncCallback<ArrayList<Sample>> callback);
 }
