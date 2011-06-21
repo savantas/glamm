@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
 <config>
 	<database uri="jdbc:mysql://gtldb2.qb3.berkeley.edu/genomics_test" driver="org.gjt.mm.mysql.Driver" user="test" passwd="test" filterOnAcl="true" debug="false"/>
-	<database uri="jdbc:mysql://127.0.0.1:3306/genomics_test" driver="org.gjt.mm.mysql.Driver" user="test" passwd="test" filterOnAcl="false" debug="true"/>
+	<database uri="jdbc:mysql://127.0.0.1:3307/genomics_test" driver="org.gjt.mm.mysql.Driver" user="test" passwd="test" filterOnAcl="false" debug="true"/>
 </config>
