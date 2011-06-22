@@ -1,5 +1,12 @@
 package gov.lbl.glamm.server.dao.impl;
 
+import gov.lbl.glamm.client.model.Organism;
+import gov.lbl.glamm.client.model.Sample;
+import gov.lbl.glamm.server.GlammDbConnectionPool;
+import gov.lbl.glamm.server.SessionManager;
+import gov.lbl.glamm.server.dao.OrganismDAO;
+import gov.lbl.glamm.shared.GlammUtils;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,14 +15,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import gov.lbl.glamm.client.model.Organism;
-import gov.lbl.glamm.client.model.Sample;
-import gov.lbl.glamm.server.GlammDbConnectionPool;
-import gov.lbl.glamm.server.dao.OrganismDAO;
-import gov.lbl.glamm.shared.GlammUtils;
-
 public class OrganismMetaMolDAOImpl implements OrganismDAO {
 
+	private SessionManager sm = null;
+	
+	public OrganismMetaMolDAOImpl(SessionManager sm) {
+		this.sm = sm;
+	}
+	
 	@Override
 	public ArrayList<Organism> getAllOrganisms() {
 		return getAllOrganismsWithDataForType(null);
@@ -31,10 +38,10 @@ public class OrganismMetaMolDAOImpl implements OrganismDAO {
 				sql = "select distinct(taxonomyId), name " +
 				"from meta2010jul.Taxonomy t " +
 				"join meta2010jul.Scaffold s using (taxonomyId) " +
-				"join meta2010jul.ACL a on (a.resourceId=s.scaffoldId and a.resourceType='scaffold') " +
+				"join meta2010jul.ACL A on (A.resourceId=s.scaffoldId and A.resourceType='scaffold') " +
 				"where t.taxonomyId >= 1000000000000 " +
 				"and s.isGenomic=1 and s.isActive=1 and s.length >= 1000 " +
-				"and a.requesterId=1 and a.requesterType='group' and a.read=1 " +
+				"and A.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getMolAclGroupIds()) : "1") + ") and A.requesterType='group' and A.read=1 " +
 				"order by t.name;";
 			else
 				sql = "select distinct(taxonomyId), name " +
@@ -92,8 +99,8 @@ public class OrganismMetaMolDAOImpl implements OrganismDAO {
 			"join meta2010jul.Locus2Ec L2E on (L2E.scaffoldId=S.scaffoldId) " +
 			"join meta2010jul.ACL A on(A.resourceId=S.ScaffoldId and A.resourceType='scaffold') " +
 			"where S.isGenomic=1 and S.isActive=1 and S.length >= 1000 and " +
-			"A.requesterId=1 and A.requesterType='group' and A.read=1 and " +
-			"L2E.ecNum in (" + GlammUtils.joinCollection(ecNums) + ") " +
+			"and A.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getMolAclGroupIds()) : "1") + ") and A.requesterType='group' and A.read=1 " +
+			"and L2E.ecNum in (" + GlammUtils.joinCollection(ecNums) + ") " +
 			"order by T.name;";
 		else
 			sql = "select distinct T.taxonomyId, T.name, L2E.ecNum " +
@@ -150,10 +157,10 @@ public class OrganismMetaMolDAOImpl implements OrganismDAO {
 			sql = "select distinct(name) " +
 			"from meta2010jul.Taxonomy t " +
 			"join meta2010jul.Scaffold s using (taxonomyId) " +
-			"join meta2010jul.ACL a on (a.resourceId=s.scaffoldId and a.resourceType='scaffold') " +
+			"join meta2010jul.ACL A on (A.resourceId=s.scaffoldId and A.resourceType='scaffold') " +
 			"where t.taxonomyId=? " +
 			"and s.isGenomic=1 and s.isActive=1 and s.length >= 1000 " +
-			"and a.requesterId=1 and a.requesterType='group' and a.read=1 " +
+			"and A.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getMolAclGroupIds()) : "1") + ") and A.requesterType='group' and A.read=1 " +
 			"order by t.name;";
 		else
 			sql = "select distinct(name) " +

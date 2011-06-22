@@ -23,6 +23,7 @@ import gov.lbl.glamm.server.actions.PopulateLocusSearch;
 import gov.lbl.glamm.server.actions.PopulateOrganisms;
 import gov.lbl.glamm.server.actions.PopulateReactionSearch;
 import gov.lbl.glamm.server.actions.PopulateSamples;
+import gov.lbl.glamm.server.actions.UpdateMolAclUserId;
 import gov.lbl.glamm.server.actions.requesthandlers.GetDirections;
 
 import java.net.MalformedURLException;
@@ -141,6 +142,12 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	@Override
 	public ArrayList<Sample> populateSamples(String taxonomyId) {
 		return PopulateSamples.populateSamples(getSessionManager(false), taxonomyId);
+	}
+	
+	@Override
+	public Void updateMolAclUserId(final String molAclUserId) {
+		UpdateMolAclUserId.updateMolAclUserId(getSessionManager(true), molAclUserId);
+		return null;
 	}
 	
 	/**

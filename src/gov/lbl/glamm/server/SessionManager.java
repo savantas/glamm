@@ -17,15 +17,17 @@ public class SessionManager {
 
 	//********************************************************************************
 	
-	private static final String SESSION_EXPERIMENT = "Session Experiment ";
-	private static final String SESSION_ORGANISM = "Session Organism ";
-	private static final String GLAMM_SESSION_MANAGER = "GLAMM_SESSION_MANAGER";
+	private static final String SESSION_EXPERIMENT		= "Session Experiment ";
+	private static final String SESSION_ORGANISM 		= "Session Organism ";
+	private static final String GLAMM_SESSION_MANAGER 	= "GLAMM_SESSION_MANAGER";
 
 	//********************************************************************************
 
 	private HashMap<String, Experiment> 			experimentId2Experiment	= null;
 	private HashMap<String, HashMap<String, HashSet<Measurement>>> 
 													measurements 			= null;
+	private HashSet<String> 						molAclGroupIds 			= null;
+	private String 									molAclUserId 			= null;
 	private ArrayList<Organism>						organismsWithUserData	= null;
 	private HashMap<String, ArrayList<Route>>		routes					= null;
 	private HashMap<String, ArrayList<Experiment>> 	taxonomyId2Experiments 	= null;
@@ -174,6 +176,18 @@ public class SessionManager {
 	}
 
 	//********************************************************************************
+	
+	public HashSet<String> getMolAclGroupIds() {
+		return molAclGroupIds;
+	}
+	
+	//********************************************************************************
+	
+	public String getMolAclUserId() { 
+		return molAclUserId;
+	}
+
+	//********************************************************************************
 
 	public ArrayList<Organism> getOrganisms() {
 		return new ArrayList<Organism>(taxonomyId2Organism.values());
@@ -231,6 +245,21 @@ public class SessionManager {
 	}
 	
 	//********************************************************************************
+
+	public void addMolAclGroupId(final String molAclGroupId) {
+		if(molAclGroupIds == null)
+			molAclGroupIds = new HashSet<String>();
+		molAclGroupIds.add(molAclGroupId);
+	}
+	
+	//********************************************************************************
+
+	public void setMolAclUserId(final String molAclUserId) {
+		this.molAclUserId = molAclUserId;
+	}
+	
+	//********************************************************************************
+
 
 	private String composeDirectionsKey(String taxonomyId, String cpdSrcId, String cpdDstId, String algorithm, String mapTitle) {
 		return taxonomyId + "_" + cpdSrcId + "_" + cpdDstId + "_" + algorithm + "_" + mapTitle;

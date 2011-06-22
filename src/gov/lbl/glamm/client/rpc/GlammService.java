@@ -34,4 +34,5 @@ public interface GlammService extends RemoteService {
 	public ArrayList<Reaction> populateReactionSearch(HashSet<String> rxnDbNames);
 	public ArrayList<Organism> populateOrganisms(Sample.DataType dataType);
 	public ArrayList<Sample> populateSamples(String taxonomyId);
+	public Void updateMolAclUserId(final String molAclUserId);
 }

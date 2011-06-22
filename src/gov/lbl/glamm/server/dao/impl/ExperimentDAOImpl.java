@@ -18,7 +18,7 @@ public class ExperimentDAOImpl implements ExperimentDAO {
 	
 	public ExperimentDAOImpl(SessionManager sm) {
 		this.sm = sm;
-		expUArrayDao = new ExperimentMicroarrayDAOImpl();
+		expUArrayDao = new ExperimentMicroarrayDAOImpl(sm);
 		if(sm != null)
 			expSessionDao = new ExperimentSessionDAOImpl(sm);
 	}
