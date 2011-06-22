@@ -54,8 +54,10 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.http.client.UrlBuilder;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
@@ -68,6 +70,8 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
  */
 
 public class AppController {
+
+	private static final String MOL_COOKIE_USERID = "userId";
 
 	private static AppController instance = null;
 
@@ -203,7 +207,26 @@ public class AppController {
 	 * Called by the entryPoint class Glamm
 	 * @param rlp The RootLayoutPanel
 	 */
-	public void start(RootLayoutPanel rlp) {
+	public void start(final RootLayoutPanel rlp) {
+		if(Cookies.isCookieEnabled()) {
+			String molAclUserId = Cookies.getCookie(MOL_COOKIE_USERID);
+			rpc.updateMolAclUserId(molAclUserId, new AsyncCallback<Void>() {
+				@Override
+				public void onFailure(Throwable caught) {
+					loadWidgets(rlp); // doesn't matter if this fails or not
+				}
+
+				@Override
+				public void onSuccess(Void result) {
+					loadWidgets(rlp);
+				}
+			});
+		}
+		else
+			loadWidgets(rlp);
+	}
+
+	public void loadWidgets(RootLayoutPanel rlp) {
 
 		rlp.add(layout);
 		rlp.setWidgetTopBottom(layout, 0, Unit.PX, 0, Unit.PX);
@@ -234,7 +257,6 @@ public class AppController {
 				onResize();
 			}
 		});
-
 	}
 
 	/**
@@ -424,7 +446,7 @@ public class AppController {
 				organismPresenter.populate();
 			}
 		});
-		
+
 		eventBus.addHandler(ExperimentUploadEvent.TYPE, new ExperimentUploadEvent.Handler() {
 			@Override
 			public void onRequest(ExperimentUploadEvent event) {
@@ -444,7 +466,7 @@ public class AppController {
 	 */
 	private void loadExperimentPicker() {
 		mainPanel.add(experimentView, 0, 0);
-		
+
 		eventBus.addHandler(OrganismPickedEvent.TYPE, new OrganismPickedEvent.Handler() {
 			@Override
 			public void onOrganismPicked(OrganismPickedEvent event) {
@@ -608,7 +630,7 @@ public class AppController {
 
 		retrosynthesisPresenter.setMapData(mapData);
 		retrosynthesisPresenter.setOrganism(Organism.globalMap());
-//		retrosynthesisPresenter.setOrganism(new Organism("224914","Brucella melitensis 16M"));
+		//		retrosynthesisPresenter.setOrganism(new Organism("224914","Brucella melitensis 16M"));
 
 		eventBus.addHandler(OrganismPickedEvent.TYPE, new OrganismPickedEvent.Handler() {
 			@Override

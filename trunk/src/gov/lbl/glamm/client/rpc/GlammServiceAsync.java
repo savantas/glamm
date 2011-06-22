@@ -32,4 +32,5 @@ public interface GlammServiceAsync {
 	public void populateOrganisms(Sample.DataType dataType, AsyncCallback<ArrayList<Organism>> callback);
 	public void populateReactionSearch(HashSet<String> rxnDbNames, AsyncCallback<ArrayList<Reaction>> callback);
 	public void populateSamples(String taxonomyId, AsyncCallback<ArrayList<Sample>> callback);
+	public void updateMolAclUserId(final String molAclUserId, AsyncCallback<Void> callback);
 }

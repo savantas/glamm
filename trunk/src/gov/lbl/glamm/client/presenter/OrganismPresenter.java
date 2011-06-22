@@ -218,8 +218,10 @@ public class OrganismPresenter {
 
 			public void onSuccess(ArrayList<Organism> organisms) {
 
-				if(organisms == null)
+				if(organisms == null) {
+					updatePopulatingStatus(true);
 					return;
+				}
 
 				for(Organism organism : organisms) {
 					String name = organism.getName();

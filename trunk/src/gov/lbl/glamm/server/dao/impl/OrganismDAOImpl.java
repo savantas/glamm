@@ -17,8 +17,8 @@ public class OrganismDAOImpl implements OrganismDAO {
 	private OrganismSessionDAOImpl 	sessionDao 	= null;
 	
 	public OrganismDAOImpl(SessionManager sm) {
-		metaMolDao 	= new OrganismMetaMolDAOImpl();
-		molDao 		= new OrganismMolDAOImpl();
+		metaMolDao 	= new OrganismMetaMolDAOImpl(sm);
+		molDao 		= new OrganismMolDAOImpl(sm);
 		sessionDao 	= new OrganismSessionDAOImpl(sm);
 	}
 
