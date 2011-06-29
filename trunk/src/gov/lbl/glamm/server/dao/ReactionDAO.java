@@ -2,15 +2,15 @@ package gov.lbl.glamm.server.dao;
 
 import gov.lbl.glamm.client.model.Reaction;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public interface ReactionDAO {
-	public ArrayList<Reaction> getReactions(Collection<String> rxnIds, HashSet<String> dbNames);
-	public ArrayList<Reaction> getReactionsForEcNums(Collection<String> ecNums, HashSet<String> dbNames);
-	public ArrayList<Reaction> getReactionsForSearch(HashSet<String> dbNames);
-	public ArrayList<Reaction> getRxn2EcMapping(String mapId, HashSet<String> dbNames);
+	public List<Reaction> getReactions(Collection<String> rxnIds, Set<String> dbNames);
+	public List<Reaction> getReactionsForEcNums(Collection<String> ecNums, Set<String> dbNames);
+	public List<Reaction> getReactionsForSearch(Set<String> dbNames);
+	public List<Reaction> getRxn2EcMapping(String mapId, Set<String> dbNames);
 	
-	public HashSet<String> getRxnIdsForEcNums(Collection<String> ecNums, HashSet<String> dbNames);
+	public Set<String> getRxnIdsForEcNums(Collection<String> ecNums, Set<String> dbNames);
 }

@@ -18,6 +18,8 @@ public class UpdateMolAclUserId {
 			return;
 		}
 		
+		//mysql> select u.userId, g.groupId, u.email from Users u join GroupUsers g using(userId) where userId=1104 and active=1;
+
 		String sql = "select g.groupId from GroupUsers g where userId=? and active=1;";
 		
 		try {

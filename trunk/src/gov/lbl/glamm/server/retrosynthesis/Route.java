@@ -4,6 +4,7 @@ import gov.lbl.glamm.client.model.MNNode;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 public class Route {
 
@@ -50,7 +51,7 @@ public class Route {
 	private String 			cpdDstId 	= null;
 	private String 			taxonomyId	= null;
 	private String			mapTitle	= null;
-	private ArrayList<Step> steps 		= new ArrayList<Step>();
+	private List<Step> steps 			= new ArrayList<Step>();
 
 	//********************************************************************************
 
@@ -149,7 +150,7 @@ public class Route {
 
 	//********************************************************************************
 	
-	public ArrayList<Step> getSteps() {
+	public List<Step> getSteps() {
 		return steps;
 	}
 	
@@ -163,7 +164,7 @@ public class Route {
 		return out;
 	}
 	
-	public static String toString(ArrayList<Route> routes) {
+	public static String toString(List<Route> routes) {
 		String result = "";
 		for(Route route : routes) {
 			result += route.toString() + "\n\n";

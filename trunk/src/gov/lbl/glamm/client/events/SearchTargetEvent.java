@@ -3,6 +3,7 @@ package gov.lbl.glamm.client.events;
 import gov.lbl.glamm.client.model.GlammPrimitive;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
@@ -19,7 +20,7 @@ public class SearchTargetEvent extends GwtEvent<SearchTargetEvent.Handler> {
 	
 	public static final Type<Handler> TYPE = new Type<Handler>();
 	
-	private HashSet<GlammPrimitive> primitives = null;
+	private Set<GlammPrimitive> primitives = null;
 
 	@Override
 	public com.google.gwt.event.shared.GwtEvent.Type<Handler> getAssociatedType() {
@@ -38,11 +39,11 @@ public class SearchTargetEvent extends GwtEvent<SearchTargetEvent.Handler> {
 		}
 	}
 	
-	public SearchTargetEvent(HashSet<GlammPrimitive> primitives) {
+	public SearchTargetEvent(Set<GlammPrimitive> primitives) {
 		this.primitives = primitives;
 	}
 	
-	public HashSet<GlammPrimitive> getPrimitives() {
+	public Set<GlammPrimitive> getPrimitives() {
 		return primitives;
 	}
 	

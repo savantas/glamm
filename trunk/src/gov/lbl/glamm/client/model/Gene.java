@@ -2,8 +2,9 @@ package gov.lbl.glamm.client.model;
 
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Representation of a Gene
@@ -20,11 +21,11 @@ public class Gene extends GlammPrimitive implements Serializable {
 	public static transient final String SYNONYM_TYPE_VIMSS		= "VIMSS";
 
 	private String			vimmsId			= null;	
-	private HashSet<String> ecNums 			= null;
-	private HashSet<String> molTaxonomyIds 	= null;
-	private HashSet<String> metaMolTaxonomyIds = null;
+	private Set<String> ecNums 			= null;
+	private Set<String> molTaxonomyIds 	= null;
+	private Set<String> metaMolTaxonomyIds = null;
 	
-	private ArrayList<GlammPrimitive.Reference> regulators = null;
+	private List<GlammPrimitive.Reference> regulators = null;
 
 	public Gene() {}
 
@@ -33,7 +34,7 @@ public class Gene extends GlammPrimitive implements Serializable {
 	/**
 	 * @return The set of Enzyme Commission (EC) numbers associated with this Gene
 	 */
-	public HashSet<String> getEcNums() {
+	public Set<String> getEcNums() {
 		return ecNums;
 	}
 
@@ -51,7 +52,7 @@ public class Gene extends GlammPrimitive implements Serializable {
 
 	//********************************************************************************
 	
-	public HashSet<String> getMolTaxonomyIds() {
+	public Set<String> getMolTaxonomyIds() {
 		return molTaxonomyIds;
 	}
 	
@@ -61,7 +62,7 @@ public class Gene extends GlammPrimitive implements Serializable {
 		molTaxonomyIds.add(taxonomyId);
 	}
 	
-	public HashSet<String> getMetaMolTaxonomyIds() {
+	public Set<String> getMetaMolTaxonomyIds() {
 		return metaMolTaxonomyIds;
 	}
 	

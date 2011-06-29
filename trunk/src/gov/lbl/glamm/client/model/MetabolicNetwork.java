@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @SuppressWarnings({ "unused", "serial" })
 
@@ -18,9 +21,9 @@ public class MetabolicNetwork extends GlammPrimitive implements Serializable {
 	
 	private String mapTitle = null;	
 	private String taxonomyId = null;
-	private ArrayList<MNNode> nodes = null;
-	private HashMap<String, HashSet<MNNode>> cpdId2Nodes = null;
-	private HashMap<String, HashSet<MNNode>> rxnId2Nodes = null;
+	private List<MNNode> nodes = null;
+	private Map<String, Set<MNNode>> cpdId2Nodes = null;
+	private Map<String, Set<MNNode>> rxnId2Nodes = null;
 
 	//********************************************************************************
 
@@ -30,8 +33,8 @@ public class MetabolicNetwork extends GlammPrimitive implements Serializable {
 		super();
 		this.mapTitle = mapTitle;
 		nodes = new ArrayList<MNNode>();
-		cpdId2Nodes = new HashMap<String, HashSet<MNNode>>();
-		rxnId2Nodes = new HashMap<String, HashSet<MNNode>>();
+		cpdId2Nodes = new HashMap<String, Set<MNNode>>();
+		rxnId2Nodes = new HashMap<String, Set<MNNode>>();
 	}
 
 	//********************************************************************************
@@ -56,8 +59,8 @@ public class MetabolicNetwork extends GlammPrimitive implements Serializable {
 
 	//********************************************************************************
 
-	private void addNodeToHash(String key, HashMap<String, HashSet<MNNode>> hash, MNNode node) {
-		HashSet<MNNode> nodes = hash.get(key);
+	private void addNodeToHash(String key, Map<String, Set<MNNode>> hash, MNNode node) {
+		Set<MNNode> nodes = hash.get(key);
 		if(nodes == null) {
 			nodes = new HashSet<MNNode>();
 			hash.put(key, nodes);
@@ -73,13 +76,13 @@ public class MetabolicNetwork extends GlammPrimitive implements Serializable {
 
 	//********************************************************************************
 
-	public HashSet<MNNode> getNodesForCpdId(String cpdId) {
+	public Set<MNNode> getNodesForCpdId(String cpdId) {
 		return cpdId2Nodes.get(cpdId);
 	}
 
 	//********************************************************************************
 
-	public HashSet<MNNode> getNodesForRxnId(String cpdId) {
+	public Set<MNNode> getNodesForRxnId(String cpdId) {
 		return rxnId2Nodes.get(cpdId);
 	}
 

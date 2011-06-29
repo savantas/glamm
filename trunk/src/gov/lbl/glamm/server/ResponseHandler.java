@@ -28,26 +28,6 @@ public abstract class ResponseHandler {
 
 	//********************************************************************************
 
-	public static void asXStreamXml(HttpServletResponse response, 
-			Object content, 
-			int statusCode) 
-	throws IOException {
-		
-//		XStream xstream = new XStream();
-//		xstream.autodetectAnnotations( true );
-//		xstream.setMode(XStream.NO_REFERENCES);
-//		
-//		response.setContentType("application/xml");
-//		Writer writer = response.getWriter();
-//		writer.write("<?xml version=\"1.0\"?>\n");
-//		xstream.toXML(content, writer);
-//		
-//		xstream = null;
-
-	}
-
-	//********************************************************************************
-
 	public static void asPlainTextAttachment(HttpServletResponse response, 
 			Object content, 
 			int statusCode, 

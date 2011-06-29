@@ -10,16 +10,15 @@ import gov.lbl.glamm.server.dao.GeneDAO;
 import gov.lbl.glamm.server.dao.impl.ExperimentDAOImpl;
 import gov.lbl.glamm.server.dao.impl.GeneDAOImpl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class GetExperiment  {
 
-	public static ArrayList<? extends GlammPrimitive> getMeasurementsForExperiment(SessionManager sm, String experimentId, String sampleId, String taxonomyId, String expSource) {
+	public static List<? extends GlammPrimitive> getMeasurementsForExperiment(SessionManager sm, String experimentId, String sampleId, String taxonomyId, String expSource) {
 
-		ArrayList<? extends GlammPrimitive> primitives = null;
+		List<? extends GlammPrimitive> primitives = null;
 
 		if(experimentId == null || experimentId.isEmpty() ||
 				sampleId == null || sampleId.isEmpty() ||
@@ -30,7 +29,7 @@ public class GetExperiment  {
 		ExperimentDAO 	expDao 	= new ExperimentDAOImpl(sm);
 
 		// get measurements
-		HashMap<String, HashSet<Measurement>> id2Measurements = expDao.getMeasurements(experimentId, sampleId, taxonomyId, expSource);
+		Map<String, Set<Measurement>> id2Measurements = expDao.getMeasurements(experimentId, sampleId, taxonomyId, expSource);
 		if(id2Measurements == null)
 			return null;
 
@@ -51,9 +50,9 @@ public class GetExperiment  {
 
 		// add experiment to content
 		for(GlammPrimitive primitive : primitives) {
-			HashSet<Synonym> synonyms = primitive.getSynonyms();
+			Set<Synonym> synonyms = primitive.getSynonyms();
 			for(Synonym synonym : synonyms) {
-				HashSet<Measurement> measurements = id2Measurements.get(synonym.getName());
+				Set<Measurement> measurements = id2Measurements.get(synonym.getName());
 				if(measurements != null)
 					for(Measurement measurement : measurements)
 						primitive.addMeasurement(measurement);

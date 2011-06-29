@@ -9,6 +9,8 @@ import gov.lbl.glamm.server.dao.impl.CitationsGlammDAOImpl;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,9 +32,9 @@ public class GenCitationsPopup implements RequestHandler {
 
 	//********************************************************************************
 	
-	private HashMap<String, ArrayList<Integer>> description2CitationsTextIndices = new HashMap<String, ArrayList<Integer>>();
-	private ArrayList<String> descriptions = new ArrayList<String>();
-	private ArrayList<String> citationsText = new ArrayList<String>();
+	private Map<String, List<Integer>> description2CitationsTextIndices = new HashMap<String, List<Integer>>();
+	private List<String> descriptions = new ArrayList<String>();
+	private List<String> citationsText = new ArrayList<String>();
 	
 	//********************************************************************************
 
@@ -57,7 +59,7 @@ public class GenCitationsPopup implements RequestHandler {
 		
 		if(citationsDao.getCitationsTableName() != null) {
 			
-			ArrayList<Citation> citations = citationsDao.getCitations();
+			List<Citation> citations = citationsDao.getCitations();
 			
 			processCitations(citations);
 			
@@ -77,7 +79,7 @@ public class GenCitationsPopup implements RequestHandler {
 	
 	//********************************************************************************
 	
-	private void processCitations(ArrayList<Citation> citations) {
+	private void processCitations(List<Citation> citations) {
 		if(citations != null) {
 			for(Citation citation : citations) {
 				String text = citation.getText();
@@ -91,7 +93,7 @@ public class GenCitationsPopup implements RequestHandler {
 
 				Integer citationsTextIndex = Integer.valueOf(citationsText.indexOf(text));
 
-				ArrayList<Integer> citationsTextIndices = description2CitationsTextIndices.get(description);
+				List<Integer> citationsTextIndices = description2CitationsTextIndices.get(description);
 				if(citationsTextIndices == null) {
 					citationsTextIndices = new ArrayList<Integer>();
 					description2CitationsTextIndices.put(description, citationsTextIndices);
@@ -105,7 +107,7 @@ public class GenCitationsPopup implements RequestHandler {
 	
 	//********************************************************************************
 
-	private String descriptionToString(final String description, final ArrayList<Integer> citationIndices) {
+	private String descriptionToString(final String description, final List<Integer> citationIndices) {
 		String result = "";
 
 		result += description;
@@ -125,7 +127,7 @@ public class GenCitationsPopup implements RequestHandler {
 		String result = "";
 		if(descriptions != null) {
 			for(String description : descriptions) {
-				ArrayList<Integer> citationIndices = description2CitationsTextIndices.get(description);
+				List<Integer> citationIndices = description2CitationsTextIndices.get(description);
 				result += descriptionToString(description, citationIndices) + "<br>";
 			}
 		}

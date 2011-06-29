@@ -4,14 +4,14 @@ import gov.lbl.glamm.client.model.Experiment;
 import gov.lbl.glamm.client.model.Measurement;
 import gov.lbl.glamm.client.model.Sample;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public interface ExperimentDAO {
-	public ArrayList<Sample.DataType> getAvailableExperimentTypes();
+	public List<Sample.DataType> getAvailableExperimentTypes();
 	public Experiment getExperiment(String experimentId, String sampleId, String taxonomyId, String source);
-	public ArrayList<Experiment> getAllExperiments(String taxonomyId);
-	public ArrayList<Sample> getAllSamples(String taxonomyId);
-	public HashMap<String,HashSet<Measurement>> getMeasurements(String experimentId, String sampleId, String taxonomyId, String source);
+	public List<Experiment> getAllExperiments(String taxonomyId);
+	public List<Sample> getAllSamples(String taxonomyId);
+	public Map<String,Set<Measurement>> getMeasurements(String experimentId, String sampleId, String taxonomyId, String source);
 }

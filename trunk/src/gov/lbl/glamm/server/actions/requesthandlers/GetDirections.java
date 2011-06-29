@@ -28,6 +28,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -40,7 +43,7 @@ public class GetDirections implements RequestHandler {
 	private static OrganismDAO 			organismDao	= null;
 	private static MetabolicNetworkDAO 	networkDao 	= null;
 
-	private static ArrayList<Route> getRoutes(SessionManager sm, String taxonomyId, String cpdSrcExtId, String cpdDstExtId, String mapTitle, String algorithm) {
+	private static List<Route> getRoutes(SessionManager sm, String taxonomyId, String cpdSrcExtId, String cpdDstExtId, String mapTitle, String algorithm) {
 
 		if(cpdSrcExtId == null || cpdDstExtId == null || mapTitle == null || algorithm == null )
 			return null;
@@ -57,23 +60,23 @@ public class GetDirections implements RequestHandler {
 			rxnDao = new ReactionGlammDAOImpl();
 			organismDao = new OrganismDAOImpl(sm);
 
-			HashSet<String> dbNames = new HashSet<String>();
+			Set<String> dbNames = new HashSet<String>();
 			dbNames.add("LIGAND-RXN");
-			HashSet<String> ecNums = geneDao.getEcNumsForOrganism(taxonomyId);
-			HashSet<String> rxnIds = rxnDao.getRxnIdsForEcNums(ecNums, dbNames);
+			Set<String> ecNums = geneDao.getEcNumsForOrganism(taxonomyId);
+			Set<String> rxnIds = rxnDao.getRxnIdsForEcNums(ecNums, dbNames);
 
 			network.setNativeRxns(taxonomyId, rxnIds);
 		}
 
 		// calculate routes
 		RetrosynthesisAlgorithm ra = RetrosynthesisAlgorithm.create(algorithm, taxonomyId, network);
-		ArrayList<Route> routes = ra.calculateRoutes(cpdSrcExtId, cpdDstExtId);
+		List<Route> routes = ra.calculateRoutes(cpdSrcExtId, cpdDstExtId);
 		if(routes != null)
 			sm.addRoutes(routes);
 		return routes;
 	}
 
-	public static ArrayList<Pathway> getDirections(SessionManager sm, String taxonomyId, Compound cpdSrc, Compound cpdDst, String mapTitle, String algorithm) {
+	public static List<Pathway> getDirections(SessionManager sm, String taxonomyId, Compound cpdSrc, Compound cpdDst, String mapTitle, String algorithm) {
 
 		if(cpdSrc == null || cpdDst == null)
 			return null;
@@ -84,7 +87,7 @@ public class GetDirections implements RequestHandler {
 		if(cpdSrcXref == null || cpdDstXref == null)
 			return null;
 
-		ArrayList<Route> routes = getRoutes(sm, taxonomyId, cpdSrcXref.getXrefId(), cpdDstXref.getXrefId(), mapTitle, algorithm);
+		List<Route> routes = getRoutes(sm, taxonomyId, cpdSrcXref.getXrefId(), cpdDstXref.getXrefId(), mapTitle, algorithm);
 		
 		// convert routes to pathways and add them to content
 		if(routes != null && !routes.isEmpty())
@@ -96,12 +99,12 @@ public class GetDirections implements RequestHandler {
 	public void handleRequest(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 
-		String taxonomyId 	= request.getParameter(RequestParameters.PARAM_TAXONOMY_ID);
-		String cpdSrcExtId	= request.getParameter(RequestParameters.PARAM_CPD_SRC);
-		String cpdDstExtId	= request.getParameter(RequestParameters.PARAM_CPD_DST);
-		String mapTitle		= request.getParameter(RequestParameters.PARAM_MAP_TITLE);
-		String algorithm	= request.getParameter(RequestParameters.PARAM_ALGORITHM);
-		String asText		= request.getParameter(RequestParameters.PARAM_AS_TEXT);
+		String taxonomyId 	= request.getParameter(RequestParameters.TAXONOMY_ID.toString());
+		String cpdSrcExtId	= request.getParameter(RequestParameters.CPD_SRC.toString());
+		String cpdDstExtId	= request.getParameter(RequestParameters.CPD_DST.toString());
+		String mapTitle		= request.getParameter(RequestParameters.MAP_TITLE.toString());
+		String algorithm	= request.getParameter(RequestParameters.ALGORITHM.toString());
+		String asText		= request.getParameter(RequestParameters.AS_TEXT.toString());
 		
 		if(cpdSrcExtId == null || cpdDstExtId == null || mapTitle == null || algorithm == null || asText == null) {
 			return;
@@ -109,7 +112,7 @@ public class GetDirections implements RequestHandler {
 		
 
 		SessionManager sm = SessionManager.getSessionManager(request, true);
-		ArrayList<Route> routes = sm.getRoutes(taxonomyId, cpdSrcExtId, cpdDstExtId, algorithm, mapTitle);
+		List<Route> routes = sm.getRoutes(taxonomyId, cpdSrcExtId, cpdDstExtId, algorithm, mapTitle);
 		
 		if(routes == null) {
 			// calculate routes as normal, add them to session
@@ -122,20 +125,20 @@ public class GetDirections implements RequestHandler {
 
 	}
 
-	private void handleTextResponse(HttpServletResponse response, ArrayList<Route> routes) 
+	private void handleTextResponse(HttpServletResponse response, List<Route> routes) 
 	throws IOException {
 
 		String content = "";
 
 		// get rxnIds for all routes
-		HashSet<String> rxnIds = getRxnIdsForRoutes(routes);
+		Set<String> rxnIds = getRxnIdsForRoutes(routes);
 		ReactionDAO rxnDao = new ReactionGlammDAOImpl();
-		HashSet<String> dbNames = new HashSet<String>();
+		Set<String> dbNames = new HashSet<String>();
 		dbNames.add("LIGAND-RXN");
-		ArrayList<Reaction> rxns = rxnDao.getReactions(rxnIds, dbNames);
+		List<Reaction> rxns = rxnDao.getReactions(rxnIds, dbNames);
 
 		// hash resulting reactions by xrefId
-		HashMap<String, Reaction> rxnId2Rxn = hashReactionsById(rxns);
+		Map<String, Reaction> rxnId2Rxn = hashReactionsById(rxns);
 
 		if(rxnId2Rxn != null) {
 			for(Route route : routes) {
@@ -157,18 +160,18 @@ public class GetDirections implements RequestHandler {
 		ResponseHandler.asPlainTextAttachment(response, content, HttpServletResponse.SC_OK, "routes.txt");
 	}
 
-	private static ArrayList<Pathway> toPathways(ArrayList<Route> routes) {
-		ArrayList<Pathway> pathways = new ArrayList<Pathway>();
+	private static List<Pathway> toPathways(List<Route> routes) {
+		List<Pathway> pathways = new ArrayList<Pathway>();
 
 		// get rxnIds for all routes
-		HashSet<String> rxnIds = getRxnIdsForRoutes(routes);
+		Set<String> rxnIds = getRxnIdsForRoutes(routes);
 		ReactionDAO rxnDao = new ReactionGlammDAOImpl();
-		HashSet<String> dbNames = new HashSet<String>();
+		Set<String> dbNames = new HashSet<String>();
 		dbNames.add("LIGAND-RXN");
-		ArrayList<Reaction> rxns = rxnDao.getReactions(rxnIds, dbNames);
+		List<Reaction> rxns = rxnDao.getReactions(rxnIds, dbNames);
 
 		// hash resulting reactions by xrefId
-		HashMap<String, Reaction> rxnId2Rxn = hashReactionsById(rxns);
+		Map<String, Reaction> rxnId2Rxn = hashReactionsById(rxns);
 
 		if(rxnId2Rxn == null)
 			return pathways;
@@ -205,8 +208,8 @@ public class GetDirections implements RequestHandler {
 		return pathways;
 	}
 
-	private static HashSet<String> getRxnIdsForRoutes(ArrayList<Route> routes) {
-		HashSet<String> rxnIds = new HashSet<String>();
+	private static Set<String> getRxnIdsForRoutes(List<Route> routes) {
+		Set<String> rxnIds = new HashSet<String>();
 
 		for(Route route : routes) {
 			for(Step step : route.getSteps()) {
@@ -217,15 +220,15 @@ public class GetDirections implements RequestHandler {
 		return rxnIds;
 	}
 
-	private static HashMap<String, Reaction> hashReactionsById(Collection<Reaction> rxns) {
+	private static Map<String, Reaction> hashReactionsById(Collection<Reaction> rxns) {
 
 		if(rxns == null)
 			return null;
 
-		HashMap<String, Reaction> rxnId2Rxn = new HashMap<String, Reaction>();
+		Map<String, Reaction> rxnId2Rxn = new HashMap<String, Reaction>();
 
 		for(Reaction rxn : rxns) {
-			HashSet<Xref> xrefs = rxn.getXrefs();
+			Set<Xref> xrefs = rxn.getXrefs();
 			for(Xref xref : xrefs) {
 				rxnId2Rxn.put(xref.getXrefId(), rxn);
 			}
@@ -234,14 +237,14 @@ public class GetDirections implements RequestHandler {
 		return rxnId2Rxn;
 	}
 
-	private static void addTransgenicCandidates(ArrayList<Reaction> rxns) {
+	private static void addTransgenicCandidates(List<Reaction> rxns) {
 
 		// get all ec numbers
-		HashSet<String> ecNums = new HashSet<String>();
+		Set<String> ecNums = new HashSet<String>();
 		for(Reaction rxn : rxns) {
 			if(rxn.isNative())
 				continue;
-			HashSet<String> ecNumsForRxn = rxn.getEcNums();
+			Set<String> ecNumsForRxn = rxn.getEcNums();
 			if(ecNumsForRxn == null)
 				continue;
 			for(String ecNum : ecNumsForRxn)
@@ -249,16 +252,16 @@ public class GetDirections implements RequestHandler {
 		}
 
 		// get organisms with genes for ecNums
-		HashMap<String, HashSet<Organism>> ecNum2Organisms = organismDao.getTransgenicCandidatesForEcNums(ecNums);
+		Map<String, Set<Organism>> ecNum2Organisms = organismDao.getTransgenicCandidatesForEcNums(ecNums);
 		if(ecNum2Organisms != null) {
 			for(Reaction rxn : rxns) {
 				if(rxn.isNative())
 					continue;
-				HashSet<String> ecNumsForRxn = rxn.getEcNums();
+				Set<String> ecNumsForRxn = rxn.getEcNums();
 				if(ecNumsForRxn == null) 
 					continue;
 				for(String ecNum : ecNumsForRxn) {
-					HashSet<Organism> organisms = ecNum2Organisms.get(ecNum);
+					Set<Organism> organisms = ecNum2Organisms.get(ecNum);
 					if(organisms == null)
 						continue;
 					for(Organism organism : organisms) {

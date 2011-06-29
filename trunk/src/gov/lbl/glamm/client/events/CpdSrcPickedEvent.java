@@ -4,6 +4,7 @@ import gov.lbl.glamm.client.model.Compound;
 import gov.lbl.glamm.client.model.GlammPrimitive;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
@@ -20,7 +21,7 @@ public class CpdSrcPickedEvent extends GwtEvent<CpdSrcPickedEvent.Handler> {
 	
 	public static final Type<Handler> TYPE = new Type<Handler>();
 	
-	private HashSet<Compound> compounds = null;
+	private Set<Compound> compounds = null;
 
 	@Override
 	public com.google.gwt.event.shared.GwtEvent.Type<Handler> getAssociatedType() {
@@ -36,7 +37,7 @@ public class CpdSrcPickedEvent extends GwtEvent<CpdSrcPickedEvent.Handler> {
 	 * Constructor
 	 * @param primitives The GlammPrimitives corresponding to the desired compound
 	 */
-	public CpdSrcPickedEvent(HashSet<GlammPrimitive> primitives) {
+	public CpdSrcPickedEvent(Set<GlammPrimitive> primitives) {
 		compounds = new HashSet<Compound>();
 		for(GlammPrimitive primitive : primitives) {
 			if(primitive.getType() == Compound.TYPE)
@@ -47,7 +48,7 @@ public class CpdSrcPickedEvent extends GwtEvent<CpdSrcPickedEvent.Handler> {
 	/**
 	 * @return the compounds associated with this event
 	 */
-	public HashSet<Compound> getCompounds() {
+	public Set<Compound> getCompounds() {
 		return compounds;
 	}
 	

@@ -5,8 +5,8 @@ import gov.lbl.glamm.client.model.MetabolicNetwork;
 import gov.lbl.glamm.server.retrosynthesis.Route;
 import gov.lbl.glamm.server.retrosynthesis.Route.Step;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class RADepthFirstSearch extends RetrosynthesisAlgorithm {
 	
@@ -30,7 +30,7 @@ public class RADepthFirstSearch extends RetrosynthesisAlgorithm {
 	//********************************************************************************
 
 	@Override
-	public ArrayList<Route> calculateRoutes(String cpdSrcExtId, String cpdDstExtId) {
+	public List<Route> calculateRoutes(String cpdSrcExtId, String cpdDstExtId) {
 		_calculateSubRoute(null, cpdSrcExtId, cpdDstExtId, 0);
 		return routes;
 	}
@@ -61,7 +61,7 @@ public class RADepthFirstSearch extends RetrosynthesisAlgorithm {
 		
 		
 		// depth first search
-		HashSet<MNNode> nodes = network.getNodesForCpdId(cpdSrcExtId);
+		Set<MNNode> nodes = network.getNodesForCpdId(cpdSrcExtId);
 		if(nodes != null) {
 			for(MNNode node : nodes) {
 				String cpdId = node.getCpd1ExtId();

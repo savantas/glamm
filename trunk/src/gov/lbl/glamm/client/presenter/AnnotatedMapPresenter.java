@@ -17,8 +17,9 @@ import gov.lbl.glamm.client.model.Sample;
 import gov.lbl.glamm.client.rpc.GlammServiceAsync;
 import gov.lbl.glamm.client.util.Interpolator;
 
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.vectomatic.dom.svg.OMElement;
 import org.vectomatic.dom.svg.OMSVGElement;
@@ -93,7 +94,7 @@ public class AnnotatedMapPresenter {
 
 	private MetabolicNetwork network 	= null;
 	
-	private HashSet<OMSVGElement> previousSearchTargets = null;
+	private Set<OMSVGElement> previousSearchTargets = null;
 	
 	private Mode mode = Mode.INITIAL;
 
@@ -274,7 +275,7 @@ public class AnnotatedMapPresenter {
 
 	}
 
-	private void centerMapAroundElements(final HashSet<OMSVGElement> svgElements) {
+	private void centerMapAroundElements(final Set<OMSVGElement> svgElements) {
 		
 		if(svgElements == null || svgElements.isEmpty())
 			return;
@@ -407,8 +408,8 @@ public class AnnotatedMapPresenter {
 	}
 
 	private void overlayDataForGene(final Gene gene, final Interpolator interpolator) {
-		HashSet<Measurement> measurements = gene.getMeasurements();
-		HashSet<String> ecNums = gene.getEcNums();
+		Set<Measurement> measurements = gene.getMeasurements();
+		Set<String> ecNums = gene.getEcNums();
 
 		if(measurements == null || ecNums == null)
 			return;
@@ -421,7 +422,7 @@ public class AnnotatedMapPresenter {
 		String cssColor = interpolator.calcCssColor(value);
 
 		for(String ecNum : ecNums) {
-			HashSet<OMSVGElement> elements = mapData.getSvgElementsForId(ecNum);
+			Set<OMSVGElement> elements = mapData.getSvgElementsForId(ecNum);
 			if(elements == null)
 				continue;
 			for(OMSVGElement element : elements) {
@@ -531,7 +532,7 @@ public class AnnotatedMapPresenter {
 		}
 		
 		eventBus.fireEvent(new LoadingEvent(false));
-		rpc.getRxnsForOrganism(organism.getTaxonomyId(), mapData.getRxnDbNames(), new AsyncCallback<ArrayList<Reaction>>() {
+		rpc.getRxnsForOrganism(organism.getTaxonomyId(), mapData.getRxnDbNames(), new AsyncCallback<List<Reaction>>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -541,7 +542,7 @@ public class AnnotatedMapPresenter {
 			}
 
 			@Override
-			public void onSuccess(ArrayList<Reaction> result) {
+			public void onSuccess(List<Reaction> result) {
 
 				eventBus.fireEvent(new LoadingEvent(true));
 				
@@ -572,7 +573,7 @@ public class AnnotatedMapPresenter {
 
 				// get all reactions from the RPC call
 				for(final Reaction rxn : result) {
-					HashSet<GlammPrimitive.Xref> xrefs = rxn.getXrefs();
+					Set<GlammPrimitive.Xref> xrefs = rxn.getXrefs();
 
 					// get the xref that corresponds with the mapData's reaction database
 					for(final GlammPrimitive.Xref xref : xrefs) {
@@ -580,7 +581,7 @@ public class AnnotatedMapPresenter {
 							String rxnId = xref.getXrefId();
 
 							// set all svg elements corresponding with this xref to present
-							HashSet<OMSVGElement> elements = mapData.getSvgElementsForId(rxnId);
+							Set<OMSVGElement> elements = mapData.getSvgElementsForId(rxnId);
 							if(elements != null) {
 								for(OMSVGElement element : elements) {
 									element.setAttribute(AnnotatedMapData.ATTRIBUTE_ABSENT, "false");
@@ -588,7 +589,7 @@ public class AnnotatedMapPresenter {
 							}
 
 							// get the compound nodes associated with this reaction and set them to present
-							HashSet<MNNode> mnNodes = network.getNodesForRxnId(rxnId);
+							Set<MNNode> mnNodes = network.getNodesForRxnId(rxnId);
 
 							if(mnNodes == null)
 								continue;
@@ -597,7 +598,7 @@ public class AnnotatedMapPresenter {
 
 								{
 									String cpdId = mnNode.getCpd0ExtId();
-									HashSet<OMSVGElement> cpdElements = mapData.getSvgElementsForId(cpdId);
+									Set<OMSVGElement> cpdElements = mapData.getSvgElementsForId(cpdId);
 									if(cpdElements != null) {
 										for(OMSVGElement cpdElement : cpdElements) {
 											cpdElement.setAttribute(AnnotatedMapData.ATTRIBUTE_ABSENT, "false");
@@ -607,7 +608,7 @@ public class AnnotatedMapPresenter {
 
 								{
 									String cpdId = mnNode.getCpd1ExtId();
-									HashSet<OMSVGElement> cpdElements = mapData.getSvgElementsForId(cpdId);
+									Set<OMSVGElement> cpdElements = mapData.getSvgElementsForId(cpdId);
 									if(cpdElements != null) {
 										for(OMSVGElement cpdElement : cpdElements) {
 											cpdElement.setAttribute(AnnotatedMapData.ATTRIBUTE_ABSENT, "false");
@@ -662,12 +663,12 @@ public class AnnotatedMapPresenter {
 				element.setAttribute(AnnotatedMapData.ATTRIBUTE_ROUTE, reaction.getReactionColor().getCssAttributeValue());
 		}
 		
-		final HashSet<OMSVGElement> svgElements = mapData.getSvgElementsForGlammPrimitives(route.getReactions());
+		final Set<OMSVGElement> svgElements = mapData.getSvgElementsForGlammPrimitives(route.getReactions());
 		centerMapAroundElements(svgElements);
 	}
 	
 	public void updateMapForRouteStep(final Reaction reaction) {
-		final HashSet<OMSVGElement> svgElements = mapData.getSvgElementsForGlammPrimitive(reaction);
+		final Set<OMSVGElement> svgElements = mapData.getSvgElementsForGlammPrimitive(reaction);
 		centerMapAroundElements(svgElements);
 	}
 	
@@ -700,7 +701,7 @@ public class AnnotatedMapPresenter {
 				sample.getSampleId(), 
 				sample.getTaxonomyId(), 
 				sample.getSource(), 
-				new AsyncCallback<ArrayList<? extends GlammPrimitive>>() {
+				new AsyncCallback<List<? extends GlammPrimitive>>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -711,7 +712,7 @@ public class AnnotatedMapPresenter {
 
 			@Override
 			public void onSuccess(
-					ArrayList<? extends GlammPrimitive> result) {
+					List<? extends GlammPrimitive> result) {
 				
 				eventBus.fireEvent(new LoadingEvent(true));
 				
@@ -743,8 +744,8 @@ public class AnnotatedMapPresenter {
 		});
 	}
 
-	public void updateMapForSearchTarget(final HashSet<GlammPrimitive> primitives) {
-		final HashSet<OMSVGElement> searchTargets = mapData.getSvgElementsForGlammPrimitives(primitives);
+	public void updateMapForSearchTarget(final Set<GlammPrimitive> primitives) {
+		final Set<OMSVGElement> searchTargets = mapData.getSvgElementsForGlammPrimitives(primitives);
 		
 		if(previousSearchTargets != null) {
 			for(OMSVGElement target : previousSearchTargets)

@@ -10,6 +10,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.google.gwt.view.client.ProvidesKey;
 
@@ -78,17 +80,17 @@ public class Reaction extends GlammPrimitive implements Serializable, RowDepende
 	//********************************************************************************
 
 	public static transient GlammPrimitive.Type TYPE = new GlammPrimitive.Type();
-	private HashSet<String> 	ecNums = null;
+	private Set<String> 	ecNums = null;
 	private String definition = null;
 	private Direction direction = Direction.BOTH;
 	private boolean isNative = true;
-	private HashSet<Participant>	products 	= null;
-	private HashSet<Participant> 	reactants 	= null;
-	private HashSet<GlammPrimitive.Reference> geneRefs = null;
+	private Set<Participant>	products 	= null;
+	private Set<Participant> 	reactants 	= null;
+	private Set<GlammPrimitive.Reference> geneRefs = null;
 	private transient Organism selectedTransgenicCandidate = null;
-	private ArrayList<Organism> transgenicCandidates = null;
-	private HashMap<String, Organism> name2TransgenicCandidate = null;
-	private HashMap<Organism, HashSet<String>> transgenicCandidate2EcNums = null;
+	private List<Organism> transgenicCandidates = null;
+	private Map<String, Organism> name2TransgenicCandidate = null;
+	private Map<Organism, Set<String>> transgenicCandidate2EcNums = null;
 	private transient ReactionColor color; // ReactionColor depends on resources from the client bundle - don't instantiate or try to set server-side.
 
 	public static final transient ProvidesKey<Reaction> KEY_PROVIDER = new ProvidesKey<Reaction>() {
@@ -154,8 +156,8 @@ public class Reaction extends GlammPrimitive implements Serializable, RowDepende
 
 		// add to map
 		if(transgenicCandidate2EcNums == null)
-			transgenicCandidate2EcNums = new HashMap<Organism, HashSet<String>>();
-		HashSet<String> ecNums = transgenicCandidate2EcNums.get(organism);
+			transgenicCandidate2EcNums = new HashMap<Organism, Set<String>>();
+		Set<String> ecNums = transgenicCandidate2EcNums.get(organism);
 		if(ecNums == null) {
 			ecNums = new HashSet<String>();
 			transgenicCandidate2EcNums.put(organism, ecNums);
@@ -221,13 +223,13 @@ public class Reaction extends GlammPrimitive implements Serializable, RowDepende
 
 	//********************************************************************************
 
-	public HashSet<String> getEcNums() {
+	public Set<String> getEcNums() {
 		return ecNums;
 	}
 
 	//********************************************************************************
 
-	public HashSet<String> getEcNumsForTransgenicCandidate(Organism organism) {
+	public Set<String> getEcNumsForTransgenicCandidate(Organism organism) {
 		return transgenicCandidate2EcNums.get(organism);
 	}
 
@@ -266,13 +268,13 @@ public class Reaction extends GlammPrimitive implements Serializable, RowDepende
 
 	//********************************************************************************
 
-	public HashSet<Participant> getProducts() {
+	public Set<Participant> getProducts() {
 		return products;
 	}
 
 	//********************************************************************************
 
-	public HashSet<Participant> getReactants() {
+	public Set<Participant> getReactants() {
 		return reactants;
 	}
 
@@ -290,7 +292,7 @@ public class Reaction extends GlammPrimitive implements Serializable, RowDepende
 
 	//********************************************************************************
 
-	public ArrayList<Organism> getTransgenicCandidates() {
+	public List<Organism> getTransgenicCandidates() {
 		return transgenicCandidates;
 	}
 

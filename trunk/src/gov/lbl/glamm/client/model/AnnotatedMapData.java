@@ -6,6 +6,8 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import org.vectomatic.dom.svg.OMElement;
 import org.vectomatic.dom.svg.OMNode;
@@ -57,13 +59,13 @@ public class AnnotatedMapData implements Serializable {
 	
 	private OMSVGSVGElement	svgRoot 	= null;
 	private OMSVGGElement 	viewport 	= null;
-	private HashSet<String> cpdDbNames = null;
+	private Set<String> cpdDbNames = null;
 	private String mapId = null;
-	private HashSet<String> rxnDbNames = null;
+	private Set<String> rxnDbNames = null;
 
-	private HashMap<String, HashSet<OMSVGElement>> id2SvgElements = null;
-	private HashSet<OMSVGElement> cpdSvgElements = null;
-	private HashSet<OMSVGElement> rxnSvgElements = null;
+	private Map<String, Set<OMSVGElement>> id2SvgElements = null;
+	private Set<OMSVGElement> cpdSvgElements = null;
+	private Set<OMSVGElement> rxnSvgElements = null;
 	
 	@SuppressWarnings("unused")
 	private AnnotatedMapData() {}
@@ -89,7 +91,7 @@ public class AnnotatedMapData implements Serializable {
 		}
 		
 		// allocate space for id2SvgElements
-		id2SvgElements = new HashMap<String, HashSet<OMSVGElement>>();
+		id2SvgElements = new HashMap<String, Set<OMSVGElement>>();
 		cpdSvgElements = new HashSet<OMSVGElement>();
 		rxnSvgElements = new HashSet<OMSVGElement>();
 		
@@ -113,7 +115,7 @@ public class AnnotatedMapData implements Serializable {
 	 * Accessor
 	 * @return The names of the databases of compounds associated with this map.
 	 */
-	public HashSet<String> getCpdDbNames() {
+	public Set<String> getCpdDbNames() {
 		return cpdDbNames;
 	}
 	
@@ -121,7 +123,7 @@ public class AnnotatedMapData implements Serializable {
 	 * Accessor
 	 * @return The SVG elements corresponding to compounds on this map.
 	 */
-	public HashSet<OMSVGElement> getCpdSvgElements() {
+	public Set<OMSVGElement> getCpdSvgElements() {
 		return cpdSvgElements;
 	}
 	
@@ -137,7 +139,7 @@ public class AnnotatedMapData implements Serializable {
 	 * Accessor
 	 * @return The names of the databases of reactions associated with this map.
 	 */
-	public HashSet<String> getRxnDbNames() {
+	public Set<String> getRxnDbNames() {
 		return rxnDbNames;
 	}
 	
@@ -145,7 +147,7 @@ public class AnnotatedMapData implements Serializable {
 	 * Accessor
 	 * @return The SVG elements corresponding to reactions on this map.
 	 */
-	public HashSet<OMSVGElement> getRxnSvgElements() {
+	public Set<OMSVGElement> getRxnSvgElements() {
 		return rxnSvgElements;
 	}
 	
@@ -162,7 +164,7 @@ public class AnnotatedMapData implements Serializable {
 	 * @param id
 	 * @return HashSet<OMSVGElement> the elements associated with this id, null if none.
 	 */
-	public HashSet<OMSVGElement> getSvgElementsForId(final String id) {
+	public Set<OMSVGElement> getSvgElementsForId(final String id) {
 		return id2SvgElements.get(id);
 	}
 	
@@ -171,7 +173,7 @@ public class AnnotatedMapData implements Serializable {
 	 * @param primitive
 	 * @return HashSet<OMSVGElement> the elements associated with this primitive, null if none.
 	 */
-	public HashSet<OMSVGElement> getSvgElementsForGlammPrimitive(final GlammPrimitive primitive) {
+	public Set<OMSVGElement> getSvgElementsForGlammPrimitive(final GlammPrimitive primitive) {
 		
 		if(primitive.getType() == Compound.TYPE) {
 			Xref xref = primitive.getXrefForDbNames(getCpdDbNames());
@@ -187,12 +189,12 @@ public class AnnotatedMapData implements Serializable {
 		}
 		else if(primitive.getType() == Gene.TYPE) {
 			Gene gene = (Gene) primitive;
-			HashSet<String> ecNums = gene.getEcNums();
+			Set<String> ecNums = gene.getEcNums();
 			if(ecNums == null)
 				return null;
-			HashSet<OMSVGElement> allSvgElements = null;
+			Set<OMSVGElement> allSvgElements = null;
 			for(String ecNum : ecNums) {
-				HashSet<OMSVGElement> svgElements = getSvgElementsForId(ecNum);
+				Set<OMSVGElement> svgElements = getSvgElementsForId(ecNum);
 				if(svgElements == null || svgElements.isEmpty())
 					continue;
 				if(allSvgElements == null) 
@@ -211,10 +213,10 @@ public class AnnotatedMapData implements Serializable {
 	 * @param primitive - The collection of GlammPrimitives
 	 * @return HashSet<OMSVGElement> the elements associated with this collection, null if none.
 	 */
-	public HashSet<OMSVGElement> getSvgElementsForGlammPrimitives(final Collection<? extends GlammPrimitive> primitives) {
+	public Set<OMSVGElement> getSvgElementsForGlammPrimitives(final Collection<? extends GlammPrimitive> primitives) {
 		HashSet<OMSVGElement> svgElements = null;
 		for(GlammPrimitive primitive : primitives) {
-			HashSet<OMSVGElement> s = getSvgElementsForGlammPrimitive(primitive);
+			Set<OMSVGElement> s = getSvgElementsForGlammPrimitive(primitive);
 			if(s == null)
 				continue;
 			if(svgElements == null)
@@ -279,7 +281,7 @@ public class AnnotatedMapData implements Serializable {
 		if(g.hasAttribute(ATTRIBUTE_KEGGID)) {
 			String cpdId = g.getAttribute(ATTRIBUTE_KEGGID);
 			cpdId = cpdId.startsWith("cpd") ? cpdId.substring(4) : cpdId.substring(3); // compounds can either start with cpd or gl
-			HashSet<OMSVGElement> elementsForId = this.id2SvgElements.get(cpdId);
+			Set<OMSVGElement> elementsForId = this.id2SvgElements.get(cpdId);
 			if(elementsForId == null) {
 				elementsForId = new HashSet<OMSVGElement>();
 				this.id2SvgElements.put(cpdId, elementsForId);
@@ -301,7 +303,7 @@ public class AnnotatedMapData implements Serializable {
 		
 		if(g.hasAttribute(ATTRIBUTE_KEGGID)) {
 			String mapId = g.getAttribute(ATTRIBUTE_KEGGID).substring(5);
-			HashSet<OMSVGElement> elementsForId = this.id2SvgElements.get(mapId);
+			Set<OMSVGElement> elementsForId = this.id2SvgElements.get(mapId);
 			if(elementsForId == null) {
 				elementsForId = new HashSet<OMSVGElement>();
 				this.id2SvgElements.put(mapId, elementsForId);
@@ -330,7 +332,7 @@ public class AnnotatedMapData implements Serializable {
 				if(rxnId.isEmpty())
 					continue;
 				rxnId = rxnId.substring(3);
-				HashSet<OMSVGElement> elementsForId = this.id2SvgElements.get(rxnId);
+				Set<OMSVGElement> elementsForId = this.id2SvgElements.get(rxnId);
 				if(elementsForId == null) {
 					elementsForId = new HashSet<OMSVGElement>();
 					this.id2SvgElements.put(rxnId, elementsForId);
@@ -350,7 +352,7 @@ public class AnnotatedMapData implements Serializable {
 				if(ecNum.isEmpty())
 					continue;
 				ecNum = ecNum.substring(3);
-				HashSet<OMSVGElement> elementsForId = this.id2SvgElements.get(ecNum);
+				Set<OMSVGElement> elementsForId = this.id2SvgElements.get(ecNum);
 				if(elementsForId == null) {
 					elementsForId = new HashSet<OMSVGElement>();
 					this.id2SvgElements.put(ecNum, elementsForId);

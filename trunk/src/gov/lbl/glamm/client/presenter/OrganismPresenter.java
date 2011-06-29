@@ -9,8 +9,9 @@ import gov.lbl.glamm.client.model.Sample.DataType;
 import gov.lbl.glamm.client.rpc.GlammServiceAsync;
 import gov.lbl.glamm.shared.RequestParameters;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -50,7 +51,7 @@ public class OrganismPresenter {
 	}
 
 	private static final String ACTION_DOWNLOAD_ORGANISM	= "downloadOrganism";
-	private static final HashMap<Sample.DataType, String> dataType2Caption = new HashMap<Sample.DataType, String>();
+	private static final Map<Sample.DataType, String> dataType2Caption = new HashMap<Sample.DataType, String>();
 	static {
 		dataType2Caption.put(Sample.DataType.NONE, "Show all organisms");
 		dataType2Caption.put(Sample.DataType.FITNESS, "Show only organisms with fitness data");
@@ -90,14 +91,14 @@ public class OrganismPresenter {
 		view.clearDataTypeChoices();
 		
 		addDataTypeChoice(Sample.DataType.NONE, true);
-		rpc.getAvailableExperimentTypes(new AsyncCallback<ArrayList<Sample.DataType>>() {
+		rpc.getAvailableExperimentTypes(new AsyncCallback<List<Sample.DataType>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				Window.alert("Remote procedure call failure: getAvailableExperimentTypes");
 			}
 
 			@Override
-			public void onSuccess(ArrayList<DataType> result) {
+			public void onSuccess(List<DataType> result) {
 				if(result == null)
 					return;
 				for(Sample.DataType dataType : result) {
@@ -185,7 +186,7 @@ public class OrganismPresenter {
 					UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
 					urlBuilder.setParameter("action", ACTION_DOWNLOAD_ORGANISM);
 					urlBuilder.setPath("glammServlet");
-					urlBuilder.setParameter(RequestParameters.PARAM_TAXONOMY_ID, organism.getTaxonomyId());
+					urlBuilder.setParameter(RequestParameters.TAXONOMY_ID.toString(), organism.getTaxonomyId());
 
 					view.minimize();
 					Window.open(urlBuilder.buildString(), "", "menubar=no,location=no,resizable=no,scrollbars=no,status=no,toolbar=false,width=0,height=0");
@@ -210,13 +211,13 @@ public class OrganismPresenter {
 		name2Organism.put(Organism.GLOBAL_MAP_NAME, Organism.globalMap());
 
 		rpc.populateOrganisms(dataType,
-				new AsyncCallback<ArrayList<Organism>>() {
+				new AsyncCallback<List<Organism>>() {
 			public void onFailure(Throwable caught) {
 				// Show the RPC error message to the user
 				Window.alert("Remote procedure call failure: populateOrganisms");
 			}
 
-			public void onSuccess(ArrayList<Organism> organisms) {
+			public void onSuccess(List<Organism> organisms) {
 
 				if(organisms == null) {
 					updatePopulatingStatus(true);

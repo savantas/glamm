@@ -13,6 +13,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class ReactionGlammDAOImpl implements ReactionDAO {
 	
@@ -181,7 +184,7 @@ public class ReactionGlammDAOImpl implements ReactionDAO {
 		"\"R01911\",\"R04708\",\"R07236\",\"R04707\",\"R00858\",\"R00859\",\"R00851\"";
 
 	@Override
-	public ArrayList<Reaction> getReactions(Collection<String> rxnIds, HashSet<String> dbNames) {
+	public List<Reaction> getReactions(Collection<String> rxnIds, Set<String> dbNames) {
 
 		HashMap<String, Reaction> guid2Reaction = new HashMap<String, Reaction>();
 		
@@ -239,8 +242,8 @@ public class ReactionGlammDAOImpl implements ReactionDAO {
 	}
 
 	@Override
-	public ArrayList<Reaction> getReactionsForEcNums(Collection<String> ecNums, HashSet<String> dbNames) {
-		ArrayList<Reaction> reactions = null;
+	public List<Reaction> getReactionsForEcNums(Collection<String> ecNums, Set<String> dbNames) {
+		List<Reaction> reactions = null;
 		
 		if(ecNums != null && !ecNums.isEmpty()) {
 			String sql = "select distinct(X.toXrefId), X.xrefDbName, E.ecNum " +
@@ -281,11 +284,11 @@ public class ReactionGlammDAOImpl implements ReactionDAO {
 	
 
 	@Override
-	public ArrayList<Reaction> getReactionsForSearch(HashSet<String> dbNames) {
+	public List<Reaction> getReactionsForSearch(Set<String> dbNames) {
 	
 		// TODO: Generalize for other maps besides global
 
-		HashMap<String, Reaction> guid2Reaction = new HashMap<String, Reaction>();
+		Map<String, Reaction> guid2Reaction = new HashMap<String, Reaction>();
 
 		if(dbNames != null && !dbNames.isEmpty()) {
 
@@ -336,20 +339,21 @@ public class ReactionGlammDAOImpl implements ReactionDAO {
 
 	}
 
-	public ArrayList<Reaction> getRxn2EcMapping(String mapId, HashSet<String> dbNames) {
+	public List<Reaction> getRxn2EcMapping(String mapId, Set<String> dbNames) {
 		// TODO: Generalize for other maps besides global
 		return getReactionsForSearch(dbNames);
 	}
 
 	@Override
-	public HashSet<String> getRxnIdsForEcNums(Collection<String> ecNums,
-			HashSet<String> dbNames) {
-		HashSet<String> rxnIds = null;
+	public Set<String> getRxnIdsForEcNums(Collection<String> ecNums,
+			Set<String> dbNames) {
+		
+		Set<String> rxnIds = null;
 		
 		if(ecNums != null && !ecNums.isEmpty() && dbNames != null && !dbNames.isEmpty()) {
-			ArrayList<Reaction> rxns = getReactionsForEcNums(ecNums, dbNames);
+			List<Reaction> rxns = getReactionsForEcNums(ecNums, dbNames);
 			for(Reaction rxn : rxns) {
-				HashSet<Xref> xrefs = rxn.getXrefs();
+				Set<Xref> xrefs = rxn.getXrefs();
 				for(Xref xref : xrefs) {
 					if(dbNames.contains(xref.getXrefDbName())) {
 						if(rxnIds == null)

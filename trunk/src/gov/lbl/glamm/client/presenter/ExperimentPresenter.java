@@ -8,9 +8,9 @@ import gov.lbl.glamm.client.model.Sample;
 import gov.lbl.glamm.client.rpc.GlammServiceAsync;
 import gov.lbl.glamm.shared.RequestParameters;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -96,7 +96,7 @@ public class ExperimentPresenter {
 	private ListDataProvider<Sample> viewSubsetDataProvider = null;
 
 	private MultiWordSuggestOracle suggestOracle = null;
-	private HashMap<String, Sample> summary2Sample = null;
+	private Map<String, Sample> summary2Sample = null;
 
 	private Sample experimentTableSelection = null;
 	private Sample viewSubsetTableSelection = null;
@@ -122,7 +122,7 @@ public class ExperimentPresenter {
 		bindView();
 	}
 
-	private void addSamples(final ArrayList<Sample> samples) {
+	private void addSamples(final List<Sample> samples) {
 		List<Sample> dpList = experimentDataProvider.getList();
 		for(Sample sample : samples) {
 			String summary = sample.getSummary();
@@ -226,10 +226,10 @@ public class ExperimentPresenter {
 					UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
 					urlBuilder.setParameter("action", ACTION_DOWNLOAD_EXPERIMENT);
 					urlBuilder.setPath("glammServlet");
-					urlBuilder.setParameter(RequestParameters.PARAM_EXPERIMENT, experimentTableSelection.getExperimentId());
-					urlBuilder.setParameter(RequestParameters.PARAM_SAMPLE, experimentTableSelection.getSampleId());
-					urlBuilder.setParameter(RequestParameters.PARAM_TAXONOMY_ID, experimentTableSelection.getTaxonomyId());
-					urlBuilder.setParameter(RequestParameters.PARAM_EXP_SOURCE, experimentTableSelection.getSource());
+					urlBuilder.setParameter(RequestParameters.EXPERIMENT.toString(), experimentTableSelection.getExperimentId());
+					urlBuilder.setParameter(RequestParameters.SAMPLE.toString(), experimentTableSelection.getSampleId());
+					urlBuilder.setParameter(RequestParameters.TAXONOMY_ID.toString(), experimentTableSelection.getTaxonomyId());
+					urlBuilder.setParameter(RequestParameters.EXP_SOURCE.toString(), experimentTableSelection.getSource());
 
 					Window.open(urlBuilder.buildString(), "", "menubar=no,location=no,resizable=no,scrollbars=no,status=no,toolbar=false,width=0,height=0");
 				}
@@ -395,7 +395,7 @@ public class ExperimentPresenter {
 
 		setViewState(State.POPULATING);
 
-		rpc.populateSamples(organism.getTaxonomyId(), new AsyncCallback<ArrayList<Sample>>() {
+		rpc.populateSamples(organism.getTaxonomyId(), new AsyncCallback<List<Sample>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				// Show the RPC error message to the user
@@ -404,7 +404,7 @@ public class ExperimentPresenter {
 			}
 
 			@Override
-			public void onSuccess(ArrayList<Sample> result) {
+			public void onSuccess(List<Sample> result) {
 				if(result == null) {
 					setViewState(State.NO_EXPERIMENTS);
 					return;

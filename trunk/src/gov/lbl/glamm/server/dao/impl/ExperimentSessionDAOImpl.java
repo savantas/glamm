@@ -7,8 +7,9 @@ import gov.lbl.glamm.server.SessionManager;
 import gov.lbl.glamm.server.dao.ExperimentDAO;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class ExperimentSessionDAOImpl implements ExperimentDAO {
 
@@ -19,9 +20,9 @@ public class ExperimentSessionDAOImpl implements ExperimentDAO {
 	}
 	
 	@Override
-	public ArrayList<Sample.DataType> getAvailableExperimentTypes() {
+	public List<Sample.DataType> getAvailableExperimentTypes() {
 		if(sm != null && sm.hasExperiments()) {
-			ArrayList<Sample.DataType> types = new ArrayList<Sample.DataType>();
+			List<Sample.DataType> types = new ArrayList<Sample.DataType>();
 			types.add(Sample.DataType.SESSION);
 			return types;
 		}
@@ -29,23 +30,23 @@ public class ExperimentSessionDAOImpl implements ExperimentDAO {
 	}
 	
 	@Override
-	public ArrayList<Experiment> getAllExperiments(String taxonomyId) {
+	public List<Experiment> getAllExperiments(String taxonomyId) {
 		if(sm != null)
 			return sm.getExperimentsForTaxonomyId(taxonomyId);
 		return null;
 	}
 	
 	@Override
-	public ArrayList<Sample> getAllSamples(String taxonomyId) {
+	public List<Sample> getAllSamples(String taxonomyId) {
 		if(sm == null) 
 			return null;
 			
-		ArrayList<Experiment> experiments = getAllExperiments(taxonomyId);
+		List<Experiment> experiments = getAllExperiments(taxonomyId);
 			
 		if(experiments == null)
 			return null;
 			
-		ArrayList<Sample> samples = new ArrayList<Sample>();
+		List<Sample> samples = new ArrayList<Sample>();
 			
 		for(Experiment experiment : experiments)
 				samples.addAll(experiment.getSamples());
@@ -61,7 +62,7 @@ public class ExperimentSessionDAOImpl implements ExperimentDAO {
 	}
 
 	@Override
-	public HashMap<String,HashSet<Measurement>> getMeasurements(String experimentId,
+	public Map<String, Set<Measurement>> getMeasurements(String experimentId,
 			String sampleId, String taxonomyId, String source) {
 		if(sm != null)
 			return sm.getMeasurements(experimentId, sampleId, taxonomyId);

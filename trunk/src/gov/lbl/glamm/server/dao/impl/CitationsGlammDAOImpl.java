@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.List;
 
 public class CitationsGlammDAOImpl implements CitationsDAO {
 
@@ -42,9 +43,9 @@ public class CitationsGlammDAOImpl implements CitationsDAO {
 
 
 	@Override
-	public ArrayList<Citation> getCitations() {
+	public List<Citation> getCitations() {
 
-		ArrayList<Citation> citations = null;
+		List<Citation> citations = null;
 
 		String sql = "select DS.description, DS.dbVersion, C.citation " +
 		"from glamm.GlammDataSource DS " +

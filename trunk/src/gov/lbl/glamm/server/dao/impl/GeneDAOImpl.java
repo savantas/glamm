@@ -5,9 +5,9 @@ import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.server.SessionManager;
 import gov.lbl.glamm.server.dao.GeneDAO;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class GeneDAOImpl implements GeneDAO {
 	
@@ -26,7 +26,7 @@ public class GeneDAOImpl implements GeneDAO {
 	}
 	
 	@Override
-	public HashSet<String> getEcNumsForOrganism(String taxonomyId) {
+	public Set<String> getEcNumsForOrganism(String taxonomyId) {
 		if(sm != null && sm.isSessionOrganism(taxonomyId))
 			return sessionDao.getEcNumsForOrganism(taxonomyId);
 		if(Long.parseLong(taxonomyId) >= Organism.MIN_METAGENOME_TAXID)
@@ -35,7 +35,7 @@ public class GeneDAOImpl implements GeneDAO {
 	}
 	
 	@Override
-	public ArrayList<Gene> getGenesForEcNums(String taxonomyId,
+	public List<Gene> getGenesForEcNums(String taxonomyId,
 			Collection<String> ecNums) {
 		if(sm != null && sm.isSessionOrganism(taxonomyId))
 			return sessionDao.getGenesForEcNums(taxonomyId, ecNums);
@@ -45,7 +45,7 @@ public class GeneDAOImpl implements GeneDAO {
 	}
 	
 	@Override
-	public ArrayList<Gene> getGenesForVimssIds(String taxonomyId, Collection<String> vimssIds) {
+	public List<Gene> getGenesForVimssIds(String taxonomyId, Collection<String> vimssIds) {
 		if(sm != null && sm.isSessionOrganism(taxonomyId))
 			return sessionDao.getGenesForVimssIds(taxonomyId, vimssIds);
 		if(Long.parseLong(taxonomyId) >= Organism.MIN_METAGENOME_TAXID)
@@ -55,7 +55,7 @@ public class GeneDAOImpl implements GeneDAO {
 
 
 	@Override
-	public ArrayList<Gene> getGenesForOrganism(String taxonomyId) {
+	public List<Gene> getGenesForOrganism(String taxonomyId) {
 		if(sm != null && sm.isSessionOrganism(taxonomyId))
 			return sessionDao.getGenesForOrganism(taxonomyId);
 		if(Long.parseLong(taxonomyId) >= Organism.MIN_METAGENOME_TAXID)
@@ -64,7 +64,7 @@ public class GeneDAOImpl implements GeneDAO {
 	}
 
 	@Override
-	public ArrayList<Gene> getGenesForRxnIds(String taxonomyId, String[] rxnIds) {
+	public List<Gene> getGenesForRxnIds(String taxonomyId, String[] rxnIds) {
 		if(sm != null && sm.isSessionOrganism(taxonomyId))
 			return sessionDao.getGenesForRxnIds(taxonomyId, rxnIds);
 		if(Long.parseLong(taxonomyId) >= Organism.MIN_METAGENOME_TAXID)
@@ -73,7 +73,7 @@ public class GeneDAOImpl implements GeneDAO {
 	}
 
 	@Override
-	public ArrayList<Gene> getGenesForSynonyms(String taxonomyId,
+	public List<Gene> getGenesForSynonyms(String taxonomyId,
 			Collection<String> synonyms) {
 		if(sm != null && sm.isSessionOrganism(taxonomyId))
 			return sessionDao.getGenesForSynonyms(taxonomyId, synonyms);

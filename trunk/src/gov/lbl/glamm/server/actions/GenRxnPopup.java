@@ -12,30 +12,33 @@ import gov.lbl.glamm.server.dao.impl.ReactionGlammDAOImpl;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class GenRxnPopup {
 
-	public static String genRxnPopup(SessionManager sm, HashSet<String> rxnIds, HashSet<String> dbNames, String taxonomyId) {
+	public static String genRxnPopup(SessionManager sm, Set<String> rxnIds, Set<String> dbNames, String taxonomyId) {
 
 		String html = "<html>No reactions found.</html>";
-		HashMap<String, ArrayList<Reaction>>	def2Rxns	= null;
-		HashMap<String, ArrayList<Gene>> 		ecNum2Genes	= null;
+		Map<String, List<Reaction>>	def2Rxns	= null;
+		Map<String, List<Gene>> 		ecNum2Genes	= null;
 
 		if(rxnIds == null || rxnIds.isEmpty() || dbNames == null)
 			return html;
 
 		ReactionDAO rxnDao = new ReactionGlammDAOImpl();
-		ArrayList<Reaction> rxns = rxnDao.getReactions(rxnIds, dbNames);
-		HashSet<String> ecNums = new HashSet<String>();
+		List<Reaction> rxns = rxnDao.getReactions(rxnIds, dbNames);
+		Set<String> ecNums = new HashSet<String>();
 
 		if(rxns == null) 
 			return html;
 
 		// create definition to reaction hash
-		def2Rxns = new HashMap<String, ArrayList<Reaction>>();
+		def2Rxns = new HashMap<String, List<Reaction>>();
 		for(Reaction rxn : rxns) {
 			String definition = rxn.getDefinition();
-			ArrayList<Reaction> r = def2Rxns.get(definition);
+			List<Reaction> r = def2Rxns.get(definition);
 
 			if(r == null) {
 				r = new ArrayList<Reaction>();
@@ -44,12 +47,12 @@ public class GenRxnPopup {
 
 			r.add(rxn);
 
-			HashSet<String> ecNumsForRxn = rxn.getEcNums();
+			Set<String> ecNumsForRxn = rxn.getEcNums();
 			if(ecNumsForRxn != null)
 				ecNums.addAll(ecNumsForRxn);
 		}
 
-		ArrayList<Gene> genes = null;
+		List<Gene> genes = null;
 
 		if(taxonomyId != null && 
 				!taxonomyId.isEmpty() && 
@@ -61,12 +64,12 @@ public class GenRxnPopup {
 			if(genes != null) {
 
 				// create ecNum to gene hash
-				ecNum2Genes = new HashMap<String, ArrayList<Gene>>();
+				ecNum2Genes = new HashMap<String, List<Gene>>();
 				for(Gene gene : genes) {
-					HashSet<String> ecNumsForGene = gene.getEcNums();
+					Set<String> ecNumsForGene = gene.getEcNums();
 					if(ecNumsForGene != null) {
 						for(String ecNum : ecNumsForGene) {
-							ArrayList<Gene> g = ecNum2Genes.get(ecNum);
+							List<Gene> g = ecNum2Genes.get(ecNum);
 
 							if(g == null) {
 								g = new ArrayList<Gene>();
@@ -112,21 +115,21 @@ public class GenRxnPopup {
 	//********************************************************************************
 
 	private static String genHtml(SessionManager sm, String taxonomyId, 
-			HashMap<String, ArrayList<Reaction>> def2Rxns, 
-			HashMap<String, ArrayList<Gene>> ecNum2Genes) {
+			Map<String, List<Reaction>> def2Rxns, 
+			Map<String, List<Gene>> ecNum2Genes) {
 
 		String html = "<html>";
 
 		for(String definition : def2Rxns.keySet()) {
-			ArrayList<Reaction> rxns = def2Rxns.get(definition);
+			List<Reaction> rxns = def2Rxns.get(definition);
 			html += definition + "<br>";
 
 			for(Reaction rxn : rxns) {
-				HashSet<String> ecNums = rxn.getEcNums();
+				Set<String> ecNums = rxn.getEcNums();
 				if(ecNums != null) {
 					for(String ecNum : ecNums) {
 						int numLoci = 0;
-						ArrayList<Gene> genes = null;
+						List<Gene> genes = null;
 
 						if(ecNum2Genes != null) {
 							genes = ecNum2Genes.get(ecNum);
@@ -150,7 +153,7 @@ public class GenRxnPopup {
 
 	//********************************************************************************
 
-	private static String genEcNumLink(SessionManager sm, String ecNum, String taxonomyId, ArrayList<Gene> genes) {
+	private static String genEcNumLink(SessionManager sm, String ecNum, String taxonomyId, List<Gene> genes) {
 
 		String link = "<b>No EC</b>";
 
@@ -172,7 +175,7 @@ public class GenRxnPopup {
 
 	//********************************************************************************
 	
-	private static String genEcNumLinkForMolOrganism(String ecNum, String taxonomyId, ArrayList<Gene> genes) {
+	private static String genEcNumLinkForMolOrganism(String ecNum, String taxonomyId, List<Gene> genes) {
 		String link = "<b>" + ecNum + "</b>";
 		if(genes != null && !genes.isEmpty()) {
 			link = "<a href=\"http://";
@@ -189,7 +192,7 @@ public class GenRxnPopup {
 		String link = "<b>" + ecNum + "</b>";
 		
 			// get set of all molTaxonomyIds
-			HashSet<String> metaMolTaxonomyIds = organism.getMolTaxonomyIds();
+			Set<String> metaMolTaxonomyIds = organism.getMolTaxonomyIds();
 			
 			if(metaMolTaxonomyIds == null || metaMolTaxonomyIds.isEmpty())
 				return link;

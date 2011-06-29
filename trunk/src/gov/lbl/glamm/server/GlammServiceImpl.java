@@ -27,8 +27,8 @@ import gov.lbl.glamm.server.actions.UpdateMolAclUserId;
 import gov.lbl.glamm.server.actions.requesthandlers.GetDirections;
 
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -90,12 +90,12 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	}
 	
 	@Override
-	public ArrayList<Sample.DataType> getAvailableExperimentTypes() {
+	public List<Sample.DataType> getAvailableExperimentTypes() {
 		return GetAvailableExperimentTypes.getAvailableExperimentTypes(getSessionManager(false));
 	}
 	
 	@Override
-	public ArrayList<Pathway> getDirections(String taxonomyId, Compound cpdSrc, Compound cpdDst, String mapTitle, String algorithm) {
+	public List<Pathway> getDirections(String taxonomyId, Compound cpdSrc, Compound cpdDst, String mapTitle, String algorithm) {
 		return GetDirections.getDirections(getSessionManager(true), taxonomyId, cpdSrc, cpdDst, mapTitle, algorithm);
 	}
 	
@@ -105,42 +105,42 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	}
 	
 	@Override
-	public ArrayList<? extends GlammPrimitive> getMeasurementsForExperiment(String experimentId, String sampleId, String taxonomyId, String expSource) {
+	public List<? extends GlammPrimitive> getMeasurementsForExperiment(String experimentId, String sampleId, String taxonomyId, String expSource) {
 		return GetExperiment.getMeasurementsForExperiment(getSessionManager(false), experimentId, sampleId, taxonomyId, expSource);
 	}
 	
 	@Override
-	public ArrayList<Reaction> getRxnsForOrganism(String taxonomyId, HashSet<String> dbNames) {
+	public List<Reaction> getRxnsForOrganism(String taxonomyId, Set<String> dbNames) {
 		return GetRxnsForOrganism.getRxnsForOrganism(getSessionManager(false), taxonomyId, dbNames);
 	}
 	
 	@Override
-	public ArrayList<Compound> populateCompoundSearch(HashSet<String> dbNames) {
+	public List<Compound> populateCompoundSearch(Set<String> dbNames) {
 		return PopulateCompoundSearch.populateCompoundSearch(dbNames);
 	}
 	
 	@Override
-	public ArrayList<Experiment> populateExperiments(String taxonomyId) {
+	public List<Experiment> populateExperiments(String taxonomyId) {
 		return PopulateExperiments.populateExperiments(getSessionManager(false), taxonomyId);
 	}
 	
 	@Override
-	public ArrayList<Gene> populateLocusSearch(String taxonomyId) {
+	public List<Gene> populateLocusSearch(String taxonomyId) {
 		return PopulateLocusSearch.populateLocusSearch(getSessionManager(false), taxonomyId);
 	}
 
 	@Override
-	public ArrayList<Organism> populateOrganisms(Sample.DataType dataType) {
+	public List<Organism> populateOrganisms(Sample.DataType dataType) {
 		return PopulateOrganisms.populateOrganisms(getSessionManager(false), dataType);
 	}
 	
 	@Override
-	public ArrayList<Reaction> populateReactionSearch(HashSet<String> dbNames) {
+	public List<Reaction> populateReactionSearch(Set<String> dbNames) {
 		return PopulateReactionSearch.populateReactionSearch(dbNames);
 	}
 	
 	@Override
-	public ArrayList<Sample> populateSamples(String taxonomyId) {
+	public List<Sample> populateSamples(String taxonomyId) {
 		return PopulateSamples.populateSamples(getSessionManager(false), taxonomyId);
 	}
 	
