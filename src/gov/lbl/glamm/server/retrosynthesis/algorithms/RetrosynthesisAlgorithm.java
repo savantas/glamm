@@ -8,6 +8,7 @@ import gov.lbl.glamm.server.retrosynthesis.Route.RouteComparator;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public abstract class RetrosynthesisAlgorithm {
 
@@ -18,7 +19,7 @@ public abstract class RetrosynthesisAlgorithm {
 	private String					algorithm 			= null;
 	private int						maxRouteCost 		= 0;
 	protected MetabolicNetwork		network 			= null;
-	protected ArrayList<Route> 		routes 				= new ArrayList<Route>();
+	protected List<Route> 			routes 				= new ArrayList<Route>();
 	protected String				taxonomyId 			= null;
 	
 	//********************************************************************************
@@ -68,7 +69,7 @@ public abstract class RetrosynthesisAlgorithm {
 	
 	//********************************************************************************
 
-	public abstract ArrayList<Route> calculateRoutes(String cpdSrcExtId, String cpdDstExtId);
+	public abstract List<Route> calculateRoutes(String cpdSrcExtId, String cpdDstExtId);
 	
 	//********************************************************************************
 	

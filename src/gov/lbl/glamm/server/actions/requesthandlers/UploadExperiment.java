@@ -16,6 +16,8 @@ import gov.lbl.glamm.server.dao.impl.OrganismDAOImpl;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,7 +34,7 @@ public class UploadExperiment implements RequestHandler {
 		final SessionManager sm = SessionManager.getSessionManager(request, true);
 
 		// it's always most convenient to hash measurements by the ids of their targets
-		final HashMap<String, HashSet<Measurement>> id2Measurement = new HashMap<String, HashSet<Measurement>>();
+		final Map<String, Set<Measurement>> id2Measurement = new HashMap<String, Set<Measurement>>();
 
 		final String expId		= sm.nextAvailableExperimentId();
 		final String sampleId	= "1";
@@ -59,7 +61,7 @@ public class UploadExperiment implements RequestHandler {
 					String value 		= tokens[VALUE_INDEX];
 					String confidence 	= (tokens.length >= 3 ? tokens[CONFIDENCE_INDEX] : null);
 
-					HashSet<Measurement> measurements = id2Measurement.get(targetId);
+					Set<Measurement> measurements = id2Measurement.get(targetId);
 					if(measurements == null) {
 						measurements = new HashSet<Measurement>();
 						id2Measurement.put(targetId, measurements);

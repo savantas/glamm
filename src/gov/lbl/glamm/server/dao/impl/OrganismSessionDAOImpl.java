@@ -6,9 +6,11 @@ import gov.lbl.glamm.client.model.Sample;
 import gov.lbl.glamm.server.SessionManager;
 import gov.lbl.glamm.server.dao.OrganismDAO;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class OrganismSessionDAOImpl implements OrganismDAO {
 
@@ -19,14 +21,14 @@ public class OrganismSessionDAOImpl implements OrganismDAO {
 	}
 
 	@Override
-	public ArrayList<Organism> getAllOrganisms() {
+	public List<Organism> getAllOrganisms() {
 		if(sm != null)
 			return sm.getOrganisms();
 		return null;
 	}
 
 	@Override
-	public ArrayList<Organism> getAllOrganismsWithDataForType(Sample.DataType dataType) {
+	public List<Organism> getAllOrganismsWithDataForType(Sample.DataType dataType) {
 		if(sm == null)
 			return null;
 		
@@ -40,24 +42,26 @@ public class OrganismSessionDAOImpl implements OrganismDAO {
 	}
 
 	@Override
-	public HashMap<String, HashSet<Organism>> getTransgenicCandidatesForEcNums(HashSet<String> ecNums) {
-		HashMap<String, HashSet<Organism>> ecNum2Organisms = null;
+	public Map<String, Set<Organism>> getTransgenicCandidatesForEcNums(Set<String> ecNums) {
+		
+		Map<String, Set<Organism>> ecNum2Organisms = null;
+		
 		if(sm != null) {
-			ArrayList<Organism> sessionOrganisms = sm.getOrganisms();
+			List<Organism> sessionOrganisms = sm.getOrganisms();
 			if(sessionOrganisms == null)
 				return null;
-			ecNum2Organisms = new HashMap<String, HashSet<Organism>>();
+			ecNum2Organisms = new HashMap<String, Set<Organism>>();
 			for(Organism organism : sessionOrganisms) {
-				ArrayList<Gene> genes = sm.getGenesForOrganism(organism);
+				List<Gene> genes = sm.getGenesForOrganism(organism);
 				if(genes == null)
 					continue;
 				for(Gene gene : genes) {
-					HashSet<String> ecNumsForOrganism = gene.getEcNums();
+					Set<String> ecNumsForOrganism = gene.getEcNums();
 					if(ecNumsForOrganism == null)
 						continue;
 					for(String ecNum : ecNumsForOrganism) {
 						if(ecNums.contains(ecNum)) {
-							HashSet<Organism> organisms =  ecNum2Organisms.get(ecNum);
+							Set<Organism> organisms =  ecNum2Organisms.get(ecNum);
 							if(organisms == null) {
 								organisms = new HashSet<Organism>();
 								ecNum2Organisms.put(ecNum, organisms);

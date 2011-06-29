@@ -5,10 +5,10 @@ import gov.lbl.glamm.server.SessionManager;
 import gov.lbl.glamm.server.dao.ExperimentDAO;
 import gov.lbl.glamm.server.dao.impl.ExperimentDAOImpl;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class GetAvailableExperimentTypes {
-	public static ArrayList<Sample.DataType> getAvailableExperimentTypes(SessionManager sm) {
+	public static List<Sample.DataType> getAvailableExperimentTypes(SessionManager sm) {
 		ExperimentDAO expDao = new ExperimentDAOImpl(sm);
 		return expDao.getAvailableExperimentTypes();
 	}

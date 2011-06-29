@@ -7,8 +7,9 @@ import gov.lbl.glamm.server.SessionManager;
 import gov.lbl.glamm.server.dao.ExperimentDAO;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class ExperimentDAOImpl implements ExperimentDAO {
 
@@ -24,8 +25,8 @@ public class ExperimentDAOImpl implements ExperimentDAO {
 	}
 	
 	@Override
-	public ArrayList<Sample.DataType> getAvailableExperimentTypes() {
-		ArrayList<Sample.DataType> types = null;
+	public List<Sample.DataType> getAvailableExperimentTypes() {
+		List<Sample.DataType> types = null;
 		
 		if(sm != null)
 			types = expSessionDao.getAvailableExperimentTypes();
@@ -53,9 +54,9 @@ public class ExperimentDAOImpl implements ExperimentDAO {
 	}
 
 	@Override
-	public ArrayList<Experiment> getAllExperiments(String taxonomyId) {
+	public List<Experiment> getAllExperiments(String taxonomyId) {
 		
-		ArrayList<Experiment> experiments = null;
+		List<Experiment> experiments = null;
 		
 		if(sm != null)
 			experiments = expSessionDao.getAllExperiments(taxonomyId);
@@ -69,10 +70,10 @@ public class ExperimentDAOImpl implements ExperimentDAO {
 	}
 	
 	@Override
-	public ArrayList<Sample> getAllSamples(String taxonomyId) {
+	public List<Sample> getAllSamples(String taxonomyId) {
 		
-		ArrayList<Sample> sessionSamples = null;
-		ArrayList<Sample> molSamples = expUArrayDao.getAllSamples(taxonomyId);
+		List<Sample> sessionSamples = null;
+		List<Sample> molSamples = expUArrayDao.getAllSamples(taxonomyId);
 		
 		if(sm != null) 
 			sessionSamples = expSessionDao.getAllSamples(taxonomyId);
@@ -80,7 +81,7 @@ public class ExperimentDAOImpl implements ExperimentDAO {
 		if(sessionSamples == null && molSamples == null)
 			return null;
 		
-		ArrayList<Sample> samples = new ArrayList<Sample>();
+		List<Sample> samples = new ArrayList<Sample>();
 		
 		if(sessionSamples != null)
 			samples.addAll(sessionSamples);
@@ -92,10 +93,10 @@ public class ExperimentDAOImpl implements ExperimentDAO {
 	}
 
 	@Override
-	public HashMap<String,HashSet<Measurement>> getMeasurements(String experimentId,
+	public Map<String, Set<Measurement>> getMeasurements(String experimentId,
 			String sampleId, String taxonomyId, String source) {
 
-		HashMap<String, HashSet<Measurement>> id2Measurement = null;
+		Map<String, Set<Measurement>> id2Measurement = null;
 		
 		if(source.equals(Experiment.EXP_SRC_SESSION)) {
 			if(sm != null)

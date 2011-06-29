@@ -10,8 +10,8 @@ import gov.lbl.glamm.client.model.Pathway;
 import gov.lbl.glamm.client.model.Reaction;
 import gov.lbl.glamm.client.model.Sample;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -21,16 +21,16 @@ public interface GlammServiceAsync {
 	public void genCpdPopup(String query, String taxonomyId, AsyncCallback<String> callback);
 	public void genKeggPwyPopup(String query, String taxonomyId, String experimentId, String sampleId, AsyncCallback<String> callback);
 	public void genRxnPopup(String query, String taxonomyId, AsyncCallback<String> callback);
-	public void getAvailableExperimentTypes(AsyncCallback<ArrayList<Sample.DataType>> callback);
-	public void getDirections(String taxonomyId, Compound cpdSrc, Compound cpdDst, String mapTitle, String algorithm, AsyncCallback<ArrayList<Pathway>> callback);
+	public void getAvailableExperimentTypes(AsyncCallback<List<Sample.DataType>> callback);
+	public void getDirections(String taxonomyId, Compound cpdSrc, Compound cpdDst, String mapTitle, String algorithm, AsyncCallback<List<Pathway>> callback);
 	public void getMapConnectivity(String mapId, AsyncCallback<MetabolicNetwork> callback);
-	public void getMeasurementsForExperiment(String experimentId, String sampleId, String taxonomyId, String expSource, AsyncCallback<ArrayList<? extends GlammPrimitive>> callback);
-	public void getRxnsForOrganism(String taxonomyId, HashSet<String> rxnDbNames, AsyncCallback<ArrayList<Reaction>> callback);
-	public void populateCompoundSearch(HashSet<String> cpdDbNames, AsyncCallback<ArrayList<Compound>> callback);
-	public void populateExperiments(String taxonomyId, AsyncCallback<ArrayList<Experiment>> callback);
-	public void populateLocusSearch(String taxonomyId, AsyncCallback<ArrayList<Gene>> callback);
-	public void populateOrganisms(Sample.DataType dataType, AsyncCallback<ArrayList<Organism>> callback);
-	public void populateReactionSearch(HashSet<String> rxnDbNames, AsyncCallback<ArrayList<Reaction>> callback);
-	public void populateSamples(String taxonomyId, AsyncCallback<ArrayList<Sample>> callback);
+	public void getMeasurementsForExperiment(String experimentId, String sampleId, String taxonomyId, String expSource, AsyncCallback<List<? extends GlammPrimitive>> callback);
+	public void getRxnsForOrganism(String taxonomyId, Set<String> rxnDbNames, AsyncCallback<List<Reaction>> callback);
+	public void populateCompoundSearch(Set<String> cpdDbNames, AsyncCallback<List<Compound>> callback);
+	public void populateExperiments(String taxonomyId, AsyncCallback<List<Experiment>> callback);
+	public void populateLocusSearch(String taxonomyId, AsyncCallback<List<Gene>> callback);
+	public void populateOrganisms(Sample.DataType dataType, AsyncCallback<List<Organism>> callback);
+	public void populateReactionSearch(Set<String> rxnDbNames, AsyncCallback<List<Reaction>> callback);
+	public void populateSamples(String taxonomyId, AsyncCallback<List<Sample>> callback);
 	public void updateMolAclUserId(final String molAclUserId, AsyncCallback<Void> callback);
 }

@@ -10,8 +10,8 @@ import gov.lbl.glamm.server.dao.impl.GeneDAOImpl;
 import gov.lbl.glamm.shared.RequestParameters;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,16 +25,16 @@ public class DownloadOrganism implements RequestHandler {
 			HttpServletResponse response) throws IOException {
 
 		String content		= "";
-		String taxonomyId	= request.getParameter(RequestParameters.PARAM_TAXONOMY_ID);
+		String taxonomyId	= request.getParameter(RequestParameters.TAXONOMY_ID.toString());
 
 		GeneDAO geneDao = new GeneDAOImpl(SessionManager.getSessionManager(request, false));
 
-		ArrayList<Gene> genes = geneDao.getGenesForOrganism(taxonomyId);
+		List<Gene> genes = geneDao.getGenesForOrganism(taxonomyId);
 
 		if(genes != null) {
 			for(Gene gene : genes) {
 
-				HashSet<String> ecNums = gene.getEcNums();
+				Set<String> ecNums = gene.getEcNums();
 				if(ecNums != null) {
 
 					for(String ecNum : ecNums) {

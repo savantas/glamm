@@ -15,6 +15,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 
@@ -35,9 +38,9 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 	//********************************************************************************
 	
 	@Override
-	public ArrayList<Sample.DataType> getAvailableExperimentTypes() {
+	public List<Sample.DataType> getAvailableExperimentTypes() {
 
-		ArrayList<Sample.DataType> types = null;
+		List<Sample.DataType> types = null;
 		String sql = "";
 
 		if(GlammDbConnectionPool.getDbConfig().isFilterOnAcl())
@@ -151,9 +154,9 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 	//********************************************************************************
 
 	@Override
-	public ArrayList<Experiment> getAllExperiments(String taxonomyId) {
+	public List<Experiment> getAllExperiments(String taxonomyId) {
 
-		ArrayList<Experiment> experiments = null;
+		List<Experiment> experiments = null;
 
 		String sql = "";
 
@@ -182,7 +185,7 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 			ResultSet rs = ps.executeQuery();
 
 			// as there will be multiple Samples per Experiment, hash the experiments as you get them
-			HashMap<String, Experiment> expId2Experiment = new HashMap<String, Experiment>();
+			Map<String, Experiment> expId2Experiment = new HashMap<String, Experiment>();
 
 			while(rs.next()) {
 
@@ -228,9 +231,9 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 	}
 
 	@Override
-	public ArrayList<Sample> getAllSamples(String taxonomyId) {
+	public List<Sample> getAllSamples(String taxonomyId) {
 
-		ArrayList<Sample> samples = null;
+		List<Sample> samples = null;
 
 		String sql = "";
 
@@ -299,7 +302,7 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 	}
 
 	@Override
-	public HashMap<String,HashSet<Measurement>> getMeasurements(String experimentId,
+	public Map<String, Set<Measurement>> getMeasurements(String experimentId,
 			String sampleId, String taxonomyId, String source) {
 		// select expId, setId, meanLogRNorm, zScore, locusId from microarray.MeanLogRatio where expId=12 and setId=1;
 
@@ -308,7 +311,7 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 		if(!source.equals(Experiment.EXP_SRC_MOL_UARRAY))
 			return null;
 
-		HashMap<String, HashSet<Measurement>> id2Measurement = null;
+		Map<String, Set<Measurement>> id2Measurement = null;
 
 		String sql = "select meanLogRNorm, zScore, locusId from microarray.MeanLogRatio where expId=? and setId=?;";
 
@@ -329,9 +332,9 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 				String targetId		= rs.getString("locusId");
 
 				if(id2Measurement == null)
-					id2Measurement = new HashMap<String, HashSet<Measurement>>();
+					id2Measurement = new HashMap<String, Set<Measurement>>();
 
-				HashSet<Measurement> measurements = id2Measurement.get(targetId);
+				Set<Measurement> measurements = id2Measurement.get(targetId);
 
 				if(measurements == null) {
 					measurements = new HashSet<Measurement>();

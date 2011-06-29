@@ -9,8 +9,8 @@ import gov.lbl.glamm.server.dao.impl.ExperimentDAOImpl;
 import gov.lbl.glamm.shared.RequestParameters;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,10 +23,10 @@ public class DownloadExperiment implements RequestHandler {
 	public void handleRequest(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 
-		String experimentId = request.getParameter(RequestParameters.PARAM_EXPERIMENT);
-		String sampleId		= request.getParameter(RequestParameters.PARAM_SAMPLE);
-		String taxonomyId	= request.getParameter(RequestParameters.PARAM_TAXONOMY_ID);
-		String expSource	= request.getParameter(RequestParameters.PARAM_EXP_SOURCE);
+		String experimentId = request.getParameter(RequestParameters.EXPERIMENT.toString());
+		String sampleId		= request.getParameter(RequestParameters.SAMPLE.toString());
+		String taxonomyId	= request.getParameter(RequestParameters.TAXONOMY_ID.toString());
+		String expSource	= request.getParameter(RequestParameters.EXP_SOURCE.toString());
 
 		
 		if(experimentId != null && !experimentId.isEmpty() &&
@@ -38,9 +38,9 @@ public class DownloadExperiment implements RequestHandler {
 			
 			SessionManager	sm 		= SessionManager.getSessionManager(request, false);
 			ExperimentDAO 	expDao 	= new ExperimentDAOImpl(sm);
-			HashMap<String, HashSet<Measurement>> id2Measurements = expDao.getMeasurements(experimentId, sampleId, taxonomyId, expSource);
+			Map<String, Set<Measurement>> id2Measurements = expDao.getMeasurements(experimentId, sampleId, taxonomyId, expSource);
 			
-			for(HashSet<Measurement> measurementSet : id2Measurements.values()) {
+			for(Set<Measurement> measurementSet : id2Measurements.values()) {
 				for(Measurement measurement : measurementSet) {
 					content += measurement.getTargetId() + "\t" + measurement.getValue() + "\n";
 				}

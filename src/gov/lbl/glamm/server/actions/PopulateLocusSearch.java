@@ -5,11 +5,11 @@ import gov.lbl.glamm.server.SessionManager;
 import gov.lbl.glamm.server.dao.GeneDAO;
 import gov.lbl.glamm.server.dao.impl.GeneDAOImpl;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class PopulateLocusSearch {
 	
-	public static ArrayList<Gene> populateLocusSearch(final SessionManager sm, final String taxonomyId) {
+	public static List<Gene> populateLocusSearch(final SessionManager sm, final String taxonomyId) {
 		// create new gene DAO
 		GeneDAO 	geneDao	= new GeneDAOImpl(sm);
 

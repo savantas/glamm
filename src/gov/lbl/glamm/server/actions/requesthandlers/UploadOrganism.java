@@ -13,7 +13,8 @@ import gov.lbl.glamm.server.dao.impl.GeneMetaMolDAOImpl;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,7 +31,7 @@ public class UploadOrganism implements RequestHandler {
 		SessionManager sm = SessionManager.getSessionManager(request, true);
 
 		Organism organism = null;
-		final HashMap<String, Gene> id2Gene = new HashMap<String, Gene>();
+		final Map<String, Gene> id2Gene = new HashMap<String, Gene>();
 
 		// set up the file upload handler- simultaneously building the list of genes
 		FileUploadHandler fuh = new FileUploadHandler(request, new LineParser() {
@@ -76,7 +77,7 @@ public class UploadOrganism implements RequestHandler {
 
 		// if the ids specified are VIMSS ids, return the set of taxonomyIds to which they belong and add them to the organism
 		GeneMetaMolDAOImpl metaMolDao = new GeneMetaMolDAOImpl();
-		HashSet<String> molTaxonomyIds = metaMolDao.getTaxonomyIdsForVimssIds(id2Gene.keySet());
+		Set<String> molTaxonomyIds = metaMolDao.getTaxonomyIdsForVimssIds(id2Gene.keySet());
 		if(molTaxonomyIds != null)
 			organism.addMolTaxonomyIds(molTaxonomyIds);
 		

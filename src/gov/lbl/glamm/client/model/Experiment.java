@@ -5,6 +5,7 @@ package gov.lbl.glamm.client.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Representation of an Experiment - wraps a collection of Samples with the same experiment id
@@ -22,7 +23,7 @@ public class Experiment extends GlammPrimitive implements Serializable {
 	public static transient GlammPrimitive.Type TYPE = new GlammPrimitive.Type();
 	private String expId = null;
 	private String taxonomyId = null;
-	private ArrayList<Sample> samples	= null;
+	private List<Sample> samples	= null;
 	
 	//********************************************************************************
 	
@@ -71,7 +72,7 @@ public class Experiment extends GlammPrimitive implements Serializable {
 	 * Accessor
 	 * @return The list of Samples associated with this Experiment
 	 */
-	public ArrayList<Sample> getSamples() {
+	public List<Sample> getSamples() {
 		return samples;
 	}
 	

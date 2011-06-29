@@ -10,7 +10,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class CompoundGlammDAOImpl implements CompoundDAO {
 	
@@ -186,9 +187,9 @@ public class CompoundGlammDAOImpl implements CompoundDAO {
 	}
 	
 	@Override
-	public ArrayList<Compound> getCompoundsForSearch(HashSet<String> dbNames) {
+	public List<Compound> getCompoundsForSearch(Set<String> dbNames) {
 		
-		ArrayList<Compound> cpds = null;
+		List<Compound> cpds = null;
 		String dbNamesString = GlammUtils.joinCollection(dbNames);
 		
 		String sql = "select X.toXrefId, X.xrefDbName, C.commonName as synonym " +

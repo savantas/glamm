@@ -4,6 +4,7 @@ package gov.lbl.glamm.client.model;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Abstract base class for GLAMM primitives
@@ -227,9 +228,9 @@ public abstract class GlammPrimitive implements Serializable {
 	private	String id = null;
 	private String source = null;
 	private String order = null;
-	private HashSet<Xref> xrefs = null;
-	private HashSet<Synonym> synonyms = null;
-	private HashSet<Measurement> measurements = null;
+	private Set<Xref> xrefs = null;
+	private Set<Synonym> synonyms = null;
+	private Set<Measurement> measurements = null;
 	
 	//********************************************************************************
 
@@ -274,7 +275,7 @@ public abstract class GlammPrimitive implements Serializable {
 	
 	//********************************************************************************
 
-	public HashSet<Measurement> getMeasurements() {
+	public Set<Measurement> getMeasurements() {
 		return measurements;
 	}
 	
@@ -286,7 +287,7 @@ public abstract class GlammPrimitive implements Serializable {
 	
 	//********************************************************************************
 
-	public HashSet<Synonym> getSynonyms() {
+	public Set<Synonym> getSynonyms() {
 		return synonyms;
 	}
 	
@@ -313,7 +314,7 @@ public abstract class GlammPrimitive implements Serializable {
 	
 	//********************************************************************************
 
-	public HashSet<Xref> getXrefs() {
+	public Set<Xref> getXrefs() {
 		return xrefs;
 	}
 	

@@ -4,6 +4,7 @@ package gov.lbl.glamm.server;
 import gov.lbl.glamm.shared.RequestParameters;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.DocumentBuilder;
@@ -41,7 +42,7 @@ public class RequestHandlerFactory {
 		}
 	}
 
-	private final HashMap<String, RequestHandlerElement> action2RequestHandlerElements = new HashMap<String, RequestHandlerElement>();
+	private final Map<String, RequestHandlerElement> action2RequestHandlerElements = new HashMap<String, RequestHandlerElement>();
 
 	/**
 	 * Constructor 
@@ -60,7 +61,7 @@ public class RequestHandlerFactory {
 		
 		RequestHandler rh 			= null;
 		RequestHandlerElement rhp 	= null;
-		String action 				= request.getParameter(RequestParameters.PARAM_ACTION);
+		String action 				= request.getParameter(RequestParameters.ACTION.toString());
 		
 		if(action != null)
 			rhp = action2RequestHandlerElements.get(action);

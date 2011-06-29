@@ -8,6 +8,8 @@ import gov.lbl.glamm.server.dao.GeneDAO;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class GeneSessionDAOImpl implements GeneDAO {
 
@@ -22,14 +24,15 @@ public class GeneSessionDAOImpl implements GeneDAO {
 	//********************************************************************************
 
 	@Override
-	public HashSet<String> getEcNumsForOrganism(String taxonomyId) {
-		HashSet<String> ecNums = null;
+	public Set<String> getEcNumsForOrganism(String taxonomyId) {
+		
+		Set<String> ecNums = null;
 		
 		if(sm != null) {
-			ArrayList<Gene> genes = sm.getGenesForTaxonomyId(taxonomyId);
+			List<Gene> genes = sm.getGenesForTaxonomyId(taxonomyId);
 			if(genes != null) {
 				for(Gene gene : genes) {
-					HashSet<String> ecNumsForGene = gene.getEcNums();
+					Set<String> ecNumsForGene = gene.getEcNums();
 					if(ecNumsForGene != null) {
 						if(ecNums == null)
 							ecNums = new HashSet<String>();
@@ -45,18 +48,18 @@ public class GeneSessionDAOImpl implements GeneDAO {
 	//********************************************************************************
 
 	@Override
-	public ArrayList<Gene> getGenesForEcNums(String taxonomyId,
+	public List<Gene> getGenesForEcNums(String taxonomyId,
 			Collection<String> ecNums) {
-		ArrayList<Gene> genes = null;
+		List<Gene> genes = null;
 
 		if(sm != null && 
 				taxonomyId != null && 
 				ecNums != null) {
 
-			ArrayList<Gene> genesForTaxonomyId = sm.getGenesForTaxonomyId(taxonomyId);
+			List<Gene> genesForTaxonomyId = sm.getGenesForTaxonomyId(taxonomyId);
 			if(genesForTaxonomyId != null) {
 				for(Gene gene : genesForTaxonomyId) {
-					HashSet<String> ecNumsForGene = gene.getEcNums();
+					Set<String> ecNumsForGene = gene.getEcNums();
 					if(ecNumsForGene != null) {
 						for(String ecNum : ecNumsForGene) {
 							if(ecNums.contains(ecNum)) {
@@ -77,8 +80,8 @@ public class GeneSessionDAOImpl implements GeneDAO {
 	//********************************************************************************
 
 	@Override
-	public ArrayList<Gene> getGenesForOrganism(String taxonomyId) {
-		ArrayList<Gene> genes = null;
+	public List<Gene> getGenesForOrganism(String taxonomyId) {
+		List<Gene> genes = null;
 
 		if(sm != null && taxonomyId != null) {
 			genes = sm.getGenesForTaxonomyId(taxonomyId);
@@ -90,7 +93,7 @@ public class GeneSessionDAOImpl implements GeneDAO {
 	//********************************************************************************
 
 	@Override
-	public ArrayList<Gene> getGenesForRxnIds(String taxonomyId, String[] rxnIds) {
+	public List<Gene> getGenesForRxnIds(String taxonomyId, String[] rxnIds) {
 		// Session-defined networks do not yet know what a reaction id is.  This may/will change.
 		return null;
 	}
@@ -99,13 +102,13 @@ public class GeneSessionDAOImpl implements GeneDAO {
 
 
 	@Override
-	public ArrayList<Gene> getGenesForSynonyms(String taxonomyId, Collection<String> synonyms) {
-		ArrayList<Gene> genes = null;
+	public List<Gene> getGenesForSynonyms(String taxonomyId, Collection<String> synonyms) {
+		List<Gene> genes = null;
 		
 		if(sm != null && taxonomyId != null && synonyms != null) {
-			ArrayList<Gene> genesForTaxonomyId = sm.getGenesForTaxonomyId(taxonomyId);
+			List<Gene> genesForTaxonomyId = sm.getGenesForTaxonomyId(taxonomyId);
 			for(Gene gene : genesForTaxonomyId) {
-				HashSet<Synonym> synonymsForGene = gene.getSynonyms();
+				Set<Synonym> synonymsForGene = gene.getSynonyms();
 				for(Synonym synonym : synonymsForGene) {
 					if(synonyms.contains(synonym.getName())) {
 						if(genes == null)
@@ -122,7 +125,7 @@ public class GeneSessionDAOImpl implements GeneDAO {
 	//********************************************************************************
 	
 	@Override
-	public ArrayList<Gene> getGenesForVimssIds(String taxonomyId, Collection<String> extIds) {
+	public List<Gene> getGenesForVimssIds(String taxonomyId, Collection<String> extIds) {
 		return getGenesForSynonyms(taxonomyId, extIds);
 	}
 

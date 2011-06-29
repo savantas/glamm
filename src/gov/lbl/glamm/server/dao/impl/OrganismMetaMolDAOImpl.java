@@ -14,6 +14,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class OrganismMetaMolDAOImpl implements OrganismDAO {
 
@@ -24,12 +27,12 @@ public class OrganismMetaMolDAOImpl implements OrganismDAO {
 	}
 	
 	@Override
-	public ArrayList<Organism> getAllOrganisms() {
+	public List<Organism> getAllOrganisms() {
 		return getAllOrganismsWithDataForType(null);
 	}
 
 	@Override
-	public ArrayList<Organism> getAllOrganismsWithDataForType(Sample.DataType dataType) {
+	public List<Organism> getAllOrganismsWithDataForType(Sample.DataType dataType) {
 		ArrayList<Organism> organisms = null;
 
 		String sql = "";
@@ -85,8 +88,9 @@ public class OrganismMetaMolDAOImpl implements OrganismDAO {
 	}
 
 	@Override
-	public HashMap<String, HashSet<Organism>> getTransgenicCandidatesForEcNums(HashSet<String> ecNums) {
-		HashMap<String, HashSet<Organism>> ecNum2Organisms = null;
+	public Map<String, Set<Organism>> getTransgenicCandidatesForEcNums(Set<String> ecNums) {
+		
+		Map<String, Set<Organism>> ecNum2Organisms = null;
 
 		if(ecNums == null || ecNums.isEmpty())
 			return null;
@@ -120,13 +124,13 @@ public class OrganismMetaMolDAOImpl implements OrganismDAO {
 			while(rs.next()) {
 
 				if(ecNum2Organisms == null)
-					ecNum2Organisms = new HashMap<String, HashSet<Organism>>();
+					ecNum2Organisms = new HashMap<String, Set<Organism>>();
 
 				String taxonomyId	= rs.getString("taxonomyId");
 				String name			= rs.getString("name");
 				String ecNum 		= rs.getString("ecNum");
 
-				HashSet<Organism> organisms = ecNum2Organisms.get(ecNum);
+				Set<Organism> organisms = ecNum2Organisms.get(ecNum);
 				if(organisms == null) {
 					organisms = new HashSet<Organism>();
 					ecNum2Organisms.put(ecNum, organisms);

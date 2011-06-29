@@ -8,7 +8,10 @@ import gov.lbl.glamm.server.dao.OrganismDAO;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 public class OrganismDAOImpl implements OrganismDAO {
 	
@@ -23,18 +26,18 @@ public class OrganismDAOImpl implements OrganismDAO {
 	}
 
 	@Override
-	public ArrayList<Organism> getAllOrganisms() {
+	public List<Organism> getAllOrganisms() {
 		
-		ArrayList<Organism> sessionOrganisms	= sessionDao.getAllOrganisms();
-		ArrayList<Organism> molOrganisms 		= molDao.getAllOrganisms();
-		ArrayList<Organism> metaMolOrganisms 	= metaMolDao.getAllOrganisms();
+		List<Organism> sessionOrganisms	= sessionDao.getAllOrganisms();
+		List<Organism> molOrganisms 	= molDao.getAllOrganisms();
+		List<Organism> metaMolOrganisms = metaMolDao.getAllOrganisms();
 		
 		if(sessionOrganisms == null &&
 				molOrganisms == null &&
 				metaMolOrganisms == null)
 			return null;
 		
-		ArrayList<Organism> organisms = new ArrayList<Organism>();
+		List<Organism> organisms = new ArrayList<Organism>();
 		
 		if(sessionOrganisms != null)
 			organisms.addAll(sessionOrganisms);
@@ -48,18 +51,18 @@ public class OrganismDAOImpl implements OrganismDAO {
 	}
 
 	@Override
-	public ArrayList<Organism> getAllOrganismsWithDataForType(Sample.DataType dataType) {
+	public List<Organism> getAllOrganismsWithDataForType(Sample.DataType dataType) {
 		
-		ArrayList<Organism> sessionOrganisms	= sessionDao.getAllOrganismsWithDataForType(dataType);
-		ArrayList<Organism> molOrganisms 		= molDao.getAllOrganismsWithDataForType(dataType);
-		ArrayList<Organism> metaMolOrganisms 	= metaMolDao.getAllOrganismsWithDataForType(dataType);
+		List<Organism> sessionOrganisms	= sessionDao.getAllOrganismsWithDataForType(dataType);
+		List<Organism> molOrganisms 	= molDao.getAllOrganismsWithDataForType(dataType);
+		List<Organism> metaMolOrganisms = metaMolDao.getAllOrganismsWithDataForType(dataType);
 			
 		if(sessionOrganisms == null &&
 				molOrganisms == null &&
 				metaMolOrganisms == null)
 			return null;
 		
-		ArrayList<Organism> organisms = new ArrayList<Organism>();
+		List<Organism> organisms = new ArrayList<Organism>();
 		
 		if(sessionOrganisms != null)
 			organisms.addAll(sessionOrganisms);
@@ -86,18 +89,18 @@ public class OrganismDAOImpl implements OrganismDAO {
 	}
 
 	@Override
-	public HashMap<String, HashSet<Organism>> getTransgenicCandidatesForEcNums(HashSet<String> ecNums) {
+	public Map<String, Set<Organism>> getTransgenicCandidatesForEcNums(Set<String> ecNums) {
 		
-		HashMap<String, HashSet<Organism>> sessionResults	= sessionDao.getTransgenicCandidatesForEcNums(ecNums);
-		HashMap<String, HashSet<Organism>> molResults 		= molDao.getTransgenicCandidatesForEcNums(ecNums);
-		HashMap<String, HashSet<Organism>> metaMolResults 	= metaMolDao.getTransgenicCandidatesForEcNums(ecNums);
+		Map<String, Set<Organism>> sessionResults	= sessionDao.getTransgenicCandidatesForEcNums(ecNums);
+		Map<String, Set<Organism>> molResults 		= molDao.getTransgenicCandidatesForEcNums(ecNums);
+		Map<String, Set<Organism>> metaMolResults 	= metaMolDao.getTransgenicCandidatesForEcNums(ecNums);
 		
 		if(sessionResults == null &&
 				molResults == null &&
 				metaMolResults == null)
 			return null;
 		
-		HashMap<String, HashSet<Organism>> results = new HashMap<String, HashSet<Organism>>();
+		Map<String, Set<Organism>> results = new HashMap<String, Set<Organism>>();
 		
 		if(sessionResults != null)
 			merge(results, sessionResults);
@@ -109,9 +112,9 @@ public class OrganismDAOImpl implements OrganismDAO {
 		return results;
 	}
 	
-	private void merge(HashMap<String, HashSet<Organism>> dst, HashMap<String, HashSet<Organism>> src) {
-		for(Entry<String, HashSet<Organism>> srcEntry : src.entrySet()) {
-			HashSet<Organism> dstOrganisms = dst.get(srcEntry.getKey());
+	private void merge(Map<String, Set<Organism>> dst, Map<String, Set<Organism>> src) {
+		for(Entry<String, Set<Organism>> srcEntry : src.entrySet()) {
+			Set<Organism> dstOrganisms = dst.get(srcEntry.getKey());
 			if(dstOrganisms == null) {
 				dstOrganisms = new HashSet<Organism>();
 				dst.put(srcEntry.getKey(), dstOrganisms);

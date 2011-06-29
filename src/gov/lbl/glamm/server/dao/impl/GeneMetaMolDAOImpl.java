@@ -14,12 +14,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class GeneMetaMolDAOImpl implements GeneDAO {
 
 	@Override
-	public HashSet<String> getEcNumsForOrganism(String taxonomyId) {
-		HashSet<String> ecNums = null;
+	public Set<String> getEcNumsForOrganism(String taxonomyId) {
+		Set<String> ecNums = null;
 		
 		if(taxonomyId != null && !taxonomyId.isEmpty()) {
 			String sql = "select distinct L2E.ecNum " +
@@ -60,9 +63,9 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 	}
 
 	@Override
-	public ArrayList<Gene> getGenesForEcNums(String taxonomyId, Collection<String> ecNums) {
+	public List<Gene> getGenesForEcNums(String taxonomyId, Collection<String> ecNums) {
 
-		ArrayList<Gene> genes = null;
+		List<Gene> genes = null;
 
 		if(taxonomyId != null && !taxonomyId.isEmpty() && 
 				ecNums != null && ecNums.size() > 0) {
@@ -97,8 +100,8 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 	}
 
 	@Override
-	public ArrayList<Gene> getGenesForVimssIds(String taxonomyId, Collection<String> extIds) {
-		ArrayList<Gene> genes = null;
+	public List<Gene> getGenesForVimssIds(String taxonomyId, Collection<String> extIds) {
+		List<Gene> genes = null;
 
 		if(taxonomyId != null && !taxonomyId.isEmpty() && 
 				extIds != null && extIds.size() > 0) {
@@ -133,9 +136,9 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 	}
 
 	@Override
-	public ArrayList<Gene> getGenesForOrganism(String taxonomyId) {
+	public List<Gene> getGenesForOrganism(String taxonomyId) {
 
-		ArrayList<Gene> genes = null;
+		List<Gene> genes = null;
 
 		if(taxonomyId != null && !taxonomyId.isEmpty()) {
 			
@@ -168,9 +171,9 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 	}
 
 	@Override
-	public ArrayList<Gene> getGenesForRxnIds(String taxonomyId, String[] rxnIds) {
+	public List<Gene> getGenesForRxnIds(String taxonomyId, String[] rxnIds) {
 
-		ArrayList<Gene> genes = null;
+		List<Gene> genes = null;
 
 		if(taxonomyId != null && !taxonomyId.isEmpty() && 
 				rxnIds != null && rxnIds.length > 0) {
@@ -206,18 +209,17 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 	}
 
 	@Override
-	public ArrayList<Gene> getGenesForSynonyms(String taxonomyId,
+	public List<Gene> getGenesForSynonyms(String taxonomyId,
 			Collection<String> synonyms) {
 		//TODO get genes for synonyms other than VIMSS ids
 		return getGenesForVimssIds(taxonomyId, synonyms);
 	}
 	
-	private ArrayList<Gene> processResultSet(ResultSet rs) 
+	private List<Gene> processResultSet(ResultSet rs) 
 	throws SQLException {
-		ArrayList<Gene> genes = null;
-
-
-		HashMap<String, Gene> locusId2Gene = new HashMap<String, Gene>();
+		
+		List<Gene> genes = null;
+		Map<String, Gene> locusId2Gene = new HashMap<String, Gene>();
 
 		while(rs.next()) {
 
@@ -248,11 +250,11 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 		return genes;
 	}
 	
-	public HashMap<String, String> getVimssId2TaxonomyIdMapping(Collection<String> vimssIds) {
+	public Map<String, String> getVimssId2TaxonomyIdMapping(Collection<String> vimssIds) {
 		if(vimssIds == null || vimssIds.isEmpty())
 			return null;
 		
-		HashMap<String, String> mapping = null;
+		Map<String, String> mapping = null;
 		String sql = "select L.locusId, L.taxonomyId " +
 				"from meta2010jul.Locus L " +
 				"where L.locusId in ("+ GlammUtils.joinCollection(vimssIds) + ") " +
@@ -281,11 +283,11 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 		return mapping;
 	}
 	
-	public HashSet<String> getTaxonomyIdsForVimssIds(Collection<String> vimssIds) {
+	public Set<String> getTaxonomyIdsForVimssIds(Collection<String> vimssIds) {
 		if(vimssIds == null || vimssIds.isEmpty())
 			return null;
 		
-		HashSet<String> taxonomyIds = null;
+		Set<String> taxonomyIds = null;
 		String sql = "select distinct(L.taxonomyId) " +
 				"from meta2010jul.Locus L " +
 				"where L.locusId in ("+ GlammUtils.joinCollection(vimssIds) + ") " +

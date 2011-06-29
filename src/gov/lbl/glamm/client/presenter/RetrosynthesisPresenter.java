@@ -25,6 +25,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.ImageResourceCell;
@@ -123,7 +125,7 @@ public class RetrosynthesisPresenter {
 		String link = "<b>" + ecNum + "</b>";
 		
 		// get set of all molTaxonomyIds
-		HashSet<String> metaMolTaxonomyIds = organism.getMolTaxonomyIds();
+		Set<String> metaMolTaxonomyIds = organism.getMolTaxonomyIds();
 		
 		if(metaMolTaxonomyIds == null || metaMolTaxonomyIds.isEmpty())
 			return link;
@@ -159,18 +161,18 @@ public class RetrosynthesisPresenter {
 
 	private Organism organism = null;
 	// these two collections are not organism-specific and hence should ideally be retrieved only once
-	private ArrayList<Compound> compounds = null;
+	private List<Compound> compounds = null;
 
-	private ArrayList<Reaction> reactions = null;
+	private List<Reaction> reactions = null;
 	// mapping between ids in the suggest boxes and their respective primitives
-	private HashMap<String, HashSet<GlammPrimitive>> cpdHash = null;
-	private HashMap<String, HashSet<GlammPrimitive>> rxnHash = null;
+	private Map<String, Set<GlammPrimitive>> cpdHash = null;
+	private Map<String, Set<GlammPrimitive>> rxnHash = null;
 
-	private HashMap<String, HashSet<GlammPrimitive>> locHash = null;
+	private Map<String, Set<GlammPrimitive>> locHash = null;
 	private Compound cpdSrc = null;
 
 	private Compound cpdDst = null;
-	private ArrayList<Pathway> routes = null;
+	private List<Pathway> routes = null;
 	private int routeIndex = -1;
 
 	private ListDataProvider<Reaction> routeDataProvider = null;
@@ -188,9 +190,9 @@ public class RetrosynthesisPresenter {
 		this.view = view;
 		this.eventBus = eventBus;
 
-		cpdHash = new HashMap<String, HashSet<GlammPrimitive>>();
-		rxnHash = new HashMap<String, HashSet<GlammPrimitive>>();
-		locHash = new HashMap<String, HashSet<GlammPrimitive>>();
+		cpdHash = new HashMap<String, Set<GlammPrimitive>>();
+		rxnHash = new HashMap<String, Set<GlammPrimitive>>();
+		locHash = new HashMap<String, Set<GlammPrimitive>>();
 
 		routeDataProvider = new ListDataProvider<Reaction>(Reaction.KEY_PROVIDER);
 
@@ -201,8 +203,8 @@ public class RetrosynthesisPresenter {
 
 	}
 
-	private void addToHash(String key, GlammPrimitive primitive, HashMap<String, HashSet<GlammPrimitive>> target) {
-		HashSet<GlammPrimitive> primitives = target.get(key);
+	private void addToHash(String key, GlammPrimitive primitive, Map<String, Set<GlammPrimitive>> target) {
+		Set<GlammPrimitive> primitives = target.get(key);
 		if(primitives == null) {
 			primitives = new HashSet<GlammPrimitive>();
 			target.put(key, primitives);
@@ -215,7 +217,7 @@ public class RetrosynthesisPresenter {
 		view.getCpdDstSuggestBox().addSelectionHandler(new SelectionHandler<Suggestion>() {
 			@Override
 			public void onSelection(SelectionEvent<Suggestion> event) {
-				HashSet<GlammPrimitive> primitives = getPrimitivesForId(event.getSelectedItem().getReplacementString());
+				Set<GlammPrimitive> primitives = getPrimitivesForId(event.getSelectedItem().getReplacementString());
 				if(primitives.size() > 1)
 					eventBus.fireEvent(new CpdDstPickedEvent(primitives));
 				else
@@ -226,7 +228,7 @@ public class RetrosynthesisPresenter {
 		view.getCpdSrcSuggestBox().addSelectionHandler(new SelectionHandler<Suggestion>() {
 			@Override
 			public void onSelection(SelectionEvent<Suggestion> event) {
-				HashSet<GlammPrimitive> primitives = getPrimitivesForId(event.getSelectedItem().getReplacementString());
+				Set<GlammPrimitive> primitives = getPrimitivesForId(event.getSelectedItem().getReplacementString());
 				if(primitives.size() > 1)
 					eventBus.fireEvent(new CpdSrcPickedEvent(primitives));
 				else
@@ -253,15 +255,15 @@ public class RetrosynthesisPresenter {
 				UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
 				urlBuilder.setParameter("action", ACTION_GET_DIRECTIONS);
 				urlBuilder.setPath("glammServlet");
-				urlBuilder.setParameter(RequestParameters.PARAM_CPD_SRC, cpdSrcXref.getXrefId());
-				urlBuilder.setParameter(RequestParameters.PARAM_CPD_DST, cpdDstXref.getXrefId());
+				urlBuilder.setParameter(RequestParameters.CPD_SRC.toString(), cpdSrcXref.getXrefId());
+				urlBuilder.setParameter(RequestParameters.CPD_DST.toString(), cpdDstXref.getXrefId());
 				for(String dbName : mapData.getCpdDbNames()) 
-					urlBuilder.setParameter(RequestParameters.PARAM_DBNAME, dbName);
-				urlBuilder.setParameter(RequestParameters.PARAM_MAP_TITLE, mapData.getMapId());
-				urlBuilder.setParameter(RequestParameters.PARAM_ALGORITHM, algorithm);
-				urlBuilder.setParameter(RequestParameters.PARAM_AS_TEXT, "true");
+					urlBuilder.setParameter(RequestParameters.DBNAME.toString(), dbName);
+				urlBuilder.setParameter(RequestParameters.MAP_TITLE.toString(), mapData.getMapId());
+				urlBuilder.setParameter(RequestParameters.ALGORITHM.toString(), algorithm);
+				urlBuilder.setParameter(RequestParameters.AS_TEXT.toString(), "true");
 				if(organism != null && !organism.isGlobalMap())
-					urlBuilder.setParameter(RequestParameters.PARAM_TAXONOMY_ID, organism.getTaxonomyId());
+					urlBuilder.setParameter(RequestParameters.TAXONOMY_ID.toString(), organism.getTaxonomyId());
 				Window.open(urlBuilder.buildString(), "", "menubar=no,location=no,resizable=no,scrollbars=no,status=no,toolbar=false,width=0,height=0");
 			}
 		});
@@ -277,14 +279,14 @@ public class RetrosynthesisPresenter {
 							cpdSrc, cpdDst, 
 							mapData.getMapId(), 
 							algorithm,
-							new AsyncCallback<ArrayList<Pathway>>() {
+							new AsyncCallback<List<Pathway>>() {
 						@Override
 						public void onFailure(Throwable caught) {
 							// Show the RPC error message to the user
 							Window.alert("Remote procedure call failure: getDirections");							
 						}
 						@Override
-						public void onSuccess(ArrayList<Pathway> result) {
+						public void onSuccess(List<Pathway> result) {
 							routes = result;
 							if(routes == null)
 								setViewState(State.NO_ROUTES);
@@ -323,7 +325,7 @@ public class RetrosynthesisPresenter {
 		view.getSearchSuggestBox().addSelectionHandler(new SelectionHandler<Suggestion>() {
 			@Override
 			public void onSelection(SelectionEvent<Suggestion> event) {
-				HashSet<GlammPrimitive> primitives = getPrimitivesForId(event.getSelectedItem().getReplacementString());
+				Set<GlammPrimitive> primitives = getPrimitivesForId(event.getSelectedItem().getReplacementString());
 				eventBus.fireEvent(new SearchTargetEvent(primitives));
 			}
 		});
@@ -360,17 +362,17 @@ public class RetrosynthesisPresenter {
 		if(route != null) {
 
 			UrlBuilder builder = new UrlBuilder();
-			HashSet<String> argSet = new HashSet<String>();
+			Set<String> argSet = new HashSet<String>();
 
 			builder.setHost("www.microbesonline.org");
 			builder.setPath("/cgi-bin/phyloprofile.cgi");
 			builder.setParameter("download", "0");
 			builder.setParameter("show", "astree");
 
-			ArrayList<Reaction> reactions = route.getReactions();
+			List<Reaction> reactions = route.getReactions();
 			if(reactions != null) {
 				for(Reaction reaction : reactions) {
-					HashSet<String> ecNums = reaction.getEcNums();
+					Set<String> ecNums = reaction.getEcNums();
 					if(ecNums != null) {
 						for(String ecNum : ecNums) 
 							argSet.add("EC" + ecNum);
@@ -393,9 +395,9 @@ public class RetrosynthesisPresenter {
 		return html;
 	}
 
-	private HashSet<GlammPrimitive> getPrimitivesForId(String id) {
+	private Set<GlammPrimitive> getPrimitivesForId(String id) {
 
-		HashSet<GlammPrimitive> primitives = cpdHash.get(id);
+		Set<GlammPrimitive> primitives = cpdHash.get(id);
 		if(primitives != null)
 			return primitives;
 
@@ -423,13 +425,13 @@ public class RetrosynthesisPresenter {
 			@Override
 			public SafeHtml getValue(Reaction reaction) {
 				SafeHtmlBuilder builder = new SafeHtmlBuilder();
-				HashSet<String> ecNums = reaction.getEcNums();
+				Set<String> ecNums = reaction.getEcNums();
 				if(ecNums == null || ecNums.isEmpty())
 					builder.appendHtmlConstant("No EC");
 				else {
 
 					Organism candidate = reaction.getSelectedTransgenicCandidate();
-					HashSet<String> ecNumsForCandidate = null;
+					Set<String> ecNumsForCandidate = null;
 
 					if(candidate != null)
 						ecNumsForCandidate = reaction.getEcNumsForTransgenicCandidate(candidate);
@@ -540,7 +542,7 @@ public class RetrosynthesisPresenter {
 	}
 
 	private void populateCompoundSearch() {
-		rpc.populateCompoundSearch(mapData.getCpdDbNames(), new AsyncCallback<ArrayList<Compound>>() {
+		rpc.populateCompoundSearch(mapData.getCpdDbNames(), new AsyncCallback<List<Compound>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				// Show the RPC error message to the user
@@ -548,7 +550,7 @@ public class RetrosynthesisPresenter {
 			}
 
 			@Override
-			public void onSuccess(ArrayList<Compound> result) {
+			public void onSuccess(List<Compound> result) {
 				compounds = result;
 				if(compounds != null)
 					populateWithCompounds(compounds, true);
@@ -557,7 +559,7 @@ public class RetrosynthesisPresenter {
 	}
 
 	private void populateLocusSearch() {
-		rpc.populateLocusSearch(organism.getTaxonomyId(), new AsyncCallback<ArrayList<Gene>>() {
+		rpc.populateLocusSearch(organism.getTaxonomyId(), new AsyncCallback<List<Gene>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				// Show the RPC error message to the user
@@ -565,7 +567,7 @@ public class RetrosynthesisPresenter {
 			}
 
 			@Override
-			public void onSuccess(ArrayList<Gene> result) {
+			public void onSuccess(List<Gene> result) {
 				if(result != null)
 					populateWithGenes(result);
 			}
@@ -573,7 +575,7 @@ public class RetrosynthesisPresenter {
 	}
 
 	private void populateReactionSearch() {
-		rpc.populateReactionSearch(mapData.getRxnDbNames(), new AsyncCallback<ArrayList<Reaction>>() {
+		rpc.populateReactionSearch(mapData.getRxnDbNames(), new AsyncCallback<List<Reaction>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				// Show the RPC error message to the user
@@ -581,7 +583,7 @@ public class RetrosynthesisPresenter {
 			}
 
 			@Override
-			public void onSuccess(ArrayList<Reaction> result) {
+			public void onSuccess(List<Reaction> result) {
 				reactions = result;
 				if(reactions != null)
 					populateWithReactions(reactions, true);
@@ -604,7 +606,7 @@ public class RetrosynthesisPresenter {
 					addToHash(name, compound, cpdHash);
 			}
 
-			HashSet<Synonym> synonyms = compound.getSynonyms();
+			Set<Synonym> synonyms = compound.getSynonyms();
 			if(synonyms != null) {
 				for(Synonym synonym : synonyms) {
 					searchOracle.add(synonym.getName());
@@ -624,7 +626,7 @@ public class RetrosynthesisPresenter {
 		MultiWordSuggestOracle searchOracle = (MultiWordSuggestOracle) view.getSearchSuggestBox().getSuggestOracle();
 
 		for(Gene gene : genes) {
-			HashSet<Synonym> synonyms = gene.getSynonyms();
+			Set<Synonym> synonyms = gene.getSynonyms();
 			if(synonyms != null) {
 				for(Synonym synonym : synonyms) {
 					searchOracle.add(synonym.getName());
@@ -641,7 +643,7 @@ public class RetrosynthesisPresenter {
 		MultiWordSuggestOracle searchOracle = (MultiWordSuggestOracle) view.getSearchSuggestBox().getSuggestOracle();
 
 		for(Reaction reaction : reactions) {
-			HashSet<String> ecNums = reaction.getEcNums();
+			Set<String> ecNums = reaction.getEcNums();
 			if(ecNums != null) {
 				for(String ecNum : ecNums) {
 					searchOracle.add(ecNum);

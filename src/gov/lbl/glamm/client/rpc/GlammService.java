@@ -10,8 +10,8 @@ import gov.lbl.glamm.client.model.Pathway;
 import gov.lbl.glamm.client.model.Reaction;
 import gov.lbl.glamm.client.model.Sample;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -23,16 +23,16 @@ public interface GlammService extends RemoteService {
 	public String genCpdPopup(String query, String taxonomyId);
 	public String genKeggPwyPopup(String query, String taxonomyId, String experimentId, String sampleId);
 	public String genRxnPopup(String query, String taxonomyId);
-	public ArrayList<Sample.DataType> getAvailableExperimentTypes();
-	public ArrayList<Pathway> getDirections(String taxonomyId, Compound cpdSrc, Compound cpdDst, String mapTitle, String algorithm);
+	public List<Sample.DataType> getAvailableExperimentTypes();
+	public List<Pathway> getDirections(String taxonomyId, Compound cpdSrc, Compound cpdDst, String mapTitle, String algorithm);
 	public MetabolicNetwork getMapConnectivity(String mapId);
-	public ArrayList<? extends GlammPrimitive> getMeasurementsForExperiment(String experimentId, String sampleId, String taxonomyId, String expSource);
-	public ArrayList<Reaction> getRxnsForOrganism(String taxonomyId, HashSet<String> rxnDbNames);
-	public ArrayList<Compound> populateCompoundSearch(HashSet<String> cpdDbNames);
-	public ArrayList<Experiment> populateExperiments(String taxonomyId);
-	public ArrayList<Gene> populateLocusSearch(String taxonomyId);
-	public ArrayList<Reaction> populateReactionSearch(HashSet<String> rxnDbNames);
-	public ArrayList<Organism> populateOrganisms(Sample.DataType dataType);
-	public ArrayList<Sample> populateSamples(String taxonomyId);
+	public List<? extends GlammPrimitive> getMeasurementsForExperiment(String experimentId, String sampleId, String taxonomyId, String expSource);
+	public List<Reaction> getRxnsForOrganism(String taxonomyId, Set<String> rxnDbNames);
+	public List<Compound> populateCompoundSearch(Set<String> cpdDbNames);
+	public List<Experiment> populateExperiments(String taxonomyId);
+	public List<Gene> populateLocusSearch(String taxonomyId);
+	public List<Reaction> populateReactionSearch(Set<String> rxnDbNames);
+	public List<Organism> populateOrganisms(Sample.DataType dataType);
+	public List<Sample> populateSamples(String taxonomyId);
 	public Void updateMolAclUserId(final String molAclUserId);
 }

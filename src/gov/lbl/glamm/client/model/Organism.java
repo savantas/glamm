@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Set;
 
 @SuppressWarnings({"unused", "serial"})
 public class Organism extends GlammPrimitive implements Serializable {
@@ -30,7 +31,7 @@ public class Organism extends GlammPrimitive implements Serializable {
 	private String name = "";
 	private boolean isSessionOrganism = false;
 	
-	private HashSet<String> molTaxonomyIds = null;
+	private Set<String> molTaxonomyIds = null;
 	
 	//********************************************************************************
 
@@ -66,7 +67,7 @@ public class Organism extends GlammPrimitive implements Serializable {
 		molTaxonomyIds.addAll(taxonomyIds);
 	}
 	
-	public HashSet<String> getMolTaxonomyIds() {
+	public Set<String> getMolTaxonomyIds() {
 		return molTaxonomyIds;
 	}
 	

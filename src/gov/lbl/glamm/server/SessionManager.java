@@ -9,6 +9,9 @@ import gov.lbl.glamm.server.retrosynthesis.Route;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -23,16 +26,16 @@ public class SessionManager {
 
 	//********************************************************************************
 
-	private HashMap<String, Experiment> 			experimentId2Experiment	= null;
-	private HashMap<String, HashMap<String, HashSet<Measurement>>> 
-													measurements 			= null;
-	private HashSet<String> 						molAclGroupIds 			= null;
-	private String 									molAclUserId 			= null;
-	private ArrayList<Organism>						organismsWithUserData	= null;
-	private HashMap<String, ArrayList<Route>>		routes					= null;
-	private HashMap<String, ArrayList<Experiment>> 	taxonomyId2Experiments 	= null;
-	private HashMap<String, ArrayList<Gene>>		taxonomyId2Genes 		= null;
-	private HashMap<String, Organism> 				taxonomyId2Organism		= null;
+	private Map<String, Experiment> 		experimentId2Experiment	= null;
+	private Map<String, Map<String, Set<Measurement>>> 
+											measurements 			= null;
+	private Set<String> 					molAclGroupIds 			= null;
+	private String 							molAclUserId 			= null;
+	private List<Organism>					organismsWithUserData	= null;
+	private Map<String, List<Route>>		routes					= null;
+	private Map<String, List<Experiment>> 	taxonomyId2Experiments 	= null;
+	private Map<String, List<Gene>>			taxonomyId2Genes 		= null;
+	private Map<String, Organism> 			taxonomyId2Organism		= null;
 	
 	//********************************************************************************
 
@@ -53,11 +56,11 @@ public class SessionManager {
 
 	protected SessionManager() {
 		experimentId2Experiment		= new HashMap<String, Experiment>();
-		measurements				= new HashMap<String, HashMap<String, HashSet<Measurement>>>();
+		measurements				= new HashMap<String, Map<String, Set<Measurement>>>();
 		organismsWithUserData		= new ArrayList<Organism>();
-		routes						= new HashMap<String, ArrayList<Route>>();
-		taxonomyId2Experiments		= new HashMap<String, ArrayList<Experiment>>();
-		taxonomyId2Genes 			= new HashMap<String, ArrayList<Gene>>();
+		routes						= new HashMap<String, List<Route>>();
+		taxonomyId2Experiments		= new HashMap<String, List<Experiment>>();
+		taxonomyId2Genes 			= new HashMap<String, List<Gene>>();
 		taxonomyId2Organism			= new HashMap<String, Organism>();
 	}
 	
@@ -67,7 +70,7 @@ public class SessionManager {
 		if(experiment != null && organism != null) {
 			String taxonomyId = organism.getTaxonomyId();
 			experimentId2Experiment.put(experiment.getExperimentId(), experiment);
-			ArrayList<Experiment> experiments = taxonomyId2Experiments.get(taxonomyId);
+			List<Experiment> experiments = taxonomyId2Experiments.get(taxonomyId);
 			if(experiments == null) {
 				experiments = new ArrayList<Experiment>();
 				taxonomyId2Experiments.put(taxonomyId, experiments);
@@ -80,7 +83,7 @@ public class SessionManager {
 
 	//********************************************************************************
 
-	public void addGenesForOrganism(Organism organism, ArrayList<Gene> genes) {
+	public void addGenesForOrganism(Organism organism, List<Gene> genes) {
 		if(organism != null && genes != null) {
 			String taxonomyId = organism.getTaxonomyId();
 			addGenesForTaxonomyId(taxonomyId, genes);
@@ -89,7 +92,7 @@ public class SessionManager {
 
 	//********************************************************************************
 
-	public void addGenesForTaxonomyId(String taxonomyId, ArrayList<Gene> genes) {
+	public void addGenesForTaxonomyId(String taxonomyId, List<Gene> genes) {
 		if(taxonomyId != null && genes != null) 
 			taxonomyId2Genes.put(taxonomyId, genes);
 	}
@@ -97,7 +100,7 @@ public class SessionManager {
 	//********************************************************************************
 	
 	public void addMeasurements(String expId, String sampleId, Organism organism, 
-			HashMap<String, HashSet<Measurement>> id2Measurement) {
+			Map<String, Set<Measurement>> id2Measurement) {
 		String taxonomyId = organism.getTaxonomyId();
 		String key = composeMeasurementsKey(expId, sampleId, taxonomyId);
 		measurements.put(key, id2Measurement);
@@ -115,7 +118,7 @@ public class SessionManager {
 	
 	//********************************************************************************
 	
-	public void addRoutes(ArrayList<Route> routes) {
+	public void addRoutes(List<Route> routes) {
 		if(routes != null && !routes.isEmpty()) {
 			Route route = routes.get(0);
 			String key = composeDirectionsKey(route);
@@ -133,7 +136,7 @@ public class SessionManager {
 
 	//********************************************************************************
 
-	public ArrayList<Experiment> getExperimentsForOrganism(Organism organism) {
+	public List<Experiment> getExperimentsForOrganism(Organism organism) {
 		if(organism != null) {
 			String taxonomyId = organism.getTaxonomyId();
 			return getExperimentsForTaxonomyId(taxonomyId);
@@ -143,7 +146,7 @@ public class SessionManager {
 	
 	//********************************************************************************
 	
-	public ArrayList<Experiment> getExperimentsForTaxonomyId(String taxonomyId) {
+	public List<Experiment> getExperimentsForTaxonomyId(String taxonomyId) {
 		if(taxonomyId != null)
 			return taxonomyId2Experiments.get(taxonomyId);
 		return null;
@@ -152,7 +155,7 @@ public class SessionManager {
 	//********************************************************************************
 
 
-	public ArrayList<Gene> getGenesForOrganism(Organism organism) {
+	public List<Gene> getGenesForOrganism(Organism organism) {
 		if(organism != null) {
 			String taxonomyId = organism.getTaxonomyId();
 			return getGenesForTaxonomyId(taxonomyId);
@@ -162,7 +165,7 @@ public class SessionManager {
 
 	//********************************************************************************
 
-	public ArrayList<Gene> getGenesForTaxonomyId(String taxonomyId) {
+	public List<Gene> getGenesForTaxonomyId(String taxonomyId) {
 		if(taxonomyId != null)
 			return taxonomyId2Genes.get(taxonomyId);
 		return null;
@@ -170,14 +173,14 @@ public class SessionManager {
 	
 	//********************************************************************************
 	
-	public HashMap<String, HashSet<Measurement>> getMeasurements(String expId, String sampleId, String taxonomyId) {
+	public Map<String, Set<Measurement>> getMeasurements(String expId, String sampleId, String taxonomyId) {
 		String key = composeMeasurementsKey(expId, sampleId, taxonomyId);
 		return measurements.get(key);
 	}
 
 	//********************************************************************************
 	
-	public HashSet<String> getMolAclGroupIds() {
+	public Set<String> getMolAclGroupIds() {
 		return molAclGroupIds;
 	}
 	
@@ -189,7 +192,7 @@ public class SessionManager {
 
 	//********************************************************************************
 
-	public ArrayList<Organism> getOrganisms() {
+	public List<Organism> getOrganisms() {
 		return new ArrayList<Organism>(taxonomyId2Organism.values());
 	}
 
@@ -203,13 +206,13 @@ public class SessionManager {
 	
 	//********************************************************************************
 	
-	public ArrayList<Organism> getOrganismsWithUserData() {
+	public List<Organism> getOrganismsWithUserData() {
 		return organismsWithUserData;
 	}
 	
 	//********************************************************************************
 
-	public ArrayList<Route> getRoutes(String taxonomyId, String cpdSrcId, String cpdDstId, String algorithm, String mapTitle) {
+	public List<Route> getRoutes(String taxonomyId, String cpdSrcId, String cpdDstId, String algorithm, String mapTitle) {
 		String key = composeDirectionsKey(taxonomyId, cpdSrcId, cpdDstId, algorithm, mapTitle);
 		return routes.get(key);
 	}
