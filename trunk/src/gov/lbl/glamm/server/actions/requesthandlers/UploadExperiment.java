@@ -9,7 +9,7 @@ import gov.lbl.glamm.server.FileUploadHandler;
 import gov.lbl.glamm.server.FileUploadHandler.LineParser;
 import gov.lbl.glamm.server.RequestHandler;
 import gov.lbl.glamm.server.ResponseHandler;
-import gov.lbl.glamm.server.SessionManager;
+import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.OrganismDAO;
 import gov.lbl.glamm.server.dao.impl.OrganismDAOImpl;
 
@@ -31,7 +31,7 @@ public class UploadExperiment implements RequestHandler {
 			HttpServletResponse response) throws IOException {
 
 		// get the session manager, create a new one if necessary
-		final SessionManager sm = SessionManager.getSessionManager(request, true);
+		final GlammSession sm = GlammSession.getGlammSession(request);
 
 		// it's always most convenient to hash measurements by the ids of their targets
 		final Map<String, Set<Measurement>> id2Measurement = new HashMap<String, Set<Measurement>>();

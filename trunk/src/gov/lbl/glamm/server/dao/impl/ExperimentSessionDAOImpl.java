@@ -3,7 +3,7 @@ package gov.lbl.glamm.server.dao.impl;
 import gov.lbl.glamm.client.model.Experiment;
 import gov.lbl.glamm.client.model.Measurement;
 import gov.lbl.glamm.client.model.Sample;
-import gov.lbl.glamm.server.SessionManager;
+import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.ExperimentDAO;
 
 import java.util.ArrayList;
@@ -13,9 +13,9 @@ import java.util.Set;
 
 public class ExperimentSessionDAOImpl implements ExperimentDAO {
 
-	private SessionManager sm = null;
+	private GlammSession sm = null;
 	
-	public ExperimentSessionDAOImpl(SessionManager sm) {
+	public ExperimentSessionDAOImpl(GlammSession sm) {
 		this.sm = sm;
 	}
 	

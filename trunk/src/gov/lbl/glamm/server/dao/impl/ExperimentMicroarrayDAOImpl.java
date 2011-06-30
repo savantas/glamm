@@ -4,7 +4,7 @@ import gov.lbl.glamm.client.model.Experiment;
 import gov.lbl.glamm.client.model.Measurement;
 import gov.lbl.glamm.client.model.Sample;
 import gov.lbl.glamm.server.GlammDbConnectionPool;
-import gov.lbl.glamm.server.SessionManager;
+import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.ExperimentDAO;
 import gov.lbl.glamm.shared.GlammUtils;
 
@@ -28,10 +28,10 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 	private final String UARRAY_UNITS 				= "mean Log2 Ratio";
 	private final String UARRAY_CONFIDENCE_TYPE		= "zScore";
 	
-	private SessionManager sm = null;
+	private GlammSession sm = null;
 
 
-	public ExperimentMicroarrayDAOImpl(SessionManager sm) {
+	public ExperimentMicroarrayDAOImpl(GlammSession sm) {
 		this.sm = sm;
 	}
 	

@@ -3,7 +3,7 @@ package gov.lbl.glamm.server.actions.requesthandlers;
 import gov.lbl.glamm.client.model.Measurement;
 import gov.lbl.glamm.server.RequestHandler;
 import gov.lbl.glamm.server.ResponseHandler;
-import gov.lbl.glamm.server.SessionManager;
+import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.ExperimentDAO;
 import gov.lbl.glamm.server.dao.impl.ExperimentDAOImpl;
 import gov.lbl.glamm.shared.RequestParameters;
@@ -36,7 +36,7 @@ public class DownloadExperiment implements RequestHandler {
 			
 			String content = "";
 			
-			SessionManager	sm 		= SessionManager.getSessionManager(request, false);
+			GlammSession	sm 		= GlammSession.getGlammSession(request);
 			ExperimentDAO 	expDao 	= new ExperimentDAOImpl(sm);
 			Map<String, Set<Measurement>> id2Measurements = expDao.getMeasurements(experimentId, sampleId, taxonomyId, expSource);
 			

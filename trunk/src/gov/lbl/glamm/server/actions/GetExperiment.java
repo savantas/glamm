@@ -4,7 +4,7 @@ import gov.lbl.glamm.client.model.Experiment;
 import gov.lbl.glamm.client.model.GlammPrimitive;
 import gov.lbl.glamm.client.model.GlammPrimitive.Synonym;
 import gov.lbl.glamm.client.model.Measurement;
-import gov.lbl.glamm.server.SessionManager;
+import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.ExperimentDAO;
 import gov.lbl.glamm.server.dao.GeneDAO;
 import gov.lbl.glamm.server.dao.impl.ExperimentDAOImpl;
@@ -16,7 +16,7 @@ import java.util.Set;
 
 public class GetExperiment  {
 
-	public static List<? extends GlammPrimitive> getMeasurementsForExperiment(SessionManager sm, String experimentId, String sampleId, String taxonomyId, String expSource) {
+	public static List<? extends GlammPrimitive> getMeasurementsForExperiment(GlammSession sm, String experimentId, String sampleId, String taxonomyId, String expSource) {
 
 		List<? extends GlammPrimitive> primitives = null;
 

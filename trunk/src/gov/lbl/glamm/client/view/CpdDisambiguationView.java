@@ -28,7 +28,6 @@ public class CpdDisambiguationView extends DecoratedPopupPanel implements CpdDis
 		
 		scrollPanel.setHeight("20em");
 		scrollPanel.setWidth("25em");
-		scrollPanel.setScrollPosition(0);
 		
 		scrollPanelInterior.setSpacing(10);
 		

@@ -4,7 +4,7 @@ import gov.lbl.glamm.client.model.Gene;
 import gov.lbl.glamm.client.model.GlammPrimitive.Synonym;
 import gov.lbl.glamm.server.RequestHandler;
 import gov.lbl.glamm.server.ResponseHandler;
-import gov.lbl.glamm.server.SessionManager;
+import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.GeneDAO;
 import gov.lbl.glamm.server.dao.impl.GeneDAOImpl;
 import gov.lbl.glamm.shared.RequestParameters;
@@ -27,7 +27,7 @@ public class DownloadOrganism implements RequestHandler {
 		String content		= "";
 		String taxonomyId	= request.getParameter(RequestParameters.TAXONOMY_ID.toString());
 
-		GeneDAO geneDao = new GeneDAOImpl(SessionManager.getSessionManager(request, false));
+		GeneDAO geneDao = new GeneDAOImpl(GlammSession.getGlammSession(request));
 
 		List<Gene> genes = geneDao.getGenesForOrganism(taxonomyId);
 

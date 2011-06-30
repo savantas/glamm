@@ -2,7 +2,7 @@ package gov.lbl.glamm.server.dao.impl;
 
 import gov.lbl.glamm.client.model.Gene;
 import gov.lbl.glamm.client.model.Organism;
-import gov.lbl.glamm.server.SessionManager;
+import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.GeneDAO;
 
 import java.util.Collection;
@@ -13,12 +13,12 @@ public class GeneDAOImpl implements GeneDAO {
 	
 	
 	
-	private SessionManager 		sm			= null;
+	private GlammSession 		sm			= null;
 	private GeneMetaMolDAOImpl	metaMolDao	= null;
 	private GeneMolDAOImpl 		molDao 		= null;
 	private GeneSessionDAOImpl 	sessionDao 	= null;
 
-	public GeneDAOImpl(SessionManager sm) {
+	public GeneDAOImpl(GlammSession sm) {
 		this.sm = sm;
 		metaMolDao = new GeneMetaMolDAOImpl();
 		molDao = new GeneMolDAOImpl();

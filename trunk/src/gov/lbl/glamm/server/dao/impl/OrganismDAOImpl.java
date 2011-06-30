@@ -2,7 +2,7 @@ package gov.lbl.glamm.server.dao.impl;
 
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Sample;
-import gov.lbl.glamm.server.SessionManager;
+import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.OrganismDAO;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ public class OrganismDAOImpl implements OrganismDAO {
 	private OrganismMolDAOImpl 		molDao 		= null;
 	private OrganismSessionDAOImpl 	sessionDao 	= null;
 	
-	public OrganismDAOImpl(SessionManager sm) {
+	public OrganismDAOImpl(GlammSession sm) {
 		metaMolDao 	= new OrganismMetaMolDAOImpl(sm);
 		molDao 		= new OrganismMolDAOImpl(sm);
 		sessionDao 	= new OrganismSessionDAOImpl(sm);
