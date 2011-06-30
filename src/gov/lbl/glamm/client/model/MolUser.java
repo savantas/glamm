@@ -2,9 +2,9 @@ package gov.lbl.glamm.client.model;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
-import com.google.gwt.dev.util.collect.HashSet;
 
 @SuppressWarnings("serial")
 public class MolUser implements Serializable {

@@ -9,7 +9,7 @@ import gov.lbl.glamm.client.model.Reaction;
 import gov.lbl.glamm.client.presenter.RetrosynthesisPresenter;
 import gov.lbl.glamm.server.RequestHandler;
 import gov.lbl.glamm.server.ResponseHandler;
-import gov.lbl.glamm.server.SessionManager;
+import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.GeneDAO;
 import gov.lbl.glamm.server.dao.MetabolicNetworkDAO;
 import gov.lbl.glamm.server.dao.OrganismDAO;
@@ -43,7 +43,7 @@ public class GetDirections implements RequestHandler {
 	private static OrganismDAO 			organismDao	= null;
 	private static MetabolicNetworkDAO 	networkDao 	= null;
 
-	private static List<Route> getRoutes(SessionManager sm, String taxonomyId, String cpdSrcExtId, String cpdDstExtId, String mapTitle, String algorithm) {
+	private static List<Route> getRoutes(GlammSession sm, String taxonomyId, String cpdSrcExtId, String cpdDstExtId, String mapTitle, String algorithm) {
 
 		if(cpdSrcExtId == null || cpdDstExtId == null || mapTitle == null || algorithm == null )
 			return null;
@@ -76,7 +76,7 @@ public class GetDirections implements RequestHandler {
 		return routes;
 	}
 
-	public static List<Pathway> getDirections(SessionManager sm, String taxonomyId, Compound cpdSrc, Compound cpdDst, String mapTitle, String algorithm) {
+	public static List<Pathway> getDirections(GlammSession sm, String taxonomyId, Compound cpdSrc, Compound cpdDst, String mapTitle, String algorithm) {
 
 		if(cpdSrc == null || cpdDst == null)
 			return null;
@@ -111,7 +111,7 @@ public class GetDirections implements RequestHandler {
 		}
 		
 
-		SessionManager sm = SessionManager.getSessionManager(request, true);
+		GlammSession sm = GlammSession.getGlammSession(request);
 		List<Route> routes = sm.getRoutes(taxonomyId, cpdSrcExtId, cpdDstExtId, algorithm, mapTitle);
 		
 		if(routes == null) {

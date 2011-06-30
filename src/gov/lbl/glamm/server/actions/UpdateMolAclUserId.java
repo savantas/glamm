@@ -1,7 +1,7 @@
 package gov.lbl.glamm.server.actions;
 
 import gov.lbl.glamm.server.GlammDbConnectionPool;
-import gov.lbl.glamm.server.SessionManager;
+import gov.lbl.glamm.server.GlammSession;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 
 public class UpdateMolAclUserId {
 	
-	public static void updateMolAclUserId(SessionManager sm, final String molAclUserId) {
+	public static void updateMolAclUserId(GlammSession sm, final String molAclUserId) {
 		
 		sm.setMolAclUserId(molAclUserId);
 		

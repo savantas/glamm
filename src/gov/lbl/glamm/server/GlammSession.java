@@ -16,13 +16,13 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-public class SessionManager {
+public class GlammSession {
 
 	//********************************************************************************
 	
 	private static final String SESSION_EXPERIMENT		= "Session Experiment ";
 	private static final String SESSION_ORGANISM 		= "Session Organism ";
-	private static final String GLAMM_SESSION_MANAGER 	= "GLAMM_SESSION_MANAGER";
+	private static final String GLAMM_SESSION 			= "GLAMM_SESSION";
 
 	//********************************************************************************
 
@@ -39,22 +39,22 @@ public class SessionManager {
 	
 	//********************************************************************************
 
-	public static SessionManager getSessionManager(HttpServletRequest request, boolean createNew) {
-		SessionManager sessionManager = null;
-		HttpSession session = request.getSession(createNew);
+	public static GlammSession getGlammSession(HttpServletRequest request) {
+		GlammSession glammSession = null;
+		HttpSession session = request.getSession(true); // create a session if one doesn't already exist
 		if(session != null) {
-			sessionManager = (SessionManager) session.getAttribute(GLAMM_SESSION_MANAGER);
-			if(sessionManager == null) {
-				sessionManager = new SessionManager();
-				session.setAttribute(GLAMM_SESSION_MANAGER, sessionManager);
+			glammSession = (GlammSession) session.getAttribute(GLAMM_SESSION);
+			if(glammSession == null) {
+				glammSession = new GlammSession();
+				session.setAttribute(GLAMM_SESSION, glammSession);
 			}
 		}
-		return sessionManager;
+		return glammSession;
 	}
 
 	//********************************************************************************
 
-	protected SessionManager() {
+	protected GlammSession() {
 		experimentId2Experiment		= new HashMap<String, Experiment>();
 		measurements				= new HashMap<String, Map<String, Set<Measurement>>>();
 		organismsWithUserData		= new ArrayList<Organism>();

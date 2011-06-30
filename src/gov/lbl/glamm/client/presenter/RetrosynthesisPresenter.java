@@ -20,7 +20,6 @@ import gov.lbl.glamm.client.util.ReactionColor;
 import gov.lbl.glamm.client.util.RowDependentSelectionCell;
 import gov.lbl.glamm.shared.RequestParameters;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;

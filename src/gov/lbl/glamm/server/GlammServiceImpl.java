@@ -49,23 +49,22 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	private static final String DB_CONFIG_XML_FILE_NAME 		= CONFIG_PATH + "/db_config.xml";
 	
 	/**
-	 * Gets the single instance of the SessionManager object
-	 * @param createNew if true, creates a new SessionManager object if it doesn't already exist
-	 * @return the SessionManager instance
+	 * Gets the single instance of the GlammSession object associated with this session
+	 * @return the GlammSession instance
 	 */
-	private SessionManager getSessionManager(boolean createNew) {
+	private GlammSession getGlammSession() {
 		HttpServletRequest request = this.getThreadLocalRequest();
-		return SessionManager.getSessionManager(request, createNew);
+		return GlammSession.getGlammSession(request);
 	}
 	
 	@Override
 	public String genCpdPopup(Compound compound, String taxonomyId) {
-		return GenCpdPopup.genCpdPopup(getSessionManager(false), compound, taxonomyId);
+		return GenCpdPopup.genCpdPopup(getGlammSession(), compound, taxonomyId);
 	}
 	
 	@Override
 	public String genCpdPopup(String extId, String extIdName, String taxonomyId) {
-		return GenCpdPopup.genCpdPopup(getSessionManager(false), extId, extIdName, taxonomyId);
+		return GenCpdPopup.genCpdPopup(getGlammSession(), extId, extIdName, taxonomyId);
 	}
 	
 	/**
@@ -76,7 +75,7 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	 */
 	@Override
 	public String genCpdPopup(String query, String taxonomyId) {
-		return GenCpdPopup.genCpdPopupFromQueryString(getSessionManager(false), query, taxonomyId);
+		return GenCpdPopup.genCpdPopupFromQueryString(getGlammSession(), query, taxonomyId);
 	}
 	
 	@Override
@@ -86,17 +85,17 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	
 	@Override
 	public String genRxnPopup(String query, String taxonomyId) {
-		return GenRxnPopup.genRxnPopupFromQueryString(getSessionManager(false), query, taxonomyId);
+		return GenRxnPopup.genRxnPopupFromQueryString(getGlammSession(), query, taxonomyId);
 	}
 	
 	@Override
 	public List<Sample.DataType> getAvailableExperimentTypes() {
-		return GetAvailableExperimentTypes.getAvailableExperimentTypes(getSessionManager(false));
+		return GetAvailableExperimentTypes.getAvailableExperimentTypes(getGlammSession());
 	}
 	
 	@Override
 	public List<Pathway> getDirections(String taxonomyId, Compound cpdSrc, Compound cpdDst, String mapTitle, String algorithm) {
-		return GetDirections.getDirections(getSessionManager(true), taxonomyId, cpdSrc, cpdDst, mapTitle, algorithm);
+		return GetDirections.getDirections(getGlammSession(), taxonomyId, cpdSrc, cpdDst, mapTitle, algorithm);
 	}
 	
 	@Override
@@ -106,12 +105,12 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	
 	@Override
 	public List<? extends GlammPrimitive> getMeasurementsForExperiment(String experimentId, String sampleId, String taxonomyId, String expSource) {
-		return GetExperiment.getMeasurementsForExperiment(getSessionManager(false), experimentId, sampleId, taxonomyId, expSource);
+		return GetExperiment.getMeasurementsForExperiment(getGlammSession(), experimentId, sampleId, taxonomyId, expSource);
 	}
 	
 	@Override
 	public List<Reaction> getRxnsForOrganism(String taxonomyId, Set<String> dbNames) {
-		return GetRxnsForOrganism.getRxnsForOrganism(getSessionManager(false), taxonomyId, dbNames);
+		return GetRxnsForOrganism.getRxnsForOrganism(getGlammSession(), taxonomyId, dbNames);
 	}
 	
 	@Override
@@ -121,17 +120,17 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	
 	@Override
 	public List<Experiment> populateExperiments(String taxonomyId) {
-		return PopulateExperiments.populateExperiments(getSessionManager(false), taxonomyId);
+		return PopulateExperiments.populateExperiments(getGlammSession(), taxonomyId);
 	}
 	
 	@Override
 	public List<Gene> populateLocusSearch(String taxonomyId) {
-		return PopulateLocusSearch.populateLocusSearch(getSessionManager(false), taxonomyId);
+		return PopulateLocusSearch.populateLocusSearch(getGlammSession(), taxonomyId);
 	}
 
 	@Override
 	public List<Organism> populateOrganisms(Sample.DataType dataType) {
-		return PopulateOrganisms.populateOrganisms(getSessionManager(false), dataType);
+		return PopulateOrganisms.populateOrganisms(getGlammSession(), dataType);
 	}
 	
 	@Override
@@ -141,12 +140,12 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	
 	@Override
 	public List<Sample> populateSamples(String taxonomyId) {
-		return PopulateSamples.populateSamples(getSessionManager(false), taxonomyId);
+		return PopulateSamples.populateSamples(getGlammSession(), taxonomyId);
 	}
 	
 	@Override
 	public Void updateMolAclUserId(final String molAclUserId) {
-		UpdateMolAclUserId.updateMolAclUserId(getSessionManager(true), molAclUserId);
+		UpdateMolAclUserId.updateMolAclUserId(getGlammSession(), molAclUserId);
 		return null;
 	}
 	

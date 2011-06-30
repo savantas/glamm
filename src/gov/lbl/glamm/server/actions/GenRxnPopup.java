@@ -3,7 +3,7 @@ package gov.lbl.glamm.server.actions;
 import gov.lbl.glamm.client.model.Gene;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Reaction;
-import gov.lbl.glamm.server.SessionManager;
+import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.GeneDAO;
 import gov.lbl.glamm.server.dao.ReactionDAO;
 import gov.lbl.glamm.server.dao.impl.GeneDAOImpl;
@@ -18,7 +18,7 @@ import java.util.Set;
 
 public class GenRxnPopup {
 
-	public static String genRxnPopup(SessionManager sm, Set<String> rxnIds, Set<String> dbNames, String taxonomyId) {
+	public static String genRxnPopup(GlammSession sm, Set<String> rxnIds, Set<String> dbNames, String taxonomyId) {
 
 		String html = "<html>No reactions found.</html>";
 		Map<String, List<Reaction>>	def2Rxns	= null;
@@ -87,7 +87,7 @@ public class GenRxnPopup {
 
 	}
 
-	public static String genRxnPopupFromQueryString(SessionManager sm, String query, String taxonomyId) {
+	public static String genRxnPopupFromQueryString(GlammSession sm, String query, String taxonomyId) {
 
 		HashSet<String> rxnIds = null;
 		HashSet<String> dbNames = null;
@@ -114,7 +114,7 @@ public class GenRxnPopup {
 
 	//********************************************************************************
 
-	private static String genHtml(SessionManager sm, String taxonomyId, 
+	private static String genHtml(GlammSession sm, String taxonomyId, 
 			Map<String, List<Reaction>> def2Rxns, 
 			Map<String, List<Gene>> ecNum2Genes) {
 
@@ -153,7 +153,7 @@ public class GenRxnPopup {
 
 	//********************************************************************************
 
-	private static String genEcNumLink(SessionManager sm, String ecNum, String taxonomyId, List<Gene> genes) {
+	private static String genEcNumLink(GlammSession sm, String ecNum, String taxonomyId, List<Gene> genes) {
 
 		String link = "<b>No EC</b>";
 

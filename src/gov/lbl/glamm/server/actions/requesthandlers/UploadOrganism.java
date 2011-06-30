@@ -7,7 +7,7 @@ import gov.lbl.glamm.server.FileUploadHandler;
 import gov.lbl.glamm.server.FileUploadHandler.LineParser;
 import gov.lbl.glamm.server.RequestHandler;
 import gov.lbl.glamm.server.ResponseHandler;
-import gov.lbl.glamm.server.SessionManager;
+import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.impl.GeneMetaMolDAOImpl;
 
 import java.io.IOException;
@@ -28,7 +28,7 @@ public class UploadOrganism implements RequestHandler {
 			HttpServletResponse response) throws IOException {
 
 		// get the session manager, create a new one if necessary
-		SessionManager sm = SessionManager.getSessionManager(request, true);
+		GlammSession sm = GlammSession.getGlammSession(request);
 
 		Organism organism = null;
 		final Map<String, Gene> id2Gene = new HashMap<String, Gene>();

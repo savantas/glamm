@@ -24,11 +24,14 @@ public class LoginPresenter {
 		LOGGED_IN;
 	}
 	
+	@SuppressWarnings("unused")
 	private GlammServiceAsync rpc = null;
 	private View view = null;
+	@SuppressWarnings("unused")
 	private SimpleEventBus eventBus = null;
 	
 	private State state = State.LOGGED_OUT_NON_MOL;
+	@SuppressWarnings("unused")
 	private String userEmail = null;
 	private String userId = null;
 	

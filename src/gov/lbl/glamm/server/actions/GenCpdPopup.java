@@ -3,7 +3,7 @@ package gov.lbl.glamm.server.actions;
 import gov.lbl.glamm.client.model.Compound;
 import gov.lbl.glamm.client.model.GlammPrimitive.Xref;
 import gov.lbl.glamm.client.model.Organism;
-import gov.lbl.glamm.server.SessionManager;
+import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.CompoundDAO;
 import gov.lbl.glamm.server.dao.impl.CompoundGlammDAOImpl;
 
@@ -17,7 +17,7 @@ import javax.imageio.ImageIO;
 
 public class GenCpdPopup {
 	
-	public static String genCpdPopup(SessionManager sm, Compound cpd, String taxonomyId) {
+	public static String genCpdPopup(GlammSession sm, Compound cpd, String taxonomyId) {
 		String html			= "<html>No results found for compound.</html>";
 		
 		if(cpd == null)
@@ -58,7 +58,7 @@ public class GenCpdPopup {
 		return html;
 	}
 
-	public static String genCpdPopup(SessionManager sm, String extId, String extIdName, String taxonomyId) {
+	public static String genCpdPopup(GlammSession sm, String extId, String extIdName, String taxonomyId) {
 		// ignore session organisms
 		if(sm != null && sm.isSessionOrganism(taxonomyId))
 			taxonomyId = null;
@@ -69,7 +69,7 @@ public class GenCpdPopup {
 		return genCpdPopup(sm, cpd, taxonomyId);
 	}
 	
-	public static String genCpdPopupFromQueryString(SessionManager sm, String query, String taxonomyId) {
+	public static String genCpdPopupFromQueryString(GlammSession sm, String query, String taxonomyId) {
 		String cpdId = null;
 		String extIdName = null;
 		String html = "<html>No results found for query: " + query + ".</html>";
