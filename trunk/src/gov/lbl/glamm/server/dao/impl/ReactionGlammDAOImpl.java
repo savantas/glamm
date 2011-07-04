@@ -3,6 +3,7 @@ package gov.lbl.glamm.server.dao.impl;
 import gov.lbl.glamm.client.model.GlammPrimitive.Xref;
 import gov.lbl.glamm.client.model.Reaction;
 import gov.lbl.glamm.server.GlammDbConnectionPool;
+import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.ReactionDAO;
 import gov.lbl.glamm.shared.GlammUtils;
 
@@ -183,6 +184,12 @@ public class ReactionGlammDAOImpl implements ReactionDAO {
 		"\"R00036\",\"R00866\",\"R00867\",\"R02199\",\"R04705\",\"R02197\",\"R04700\",\"R01917\",\"R04702\",\"R01918\",\"R02194\",\"R04701\",\"R02193\"," +
 		"\"R01911\",\"R04708\",\"R07236\",\"R04707\",\"R00858\",\"R00859\",\"R00851\"";
 
+	private GlammSession sm;
+
+	public ReactionGlammDAOImpl(final GlammSession sm) {
+		this.sm = sm;
+	}
+	
 	@Override
 	public List<Reaction> getReactions(Collection<String> rxnIds, Set<String> dbNames) {
 
@@ -202,7 +209,7 @@ public class ReactionGlammDAOImpl implements ReactionDAO {
 
 			try {
 
-				Connection connection = GlammDbConnectionPool.getConnection();
+				Connection connection = GlammDbConnectionPool.getConnection(sm);
 				Statement statement = connection.createStatement();
 
 				ResultSet rs = statement.executeQuery(sql);
@@ -254,7 +261,7 @@ public class ReactionGlammDAOImpl implements ReactionDAO {
 			
 			try {
 
-				Connection connection = GlammDbConnectionPool.getConnection();
+				Connection connection = GlammDbConnectionPool.getConnection(sm);
 				Statement statement = connection.createStatement();
 
 				ResultSet rs = statement.executeQuery(sql);
@@ -300,7 +307,7 @@ public class ReactionGlammDAOImpl implements ReactionDAO {
 
 			try {
 
-				Connection connection = GlammDbConnectionPool.getConnection();
+				Connection connection = GlammDbConnectionPool.getConnection(sm);
 				Statement statement = connection.createStatement();
 
 				ResultSet rs = statement.executeQuery(sql);

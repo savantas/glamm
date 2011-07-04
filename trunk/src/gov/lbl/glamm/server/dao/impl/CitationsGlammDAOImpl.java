@@ -2,6 +2,7 @@ package gov.lbl.glamm.server.dao.impl;
 
 import gov.lbl.glamm.client.model.Citation;
 import gov.lbl.glamm.server.GlammDbConnectionPool;
+import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.CitationsDAO;
 
 import java.sql.Connection;
@@ -12,6 +13,12 @@ import java.util.List;
 
 public class CitationsGlammDAOImpl implements CitationsDAO {
 
+	private GlammSession sm;
+	
+	public CitationsGlammDAOImpl(final GlammSession sm) {
+		this.sm = sm;
+	}
+	
 	@Override
 	public String getCitationsTableName() {
 
@@ -23,7 +30,7 @@ public class CitationsGlammDAOImpl implements CitationsDAO {
 
 		try {
 
-			Connection connection = GlammDbConnectionPool.getConnection();
+			Connection connection = GlammDbConnectionPool.getConnection(sm);
 			PreparedStatement ps = connection.prepareStatement(sql);
 
 			ResultSet rs = ps.executeQuery();
@@ -53,7 +60,7 @@ public class CitationsGlammDAOImpl implements CitationsDAO {
 
 		try {
 
-			Connection connection = GlammDbConnectionPool.getConnection();
+			Connection connection = GlammDbConnectionPool.getConnection(sm);
 			PreparedStatement ps = connection.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 

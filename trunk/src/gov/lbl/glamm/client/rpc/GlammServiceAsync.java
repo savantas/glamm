@@ -23,8 +23,10 @@ public interface GlammServiceAsync {
 	public void genRxnPopup(String query, String taxonomyId, AsyncCallback<String> callback);
 	public void getAvailableExperimentTypes(AsyncCallback<List<Sample.DataType>> callback);
 	public void getDirections(String taxonomyId, Compound cpdSrc, Compound cpdDst, String mapTitle, String algorithm, AsyncCallback<List<Pathway>> callback);
+	public void getIsolateHost(AsyncCallback<String> callback);
 	public void getMapConnectivity(String mapId, AsyncCallback<MetabolicNetwork> callback);
 	public void getMeasurementsForExperiment(String experimentId, String sampleId, String taxonomyId, String expSource, AsyncCallback<List<? extends GlammPrimitive>> callback);
+	public void getMetagenomeHost(AsyncCallback<String> callback);
 	public void getRxnsForOrganism(String taxonomyId, Set<String> rxnDbNames, AsyncCallback<List<Reaction>> callback);
 	public void populateCompoundSearch(Set<String> cpdDbNames, AsyncCallback<List<Compound>> callback);
 	public void populateExperiments(String taxonomyId, AsyncCallback<List<Experiment>> callback);

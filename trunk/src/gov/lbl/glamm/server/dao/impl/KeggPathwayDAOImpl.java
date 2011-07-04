@@ -2,6 +2,7 @@ package gov.lbl.glamm.server.dao.impl;
 
 import gov.lbl.glamm.client.model.Pathway;
 import gov.lbl.glamm.server.GlammDbConnectionPool;
+import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.PathwayDAO;
 
 import java.sql.Connection;
@@ -9,6 +10,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class KeggPathwayDAOImpl implements PathwayDAO {
+	
+	private GlammSession sm;
+	
+	public KeggPathwayDAOImpl(final GlammSession sm) {
+		this.sm = sm;
+	}
 
 	@Override
 	public Pathway getPathway(String mapId) {
@@ -18,7 +25,7 @@ public class KeggPathwayDAOImpl implements PathwayDAO {
 
 		try {
 
-			Connection connection = GlammDbConnectionPool.getConnection();
+			Connection connection = GlammDbConnectionPool.getConnection(sm);
 			PreparedStatement ps = connection.prepareStatement(sql);
 
 			ps.setString(1, mapId);

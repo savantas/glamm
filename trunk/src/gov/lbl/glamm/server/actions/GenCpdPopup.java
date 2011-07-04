@@ -39,16 +39,16 @@ public class GenCpdPopup {
 		if((name != null && !name.isEmpty()) || (formula != null && formula.isEmpty())) {
 			html = "<html>";
 			if(name != null && !name.isEmpty()) {
-				html += genCpdLink(extId, "<b>" + name + "</b>", taxonomyId) + "<br>";
+				html += genCpdLink(sm, extId, "<b>" + name + "</b>", taxonomyId) + "<br>";
 				html += formula != null && !formula.isEmpty() ? formula + "<br>" : "";
 			}
 			else {
-				html += formula != null && !formula.isEmpty() ? genCpdLink(extId, formula, taxonomyId) + "<br>" : "";
+				html += formula != null && !formula.isEmpty() ? genCpdLink(sm, extId, formula, taxonomyId) + "<br>" : "";
 			}
 
 			html += mass != null && !mass.isEmpty() && Float.parseFloat(mass) > 0.0f ? "<b>Mass:</b> " + mass : "";
 
-			html += genCpdImgLink(extId);
+			html += genCpdImgLink(sm, extId);
 
 
 			html += "</html>";
@@ -63,7 +63,7 @@ public class GenCpdPopup {
 		if(sm != null && sm.isSessionOrganism(taxonomyId))
 			taxonomyId = null;
 
-		CompoundDAO cpdDao = new CompoundGlammDAOImpl();
+		CompoundDAO cpdDao = new CompoundGlammDAOImpl(sm);
 		Compound cpd = cpdDao.getCompound(extId, extIdName);
 
 		return genCpdPopup(sm, cpd, taxonomyId);
@@ -94,14 +94,14 @@ public class GenCpdPopup {
 
 	//********************************************************************************
 
-	private static String genCpdImgLink(String cpdId) {
+	private static String genCpdImgLink(final GlammSession sm, final String cpdId) {
 
-		String imgLink = "";
-		String molImgLink = "http://microbesonline.org/images/keggCompounds/" + cpdId + ".gif";
+		String html = "";
+		String imgUrlString = "http://" + sm.getServerConfig().getIsolateHost() + "/images/keggCompounds/" + cpdId + ".gif";
 
 		try {
-			URL molImgUrl = new URL(molImgLink); 
-			BufferedImage img = ImageIO.read(molImgUrl);
+			URL imgUrl = new URL(imgUrlString); 
+			BufferedImage img = ImageIO.read(imgUrl);
 			if(img != null) {
 
 				final int MAX_DIM = 250;
@@ -125,19 +125,19 @@ public class GenCpdPopup {
 					}
 				}
 
-				imgLink = "<br><img width=" + width + " height=" + height + " src=\"" + molImgLink + "\"/>";
+				html = "<br><img width=" + width + " height=" + height + " src=\"" + imgUrlString + "\"/>";
 			}
 		} catch(IOException e) {
 			// do nothing
 		}
 
-		return imgLink;
+		return html;
 	}
 
 	//********************************************************************************
 
-	private static String genCpdLink(String cpdId, String linkText, String taxonomyId) {
-		String cpdLink = "<a href=http://www.microbesonline.org/cgi-bin/fetchCompound.cgi?keggCid=" + cpdId;
+	private static String genCpdLink(final GlammSession sm, final String cpdId, final String linkText, final String taxonomyId) {
+		String cpdLink = "<a href=http://" + sm.getServerConfig().getIsolateHost() + "/cgi-bin/fetchCompound.cgi?keggCid=" + cpdId;
 		cpdLink += 	taxonomyId != null && 
 		!taxonomyId.isEmpty() && 
 		!taxonomyId.equals(Organism.GLOBAL_MAP_TAXONOMY_ID) && 

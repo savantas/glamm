@@ -21,11 +21,11 @@ import java.util.Set;
 public class OrganismMetaMolDAOImpl implements OrganismDAO {
 
 	private GlammSession sm = null;
-	
+
 	public OrganismMetaMolDAOImpl(GlammSession sm) {
 		this.sm = sm;
 	}
-	
+
 	@Override
 	public List<Organism> getAllOrganisms() {
 		return getAllOrganismsWithDataForType(null);
@@ -33,33 +33,24 @@ public class OrganismMetaMolDAOImpl implements OrganismDAO {
 
 	@Override
 	public List<Organism> getAllOrganismsWithDataForType(Sample.DataType dataType) {
+		
 		ArrayList<Organism> organisms = null;
+		
+		if(!sm.getServerConfig().hasMetagenomeHost() || dataType != Sample.DataType.NONE)
+			return organisms;
 
-		String sql = "";
-		if(dataType == Sample.DataType.NONE) {
-			if(GlammDbConnectionPool.getDbConfig().isFilterOnAcl())
-				sql = "select distinct(taxonomyId), name " +
-				"from meta2010jul.Taxonomy t " +
-				"join meta2010jul.Scaffold s using (taxonomyId) " +
-				"join meta2010jul.ACL A on (A.resourceId=s.scaffoldId and A.resourceType='scaffold') " +
-				"where t.taxonomyId >= 1000000000000 " +
-				"and s.isGenomic=1 and s.isActive=1 and s.length >= 1000 " +
-				"and A.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getMolAclGroupIds()) : "1") + ") and A.requesterType='group' and A.read=1 " +
-				"order by t.name;";
-			else
-				sql = "select distinct(taxonomyId), name " +
-				"from meta2010jul.Taxonomy t " +
-				"join meta2010jul.Scaffold s " +
-				"using (taxonomyId) " +
-				"where t.taxonomyId >= 1000000000000 " +
-				"and s.isGenomic=1 and s.isActive=1 and s.length >= 1000 order by t.name;";
-		}
-		else 
-			return null;
-
+		String sql = "select distinct(taxonomyId), name " +
+		"from meta2010jul.Taxonomy t " +
+		"join meta2010jul.Scaffold s using (taxonomyId) " +
+		"join meta2010jul.ACL A on (A.resourceId=s.scaffoldId and A.resourceType='scaffold') " +
+		"where t.taxonomyId >= 1000000000000 " +
+		"and s.isGenomic=1 and s.isActive=1 and s.length >= 1000 " +
+		"and A.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getMolAclGroupIds()) : "1") + ") and A.requesterType='group' and A.read=1 " +
+		"order by t.name;";
+		
 		try {
 
-			Connection connection = GlammDbConnectionPool.getConnection();
+			Connection connection = GlammDbConnectionPool.getConnection(sm);
 			PreparedStatement ps = connection.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 
@@ -89,34 +80,25 @@ public class OrganismMetaMolDAOImpl implements OrganismDAO {
 
 	@Override
 	public Map<String, Set<Organism>> getTransgenicCandidatesForEcNums(Set<String> ecNums) {
-		
+
 		Map<String, Set<Organism>> ecNum2Organisms = null;
 
-		if(ecNums == null || ecNums.isEmpty())
-			return null;
+		if(!sm.getServerConfig().hasMetagenomeHost() || ecNums == null || ecNums.isEmpty())
+			return ecNum2Organisms;
 
-		String sql = "";
-		if(GlammDbConnectionPool.getDbConfig().isFilterOnAcl())
-			sql = "select distinct T.taxonomyId, T.name, L2E.ecNum " +
+		String sql = "select distinct T.taxonomyId, T.name, L2E.ecNum " +
 			"from meta2010jul.Taxonomy T " +
 			"join meta2010jul.Scaffold S on (S.taxonomyId=T.taxonomyId) " +
 			"join meta2010jul.Locus2Ec L2E on (L2E.scaffoldId=S.scaffoldId) " +
 			"join meta2010jul.ACL A on(A.resourceId=S.ScaffoldId and A.resourceType='scaffold') " +
-			"where S.isGenomic=1 and S.isActive=1 and S.length >= 1000 and " +
+			"where S.isGenomic=1 and S.isActive=1 and S.length >= 1000 " +
 			"and A.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getMolAclGroupIds()) : "1") + ") and A.requesterType='group' and A.read=1 " +
 			"and L2E.ecNum in (" + GlammUtils.joinCollection(ecNums) + ") " +
 			"order by T.name;";
-		else
-			sql = "select distinct T.taxonomyId, T.name, L2E.ecNum " +
-			"from meta2010jul.Taxonomy T " +
-			"join meta2010jul.Scaffold S on (S.taxonomyId=T.taxonomyId) " +
-			"join meta2010jul.Locus2Ec L2E on (L2E.scaffoldId=S.scaffoldId) " +
-			"where S.isGenomic=1 and S.isActive=1 and S.length >= 1000 and " +
-			"L2E.ecNum in (" + GlammUtils.joinCollection(ecNums) + ") " +
-			"order by T.name;";
+		
 		try {
 
-			Connection connection = GlammDbConnectionPool.getConnection();
+			Connection connection = GlammDbConnectionPool.getConnection(sm);
 			Statement statement = connection.createStatement();
 
 			ResultSet rs = statement.executeQuery(sql);
@@ -153,21 +135,13 @@ public class OrganismMetaMolDAOImpl implements OrganismDAO {
 
 	@Override
 	public Organism getOrganismForTaxonomyId(final String taxonomyId) {
+		
 		Organism organism = null;
 
-		String sql = "";
-
-		if(GlammDbConnectionPool.getDbConfig().isFilterOnAcl())
-			sql = "select distinct(name) " +
-			"from meta2010jul.Taxonomy t " +
-			"join meta2010jul.Scaffold s using (taxonomyId) " +
-			"join meta2010jul.ACL A on (A.resourceId=s.scaffoldId and A.resourceType='scaffold') " +
-			"where t.taxonomyId=? " +
-			"and s.isGenomic=1 and s.isActive=1 and s.length >= 1000 " +
-			"and A.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getMolAclGroupIds()) : "1") + ") and A.requesterType='group' and A.read=1 " +
-			"order by t.name;";
-		else
-			sql = "select distinct(name) " +
+		if(!sm.getServerConfig().hasMetagenomeHost())
+			return organism;
+		
+		String sql = "select distinct(name) " +
 			"from meta2010jul.Taxonomy t " +
 			"join meta2010jul.Scaffold s " +
 			"using (taxonomyId) " +
@@ -177,10 +151,10 @@ public class OrganismMetaMolDAOImpl implements OrganismDAO {
 
 		try {
 
-			Connection connection = GlammDbConnectionPool.getConnection();
+			Connection connection = GlammDbConnectionPool.getConnection(sm);
 			PreparedStatement ps = connection.prepareStatement(sql);
 			ps.setString(1, taxonomyId);
-			
+
 			ResultSet rs = ps.executeQuery();
 
 			if(rs.next()) {

@@ -4,6 +4,7 @@ import gov.lbl.glamm.client.model.Experiment;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Pathway;
 import gov.lbl.glamm.client.model.Sample;
+import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.PathwayDAO;
 import gov.lbl.glamm.server.dao.impl.KeggPathwayDAOImpl;
 
@@ -15,23 +16,31 @@ import javax.imageio.ImageIO;
 
 public class GenPwyPopup {
 
-	public static String genPwyPopup(String mapId, String taxonomyId, String experimentId, String sampleId) {
+	public static String genPwyPopup(final GlammSession sm, 
+			final String mapId, 
+			final String taxonomyId, 
+			final String experimentId, 
+			final String sampleId) {
 		String html			= "<html>No results found for " + mapId + ".</html>";
 
-		PathwayDAO pwyDao = new KeggPathwayDAOImpl();
+		PathwayDAO pwyDao = new KeggPathwayDAOImpl(sm);
 		Pathway pwy = pwyDao.getPathway(mapId);
 
 		if(pwy != null) {
 			html = "<html>";
-			html += genKeggMapLink(pwy, taxonomyId, experimentId, sampleId);
-			html += genImgLink(pwy);
+			html += genKeggMapLink(sm, pwy, taxonomyId, experimentId, sampleId);
+			html += genImgLink(sm, pwy);
 			html += "</html>";
 		}
 
 		return html;
 	}
 	
-	public static String genPwyPopupFromQueryString(String query, String taxonomyId, String experimentId, String sampleId) {
+	public static String genPwyPopupFromQueryString(final GlammSession sm, 
+			final String query, 
+			final String taxonomyId, 
+			final String experimentId, 
+			final String sampleId) {
 		String mapId = null;
 		
 		for(String token : query.split("&")) {
@@ -42,21 +51,22 @@ public class GenPwyPopup {
 				mapId = kv[1];
 		}
 		
-		return genPwyPopup(mapId, taxonomyId, experimentId, sampleId);
+		return genPwyPopup(sm, mapId, taxonomyId, experimentId, sampleId);
 	}
 
 	//********************************************************************************
 
-	private static String genKeggMapLink(Pathway pwy, 
-			String taxonomyId, 
-			String experimentId, 
-			String sampleId) { 
+	private static String genKeggMapLink(final GlammSession sm, 
+			final Pathway pwy, 
+			final String taxonomyId, 
+			final String experimentId, 
+			final String sampleId) { 
 		String link = "";
 		String mapTitle = pwy.getName();
 
 		if(mapTitle != null && !mapTitle.isEmpty())
 			link = "<a href=\"" + 
-			genKeggMapUrl(pwy, taxonomyId, experimentId, sampleId) + 
+			genKeggMapUrl(sm, pwy, taxonomyId, experimentId, sampleId) + 
 			"\" target = \"_new\">" + 
 			mapTitle + 
 			"</a>";
@@ -65,10 +75,11 @@ public class GenPwyPopup {
 
 	//********************************************************************************
 
-	private static String genKeggMapUrl(Pathway pwy, 
-			String taxonomyId, 
-			String experimentId, 
-			String sampleId) { 
+	private static String genKeggMapUrl(final GlammSession sm, 
+			final Pathway pwy, 
+			final String taxonomyId, 
+			final String experimentId, 
+			final String sampleId) { 
 
 		String url = "";
 		String mapId = pwy.getMapId();
@@ -77,7 +88,7 @@ public class GenPwyPopup {
 				sampleId != null && !sampleId.equals(Sample.DEFAULT_SAMPLE_ID) &&
 				taxonomyId != null && !taxonomyId.equals(Organism.GLOBAL_MAP_TAXONOMY_ID)) {
 			
-			url = "http://www.microbesonline.org/cgi-bin/microarray/reportSet.cgi?disp=3&";
+			url = "http://" + sm.getServerConfig().getIsolateHost() + "/cgi-bin/microarray/reportSet.cgi?disp=3&";
 			url += "mapId=" + mapId;
 			url += "&taxId=" + taxonomyId;
 			url += "&expId=" + experimentId;
@@ -87,7 +98,7 @@ public class GenPwyPopup {
 		}
 		else {
 
-			url = "http://www.microbesonline.org/cgi-bin/browseKegg?";
+			url = "http://" +  sm.getServerConfig().getIsolateHost() + "/cgi-bin/browseKegg?";
 			url += "mapId=map" + mapId;
 			url += taxonomyId != null && !taxonomyId.equals(Organism.GLOBAL_MAP_TAXONOMY_ID) ? "&taxId=" + taxonomyId : "";
 
@@ -97,9 +108,9 @@ public class GenPwyPopup {
 
 	//********************************************************************************
 
-	private static String genImgLink(Pathway pwy) {
+	private static String genImgLink(final GlammSession sm, final Pathway pwy) {
 		String imgLink = "";
-		String molImgLink = "http://www.microbesonline.org/kegg/map" + pwy.getMapId() + ".png";
+		String molImgLink = "http://" + sm.getServerConfig().getIsolateHost() + "/kegg/map" + pwy.getMapId() + ".png";
 
 		try {
 			URL molImgUrl = new URL(molImgLink); 

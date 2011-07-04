@@ -106,30 +106,36 @@ public class RetrosynthesisPresenter {
 		public SuggestBox 			getSearchSuggestBox();
 		public Label 				getStatusLabel();
 	}
+	
+	private String isolateHost;
+	private String metagenomeHost;
 
 
-	private static String genEcNumLinkForMolOrganism(String ecNum, Organism organism) {
+	private String genEcNumLinkForMolOrganism(String ecNum, Organism organism) {
 
 		String taxonomyId = organism.getTaxonomyId();
 
 		String link = "<a href=\"http://";
-		link += Long.parseLong(taxonomyId) >= Organism.MIN_METAGENOME_TAXID ? "meta." : "";
-		link += "microbesonline.org/cgi-bin/fetchEC2.cgi?ec=" + ecNum + 
+		if(metagenomeHost != null && Long.parseLong(taxonomyId) >= Organism.MIN_METAGENOME_TAXID)
+			link += metagenomeHost;
+		else
+			link += isolateHost;
+		link += "/cgi-bin/fetchEC2.cgi?ec=" + ecNum + 
 		"&taxId=" + taxonomyId + "\" target=\"_new\">" + ecNum + "</a>";
 
 		return link;
 	}
 
-	private static String genEcNumLinkForSessionOrganism(String ecNum, Organism organism) {
+	private String genEcNumLinkForSessionOrganism(String ecNum, Organism organism) {
 		String link = "<b>" + ecNum + "</b>";
 		
 		// get set of all molTaxonomyIds
 		Set<String> metaMolTaxonomyIds = organism.getMolTaxonomyIds();
 		
-		if(metaMolTaxonomyIds == null || metaMolTaxonomyIds.isEmpty())
+		if(metagenomeHost == null || metaMolTaxonomyIds == null || metaMolTaxonomyIds.isEmpty())
 			return link;
 		
-		link = "<a href=\"http://meta.microbesonline.org/cgi-bin/fetchEC2.cgi?ec=" + ecNum;
+		link = "<a href=\"http://" + metagenomeHost + "/cgi-bin/fetchEC2.cgi?ec=" + ecNum;
 		for(String taxonomyId : metaMolTaxonomyIds) 
 			link += taxonomyId != null ? "&taxId=" + taxonomyId : "";
 		link += "\" target=\"_new\">";
@@ -138,7 +144,7 @@ public class RetrosynthesisPresenter {
 		return link;
 	}
 
-	private static String genEcNumLink(String ecNum, Organism organism) {
+	private String genEcNumLink(String ecNum, Organism organism) {
 
 		if(ecNum == null || ecNum.isEmpty())
 			return "<b>No EC</b>";
@@ -194,6 +200,9 @@ public class RetrosynthesisPresenter {
 		locHash = new HashMap<String, Set<GlammPrimitive>>();
 
 		routeDataProvider = new ListDataProvider<Reaction>(Reaction.KEY_PROVIDER);
+		
+		loadIsolateHost();
+		loadMetagenomeHost();
 
 		initTable(view.getRoutesTable(), routeDataProvider);
 		setViewState(State.INITIAL);
@@ -363,7 +372,7 @@ public class RetrosynthesisPresenter {
 			UrlBuilder builder = new UrlBuilder();
 			Set<String> argSet = new HashSet<String>();
 
-			builder.setHost("www.microbesonline.org");
+			builder.setHost(isolateHost);
 			builder.setPath("/cgi-bin/phyloprofile.cgi");
 			builder.setParameter("download", "0");
 			builder.setParameter("show", "astree");
@@ -503,6 +512,34 @@ public class RetrosynthesisPresenter {
 		// add a selection model
 		final SingleSelectionModel<Reaction> selectionModel = new SingleSelectionModel<Reaction>(Reaction.KEY_PROVIDER);
 		table.setSelectionModel(selectionModel);
+	}
+	
+	private void loadIsolateHost() {
+		rpc.getIsolateHost(new AsyncCallback<String>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert("Remote procedure call failure: getIsolateHost");
+			}
+
+			@Override
+			public void onSuccess(String result) {
+				isolateHost = result;
+			}
+		});
+	}
+	
+	private void loadMetagenomeHost() {
+		rpc.getMetagenomeHost(new AsyncCallback<String>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert("Remote procedure call failure: getMetagenomeHost");
+			}
+
+			@Override
+			public void onSuccess(String result) {
+				metagenomeHost = result;
+			}
+		});
 	}
 
 	public void populate() {

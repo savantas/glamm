@@ -2,6 +2,7 @@ package gov.lbl.glamm.server.dao.impl;
 
 import gov.lbl.glamm.client.model.Gene;
 import gov.lbl.glamm.server.GlammDbConnectionPool;
+import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.GeneDAO;
 import gov.lbl.glamm.shared.GlammUtils;
 
@@ -22,6 +23,12 @@ public class GeneMolDAOImpl implements GeneDAO {
 
 	//********************************************************************************
 	
+	private GlammSession sm;
+	
+	public GeneMolDAOImpl(GlammSession sm) {
+		this.sm = sm;
+	}
+	
 	@Override
 	public Set<String> getEcNumsForOrganism(String taxonomyId) {
 		
@@ -37,7 +44,7 @@ public class GeneMolDAOImpl implements GeneDAO {
 			
 			try {
 
-				Connection connection = GlammDbConnectionPool.getConnection();
+				Connection connection = GlammDbConnectionPool.getConnection(sm);
 				PreparedStatement ps = connection.prepareStatement(sql);
 
 				ps.setString(1, taxonomyId);
@@ -87,7 +94,7 @@ public class GeneMolDAOImpl implements GeneDAO {
 
 			try {
 
-				Connection connection = GlammDbConnectionPool.getConnection();
+				Connection connection = GlammDbConnectionPool.getConnection(sm);
 				Statement  statement = connection.createStatement();
 
 
@@ -125,7 +132,7 @@ public class GeneMolDAOImpl implements GeneDAO {
 
 			try {
 
-				Connection connection = GlammDbConnectionPool.getConnection();
+				Connection connection = GlammDbConnectionPool.getConnection(sm);
 				Statement  statement = connection.createStatement();
 
 
@@ -167,7 +174,7 @@ public class GeneMolDAOImpl implements GeneDAO {
 
 			try {
 
-				Connection connection = GlammDbConnectionPool.getConnection();
+				Connection connection = GlammDbConnectionPool.getConnection(sm);
 				Statement statement = connection.createStatement();
 
 				ResultSet rs = statement.executeQuery(sql);
@@ -251,7 +258,7 @@ public class GeneMolDAOImpl implements GeneDAO {
 
 			try {
 
-				Connection connection = GlammDbConnectionPool.getConnection();
+				Connection connection = GlammDbConnectionPool.getConnection(sm);
 				Statement  statement = connection.createStatement();
 
 
@@ -285,7 +292,7 @@ public class GeneMolDAOImpl implements GeneDAO {
 				"and S.isActive=1;";
 		
 		try {
-			Connection connection = GlammDbConnectionPool.getConnection();
+			Connection connection = GlammDbConnectionPool.getConnection(sm);
 			Statement statement = connection.createStatement();
 			
 			ResultSet rs = statement.executeQuery(sql);

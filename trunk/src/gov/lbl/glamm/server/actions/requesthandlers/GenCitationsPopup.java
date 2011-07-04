@@ -1,6 +1,7 @@
 package gov.lbl.glamm.server.actions.requesthandlers;
 
 import gov.lbl.glamm.client.model.Citation;
+import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.RequestHandler;
 import gov.lbl.glamm.server.ResponseHandler;
 import gov.lbl.glamm.server.dao.CitationsDAO;
@@ -44,7 +45,7 @@ public class GenCitationsPopup implements RequestHandler {
 			HttpServletResponse response) throws IOException {
 		
 		
-		CitationsDAO citationsDao = new CitationsGlammDAOImpl();
+		CitationsDAO citationsDao = new CitationsGlammDAOImpl(GlammSession.getGlammSession(request));
 
 		String html = "<html>";
 		

@@ -2,6 +2,7 @@ package gov.lbl.glamm.server.dao.impl;
 
 import gov.lbl.glamm.client.model.Gene;
 import gov.lbl.glamm.server.GlammDbConnectionPool;
+import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.GeneDAO;
 import gov.lbl.glamm.shared.GlammUtils;
 
@@ -19,10 +20,19 @@ import java.util.Map;
 import java.util.Set;
 
 public class GeneMetaMolDAOImpl implements GeneDAO {
+	
+	private GlammSession sm;
+	
+	public GeneMetaMolDAOImpl(final GlammSession sm) {
+		this.sm = sm;
+	}
 
 	@Override
 	public Set<String> getEcNumsForOrganism(String taxonomyId) {
 		Set<String> ecNums = null;
+		
+		if(!sm.getServerConfig().hasMetagenomeHost())
+			return ecNums;
 		
 		if(taxonomyId != null && !taxonomyId.isEmpty()) {
 			String sql = "select distinct L2E.ecNum " +
@@ -33,7 +43,7 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 			
 			try {
 
-				Connection connection = GlammDbConnectionPool.getConnection();
+				Connection connection = GlammDbConnectionPool.getConnection(sm);
 				PreparedStatement ps = connection.prepareStatement(sql);
 
 				ps.setString(1, taxonomyId);
@@ -66,6 +76,9 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 	public List<Gene> getGenesForEcNums(String taxonomyId, Collection<String> ecNums) {
 
 		List<Gene> genes = null;
+		
+		if(!sm.getServerConfig().hasMetagenomeHost())
+			return genes;
 
 		if(taxonomyId != null && !taxonomyId.isEmpty() && 
 				ecNums != null && ecNums.size() > 0) {
@@ -80,7 +93,7 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 
 			try {
 
-				Connection connection = GlammDbConnectionPool.getConnection();
+				Connection connection = GlammDbConnectionPool.getConnection(sm);
 				Statement  statement = connection.createStatement();
 
 
@@ -102,6 +115,9 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 	@Override
 	public List<Gene> getGenesForVimssIds(String taxonomyId, Collection<String> extIds) {
 		List<Gene> genes = null;
+		
+		if(!sm.getServerConfig().hasMetagenomeHost())
+			return genes;
 
 		if(taxonomyId != null && !taxonomyId.isEmpty() && 
 				extIds != null && extIds.size() > 0) {
@@ -116,7 +132,7 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 
 			try {
 
-				Connection connection = GlammDbConnectionPool.getConnection();
+				Connection connection = GlammDbConnectionPool.getConnection(sm);
 				Statement  statement = connection.createStatement();
 
 
@@ -139,6 +155,9 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 	public List<Gene> getGenesForOrganism(String taxonomyId) {
 
 		List<Gene> genes = null;
+		
+		if(!sm.getServerConfig().hasMetagenomeHost())
+			return genes;
 
 		if(taxonomyId != null && !taxonomyId.isEmpty()) {
 			
@@ -151,7 +170,7 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 
 			try {
 
-				Connection connection = GlammDbConnectionPool.getConnection();
+				Connection connection = GlammDbConnectionPool.getConnection(sm);
 				Statement  statement = connection.createStatement();
 
 
@@ -174,6 +193,9 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 	public List<Gene> getGenesForRxnIds(String taxonomyId, String[] rxnIds) {
 
 		List<Gene> genes = null;
+		
+		if(!sm.getServerConfig().hasMetagenomeHost())
+			return genes;
 
 		if(taxonomyId != null && !taxonomyId.isEmpty() && 
 				rxnIds != null && rxnIds.length > 0) {
@@ -190,7 +212,7 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 
 			try {
 
-				Connection connection = GlammDbConnectionPool.getConnection();
+				Connection connection = GlammDbConnectionPool.getConnection(sm);
 				Statement statement = connection.createStatement();
 
 				ResultSet rs = statement.executeQuery(sql);
@@ -255,13 +277,17 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 			return null;
 		
 		Map<String, String> mapping = null;
+		
+		if(!sm.getServerConfig().hasMetagenomeHost())
+			return mapping;
+		
 		String sql = "select L.locusId, L.taxonomyId " +
 				"from meta2010jul.Locus L " +
 				"where L.locusId in ("+ GlammUtils.joinCollection(vimssIds) + ") " +
 				"and L.isActive=1;";
 		
 		try {
-			Connection connection = GlammDbConnectionPool.getConnection();
+			Connection connection = GlammDbConnectionPool.getConnection(sm);
 			Statement statement = connection.createStatement();
 			
 			ResultSet rs = statement.executeQuery(sql);
@@ -288,13 +314,17 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 			return null;
 		
 		Set<String> taxonomyIds = null;
+		
+		if(!sm.getServerConfig().hasMetagenomeHost())
+			return taxonomyIds;
+		
 		String sql = "select distinct(L.taxonomyId) " +
 				"from meta2010jul.Locus L " +
 				"where L.locusId in ("+ GlammUtils.joinCollection(vimssIds) + ") " +
 				"and L.isActive=1;";
 		
 		try {
-			Connection connection = GlammDbConnectionPool.getConnection();
+			Connection connection = GlammDbConnectionPool.getConnection(sm);
 			Statement statement = connection.createStatement();
 			
 			ResultSet rs = statement.executeQuery(sql);

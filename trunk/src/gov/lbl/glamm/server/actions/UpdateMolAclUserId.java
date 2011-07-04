@@ -24,7 +24,7 @@ public class UpdateMolAclUserId {
 		
 		try {
 
-			Connection connection = GlammDbConnectionPool.getConnection();
+			Connection connection = GlammDbConnectionPool.getConnection(sm);
 			PreparedStatement ps = connection.prepareStatement(sql);
 
 			ps.setString(1, molAclUserId);

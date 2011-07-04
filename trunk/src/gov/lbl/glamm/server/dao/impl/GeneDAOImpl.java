@@ -20,8 +20,8 @@ public class GeneDAOImpl implements GeneDAO {
 
 	public GeneDAOImpl(GlammSession sm) {
 		this.sm = sm;
-		metaMolDao = new GeneMetaMolDAOImpl();
-		molDao = new GeneMolDAOImpl();
+		metaMolDao = new GeneMetaMolDAOImpl(sm);
+		molDao = new GeneMolDAOImpl(sm);
 		sessionDao = new GeneSessionDAOImpl(sm);
 	}
 	

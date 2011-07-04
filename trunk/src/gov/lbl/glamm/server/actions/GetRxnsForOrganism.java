@@ -17,7 +17,7 @@ public class GetRxnsForOrganism {
 	public static List<Reaction> getRxnsForOrganism(final GlammSession sm, final String taxonomyId, final Set<String> dbNames) {
 		
 		GeneDAO geneDao = new GeneDAOImpl(sm);
-		ReactionDAO rxnDao = new ReactionGlammDAOImpl();
+		ReactionDAO rxnDao = new ReactionGlammDAOImpl(sm);
 		List<Reaction> rxns = null;
 		
 		List<Gene> genes = geneDao.getGenesForOrganism(taxonomyId);

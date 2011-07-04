@@ -2,6 +2,7 @@ package gov.lbl.glamm.server.dao.impl;
 
 import gov.lbl.glamm.client.model.Compound;
 import gov.lbl.glamm.server.GlammDbConnectionPool;
+import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.CompoundDAO;
 import gov.lbl.glamm.shared.GlammUtils;
 
@@ -140,6 +141,12 @@ public class CompoundGlammDAOImpl implements CompoundDAO {
 		"\"C05107\",\"C05108\",\"C17551\",\"C00705\",\"C17552\",\"C17554\",\"C03892\",\"C00072\",\"C05500\",\"C00073\",\"C06041\",\"C05501\",\"C00074\"," +
 		"\"C05502\",\"C00075\",\"C00077\",\"C06040\",\"C00078\",\"C00079\",\"C17559\"";
 
+	private GlammSession sm;
+	
+	public CompoundGlammDAOImpl(final GlammSession sm) {
+		this.sm = sm;
+	}
+	
 	@Override
 	public Compound getCompound(String id, String dbName) {
 
@@ -153,7 +160,7 @@ public class CompoundGlammDAOImpl implements CompoundDAO {
 
 		try {
 
-			Connection connection = GlammDbConnectionPool.getConnection();
+			Connection connection = GlammDbConnectionPool.getConnection(sm);
 			PreparedStatement ps = connection.prepareStatement(sql);
 
 			ps.setString(1, id);
@@ -209,7 +216,7 @@ public class CompoundGlammDAOImpl implements CompoundDAO {
 		
 		try {
 			
-			Connection connection = GlammDbConnectionPool.getConnection();
+			Connection connection = GlammDbConnectionPool.getConnection(sm);
 			Statement statement = connection.createStatement();
 
 			ResultSet rs = statement.executeQuery(sql);
