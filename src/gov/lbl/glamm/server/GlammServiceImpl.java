@@ -26,7 +26,6 @@ import gov.lbl.glamm.server.actions.PopulateSamples;
 import gov.lbl.glamm.server.actions.UpdateMolAclUserId;
 import gov.lbl.glamm.server.actions.requesthandlers.GetDirections;
 
-import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Set;
 
@@ -45,8 +44,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 public class GlammServiceImpl extends RemoteServiceServlet 
 	implements GlammService {
 	
-	private static final String CONFIG_PATH						= "/config";
-	private static final String DB_CONFIG_XML_FILE_NAME 		= CONFIG_PATH + "/db_config.xml";
+	private static final String SERVER_CONFIG_XML_FILE_NAME		= "/config/server_config.xml";
 	
 	/**
 	 * Gets the single instance of the GlammSession object associated with this session
@@ -80,7 +78,7 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	
 	@Override
 	public String genKeggPwyPopup(String query, String taxonomyId, String experimentId, String sampleId) {
-		return GenPwyPopup.genPwyPopupFromQueryString(query, taxonomyId, experimentId, sampleId);
+		return GenPwyPopup.genPwyPopupFromQueryString(getGlammSession(), query, taxonomyId, experimentId, sampleId);
 	}
 	
 	@Override
@@ -99,13 +97,25 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	}
 	
 	@Override
+	public String getIsolateHost() {
+		GlammSession sm = getGlammSession();
+		return sm.getServerConfig().getIsolateHost();
+	}
+	
+	@Override
 	public MetabolicNetwork getMapConnectivity(String mapId) {
-		return GetMapConnectivity.getMapConnectivity(mapId);
+		return GetMapConnectivity.getMapConnectivity(getGlammSession(), mapId);
 	}
 	
 	@Override
 	public List<? extends GlammPrimitive> getMeasurementsForExperiment(String experimentId, String sampleId, String taxonomyId, String expSource) {
 		return GetExperiment.getMeasurementsForExperiment(getGlammSession(), experimentId, sampleId, taxonomyId, expSource);
+	}
+	
+	@Override
+	public String getMetagenomeHost() {
+		GlammSession sm = getGlammSession();
+		return sm.getServerConfig().getMetagenomeHost();
 	}
 	
 	@Override
@@ -115,7 +125,7 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	
 	@Override
 	public List<Compound> populateCompoundSearch(Set<String> dbNames) {
-		return PopulateCompoundSearch.populateCompoundSearch(dbNames);
+		return PopulateCompoundSearch.populateCompoundSearch(getGlammSession(), dbNames);
 	}
 	
 	@Override
@@ -135,7 +145,7 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	
 	@Override
 	public List<Reaction> populateReactionSearch(Set<String> dbNames) {
-		return PopulateReactionSearch.populateReactionSearch(dbNames);
+		return PopulateReactionSearch.populateReactionSearch(getGlammSession(), dbNames);
 	}
 	
 	@Override
@@ -157,8 +167,8 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	throws ServletException  {
 		try {
 			ServletContext sc = this.getServletContext();
-			GlammDbConnectionPool.init(sc.getResource(DB_CONFIG_XML_FILE_NAME).toString());
-		} catch(MalformedURLException e) {
+			ConfigurationManager.init(sc.getResource(SERVER_CONFIG_XML_FILE_NAME).toString());
+		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}

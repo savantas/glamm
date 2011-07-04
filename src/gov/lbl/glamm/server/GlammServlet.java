@@ -2,7 +2,6 @@ package gov.lbl.glamm.server;
 
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -18,8 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 @SuppressWarnings("serial")
 public class GlammServlet extends HttpServlet {
 
-	private static final String DB_CONFIG_XML_FILE_NAME 		= "/config/db_config.xml";
 	private static final String REQUEST_HANDLERS_XML_FILE_NAME	= "/config/request_handlers.xml";
+	private static final String SERVER_CONFIG_XML_FILE_NAME		= "/config/server_config.xml";
+
 
 	private RequestHandlerFactory rhFactory = null;
 
@@ -56,8 +56,8 @@ public class GlammServlet extends HttpServlet {
 		try {
 			ServletContext sc = this.getServletContext();
 			rhFactory = new RequestHandlerFactory(sc.getResource(REQUEST_HANDLERS_XML_FILE_NAME).toString());
-			GlammDbConnectionPool.init(sc.getResource(DB_CONFIG_XML_FILE_NAME).toString());
-		} catch(MalformedURLException e) {
+			ConfigurationManager.init(sc.getResource(SERVER_CONFIG_XML_FILE_NAME).toString());
+		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}

@@ -76,7 +76,7 @@ public class UploadOrganism implements RequestHandler {
 		}
 
 		// if the ids specified are VIMSS ids, return the set of taxonomyIds to which they belong and add them to the organism
-		GeneMetaMolDAOImpl metaMolDao = new GeneMetaMolDAOImpl();
+		GeneMetaMolDAOImpl metaMolDao = new GeneMetaMolDAOImpl(sm);
 		Set<String> molTaxonomyIds = metaMolDao.getTaxonomyIdsForVimssIds(id2Gene.keySet());
 		if(molTaxonomyIds != null)
 			organism.addMolTaxonomyIds(molTaxonomyIds);

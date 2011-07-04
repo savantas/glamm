@@ -25,8 +25,10 @@ public interface GlammService extends RemoteService {
 	public String genRxnPopup(String query, String taxonomyId);
 	public List<Sample.DataType> getAvailableExperimentTypes();
 	public List<Pathway> getDirections(String taxonomyId, Compound cpdSrc, Compound cpdDst, String mapTitle, String algorithm);
+	public String getIsolateHost();
 	public MetabolicNetwork getMapConnectivity(String mapId);
 	public List<? extends GlammPrimitive> getMeasurementsForExperiment(String experimentId, String sampleId, String taxonomyId, String expSource);
+	public String getMetagenomeHost();
 	public List<Reaction> getRxnsForOrganism(String taxonomyId, Set<String> rxnDbNames);
 	public List<Compound> populateCompoundSearch(Set<String> cpdDbNames);
 	public List<Experiment> populateExperiments(String taxonomyId);

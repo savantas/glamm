@@ -3,6 +3,7 @@ package gov.lbl.glamm.server.dao.impl;
 import gov.lbl.glamm.client.model.MNNode;
 import gov.lbl.glamm.client.model.MetabolicNetwork;
 import gov.lbl.glamm.server.GlammDbConnectionPool;
+import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.MetabolicNetworkDAO;
 
 import java.sql.Connection;
@@ -10,6 +11,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class MetabolicNetworkGlammDAOImpl implements MetabolicNetworkDAO {
+	
+	private GlammSession sm;
+	
+	public MetabolicNetworkGlammDAOImpl(final GlammSession sm) {
+		this.sm = sm;
+	}
 	
 	@Override
 	public MetabolicNetwork getNetworkForMapId(String mapId) {
@@ -19,7 +26,7 @@ public class MetabolicNetworkGlammDAOImpl implements MetabolicNetworkDAO {
 
 		try {
 
-			Connection connection = GlammDbConnectionPool.getConnection();
+			Connection connection = GlammDbConnectionPool.getConnection(sm);
 			PreparedStatement ps = connection.prepareStatement(sql);
 
 			ps.setString(1, mapId);

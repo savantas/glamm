@@ -48,7 +48,7 @@ public class GetDirections implements RequestHandler {
 		if(cpdSrcExtId == null || cpdDstExtId == null || mapTitle == null || algorithm == null )
 			return null;
 
-		networkDao = new MetabolicNetworkGlammDAOImpl();
+		networkDao = new MetabolicNetworkGlammDAOImpl(sm);
 
 		MetabolicNetwork network = networkDao.getNetworkForMapId(mapTitle);
 
@@ -57,7 +57,7 @@ public class GetDirections implements RequestHandler {
 		if(taxonomyId != null && algorithm.equals(RetrosynthesisPresenter.View.ALGORITHM_TW_DFS_VALUE)) {
 
 			geneDao = new GeneDAOImpl(sm);
-			rxnDao = new ReactionGlammDAOImpl();
+			rxnDao = new ReactionGlammDAOImpl(sm);
 			organismDao = new OrganismDAOImpl(sm);
 
 			Set<String> dbNames = new HashSet<String>();
@@ -91,7 +91,7 @@ public class GetDirections implements RequestHandler {
 		
 		// convert routes to pathways and add them to content
 		if(routes != null && !routes.isEmpty())
-			return toPathways(routes);
+			return toPathways(sm, routes);
 		return null;
 	}
 
@@ -120,19 +120,19 @@ public class GetDirections implements RequestHandler {
 		}
 		
 		if(Boolean.parseBoolean(asText))
-			handleTextResponse(response, routes);
+			handleTextResponse(response, sm, routes);
 
 
 	}
 
-	private void handleTextResponse(HttpServletResponse response, List<Route> routes) 
+	private void handleTextResponse(HttpServletResponse response, GlammSession sm, List<Route> routes) 
 	throws IOException {
 
 		String content = "";
 
 		// get rxnIds for all routes
 		Set<String> rxnIds = getRxnIdsForRoutes(routes);
-		ReactionDAO rxnDao = new ReactionGlammDAOImpl();
+		ReactionDAO rxnDao = new ReactionGlammDAOImpl(sm);
 		Set<String> dbNames = new HashSet<String>();
 		dbNames.add("LIGAND-RXN");
 		List<Reaction> rxns = rxnDao.getReactions(rxnIds, dbNames);
@@ -160,12 +160,12 @@ public class GetDirections implements RequestHandler {
 		ResponseHandler.asPlainTextAttachment(response, content, HttpServletResponse.SC_OK, "routes.txt");
 	}
 
-	private static List<Pathway> toPathways(List<Route> routes) {
+	private static List<Pathway> toPathways(GlammSession sm, List<Route> routes) {
 		List<Pathway> pathways = new ArrayList<Pathway>();
 
 		// get rxnIds for all routes
 		Set<String> rxnIds = getRxnIdsForRoutes(routes);
-		ReactionDAO rxnDao = new ReactionGlammDAOImpl();
+		ReactionDAO rxnDao = new ReactionGlammDAOImpl(sm);
 		Set<String> dbNames = new HashSet<String>();
 		dbNames.add("LIGAND-RXN");
 		List<Reaction> rxns = rxnDao.getReactions(rxnIds, dbNames);

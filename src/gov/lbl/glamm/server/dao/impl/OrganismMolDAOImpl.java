@@ -19,13 +19,13 @@ import java.util.Map;
 import java.util.Set;
 
 public class OrganismMolDAOImpl implements OrganismDAO {
-	
+
 	private GlammSession sm = null;
-	
+
 	public OrganismMolDAOImpl(GlammSession sm) {
 		this.sm = sm;
 	}
-	
+
 	@Override
 	public List<Organism> getAllOrganisms() {
 		return getAllOrganismsWithDataForType(null);
@@ -38,49 +38,32 @@ public class OrganismMolDAOImpl implements OrganismDAO {
 
 		String sql = "";
 		if(dataType == Sample.DataType.NONE) {
-			if(GlammDbConnectionPool.getDbConfig().isFilterOnAcl())
-				sql = "select distinct(t.taxonomyId), t.name " +
-				"from Taxonomy t " + 
-				"join TaxParentChild tpc on (t.taxonomyId=tpc.childId) " +
-				"join Scaffold s on (s.taxonomyId=t.taxonomyId) " + 
-				"join ACL a on (a.resourceId=s.scaffoldId and a.resourceType='scaffold') " +
-				"where tpc.parentId in (2,2157,2759) and s.isGenomic=1 and s.isActive=1 and s.length >= 1000 " + 
-				"and a.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getMolAclGroupIds()) : "1") + ") and a.requesterType='group' and a.read=1 " +
-				"order by t.name;";
-			else
-				sql = "select distinct(t.taxonomyId), t.name " +
-				"from Taxonomy t " + 
-				"join TaxParentChild tpc on (t.taxonomyId=tpc.childId) " +
-				"join Scaffold s on (s.taxonomyId=t.taxonomyId) " + 
-				"where tpc.parentId in (2,2157,2759) and s.isGenomic=1 and s.isActive=1 and s.length >= 1000 " + 
-				"order by t.name;";
+			sql = "select distinct(t.taxonomyId), t.name " +
+			"from Taxonomy t " + 
+			"join TaxParentChild tpc on (t.taxonomyId=tpc.childId) " +
+			"join Scaffold s on (s.taxonomyId=t.taxonomyId) " + 
+			"join ACL a on (a.resourceId=s.scaffoldId and a.resourceType='scaffold') " +
+			"where tpc.parentId in (2,2157,2759) and s.isGenomic=1 and s.isActive=1 and s.length >= 1000 " + 
+			"and a.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getMolAclGroupIds()) : "1") + ") and a.requesterType='group' and a.read=1 " +
+			"order by t.name;";
 		}
 		else if(dataType != Sample.DataType.SESSION) {
-			if(GlammDbConnectionPool.getDbConfig().isFilterOnAcl())
-				sql = "select distinct(c.taxonomyId), t.name " + 
-				"from microarray.Exp e " +
-				"join microarray.ExpType et on (e.expType=et.expType) " +
-				"join microarray.Chip c on (e.chipId=c.id) " +
-				"join Taxonomy t on (c.taxonomyId=t.taxonomyId) " +
-				"join ACL a on (a.resourceId=e.id AND a.resourceType='uarray') " +
-				"where a.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getMolAclGroupIds()) : "1") + ") and a.requesterType='group' and a.read=1 " +
-				"and et.expType=\"" + dataType.getMolExpType() + "\" " +
-				"order by t.name;";
-			else
-				sql = "select distinct(c.taxonomyId), t.name " + 
-				"from microarray.Exp e " +
-				"join microarray.ExpType et on (e.expType=et.expType) " +
-				"join microarray.Chip c on (e.chipId=c.id) " +
-				"join Taxonomy t on (c.taxonomyId=t.taxonomyId) " +
-				"where et.expType=\"" + dataType.getMolExpType() + "\" " +
-				"order by t.name;";
+			sql = "select distinct(c.taxonomyId), t.name " + 
+			"from microarray.Exp e " +
+			"join microarray.ExpType et on (e.expType=et.expType) " +
+			"join microarray.Chip c on (e.chipId=c.id) " +
+			"join Taxonomy t on (c.taxonomyId=t.taxonomyId) " +
+			"join ACL a on (a.resourceId=e.id AND a.resourceType='uarray') " +
+			"where a.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getMolAclGroupIds()) : "1") + ") and a.requesterType='group' and a.read=1 " +
+			"and et.expType=\"" + dataType.getMolExpType() + "\" " +
+			"order by t.name;";
 		}
 		else 
-			return null;
+			return organisms;
 
 		try {
 
-			Connection connection = GlammDbConnectionPool.getConnection();
+			Connection connection = GlammDbConnectionPool.getConnection(sm);
 			PreparedStatement ps = connection.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 
@@ -111,38 +94,27 @@ public class OrganismMolDAOImpl implements OrganismDAO {
 
 	@Override
 	public Map<String, Set<Organism>> getTransgenicCandidatesForEcNums(Set<String> ecNums) {
-		
+
 		Map<String, Set<Organism>> ecNum2Organisms = null;
 
 		if(ecNums == null || ecNums.isEmpty())
-			return null;
+			return ecNum2Organisms;
 
-		String sql = "";
-		if(GlammDbConnectionPool.getDbConfig().isFilterOnAcl())
-			sql = "select distinct T.taxonomyId, T.name, L2E.ecNum " +
-			"from Taxonomy T " +
-			"join TaxParentChild TPC on (T.taxonomyId=TPC.childId) " +
-			"join Scaffold S on (S.taxonomyId=T.taxonomyId) " +
-			"join Locus2Ec L2E on (L2E.scaffoldId=S.scaffoldId) " +
-			"join ACL A on(A.resourceId=S.ScaffoldId and A.resourceType='scaffold') " +
-			"where TPC.parentId in (2,2157,2759) " +
-			"and S.isGenomic=1 and S.isActive=1 and S.length >= 1000 and " +
-			"and A.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getMolAclGroupIds()) : "1") + ") and A.requesterType='group' and A.read=1 " +
-			"L2E.ecNum in (" + GlammUtils.joinCollection(ecNums) + ") " +
-			"order by T.name;";
-		else
-			sql = "select distinct T.taxonomyId, T.name, L2E.ecNum " +
-			"from Taxonomy T " +
-			"join TaxParentChild TPC on (T.taxonomyId=TPC.childId) " +
-			"join Scaffold S on (S.taxonomyId=T.taxonomyId) " +
-			"join Locus2Ec L2E on (L2E.scaffoldId=S.scaffoldId) " +
-			"where TPC.parentId in (2,2157,2759) " +
-			"and S.isGenomic=1 and S.isActive=1 and S.length >= 1000 and " +
-			"L2E.ecNum in (" + GlammUtils.joinCollection(ecNums) + ") " +
-			"order by T.name;";
+		String sql = "select distinct T.taxonomyId, T.name, L2E.ecNum " +
+		"from Taxonomy T " +
+		"join TaxParentChild TPC on (T.taxonomyId=TPC.childId) " +
+		"join Scaffold S on (S.taxonomyId=T.taxonomyId) " +
+		"join Locus2Ec L2E on (L2E.scaffoldId=S.scaffoldId) " +
+		"join ACL A on (A.resourceId=S.ScaffoldId and A.resourceType='scaffold') " +
+		"where TPC.parentId in (2,2157,2759) " +
+		"and S.isGenomic=1 and S.isActive=1 and S.length >= 1000 " +
+		"and A.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getMolAclGroupIds()) : "1") + ") and A.requesterType='group' and A.read=1 " +
+		"and L2E.ecNum in (" + GlammUtils.joinCollection(ecNums) + ") " +
+		"order by T.name;";
+
 		try {
 
-			Connection connection = GlammDbConnectionPool.getConnection();
+			Connection connection = GlammDbConnectionPool.getConnection(sm);
 			Statement statement = connection.createStatement();
 
 			ResultSet rs = statement.executeQuery(sql);
@@ -176,36 +148,26 @@ public class OrganismMolDAOImpl implements OrganismDAO {
 
 		return ecNum2Organisms;
 	}
-	
+
 	@Override
 	public Organism getOrganismForTaxonomyId(final String taxonomyId) {
 		Organism organism = null;
 
-		String sql = "";
-		
-			if(GlammDbConnectionPool.getDbConfig().isFilterOnAcl())
-				sql = "select distinct(t.name) " +
-				"from Taxonomy t " + 
-				"join Scaffold s on (s.taxonomyId=t.taxonomyId) " + 
-				"join ACL a on (a.resourceId=s.scaffoldId and a.resourceType='scaffold') " +
-				"where t.taxonomyId=? " +
-				"and s.isGenomic=1 and s.isActive=1 and s.length >= 1000 " + 
-				"and a.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getMolAclGroupIds()) : "1") + ") and a.requesterType='group' and a.read=1 " +
-				"order by t.name;";
-			else
-				sql = "select distinct(t.name) " +
-				"from Taxonomy t " + 
-				"join Scaffold s on (s.taxonomyId=t.taxonomyId) " + 
-				"where t.taxonomyId=? and " +
-				"s.isGenomic=1 and s.isActive=1 and s.length >= 1000 " + 
-				"order by t.name;";
-	
+		String sql = "select distinct(t.name) " +
+		"from Taxonomy t " + 
+		"join Scaffold s on (s.taxonomyId=t.taxonomyId) " + 
+		"join ACL a on (a.resourceId=s.scaffoldId and a.resourceType='scaffold') " +
+		"where t.taxonomyId=? " +
+		"and s.isGenomic=1 and s.isActive=1 and s.length >= 1000 " + 
+		"and a.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getMolAclGroupIds()) : "1") + ") and a.requesterType='group' and a.read=1 " +
+		"order by t.name;";
+
 		try {
 
-			Connection connection = GlammDbConnectionPool.getConnection();
+			Connection connection = GlammDbConnectionPool.getConnection(sm);
 			PreparedStatement ps = connection.prepareStatement(sql);
 			ps.setString(1, taxonomyId);
-			
+
 			ResultSet rs = ps.executeQuery();
 
 			if(rs.next()) {

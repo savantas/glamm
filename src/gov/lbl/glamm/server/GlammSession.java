@@ -20,6 +20,7 @@ public class GlammSession {
 
 	//********************************************************************************
 	
+	private static final String MOL_ACL_GROUPID_PUBLIC	= "1";
 	private static final String SESSION_EXPERIMENT		= "Session Experiment ";
 	private static final String SESSION_ORGANISM 		= "Session Organism ";
 	private static final String GLAMM_SESSION 			= "GLAMM_SESSION";
@@ -33,6 +34,7 @@ public class GlammSession {
 	private String 							molAclUserId 			= null;
 	private List<Organism>					organismsWithUserData	= null;
 	private Map<String, List<Route>>		routes					= null;
+	private ServerConfig					serverConfig			= null;
 	private Map<String, List<Experiment>> 	taxonomyId2Experiments 	= null;
 	private Map<String, List<Gene>>			taxonomyId2Genes 		= null;
 	private Map<String, Organism> 			taxonomyId2Organism		= null;
@@ -46,6 +48,7 @@ public class GlammSession {
 			glammSession = (GlammSession) session.getAttribute(GLAMM_SESSION);
 			if(glammSession == null) {
 				glammSession = new GlammSession();
+				glammSession.serverConfig = ConfigurationManager.getServerConfigForServerName(request.getServerName());
 				session.setAttribute(GLAMM_SESSION, glammSession);
 			}
 		}
@@ -57,11 +60,14 @@ public class GlammSession {
 	protected GlammSession() {
 		experimentId2Experiment		= new HashMap<String, Experiment>();
 		measurements				= new HashMap<String, Map<String, Set<Measurement>>>();
+		molAclGroupIds				= new HashSet<String>();
 		organismsWithUserData		= new ArrayList<Organism>();
 		routes						= new HashMap<String, List<Route>>();
 		taxonomyId2Experiments		= new HashMap<String, List<Experiment>>();
 		taxonomyId2Genes 			= new HashMap<String, List<Gene>>();
 		taxonomyId2Organism			= new HashMap<String, Organism>();
+		
+		molAclGroupIds.add(MOL_ACL_GROUPID_PUBLIC);
 	}
 	
 	//********************************************************************************
@@ -219,6 +225,12 @@ public class GlammSession {
 	
 	//********************************************************************************
 
+	public ServerConfig getServerConfig() {
+		return serverConfig;
+	}
+	
+	//********************************************************************************
+
 	public boolean hasExperiments() {
 		return !(experimentId2Experiment == null || experimentId2Experiment.isEmpty());
 	}
@@ -250,8 +262,6 @@ public class GlammSession {
 	//********************************************************************************
 
 	public void addMolAclGroupId(final String molAclGroupId) {
-		if(molAclGroupIds == null)
-			molAclGroupIds = new HashSet<String>();
 		molAclGroupIds.add(molAclGroupId);
 	}
 	
@@ -262,7 +272,6 @@ public class GlammSession {
 	}
 	
 	//********************************************************************************
-
 
 	private String composeDirectionsKey(String taxonomyId, String cpdSrcId, String cpdDstId, String algorithm, String mapTitle) {
 		return taxonomyId + "_" + cpdSrcId + "_" + cpdDstId + "_" + algorithm + "_" + mapTitle;

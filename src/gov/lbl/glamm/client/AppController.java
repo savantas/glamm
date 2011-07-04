@@ -73,59 +73,58 @@ public class AppController {
 
 	private static final String MOL_COOKIE_USERID = "userId";
 
-	private static AppController instance = null;
+	private static AppController instance;
 
-	private GlammServiceAsync rpc = null;
-	private SimpleEventBus eventBus = null;
+	private GlammServiceAsync rpc;
+	private SimpleEventBus eventBus;
 	private AbsolutePanel 	mainPanel 	= null;
 
-	private AnnotatedMapData mapData = null;
+	private AnnotatedMapData mapData;
 
-	private ImagePopupPresenter citationsPresenter = null;
-	private ImagePopupView citationsView = null;
+	private ImagePopupPresenter citationsPresenter;
+	private ImagePopupView citationsView;
 
-	private CpdDisambiguationPresenter cpdDisambiguationPresenter = null;
-	private CpdDisambiguationView cpdDisambiguationView = null;
+	private CpdDisambiguationPresenter cpdDisambiguationPresenter;
+	private CpdDisambiguationView cpdDisambiguationView;
 
-	private ExperimentPresenter experimentPresenter = null;
-	private ExperimentView experimentView = null;
+	private ExperimentPresenter experimentPresenter;
+	private ExperimentView experimentView;
 
-	private ExperimentUploadPresenter experimentUploadPresenter = null;
-	private ExperimentUploadView experimentUploadView = null;
+	private ExperimentUploadPresenter experimentUploadPresenter;
+	private ExperimentUploadView experimentUploadView;
 
-	private ImagePopupPresenter helpPresenter = null;
-	private ImagePopupView helpView = null;
+	private ImagePopupPresenter helpPresenter;
+	private ImagePopupView helpView;
 
-	private InterpolatorPresenter interpolatorPresenter = null;
-	private InterpolatorView interpolatorView = null;
+	private InterpolatorPresenter interpolatorPresenter;
+	private InterpolatorView interpolatorView;
 
-	private LoadingPresenter loadingPresenter = null;
-	private LoadingView loadingView = null;
+	private LoadingPresenter loadingPresenter;
+	private LoadingView loadingView;
 
-	private MapElementPresenter mapElementPresenter = null;
-	private MapElementView mapElementView = null;
+	private MapElementPresenter mapElementPresenter;
+	private MapElementView mapElementView;
 
-	private AnnotatedMapPresenter mapPresenter = null;
-	private AnnotatedMapView mapView = null;
+	private AnnotatedMapPresenter mapPresenter;
+	private AnnotatedMapView mapView;
 
-	private MiniMapPresenter miniMapPresenter = null;
-	private MiniMapView miniMapView = null;
+	private MiniMapPresenter miniMapPresenter;
+	private MiniMapView miniMapView;
 
-	private OrganismPresenter organismPresenter = null;
-	private OrganismView organismView = null;
+	private OrganismPresenter organismPresenter;
+	private OrganismView organismView;
 
 	@SuppressWarnings("unused")
-	private OrganismUploadPresenter organismUploadPresenter = null;
-	private OrganismUploadView organismUploadView = null;
+	private OrganismUploadPresenter organismUploadPresenter;
+	private OrganismUploadView organismUploadView;
 
-	private PanZoomControlPresenter panZoomPresenter = null;
-	private PanZoomControlView panZoomView = null;
+	private PanZoomControlPresenter panZoomPresenter;
+	private PanZoomControlView panZoomView;
 
-	private RetrosynthesisPresenter retrosynthesisPresenter = null;
-	private RetrosynthesisView retrosynthesisView = null;
-
+	private RetrosynthesisPresenter retrosynthesisPresenter;
+	private RetrosynthesisView retrosynthesisView;
+	
 	private LayoutPanel layout = new LayoutPanel() {
-
 
 		@Override
 		public void onResize() {
@@ -226,14 +225,14 @@ public class AppController {
 			loadWidgets(rlp);
 	}
 
-	public void loadWidgets(RootLayoutPanel rlp) {
+	private void loadWidgets(RootLayoutPanel rlp) {
 
 		rlp.add(layout);
 		rlp.setWidgetTopBottom(layout, 0, Unit.PX, 0, Unit.PX);
 
 		mainPanel.setStylePrimaryName("glamm-global-map");
 		layout.add(mainPanel);
-
+		
 		loadMapPanel();
 		loadCpdDisambiguation();
 		loadInterpolator();

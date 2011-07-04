@@ -18,7 +18,7 @@ import java.util.Set;
 
 public class GenRxnPopup {
 
-	public static String genRxnPopup(GlammSession sm, Set<String> rxnIds, Set<String> dbNames, String taxonomyId) {
+	public static String genRxnPopup(final GlammSession sm, final Set<String> rxnIds, final Set<String> dbNames, final String taxonomyId) {
 
 		String html = "<html>No reactions found.</html>";
 		Map<String, List<Reaction>>	def2Rxns	= null;
@@ -27,7 +27,7 @@ public class GenRxnPopup {
 		if(rxnIds == null || rxnIds.isEmpty() || dbNames == null)
 			return html;
 
-		ReactionDAO rxnDao = new ReactionGlammDAOImpl();
+		ReactionDAO rxnDao = new ReactionGlammDAOImpl(sm);
 		List<Reaction> rxns = rxnDao.getReactions(rxnIds, dbNames);
 		Set<String> ecNums = new HashSet<String>();
 
@@ -153,7 +153,10 @@ public class GenRxnPopup {
 
 	//********************************************************************************
 
-	private static String genEcNumLink(GlammSession sm, String ecNum, String taxonomyId, List<Gene> genes) {
+	private static String genEcNumLink(final GlammSession sm, 
+			final String ecNum, 
+			final String taxonomyId, 
+			final List<Gene> genes) {
 
 		String link = "<b>No EC</b>";
 
@@ -161,9 +164,9 @@ public class GenRxnPopup {
 		if(ecNum != null && !ecNum.equals("NULL")) {
 			if(genes != null && !genes.isEmpty()) {
 				if(sm != null && sm.isSessionOrganism(taxonomyId))
-					link = genEcNumLinkForSessionOrganism(ecNum, sm.getOrganismForTaxonomyId(taxonomyId));
+					link = genEcNumLinkForSessionOrganism(sm, ecNum, sm.getOrganismForTaxonomyId(taxonomyId));
 				else
-					link = genEcNumLinkForMolOrganism(ecNum, taxonomyId, genes);
+					link = genEcNumLinkForMolOrganism(sm, ecNum, taxonomyId, genes);
 			}
 			else {
 				link = "<b>" + ecNum + "</b>"; 
@@ -175,12 +178,18 @@ public class GenRxnPopup {
 
 	//********************************************************************************
 	
-	private static String genEcNumLinkForMolOrganism(String ecNum, String taxonomyId, List<Gene> genes) {
+	private static String genEcNumLinkForMolOrganism(final GlammSession sm, 
+			final String ecNum, 
+			final String taxonomyId, 
+			final List<Gene> genes) {
 		String link = "<b>" + ecNum + "</b>";
 		if(genes != null && !genes.isEmpty()) {
 			link = "<a href=\"http://";
-			link += Long.parseLong(taxonomyId) >= Organism.MIN_METAGENOME_TAXID ? "meta." : "";
-			link += "microbesonline.org/cgi-bin/fetchEC2.cgi?ec=" + ecNum;
+			if(sm.getServerConfig().hasMetagenomeHost() && Long.parseLong(taxonomyId) >= Organism.MIN_METAGENOME_TAXID)
+				link += sm.getServerConfig().getMetagenomeHost();
+			else
+				link += sm.getServerConfig().getIsolateHost();
+			link += "/cgi-bin/fetchEC2.cgi?ec=" + ecNum;
 			link += taxonomyId != null ? "&taxId=" + taxonomyId : "";
 			link += "\" target=\"_new\">";
 			link += "<b>" + ecNum + "</b></a>";
@@ -188,7 +197,9 @@ public class GenRxnPopup {
 		return link;
 	}
 	
-	private static String genEcNumLinkForSessionOrganism(String ecNum, Organism organism) {
+	private static String genEcNumLinkForSessionOrganism(final GlammSession sm, 
+			final String ecNum, 
+			final Organism organism) {
 		String link = "<b>" + ecNum + "</b>";
 		
 			// get set of all molTaxonomyIds
@@ -197,8 +208,8 @@ public class GenRxnPopup {
 			if(metaMolTaxonomyIds == null || metaMolTaxonomyIds.isEmpty())
 				return link;
 			
-			
-			link = "<a href=\"http://meta.microbesonline.org/cgi-bin/fetchEC2.cgi?ec=" + ecNum;
+			String host = sm.getServerConfig().hasMetagenomeHost() ? sm.getServerConfig().getMetagenomeHost() : sm.getServerConfig().getIsolateHost();
+			link = "<a href=\"http://" + host + "/cgi-bin/fetchEC2.cgi?ec=" + ecNum;
 			for(String taxonomyId : metaMolTaxonomyIds) 
 				link += taxonomyId != null ? "&taxId=" + taxonomyId : "";
 			link += "\" target=\"_new\">";
