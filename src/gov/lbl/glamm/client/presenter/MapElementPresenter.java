@@ -59,18 +59,23 @@ public class MapElementPresenter {
 			}
 		};
 		
+		final String loadingMsg = "<html>Loading...</html>";
+		
 		if(elementClass.equals(AnnotatedMapData.CLASS_CPD)) {
 			String taxonomyId = (organism == null ? null : organism.getTaxonomyId());
+			view.showPopup(loadingMsg, left, top);
 			rpc.genCpdPopup(query, taxonomyId, callback);
 		}
 		else if(elementClass.equals(AnnotatedMapData.CLASS_RXN)) {
 			String taxonomyId = (organism == null ? null : organism.getTaxonomyId());
+			view.showPopup(loadingMsg, left, top);
 			rpc.genRxnPopup(query, taxonomyId, callback);
 		}
 		else if(elementClass.equals(AnnotatedMapData.CLASS_MAP)) {
 			String taxonomyId = (organism == null ? null : organism.getTaxonomyId());
 			String experimentId = (sample == null ? null : sample.getExperimentId());
 			String sampleId = (sample == null ? null : sample.getSampleId());
+			view.showPopup(loadingMsg, left, top);
 			rpc.genKeggPwyPopup(query, taxonomyId, experimentId, sampleId, callback);
 		}
 		

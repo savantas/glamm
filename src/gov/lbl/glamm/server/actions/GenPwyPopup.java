@@ -7,12 +7,7 @@ import gov.lbl.glamm.client.model.Sample;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.PathwayDAO;
 import gov.lbl.glamm.server.dao.impl.KeggPathwayDAOImpl;
-
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.URL;
-
-import javax.imageio.ImageIO;
+import gov.lbl.glamm.server.util.GlammUtils;
 
 public class GenPwyPopup {
 
@@ -109,42 +104,9 @@ public class GenPwyPopup {
 	//********************************************************************************
 
 	private static String genImgLink(final GlammSession sm, final Pathway pwy) {
-		String imgLink = "";
-		String molImgLink = "http://" + sm.getServerConfig().getIsolateHost() + "/kegg/map" + pwy.getMapId() + ".png";
-
-		try {
-			URL molImgUrl = new URL(molImgLink); 
-			BufferedImage img = ImageIO.read(molImgUrl);
-			if(img != null) {
-
-				final int MAX_DIM = 250;
-
-				int imgWidth 	= img.getWidth();
-				int imgHeight 	= img.getHeight();
-				int width 		= imgWidth;
-				int height 		= imgHeight;
-
-
-				if(imgWidth > MAX_DIM || imgHeight > MAX_DIM) {
-					if(imgWidth < imgHeight) {
-						// set height to MAX_DIM, scale width
-						height = MAX_DIM;
-						width = (int) (height * (float) imgWidth / (float) imgHeight);
-					}
-					else {
-						// set width to MAX_DIM, scale height
-						width = MAX_DIM;
-						height = (int) (width * (float) imgHeight / (float) imgWidth);
-					}
-				}
-
-				imgLink = "<br><img width=" + width + " height=" + height + " src=\"" + molImgLink + "\"/>";
-			}
-		} catch(IOException e) {
-			e.printStackTrace();
-		}
-
-		return imgLink;
+		final int MAX_DIM = 250;
+		String imgUrlString = "http://" + sm.getServerConfig().getIsolateHost() + "/kegg/map" + pwy.getMapId() + ".png";
+		return GlammUtils.genConstrainedImageLink(imgUrlString, MAX_DIM);
 	}
 
 	//********************************************************************************
