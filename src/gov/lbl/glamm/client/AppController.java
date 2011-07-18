@@ -6,6 +6,8 @@ import gov.lbl.glamm.client.events.CpdSrcDisambiguatedEvent;
 import gov.lbl.glamm.client.events.CpdSrcPickedEvent;
 import gov.lbl.glamm.client.events.ExperimentUploadEvent;
 import gov.lbl.glamm.client.events.LoadingEvent;
+import gov.lbl.glamm.client.events.LogInEvent;
+import gov.lbl.glamm.client.events.LogOutEvent;
 import gov.lbl.glamm.client.events.MapElementClickEvent;
 import gov.lbl.glamm.client.events.MapUpdateEvent;
 import gov.lbl.glamm.client.events.OrganismPickedEvent;
@@ -26,6 +28,7 @@ import gov.lbl.glamm.client.presenter.ExperimentUploadPresenter;
 import gov.lbl.glamm.client.presenter.ImagePopupPresenter;
 import gov.lbl.glamm.client.presenter.InterpolatorPresenter;
 import gov.lbl.glamm.client.presenter.LoadingPresenter;
+import gov.lbl.glamm.client.presenter.LoginPresenter;
 import gov.lbl.glamm.client.presenter.MapElementPresenter;
 import gov.lbl.glamm.client.presenter.MiniMapPresenter;
 import gov.lbl.glamm.client.presenter.OrganismPresenter;
@@ -42,6 +45,7 @@ import gov.lbl.glamm.client.view.ExperimentView;
 import gov.lbl.glamm.client.view.ImagePopupView;
 import gov.lbl.glamm.client.view.InterpolatorView;
 import gov.lbl.glamm.client.view.LoadingView;
+import gov.lbl.glamm.client.view.LoginView;
 import gov.lbl.glamm.client.view.MapElementView;
 import gov.lbl.glamm.client.view.MiniMapView;
 import gov.lbl.glamm.client.view.OrganismUploadView;
@@ -54,10 +58,8 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.http.client.UrlBuilder;
-import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
@@ -71,7 +73,7 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
 
 public class AppController {
 
-	private static final String MOL_COOKIE_USERID = "userId";
+
 
 	private static AppController instance;
 
@@ -102,6 +104,10 @@ public class AppController {
 	private LoadingPresenter loadingPresenter;
 	private LoadingView loadingView;
 
+	@SuppressWarnings("unused")
+	private LoginPresenter loginPresenter;
+	private LoginView loginView;
+
 	private MapElementPresenter mapElementPresenter;
 	private MapElementView mapElementView;
 
@@ -123,7 +129,7 @@ public class AppController {
 
 	private RetrosynthesisPresenter retrosynthesisPresenter;
 	private RetrosynthesisView retrosynthesisView;
-	
+
 	private LayoutPanel layout = new LayoutPanel() {
 
 		@Override
@@ -158,6 +164,9 @@ public class AppController {
 
 		loadingView = new LoadingView();
 		loadingPresenter = new LoadingPresenter(loadingView);
+
+		loginView = new LoginView();
+		loginPresenter = new LoginPresenter(rpc, loginView, eventBus);
 
 		mapElementView = new MapElementView();
 		mapElementPresenter = new MapElementPresenter(rpc, mapElementView);
@@ -207,32 +216,12 @@ public class AppController {
 	 * @param rlp The RootLayoutPanel
 	 */
 	public void start(final RootLayoutPanel rlp) {
-		if(Cookies.isCookieEnabled()) {
-			String molAclUserId = Cookies.getCookie(MOL_COOKIE_USERID);
-			rpc.updateMolAclUserId(molAclUserId, new AsyncCallback<Void>() {
-				@Override
-				public void onFailure(Throwable caught) {
-					loadWidgets(rlp); // doesn't matter if this fails or not
-				}
-
-				@Override
-				public void onSuccess(Void result) {
-					loadWidgets(rlp);
-				}
-			});
-		}
-		else
-			loadWidgets(rlp);
-	}
-
-	private void loadWidgets(RootLayoutPanel rlp) {
-
 		rlp.add(layout);
 		rlp.setWidgetTopBottom(layout, 0, Unit.PX, 0, Unit.PX);
 
 		mainPanel.setStylePrimaryName("glamm-global-map");
 		layout.add(mainPanel);
-		
+
 		loadMapPanel();
 		loadCpdDisambiguation();
 		loadInterpolator();
@@ -247,6 +236,7 @@ public class AppController {
 		loadCitations();
 		loadHelp();
 		loadRetrosynthesis();
+		loadLogin(); // always load last
 
 		onResize();
 
@@ -257,6 +247,7 @@ public class AppController {
 			}
 		});
 	}
+
 
 	/**
 	 * Computes widget positions on window resize
@@ -270,9 +261,10 @@ public class AppController {
 				mainPanel.setWidgetPosition(experimentView, retrosynthesisView.getOffsetWidth() + organismView.getOffsetWidth() + 10, 0);
 				mainPanel.setWidgetPosition(miniMapView, 0, Window.getClientHeight() - miniMapView.getOffsetHeight());
 				mainPanel.setWidgetPosition(panZoomView, miniMapView.getOffsetWidth() + 1, Window.getClientHeight() - panZoomView.getOffsetHeight());
+				mainPanel.setWidgetPosition(loginView, Window.getClientWidth() - loginView.getOffsetWidth(), 0);
 				mainPanel.setWidgetPosition(citationsView, Window.getClientWidth() - citationsView.getOffsetWidth(), Window.getClientHeight() - citationsView.getOffsetHeight());
 				mainPanel.setWidgetPosition(interpolatorView, Window.getClientWidth() - interpolatorView.getOffsetWidth(), Window.getClientHeight() - citationsView.getOffsetHeight() - interpolatorView.getOffsetHeight() - 5);
-				mainPanel.setWidgetPosition(helpView, Window.getClientWidth() - helpView.getOffsetWidth(), 0);
+				mainPanel.setWidgetPosition(helpView, Window.getClientWidth() - helpView.getOffsetWidth(), loginView.getOffsetHeight() + 5);
 			}
 		});		
 	}
@@ -458,6 +450,20 @@ public class AppController {
 			}
 		});
 
+		eventBus.addHandler(LogInEvent.TYPE, new LogInEvent.Handler() {
+			@Override
+			public void onLogIn(LogInEvent event) {
+				organismPresenter.updateDataTypeChoices();
+			}
+		});
+
+		eventBus.addHandler(LogOutEvent.TYPE, new LogOutEvent.Handler() {
+			@Override
+			public void onLogOut(LogOutEvent event) {
+				organismPresenter.updateDataTypeChoices();
+			}
+		});
+
 	}
 
 	/**
@@ -490,6 +496,20 @@ public class AppController {
 			@Override
 			public void onPicked(RoutePickedEvent event) {
 				experimentPresenter.clearSuggestBox();
+			}
+		});
+
+		eventBus.addHandler(LogInEvent.TYPE, new LogInEvent.Handler() {
+			@Override
+			public void onLogIn(LogInEvent event) {
+				experimentPresenter.populate();
+			}
+		});
+
+		eventBus.addHandler(LogOutEvent.TYPE, new LogOutEvent.Handler() {
+			@Override
+			public void onLogOut(LogOutEvent event) {
+				experimentPresenter.populate();
 			}
 		});
 
@@ -553,6 +573,10 @@ public class AppController {
 				}
 			}
 		});
+	}
+
+	private void loadLogin() {
+		mainPanel.add(loginView, 0, 0);	
 	}
 
 	/**

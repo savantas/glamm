@@ -45,7 +45,7 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 			"from microarray.Exp e " +
 			"join microarray.ExpType et on (et.expType=e.expType) " +
 			"join genomics_test.ACL A on (A.resourceId=e.id and A.resourceType='uarray') " +
-			"where A.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getMolAclGroupIds()) : "1") + ") and A.requesterType='group' and A.read=1 " +
+			"where A.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getUser().getGroupIds()) : "1") + ") and A.requesterType='group' and A.read=1 " +
 			"order by et.expType;";
 
 		try {
@@ -86,7 +86,7 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 			"join microarray.Chip C on (E.chipId=C.id) " +
 			"join genomics_test.ACL A on (A.resourceId=E.id and A.resourceType='uarray') " +
 			"join microarray.Replicate R on (E.id=R.expId) " +
-			"where A.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getMolAclGroupIds()) : "1") + ") and A.requesterType='group' and A.read=1 " +
+			"where A.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getUser().getGroupIds()) : "1") + ") and A.requesterType='group' and A.read=1 " +
 			"and R.expId=? and R.setId=? and C.taxonomyId=?;";
 
 		try {
@@ -146,7 +146,7 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 			"join microarray.Chip C on (E.chipId=C.id) " +
 			"join genomics_test.ACL A on (A.resourceId=E.id and A.resourceType='uarray') " +
 			"join microarray.Replicate R on (E.id=R.expId) " +
-			"where A.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getMolAclGroupIds()) : "1") + ") and A.requesterType='group' and A.read=1 " +
+			"where A.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getUser().getGroupIds()) : "1") + ") and A.requesterType='group' and A.read=1 " +
 			"and C.taxonomyId=?;";
 	
 		try {
@@ -214,7 +214,7 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 			"join microarray.Chip C on (E.chipId=C.id) " +
 			"join genomics_test.ACL A on (A.resourceId=E.id and A.resourceType='uarray') " +
 			"join microarray.Replicate R on (E.id=R.expId) " +
-			"where A.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getMolAclGroupIds()) : "1") + ") and A.requesterType='group' and A.read=1 " +
+			"where A.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getUser().getGroupIds()) : "1") + ") and A.requesterType='group' and A.read=1 " +
 			"and C.taxonomyId=?" +
 			"group by R.expId, R.setId;";
 

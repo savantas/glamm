@@ -3,8 +3,8 @@ package gov.lbl.glamm.server.actions.requesthandlers;
 import gov.lbl.glamm.client.model.Gene;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.presenter.OrganismUploadPresenter;
-import gov.lbl.glamm.server.FileUploadHandler;
-import gov.lbl.glamm.server.FileUploadHandler.LineParser;
+import gov.lbl.glamm.server.FormRequestHandler;
+import gov.lbl.glamm.server.FormRequestHandler.LineParser;
 import gov.lbl.glamm.server.RequestHandler;
 import gov.lbl.glamm.server.ResponseHandler;
 import gov.lbl.glamm.server.GlammSession;
@@ -34,7 +34,7 @@ public class UploadOrganism implements RequestHandler {
 		final Map<String, Gene> id2Gene = new HashMap<String, Gene>();
 
 		// set up the file upload handler- simultaneously building the list of genes
-		FileUploadHandler fuh = new FileUploadHandler(request, new LineParser() {
+		FormRequestHandler fuh = new FormRequestHandler(request, new LineParser() {
 			public String parseLine(String line) {
 
 				final int MIN_TOKENS	= 2;

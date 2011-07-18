@@ -16,7 +16,7 @@ import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
-public class FileUploadHandler {
+public class FormRequestHandler {
 
 	//********************************************************************************
 
@@ -30,6 +30,7 @@ public class FileUploadHandler {
 
 	protected static final String FILE_PARSE_WARNING_INVALID_FORM_DATA		= "Invalid form data - please resubmit.";
 	protected static final String FILE_PARSE_WARNING_COULD_NOT_OPEN			= "Could not open file - please resubmit.";
+	protected static final String FILE_PARSE_WARNING_NO_PARSER				= "No line parser specified.";
 
 	//********************************************************************************
 
@@ -38,7 +39,7 @@ public class FileUploadHandler {
 
 	//********************************************************************************
 
-	public FileUploadHandler(HttpServletRequest request, LineParser lineParser) {
+	public FormRequestHandler(HttpServletRequest request, LineParser lineParser) {
 		processRequest(request, lineParser);
 	}
 
@@ -107,7 +108,10 @@ public class FileUploadHandler {
 					processFormField(item);
 				} 
 				else {
-					processUploadedFile(item, lineParser);
+					if(lineParser != null)
+						processUploadedFile(item, lineParser);
+					else
+						logError(FILE_PARSE_WARNING_NO_PARSER);
 				}
 			}
 

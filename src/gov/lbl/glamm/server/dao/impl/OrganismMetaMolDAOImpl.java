@@ -45,7 +45,7 @@ public class OrganismMetaMolDAOImpl implements OrganismDAO {
 		"join meta2010jul.ACL A on (A.resourceId=s.scaffoldId and A.resourceType='scaffold') " +
 		"where t.taxonomyId >= 1000000000000 " +
 		"and s.isGenomic=1 and s.isActive=1 and s.length >= 1000 " +
-		"and A.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getMolAclGroupIds()) : "1") + ") and A.requesterType='group' and A.read=1 " +
+		"and A.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getUser().getGroupIds()) : "1") + ") and A.requesterType='group' and A.read=1 " +
 		"order by t.name;";
 		
 		try {
@@ -92,7 +92,7 @@ public class OrganismMetaMolDAOImpl implements OrganismDAO {
 			"join meta2010jul.Locus2Ec L2E on (L2E.scaffoldId=S.scaffoldId) " +
 			"join meta2010jul.ACL A on(A.resourceId=S.ScaffoldId and A.resourceType='scaffold') " +
 			"where S.isGenomic=1 and S.isActive=1 and S.length >= 1000 " +
-			"and A.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getMolAclGroupIds()) : "1") + ") and A.requesterType='group' and A.read=1 " +
+			"and A.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getUser().getGroupIds()) : "1") + ") and A.requesterType='group' and A.read=1 " +
 			"and L2E.ecNum in (" + GlammUtils.joinCollection(ecNums) + ") " +
 			"order by T.name;";
 		

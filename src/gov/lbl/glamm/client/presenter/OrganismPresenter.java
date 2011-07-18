@@ -79,7 +79,10 @@ public class OrganismPresenter {
 		name2Organism	= new HashMap<String, Organism>();
 		dataType		= Sample.DataType.NONE;
 
-		updateDataTypeChoices();
+		// set up data type choices for guest users
+		addDataTypeChoice(Sample.DataType.NONE, true);
+		addDataTypeChoice(Sample.DataType.RNA, false);
+		addDataTypeChoice(Sample.DataType.FITNESS, false);
 		
 		setOrganism(Organism.globalMap(), true);
 
@@ -104,6 +107,7 @@ public class OrganismPresenter {
 				for(Sample.DataType dataType : result) {
 					addDataTypeChoice(dataType, false);
 				}
+				populate();
 			}
 		});
 	}

@@ -4,6 +4,7 @@ import gov.lbl.glamm.client.model.Compound;
 import gov.lbl.glamm.client.model.Experiment;
 import gov.lbl.glamm.client.model.Gene;
 import gov.lbl.glamm.client.model.GlammPrimitive;
+import gov.lbl.glamm.client.model.GlammUser;
 import gov.lbl.glamm.client.model.MetabolicNetwork;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Pathway;
@@ -18,6 +19,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 @RemoteServiceRelativePath("rpc")
 public interface GlammService extends RemoteService {
+	public GlammUser authenticateUser(final String userId, final String auth);
 	public String genCpdPopup(Compound compound, String taxonomyId);
 	public String genCpdPopup(String extId, String extIdName, String taxonomyId);
 	public String genCpdPopup(String query, String taxonomyId);
@@ -30,11 +32,14 @@ public interface GlammService extends RemoteService {
 	public List<? extends GlammPrimitive> getMeasurementsForExperiment(String experimentId, String sampleId, String taxonomyId, String expSource);
 	public String getMetagenomeHost();
 	public List<Reaction> getRxnsForOrganism(String taxonomyId, Set<String> rxnDbNames);
+	public GlammUser getLoggedInUser();
+	public void logOutUser();
 	public List<Compound> populateCompoundSearch(Set<String> cpdDbNames);
 	public List<Experiment> populateExperiments(String taxonomyId);
 	public List<Gene> populateLocusSearch(String taxonomyId);
 	public List<Reaction> populateReactionSearch(Set<String> rxnDbNames);
 	public List<Organism> populateOrganisms(Sample.DataType dataType);
 	public List<Sample> populateSamples(String taxonomyId);
-	public Void updateMolAclUserId(final String molAclUserId);
+	
+//	public GlammUser updateGlammUser(final String userId, final String auth);
 }

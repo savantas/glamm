@@ -4,12 +4,14 @@ import gov.lbl.glamm.client.model.Compound;
 import gov.lbl.glamm.client.model.Experiment;
 import gov.lbl.glamm.client.model.Gene;
 import gov.lbl.glamm.client.model.GlammPrimitive;
+import gov.lbl.glamm.client.model.GlammUser;
 import gov.lbl.glamm.client.model.MetabolicNetwork;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Pathway;
 import gov.lbl.glamm.client.model.Reaction;
 import gov.lbl.glamm.client.model.Sample;
 import gov.lbl.glamm.client.rpc.GlammService;
+import gov.lbl.glamm.server.actions.AuthenticateUser;
 import gov.lbl.glamm.server.actions.GenCpdPopup;
 import gov.lbl.glamm.server.actions.GenPwyPopup;
 import gov.lbl.glamm.server.actions.GenRxnPopup;
@@ -23,7 +25,6 @@ import gov.lbl.glamm.server.actions.PopulateLocusSearch;
 import gov.lbl.glamm.server.actions.PopulateOrganisms;
 import gov.lbl.glamm.server.actions.PopulateReactionSearch;
 import gov.lbl.glamm.server.actions.PopulateSamples;
-import gov.lbl.glamm.server.actions.UpdateMolAclUserId;
 import gov.lbl.glamm.server.actions.requesthandlers.GetDirections;
 
 import java.util.List;
@@ -53,6 +54,16 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	private GlammSession getGlammSession() {
 		HttpServletRequest request = this.getThreadLocalRequest();
 		return GlammSession.getGlammSession(request);
+	}
+	
+	@Override
+	public GlammUser authenticateUser(final String userId, final String auth) {
+		HttpServletRequest request = this.getThreadLocalRequest();
+		String remoteAddr = request.getRemoteAddr();
+		GlammSession sm = getGlammSession();
+		GlammUser user = AuthenticateUser.authenticateUser(sm, userId, auth, remoteAddr);
+		sm.setUser(user);
+		return user;
 	}
 	
 	@Override
@@ -124,6 +135,16 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	}
 	
 	@Override
+	public GlammUser getLoggedInUser() {
+		return getGlammSession().getUser();
+	}
+	
+	@Override
+	public void logOutUser() {
+		getGlammSession().setUser(GlammUser.guestUser());
+	}
+	
+	@Override
 	public List<Compound> populateCompoundSearch(Set<String> dbNames) {
 		return PopulateCompoundSearch.populateCompoundSearch(getGlammSession(), dbNames);
 	}
@@ -151,12 +172,6 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	@Override
 	public List<Sample> populateSamples(String taxonomyId) {
 		return PopulateSamples.populateSamples(getGlammSession(), taxonomyId);
-	}
-	
-	@Override
-	public Void updateMolAclUserId(final String molAclUserId) {
-		UpdateMolAclUserId.updateMolAclUserId(getGlammSession(), molAclUserId);
-		return null;
 	}
 	
 	/**

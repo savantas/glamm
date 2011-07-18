@@ -44,7 +44,7 @@ public class OrganismMolDAOImpl implements OrganismDAO {
 			"join Scaffold s on (s.taxonomyId=t.taxonomyId) " + 
 			"join ACL a on (a.resourceId=s.scaffoldId and a.resourceType='scaffold') " +
 			"where tpc.parentId in (2,2157,2759) and s.isGenomic=1 and s.isActive=1 and s.length >= 1000 " + 
-			"and a.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getMolAclGroupIds()) : "1") + ") and a.requesterType='group' and a.read=1 " +
+			"and a.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getUser().getGroupIds()) : "1") + ") and a.requesterType='group' and a.read=1 " +
 			"order by t.name;";
 		}
 		else if(dataType != Sample.DataType.SESSION) {
@@ -54,7 +54,7 @@ public class OrganismMolDAOImpl implements OrganismDAO {
 			"join microarray.Chip c on (e.chipId=c.id) " +
 			"join Taxonomy t on (c.taxonomyId=t.taxonomyId) " +
 			"join ACL a on (a.resourceId=e.id AND a.resourceType='uarray') " +
-			"where a.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getMolAclGroupIds()) : "1") + ") and a.requesterType='group' and a.read=1 " +
+			"where a.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getUser().getGroupIds()) : "1") + ") and a.requesterType='group' and a.read=1 " +
 			"and et.expType=\"" + dataType.getMolExpType() + "\" " +
 			"order by t.name;";
 		}
@@ -108,7 +108,7 @@ public class OrganismMolDAOImpl implements OrganismDAO {
 		"join ACL A on (A.resourceId=S.ScaffoldId and A.resourceType='scaffold') " +
 		"where TPC.parentId in (2,2157,2759) " +
 		"and S.isGenomic=1 and S.isActive=1 and S.length >= 1000 " +
-		"and A.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getMolAclGroupIds()) : "1") + ") and A.requesterType='group' and A.read=1 " +
+		"and A.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getUser().getGroupIds()) : "1") + ") and A.requesterType='group' and A.read=1 " +
 		"and L2E.ecNum in (" + GlammUtils.joinCollection(ecNums) + ") " +
 		"order by T.name;";
 
@@ -159,7 +159,7 @@ public class OrganismMolDAOImpl implements OrganismDAO {
 		"join ACL a on (a.resourceId=s.scaffoldId and a.resourceType='scaffold') " +
 		"where t.taxonomyId=? " +
 		"and s.isGenomic=1 and s.isActive=1 and s.length >= 1000 " + 
-		"and a.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getMolAclGroupIds()) : "1") + ") and a.requesterType='group' and a.read=1 " +
+		"and a.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getUser().getGroupIds()) : "1") + ") and a.requesterType='group' and a.read=1 " +
 		"order by t.name;";
 
 		try {
