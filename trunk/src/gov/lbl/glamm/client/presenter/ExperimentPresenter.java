@@ -387,7 +387,7 @@ public class ExperimentPresenter {
 		view.getExperimentSuggestBox().setText("");
 	}
 
-	private void populate() {
+	public void populate() {
 		clear();
 
 		if(organism == null || organism.isGlobalMap())

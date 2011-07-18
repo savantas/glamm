@@ -5,8 +5,8 @@ import gov.lbl.glamm.client.model.Measurement;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Sample;
 import gov.lbl.glamm.client.presenter.ExperimentUploadPresenter;
-import gov.lbl.glamm.server.FileUploadHandler;
-import gov.lbl.glamm.server.FileUploadHandler.LineParser;
+import gov.lbl.glamm.server.FormRequestHandler;
+import gov.lbl.glamm.server.FormRequestHandler.LineParser;
 import gov.lbl.glamm.server.RequestHandler;
 import gov.lbl.glamm.server.ResponseHandler;
 import gov.lbl.glamm.server.GlammSession;
@@ -40,7 +40,7 @@ public class UploadExperiment implements RequestHandler {
 		final String sampleId	= "1";
 
 		// set up the file upload handler- simultaneously building the measurement hash
-		FileUploadHandler fuh = new FileUploadHandler(request, new LineParser() {
+		FormRequestHandler fuh = new FormRequestHandler(request, new LineParser() {
 			public String parseLine(String line) {
 
 				final int MIN_TOKENS		= 2;

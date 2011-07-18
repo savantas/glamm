@@ -2,13 +2,13 @@ package gov.lbl.glamm.server;
 
 import gov.lbl.glamm.client.model.Experiment;
 import gov.lbl.glamm.client.model.Gene;
+import gov.lbl.glamm.client.model.GlammUser;
 import gov.lbl.glamm.client.model.Measurement;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.server.retrosynthesis.Route;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,24 +20,23 @@ public class GlammSession {
 
 	//********************************************************************************
 	
-	private static final String MOL_ACL_GROUPID_PUBLIC	= "1";
+	
 	private static final String SESSION_EXPERIMENT		= "Session Experiment ";
 	private static final String SESSION_ORGANISM 		= "Session Organism ";
 	private static final String GLAMM_SESSION 			= "GLAMM_SESSION";
 
 	//********************************************************************************
 
-	private Map<String, Experiment> 		experimentId2Experiment	= null;
+	private Map<String, Experiment> 		experimentId2Experiment;
 	private Map<String, Map<String, Set<Measurement>>> 
-											measurements 			= null;
-	private Set<String> 					molAclGroupIds 			= null;
-	private String 							molAclUserId 			= null;
-	private List<Organism>					organismsWithUserData	= null;
-	private Map<String, List<Route>>		routes					= null;
-	private ServerConfig					serverConfig			= null;
-	private Map<String, List<Experiment>> 	taxonomyId2Experiments 	= null;
-	private Map<String, List<Gene>>			taxonomyId2Genes 		= null;
-	private Map<String, Organism> 			taxonomyId2Organism		= null;
+											measurements;
+	private List<Organism>					organismsWithUserData;
+	private Map<String, List<Route>>		routes;
+	private ServerConfig					serverConfig;
+	private Map<String, List<Experiment>> 	taxonomyId2Experiments;
+	private Map<String, List<Gene>>			taxonomyId2Genes;
+	private Map<String, Organism> 			taxonomyId2Organism;
+	private GlammUser						user;
 	
 	//********************************************************************************
 
@@ -60,14 +59,12 @@ public class GlammSession {
 	protected GlammSession() {
 		experimentId2Experiment		= new HashMap<String, Experiment>();
 		measurements				= new HashMap<String, Map<String, Set<Measurement>>>();
-		molAclGroupIds				= new HashSet<String>();
 		organismsWithUserData		= new ArrayList<Organism>();
 		routes						= new HashMap<String, List<Route>>();
 		taxonomyId2Experiments		= new HashMap<String, List<Experiment>>();
 		taxonomyId2Genes 			= new HashMap<String, List<Gene>>();
 		taxonomyId2Organism			= new HashMap<String, Organism>();
-		
-		molAclGroupIds.add(MOL_ACL_GROUPID_PUBLIC);
+		user						= GlammUser.guestUser();
 	}
 	
 	//********************************************************************************
@@ -186,15 +183,15 @@ public class GlammSession {
 
 	//********************************************************************************
 	
-	public Set<String> getMolAclGroupIds() {
-		return molAclGroupIds;
-	}
+//	public Set<String> getMolAclGroupIds() {
+//		return molAclGroupIds;
+//	}
 	
 	//********************************************************************************
 	
-	public String getMolAclUserId() { 
-		return molAclUserId;
-	}
+//	public String getMolAclUserId() { 
+//		return molAclUserId;
+//	}
 
 	//********************************************************************************
 
@@ -231,6 +228,12 @@ public class GlammSession {
 	
 	//********************************************************************************
 
+	public GlammUser getUser() {
+		return user;
+	}
+	
+	//********************************************************************************
+
 	public boolean hasExperiments() {
 		return !(experimentId2Experiment == null || experimentId2Experiment.isEmpty());
 	}
@@ -261,14 +264,8 @@ public class GlammSession {
 	
 	//********************************************************************************
 
-	public void addMolAclGroupId(final String molAclGroupId) {
-		molAclGroupIds.add(molAclGroupId);
-	}
-	
-	//********************************************************************************
-
-	public void setMolAclUserId(final String molAclUserId) {
-		this.molAclUserId = molAclUserId;
+	public void setUser(final GlammUser user) {
+		this.user = user;
 	}
 	
 	//********************************************************************************

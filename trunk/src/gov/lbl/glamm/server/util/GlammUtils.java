@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 
 import javax.imageio.ImageIO;
@@ -14,11 +16,11 @@ import sun.misc.BASE64Encoder;
 
 
 public abstract class GlammUtils {
-	
+
 	private GlammUtils() {}
-	
+
 	//********************************************************************************
-	
+
 	public static String genConstrainedImageLink(final String imgUrlString, final int maxDim) {
 
 		String html = "";
@@ -35,18 +37,18 @@ public abstract class GlammUtils {
 				// we have userInfo, so we have to explicitly request basic authentication
 				connection = (HttpURLConnection) imgUrl.openConnection();
 				connection.setRequestMethod("GET");
-				
+
 				BASE64Encoder enc = new sun.misc.BASE64Encoder();
 				String encodedAuthorization = enc.encode( userInfo.getBytes() );
 				connection.setRequestProperty("Authorization", "Basic "+ encodedAuthorization);
-				
+
 				InputStream istream = connection.getInputStream();
 				img = ImageIO.read(istream);
 				istream.close();
 			}
 
 			if(img != null) {
-				
+
 				int imgWidth 	= img.getWidth();
 				int imgHeight 	= img.getHeight();
 				int width 		= imgWidth;
@@ -83,14 +85,14 @@ public abstract class GlammUtils {
 	public static String joinArray ( Object[] a ) {
 		return joinArray( a, ",", true );
 	}
-	
+
 	//********************************************************************************
 
 	public static String joinArray ( Object[] a, String separator, boolean shouldQuote ) {
-		
+
 		String	result 	= "";
 		String	quote 	= shouldQuote ? "\"" : "";
-		
+
 		if ( a != null && a.length > 0 ) {
 			for ( int i = 0; i < a.length - 1; i++ ) {
 				result += quote + a[i].toString() + quote + separator;
@@ -98,23 +100,23 @@ public abstract class GlammUtils {
 
 			result += quote + a[a.length - 1].toString() + quote;
 		}
-		
-		
+
+
 		return result;
 	}
-		
+
 	//********************************************************************************
-	
+
 	public static String joinCollection(Collection<String> a) {
 		return joinCollection(a, ",", true);
 	}
-	
+
 	//********************************************************************************
-	
+
 	public static String joinCollection(Collection<String> a, String separator, boolean shouldQuote) {
 		String result = "";
 		String quote = shouldQuote ? "\"" : "";
-		
+
 		if(a != null && a.size() > 0) {
 			int i = 0;
 			for(Object ai : a) {
@@ -125,11 +127,31 @@ public abstract class GlammUtils {
 				i++;
 			}
 		}
-	
+
 		return result;
 	}
-	
+
 	//********************************************************************************
+
+	public static String genBase64MD5String(final String in) {
+
+		if(in == null || in.isEmpty())
+			throw new IllegalArgumentException("input is null or empty.");
+		
+		String out = "";
+		try {
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			md.update(in.getBytes());
+			byte[] enc = md.digest();
+			out = new sun.misc.BASE64Encoder().encode(enc);
+
+			while(out.endsWith("="))
+				out = out.substring(0, out.length() - 1);
+		} catch (NoSuchAlgorithmException nsae) {
+			return out;
+		}
+		return out;
+	}
 
 
 }

@@ -102,6 +102,7 @@ public class ServerConfig implements Serializable {
 		
 		SERVER_DOMAIN("serverdomain", true),
 		ISOLATE_HOST("isolatehost", true),
+		LOGIN_URL("loginurl", true),
 		METAGENOME_HOST("metagenomehost", false),
 		DB("db", true);
 		
@@ -145,6 +146,10 @@ public class ServerConfig implements Serializable {
 		return (String) map.get(Attribute.ISOLATE_HOST);
 	}
 
+	public final String getLoginUrl() {
+		return (String) map.get(Attribute.LOGIN_URL);
+	}
+	
 	public final String getMetagenomeHost() {
 		return (String) map.get(Attribute.METAGENOME_HOST);
 	}
