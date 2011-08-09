@@ -40,43 +40,36 @@ public class ExperimentDAOImpl implements ExperimentDAO {
 	}
 	
 	@Override
-	public Experiment getExperiment(String experimentId, String sampleId, String taxonomyId, String source) {
-		Experiment experiment = null;
-		
-		if(source.equals(Experiment.EXP_SRC_SESSION)) {
-			if(sm != null)
-				experiment = expSessionDao.getExperiment(experimentId, sampleId, taxonomyId, source);
-		}
-		else if(source.equals(Experiment.EXP_SRC_MOL_UARRAY))
-			experiment = expUArrayDao.getExperiment(experimentId, sampleId, taxonomyId, source);
-		
-		return experiment;
+	public Experiment getExperiment(String experimentId) {
+		if(sm != null && sm.isSessionExperiment(experimentId))
+			return expSessionDao.getExperiment(experimentId);
+		return expUArrayDao.getExperiment(experimentId);
 	}
 
 	@Override
-	public List<Experiment> getAllExperiments(String taxonomyId) {
+	public List<Experiment> getAllExperimentsForTaxonomyId(String taxonomyId) {
 		
 		List<Experiment> experiments = null;
 		
 		if(sm != null)
-			experiments = expSessionDao.getAllExperiments(taxonomyId);
+			experiments = expSessionDao.getAllExperimentsForTaxonomyId(taxonomyId);
 		
 		if(experiments == null)
-			experiments = expUArrayDao.getAllExperiments(taxonomyId);
+			experiments = expUArrayDao.getAllExperimentsForTaxonomyId(taxonomyId);
 		else
-			experiments.addAll(expUArrayDao.getAllExperiments(taxonomyId));
+			experiments.addAll(expUArrayDao.getAllExperimentsForTaxonomyId(taxonomyId));
 		
 		return experiments;
 	}
 	
 	@Override
-	public List<Sample> getAllSamples(String taxonomyId) {
+	public List<Sample> getAllSamplesForTaxonomyId(String taxonomyId) {
 		
 		List<Sample> sessionSamples = null;
-		List<Sample> molSamples = expUArrayDao.getAllSamples(taxonomyId);
+		List<Sample> molSamples = expUArrayDao.getAllSamplesForTaxonomyId(taxonomyId);
 		
 		if(sm != null) 
-			sessionSamples = expSessionDao.getAllSamples(taxonomyId);
+			sessionSamples = expSessionDao.getAllSamplesForTaxonomyId(taxonomyId);
 		
 		if(sessionSamples == null && molSamples == null)
 			return null;
@@ -94,20 +87,16 @@ public class ExperimentDAOImpl implements ExperimentDAO {
 
 	@Override
 	public Map<String, Set<Measurement>> getMeasurements(String experimentId,
-			String sampleId, String taxonomyId, String source) {
-
-		Map<String, Set<Measurement>> id2Measurement = null;
-		
-		if(source.equals(Experiment.EXP_SRC_SESSION)) {
-			if(sm != null)
-				id2Measurement = expSessionDao.getMeasurements(experimentId, sampleId, taxonomyId, source);
-		}
-		
-		else if(source.equals(Experiment.EXP_SRC_MOL_UARRAY))
-			id2Measurement= expUArrayDao.getMeasurements(experimentId, sampleId, taxonomyId, source);
-		
-		return id2Measurement;
+			String sampleId) {
+		if(sm != null && sm.isSessionExperiment(experimentId))
+			return expSessionDao.getMeasurements(experimentId, sampleId);
+		return expUArrayDao.getMeasurements(experimentId, sampleId);
 	}
 
-
+	@Override
+	public String getTaxonomyIdForExperimentId(String experimentId) {
+		if(sm != null && sm.isSessionExperiment(experimentId))
+			return expSessionDao.getTaxonomyIdForExperimentId(experimentId);
+		return expUArrayDao.getTaxonomyIdForExperimentId(experimentId);
+	}
 }

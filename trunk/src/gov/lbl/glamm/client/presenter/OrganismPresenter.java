@@ -58,7 +58,7 @@ public class OrganismPresenter {
 		dataType2Caption.put(Sample.DataType.PROTEIN, "Show only organisms with proteomics data");
 		dataType2Caption.put(Sample.DataType.RNA, "Show only organisms with mRNA data");
 		dataType2Caption.put(Sample.DataType.RNASEQ, "Show only organisms with RNASeq data");
-		dataType2Caption.put(Sample.DataType.SESSION, "Show only organisms uploaded experiment data");
+		dataType2Caption.put(Sample.DataType.SESSION, "Show only organisms with uploaded experiment data");
 	}
 
 	private GlammServiceAsync rpc 		= null;

@@ -698,8 +698,6 @@ public class AnnotatedMapPresenter {
 		// otherwise, get measurements for the given sample
 		rpc.getMeasurementsForExperiment(sample.getExperimentId(), 
 				sample.getSampleId(), 
-				sample.getTaxonomyId(), 
-				sample.getSource(), 
 				new AsyncCallback<List<? extends GlammPrimitive>>() {
 
 			@Override

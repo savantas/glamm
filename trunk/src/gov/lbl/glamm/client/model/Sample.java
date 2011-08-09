@@ -50,11 +50,11 @@ public class Sample extends GlammPrimitive implements Serializable {
 	private String confidenceType	= null;
 	private	String control			= null;
 	private	String cTime			= null;
+	private DataType dataType;
 	private String experimentId		= null;
 	private	String factorUnit		= null;
 	private	String sampleId			= null;
 	private	String stress			= null;
-	private String taxonomyId		= null;
 	private	String treatment		= null;
 	private	String tTime			= null;
 	private String units			= null;
@@ -73,12 +73,11 @@ public class Sample extends GlammPrimitive implements Serializable {
 
 	private Sample() {}
 
-	public Sample(final String expId, final String sampleId, final String taxonomyId, final String source) {
+	public Sample(final String expId, final String sampleId, final DataType dataType) {
 		super();
 		this.experimentId		= expId;
-		this.sampleId 	= sampleId;
-		this.taxonomyId = taxonomyId;
-		setSource(source);
+		this.sampleId 			= sampleId;
+		this.dataType			= dataType;
 	}
 
 	//********************************************************************************
@@ -139,6 +138,10 @@ public class Sample extends GlammPrimitive implements Serializable {
 	public final String getControl() {
 		return control;
 	}
+	
+	public final DataType getDataType() {
+		return dataType;
+	}
 
 	public final String getStress() {
 		return stress;
@@ -147,10 +150,6 @@ public class Sample extends GlammPrimitive implements Serializable {
 	public final String getSummary() {
 		String unitString = getUnitString();
 		return stress + " - " + treatment + unitString + " - " + control + unitString;
-	}
-
-	public final String getTaxonomyId() {
-		return taxonomyId;
 	}
 
 	public final String getTreatment() {
@@ -169,9 +168,9 @@ public class Sample extends GlammPrimitive implements Serializable {
 	public final String getUnitString() {
 		String unitString = "";
 		
-		if(factorUnit != null)
+		if(factorUnit != null && !factorUnit.isEmpty())
 			unitString = "(" + factorUnit + ")";
-		else if(units != null)
+		else if(units != null && !units.isEmpty())
 			unitString = "(" + units + ")";
 		
 		return unitString;

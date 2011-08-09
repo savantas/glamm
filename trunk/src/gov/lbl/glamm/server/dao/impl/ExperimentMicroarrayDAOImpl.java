@@ -3,6 +3,7 @@ package gov.lbl.glamm.server.dao.impl;
 import gov.lbl.glamm.client.model.Experiment;
 import gov.lbl.glamm.client.model.Measurement;
 import gov.lbl.glamm.client.model.Sample;
+import gov.lbl.glamm.client.model.Sample.DataType;
 import gov.lbl.glamm.server.GlammDbConnectionPool;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.ExperimentDAO;
@@ -27,26 +28,26 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 
 	private final String UARRAY_UNITS 				= "mean Log2 Ratio";
 	private final String UARRAY_CONFIDENCE_TYPE		= "zScore";
-	
+
 	private GlammSession sm = null;
 
 
 	public ExperimentMicroarrayDAOImpl(GlammSession sm) {
 		this.sm = sm;
 	}
-	
+
 	//********************************************************************************
-	
+
 	@Override
 	public List<Sample.DataType> getAvailableExperimentTypes() {
 
 		List<Sample.DataType> types = null;
 		String sql = "select distinct(e.expType) " +
-			"from microarray.Exp e " +
-			"join microarray.ExpType et on (et.expType=e.expType) " +
-			"join genomics_test.ACL A on (A.resourceId=e.id and A.resourceType='uarray') " +
-			"where A.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getUser().getGroupIds()) : "1") + ") and A.requesterType='group' and A.read=1 " +
-			"order by et.expType;";
+		"from microarray.Exp e " +
+		"join microarray.ExpType et on (et.expType=e.expType) " +
+		"join genomics_test.ACL A on (A.resourceId=e.id and A.resourceType='uarray') " +
+		"where A.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getUser().getGroupIds()) : "1") + ") and A.requesterType='group' and A.read=1 " +
+		"order by et.expType;";
 
 		try {
 
@@ -72,22 +73,16 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 	}
 
 	@Override
-	public Experiment getExperiment(String experimentId, String sampleId, String taxonomyId, String source) {
-
-		// sanity check on the source
-		if(!source.equals(Experiment.EXP_SRC_MOL_UARRAY))
-			return null;
+	public Experiment getExperiment(String experimentId) {
 
 		Experiment experiment = null;
-		Sample sample = null;
 
-		String sql = "select E.stress, R.cFactor, R.tFactor, R.factorUnit, R.cTime, R.tTime " +
-			"from microarray.Exp E " +
-			"join microarray.Chip C on (E.chipId=C.id) " +
-			"join genomics_test.ACL A on (A.resourceId=E.id and A.resourceType='uarray') " +
-			"join microarray.Replicate R on (E.id=R.expId) " +
-			"where A.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getUser().getGroupIds()) : "1") + ") and A.requesterType='group' and A.read=1 " +
-			"and R.expId=? and R.setId=? and C.taxonomyId=?;";
+		String sql = "select E.stress, R.setId, E.expType, R.cFactor, R.tFactor, R.factorUnit, R.cTime, R.tTime " +
+		"from microarray.Exp E " +
+		"join genomics_test.ACL A on (A.resourceId=E.id and A.resourceType='uarray') " +
+		"join microarray.Replicate R on (E.id=R.expId) " +
+		"where A.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getUser().getGroupIds()) : "1") + ") and A.requesterType='group' and A.read=1 " +
+		"and R.expId=?;";
 
 		try {
 
@@ -95,12 +90,10 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 			PreparedStatement ps = connection.prepareStatement(sql);
 
 			ps.setString(1, experimentId);
-			ps.setString(2, sampleId);
-			ps.setString(3, taxonomyId);
 
 			ResultSet rs = ps.executeQuery();
 
-			if(rs.next()) {
+			while(rs.next()) {
 
 				String stress 		= rs.getString("stress");
 				String cFactor 		= rs.getString("cFactor");
@@ -108,10 +101,12 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 				String cTime		= rs.getString("cTime");
 				String tTime		= rs.getString("tTime");
 				String factorUnit	= rs.getString("factorUnit");
+				String sampleId		= rs.getString("setId");
+				String expType		= rs.getString("expType");
 
 
-				experiment = new Experiment(experimentId, taxonomyId, Experiment.EXP_SRC_MOL_UARRAY);
-				sample = new Sample(experimentId, sampleId, taxonomyId, Experiment.EXP_SRC_MOL_UARRAY);
+				experiment = new Experiment(experimentId);
+				Sample sample = new Sample(experimentId, sampleId, Sample.DataType.dataTypeForMolExpType(expType));
 
 				sample.setStress(stress);
 				sample.setControl(cFactor, cTime);
@@ -137,18 +132,18 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 	//********************************************************************************
 
 	@Override
-	public List<Experiment> getAllExperiments(String taxonomyId) {
+	public List<Experiment> getAllExperimentsForTaxonomyId(String taxonomyId) {
 
 		List<Experiment> experiments = null;
 
-		String sql = "select R.expId, R.setId, E.stress, R.cFactor, R.tFactor, R.factorUnit, R.cTime, R.tTime " +
-			"from microarray.Exp E " +
-			"join microarray.Chip C on (E.chipId=C.id) " +
-			"join genomics_test.ACL A on (A.resourceId=E.id and A.resourceType='uarray') " +
-			"join microarray.Replicate R on (E.id=R.expId) " +
-			"where A.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getUser().getGroupIds()) : "1") + ") and A.requesterType='group' and A.read=1 " +
-			"and C.taxonomyId=?;";
-	
+		String sql = "select R.expId, R.setId, E.stress, E.expType, R.cFactor, R.tFactor, R.factorUnit, R.cTime, R.tTime " +
+		"from microarray.Exp E " +
+		"join microarray.Chip C on (E.chipId=C.id) " +
+		"join genomics_test.ACL A on (A.resourceId=E.id and A.resourceType='uarray') " +
+		"join microarray.Replicate R on (E.id=R.expId) " +
+		"where A.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getUser().getGroupIds()) : "1") + ") and A.requesterType='group' and A.read=1 " +
+		"and C.taxonomyId=?;";
+
 		try {
 
 			Connection connection = GlammDbConnectionPool.getConnection(sm);
@@ -171,15 +166,16 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 				String cTime		= rs.getString("cTime");
 				String tTime		= rs.getString("tTime");
 				String factorUnit	= rs.getString("factorUnit");
+				String expType		= rs.getString("expType");
 
 
 				Experiment exp = expId2Experiment.get(expId);
 				if(exp == null) {
-					exp = new Experiment(expId, taxonomyId, Experiment.EXP_SRC_MOL_UARRAY);
+					exp = new Experiment(expId);
 					expId2Experiment.put(expId, exp);
 				}
 
-				Sample sample = new Sample(expId, setId, taxonomyId, Experiment.EXP_SRC_MOL_UARRAY);
+				Sample sample = new Sample(expId, setId, DataType.dataTypeForMolExpType(expType));
 
 				sample.setStress(stress);
 				sample.setControl(cFactor, cTime);
@@ -205,18 +201,18 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 	}
 
 	@Override
-	public List<Sample> getAllSamples(String taxonomyId) {
+	public List<Sample> getAllSamplesForTaxonomyId(String taxonomyId) {
 
 		List<Sample> samples = null;
 
-		String sql = "select R.expId, R.setId, E.stress, R.cFactor, R.tFactor, R.factorUnit, R.cTime, R.tTime " +
-			"from microarray.Exp E " +
-			"join microarray.Chip C on (E.chipId=C.id) " +
-			"join genomics_test.ACL A on (A.resourceId=E.id and A.resourceType='uarray') " +
-			"join microarray.Replicate R on (E.id=R.expId) " +
-			"where A.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getUser().getGroupIds()) : "1") + ") and A.requesterType='group' and A.read=1 " +
-			"and C.taxonomyId=?" +
-			"group by R.expId, R.setId;";
+		String sql = "select E.expType, R.expId, R.setId, E.stress, R.cFactor, R.tFactor, R.factorUnit, R.cTime, R.tTime " +
+		"from microarray.Exp E " +
+		"join microarray.Chip C on (E.chipId=C.id) " +
+		"join genomics_test.ACL A on (A.resourceId=E.id and A.resourceType='uarray') " +
+		"join microarray.Replicate R on (E.id=R.expId) " +
+		"where A.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getUser().getGroupIds()) : "1") + ") and A.requesterType='group' and A.read=1 " +
+		"and C.taxonomyId=?" +
+		"group by R.expId, R.setId;";
 
 		try {
 
@@ -237,9 +233,9 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 				String cTime		= rs.getString("cTime");
 				String tTime		= rs.getString("tTime");
 				String factorUnit	= rs.getString("factorUnit");
+				String expType		= rs.getString("expType");
 
-
-				Sample sample = new Sample(expId, setId, taxonomyId, Experiment.EXP_SRC_MOL_UARRAY);
+				Sample sample = new Sample(expId, setId, DataType.dataTypeForMolExpType(expType));
 
 				sample.setStress(stress);
 				sample.setControl(cFactor, cTime);
@@ -266,12 +262,7 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 	}
 
 	@Override
-	public Map<String, Set<Measurement>> getMeasurements(String experimentId,
-			String sampleId, String taxonomyId, String source) {
-
-		// sanity check on the source
-		if(!source.equals(Experiment.EXP_SRC_MOL_UARRAY))
-			return null;
+	public Map<String, Set<Measurement>> getMeasurements(String experimentId, String sampleId) {
 
 		Map<String, Set<Measurement>> id2Measurement = null;
 
@@ -318,6 +309,33 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 
 	//********************************************************************************
 
-	
+	@Override
+	public String getTaxonomyIdForExperimentId(String experimentId) {
+		String taxonomyId = null;
+
+		String sql = "select C.taxonomyId from microarray.Exp E join microarray.Chip C on (C.id=E.chipId) where E.id=?;";
+
+		try {
+
+			Connection connection = GlammDbConnectionPool.getConnection(sm);
+			PreparedStatement ps = connection.prepareStatement(sql);
+
+			ps.setString(1, experimentId);
+
+			ResultSet rs = ps.executeQuery();
+
+			if(rs.next()) 
+				taxonomyId = rs.getString("taxonomyId");
+
+			rs.close();
+			connection.close();
+
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+
+		return taxonomyId;
+	}
+
 
 }

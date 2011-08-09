@@ -12,12 +12,15 @@ import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class ExperimentView extends Composite 
 	implements ExperimentPresenter.View {
+	
+	private final String RB_GROUP = "EXPERIMENT_RB_GROUP";
 		
 	// the widget
 	private DecoratorPanel		decoratorPanel 				= null;
@@ -32,10 +35,15 @@ public class ExperimentView extends Composite
 	
 	// disclosure panel
 	private DisclosurePanel		disclosurePanel				= null;
-	private VerticalPanel		browsePanel					= null;
+	private VerticalPanel		disclosurePanelContent		= null;
+	
+	// status panel
 	private HorizontalPanel		statusPanel					= null;
 	private Label				statusLabel					= null;
 	private Button				statusUploadButton			= null;
+	
+	// experiment panel
+	private VerticalPanel		radioButtonPanel			= null;
 	private VerticalPanel		experimentPanel				= null;
 	private ScrollPanel			experimentTableScrollPanel	= null;
 	private CellTable<Sample> 	experimentTable				= null;
@@ -68,11 +76,12 @@ public class ExperimentView extends Composite
 		
 		// disclosure panel
 		disclosurePanel				= new DisclosurePanel(STRING_DISCLOSURE_PANEL);
-		browsePanel					= new VerticalPanel();
+		disclosurePanelContent		= new VerticalPanel();
 		statusLabel					= new Label();
 		statusPanel					= new HorizontalPanel();
 		statusUploadButton			= new Button(STRING_UPLOAD_BUTTON);
 		experimentPanel				= new VerticalPanel();
+		radioButtonPanel				= new VerticalPanel();
 		experimentTableScrollPanel	= new ScrollPanel();
 		experimentTable				= new CellTable<Sample>();
 		expButtonPanel				= new HorizontalPanel();
@@ -116,6 +125,7 @@ public class ExperimentView extends Composite
 		viewButtonPanel.add(removeButton);
 		viewButtonPanel.add(resetButton);
 		
+		experimentPanel.add(radioButtonPanel);
 		experimentPanel.add(experimentTableScrollPanel);
 		experimentPanel.add(expButtonPanel);
 		experimentPanel.add(viewSubsetPanel);
@@ -123,9 +133,9 @@ public class ExperimentView extends Composite
 		statusPanel.setSpacing(5);
 		statusPanel.add(statusLabel);
 		statusPanel.add(statusUploadButton);
-		browsePanel.add(statusPanel);
-		browsePanel.add(experimentPanel);
-		disclosurePanel.setContent(browsePanel);
+		disclosurePanelContent.add(statusPanel);
+		disclosurePanelContent.add(experimentPanel);
+		disclosurePanel.setContent(disclosurePanelContent);
 		
 		// build widget
 		decoratorPanel.add(mainPanel);
@@ -144,6 +154,20 @@ public class ExperimentView extends Composite
 		
 		initWidget(decoratorPanel);
 		
+	}
+	
+	@Override
+	public HasClickHandlers addDataTypeChoice(final String caption, final boolean isDefault) {
+		RadioButton dataTypeChoice = new RadioButton(RB_GROUP, caption);
+		dataTypeChoice.setValue(isDefault);
+		radioButtonPanel.add(dataTypeChoice);
+		return dataTypeChoice;
+	}
+	
+	@Override
+	public void clearDataTypeChoices() {
+		while(radioButtonPanel.getWidgetCount() > 0)
+			radioButtonPanel.remove(0);
 	}
 
 	@Override

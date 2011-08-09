@@ -28,6 +28,7 @@ public class GlammSession {
 	//********************************************************************************
 
 	private Map<String, Experiment> 		experimentId2Experiment;
+	private Map<String, String>				experimentId2TaxonomyId;
 	private Map<String, Map<String, Set<Measurement>>> 
 											measurements;
 	private List<Organism>					organismsWithUserData;
@@ -58,6 +59,7 @@ public class GlammSession {
 
 	protected GlammSession() {
 		experimentId2Experiment		= new HashMap<String, Experiment>();
+		experimentId2TaxonomyId		= new HashMap<String, String>();
 		measurements				= new HashMap<String, Map<String, Set<Measurement>>>();
 		organismsWithUserData		= new ArrayList<Organism>();
 		routes						= new HashMap<String, List<Route>>();
@@ -73,6 +75,7 @@ public class GlammSession {
 		if(experiment != null && organism != null) {
 			String taxonomyId = organism.getTaxonomyId();
 			experimentId2Experiment.put(experiment.getExperimentId(), experiment);
+			experimentId2TaxonomyId.put(experiment.getExperimentId(), taxonomyId);
 			List<Experiment> experiments = taxonomyId2Experiments.get(taxonomyId);
 			if(experiments == null) {
 				experiments = new ArrayList<Experiment>();
@@ -102,10 +105,9 @@ public class GlammSession {
 	
 	//********************************************************************************
 	
-	public void addMeasurements(String expId, String sampleId, Organism organism, 
+	public void addMeasurements(String expId, String sampleId,
 			Map<String, Set<Measurement>> id2Measurement) {
-		String taxonomyId = organism.getTaxonomyId();
-		String key = composeMeasurementsKey(expId, sampleId, taxonomyId);
+		String key = composeMeasurementsKey(expId, sampleId);
 		measurements.put(key, id2Measurement);
 	}
 	
@@ -176,22 +178,10 @@ public class GlammSession {
 	
 	//********************************************************************************
 	
-	public Map<String, Set<Measurement>> getMeasurements(String expId, String sampleId, String taxonomyId) {
-		String key = composeMeasurementsKey(expId, sampleId, taxonomyId);
+	public Map<String, Set<Measurement>> getMeasurements(String expId, String sampleId) {
+		String key = composeMeasurementsKey(expId, sampleId);
 		return measurements.get(key);
 	}
-
-	//********************************************************************************
-	
-//	public Set<String> getMolAclGroupIds() {
-//		return molAclGroupIds;
-//	}
-	
-	//********************************************************************************
-	
-//	public String getMolAclUserId() { 
-//		return molAclUserId;
-//	}
 
 	//********************************************************************************
 
@@ -224,6 +214,12 @@ public class GlammSession {
 
 	public ServerConfig getServerConfig() {
 		return serverConfig;
+	}
+	
+	//********************************************************************************
+
+	public String getTaxonomyIdForExperimentId(String experimentId) {
+		return experimentId2TaxonomyId.get(experimentId);
 	}
 	
 	//********************************************************************************
@@ -286,8 +282,8 @@ public class GlammSession {
 	
 	//********************************************************************************
 	
-	private String composeMeasurementsKey(String expId, String sampleId, String taxonomyId) {
-		return expId + "_" + sampleId + "_" + taxonomyId;
+	private String composeMeasurementsKey(String expId, String sampleId) {
+		return expId + "_" + sampleId;
 	}
 
 	//********************************************************************************

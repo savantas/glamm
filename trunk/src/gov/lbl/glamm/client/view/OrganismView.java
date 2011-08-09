@@ -16,7 +16,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class OrganismView extends Composite implements OrganismPresenter.View {
 	
-	private final String RB_GROUP = "RB_GROUP";
+	private final String RB_GROUP = "ORGANISM_RB_GROUP";
 	
 	// main panel
 	private DecoratorPanel 	decoratorPanel	= null;

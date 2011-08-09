@@ -281,12 +281,6 @@ public abstract class GlammPrimitive implements Serializable {
 	
 	//********************************************************************************
 
-	public String getSource() {
-		return source;
-	}
-	
-	//********************************************************************************
-
 	public Set<Synonym> getSynonyms() {
 		return synonyms;
 	}
@@ -351,10 +345,6 @@ public abstract class GlammPrimitive implements Serializable {
 	}
 	
 	//********************************************************************************
-
-	public void setSource(final String source) {
-		this.source = source;
-	}
 
 	@Override
 	public int hashCode() {

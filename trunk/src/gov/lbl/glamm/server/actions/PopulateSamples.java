@@ -13,7 +13,7 @@ public class PopulateSamples {
 		
 		if(taxonomyId != null && !taxonomyId.isEmpty()) {
 			ExperimentDAO expDao = new ExperimentDAOImpl(sm);
-			return expDao.getAllSamples(taxonomyId);
+			return expDao.getAllSamplesForTaxonomyId(taxonomyId);
 		}
 	
 		return null;
