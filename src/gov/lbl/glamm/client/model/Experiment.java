@@ -17,12 +17,8 @@ public class Experiment extends GlammPrimitive implements Serializable {
 	
 	public static transient final String DEFAULT_EXPERIMENT_ID = "-1";
 	
-	public static transient final String EXP_SRC_MOL_UARRAY		= "molUarray";
-	public static transient final String EXP_SRC_SESSION		= "session";
-	
 	public static transient GlammPrimitive.Type TYPE = new GlammPrimitive.Type();
 	private String expId = null;
-	private String taxonomyId = null;
 	private List<Sample> samples	= null;
 	
 	//********************************************************************************
@@ -35,11 +31,9 @@ public class Experiment extends GlammPrimitive implements Serializable {
 	 * @param taxonomyId The taxonomy id of the Organism that is the subject of this experiment
 	 * @param source A description of the experiment's source
 	 */
-	public Experiment(final String expId, final String taxonomyId, final String source) {
+	public Experiment(final String expId) {
 		super();
 		this.expId = expId;
-		this.taxonomyId = taxonomyId;
-		setSource(source);
 	}
 
 	//********************************************************************************
@@ -77,14 +71,6 @@ public class Experiment extends GlammPrimitive implements Serializable {
 	}
 	
 	//********************************************************************************
-	
-	/**
-	 * Accessor
-	 * @return The taxonomy id of the Organism that is the subject of this Experiment
-	 */
-	public String getTaxonomyId() {
-		return taxonomyId;
-	}
 	
 	/**
 	 * @return The GlammPrimitive Type

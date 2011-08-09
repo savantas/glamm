@@ -1,6 +1,5 @@
 package gov.lbl.glamm.server.actions;
 
-import gov.lbl.glamm.client.model.Experiment;
 import gov.lbl.glamm.client.model.GlammPrimitive;
 import gov.lbl.glamm.client.model.GlammPrimitive.Synonym;
 import gov.lbl.glamm.client.model.Measurement;
@@ -16,33 +15,32 @@ import java.util.Set;
 
 public class GetExperiment  {
 
-	public static List<? extends GlammPrimitive> getMeasurementsForExperiment(GlammSession sm, String experimentId, String sampleId, String taxonomyId, String expSource) {
+	public static List<? extends GlammPrimitive> getMeasurementsForExperiment(GlammSession sm, String experimentId, String sampleId) {
 
 		List<? extends GlammPrimitive> primitives = null;
 
 		if(experimentId == null || experimentId.isEmpty() ||
-				sampleId == null || sampleId.isEmpty() ||
-				taxonomyId == null || taxonomyId.isEmpty() ||
-				expSource == null || expSource.isEmpty()) 
+				sampleId == null || sampleId.isEmpty()) 
 			return null;
 
 		ExperimentDAO 	expDao 	= new ExperimentDAOImpl(sm);
 
 		// get measurements
-		Map<String, Set<Measurement>> id2Measurements = expDao.getMeasurements(experimentId, sampleId, taxonomyId, expSource);
+		Map<String, Set<Measurement>> id2Measurements = expDao.getMeasurements(experimentId, sampleId);
 		if(id2Measurements == null)
 			return null;
 
 		Set<String> ids = id2Measurements.keySet();
 
-		// get primitives for measurements - will vary with source
-		if(expSource.equals(Experiment.EXP_SRC_MOL_UARRAY)) {
-			GeneDAO geneDao = new GeneDAOImpl(sm);
-			primitives = geneDao.getGenesForVimssIds(taxonomyId, ids);
-		}
-		else if(expSource.equals(Experiment.EXP_SRC_SESSION)) {
+		// get primitives for measurements
+		String taxonomyId = expDao.getTaxonomyIdForExperimentId(experimentId);
+		if(sm.isSessionExperiment(experimentId)) {
 			GeneDAO geneDao = new GeneDAOImpl(sm);
 			primitives = geneDao.getGenesForSynonyms(taxonomyId, ids);
+		}
+		else {
+			GeneDAO geneDao = new GeneDAOImpl(sm);
+			primitives = geneDao.getGenesForVimssIds(taxonomyId, ids);
 		}
 
 		if(primitives == null)

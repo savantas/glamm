@@ -30,18 +30,18 @@ public class ExperimentSessionDAOImpl implements ExperimentDAO {
 	}
 	
 	@Override
-	public List<Experiment> getAllExperiments(String taxonomyId) {
+	public List<Experiment> getAllExperimentsForTaxonomyId(String taxonomyId) {
 		if(sm != null)
 			return sm.getExperimentsForTaxonomyId(taxonomyId);
 		return null;
 	}
 	
 	@Override
-	public List<Sample> getAllSamples(String taxonomyId) {
+	public List<Sample> getAllSamplesForTaxonomyId(String taxonomyId) {
 		if(sm == null) 
 			return null;
 			
-		List<Experiment> experiments = getAllExperiments(taxonomyId);
+		List<Experiment> experiments = getAllExperimentsForTaxonomyId(taxonomyId);
 			
 		if(experiments == null)
 			return null;
@@ -55,7 +55,7 @@ public class ExperimentSessionDAOImpl implements ExperimentDAO {
 	}
 	
 	@Override
-	public Experiment getExperiment(String experimentId, String sampleId, String taxonomyId, String source) {
+	public Experiment getExperiment(String experimentId) {
 		if(sm != null)
 			return sm.getExperimentForId(experimentId);
 		return null;
@@ -63,9 +63,16 @@ public class ExperimentSessionDAOImpl implements ExperimentDAO {
 
 	@Override
 	public Map<String, Set<Measurement>> getMeasurements(String experimentId,
-			String sampleId, String taxonomyId, String source) {
+			String sampleId) {
 		if(sm != null)
-			return sm.getMeasurements(experimentId, sampleId, taxonomyId);
+			return sm.getMeasurements(experimentId, sampleId);
+		return null;
+	}
+	
+	@Override
+	public String getTaxonomyIdForExperimentId(String experimentId) {
+		if(sm != null)
+			return sm.getTaxonomyIdForExperimentId(experimentId);
 		return null;
 	}
 

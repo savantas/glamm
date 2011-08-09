@@ -29,7 +29,7 @@ public interface GlammService extends RemoteService {
 	public List<Pathway> getDirections(String taxonomyId, Compound cpdSrc, Compound cpdDst, String mapTitle, String algorithm);
 	public String getIsolateHost();
 	public MetabolicNetwork getMapConnectivity(String mapId);
-	public List<? extends GlammPrimitive> getMeasurementsForExperiment(String experimentId, String sampleId, String taxonomyId, String expSource);
+	public List<? extends GlammPrimitive> getMeasurementsForExperiment(String experimentId, String sampleId);
 	public String getMetagenomeHost();
 	public List<Reaction> getRxnsForOrganism(String taxonomyId, Set<String> rxnDbNames);
 	public GlammUser getLoggedInUser();

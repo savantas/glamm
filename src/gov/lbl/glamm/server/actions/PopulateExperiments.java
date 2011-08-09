@@ -13,7 +13,7 @@ public class PopulateExperiments {
 	
 		if(taxonomyId != null && !taxonomyId.isEmpty()) {
 			ExperimentDAO expDao = new ExperimentDAOImpl(sm);
-			return expDao.getAllExperiments(taxonomyId);
+			return expDao.getAllExperimentsForTaxonomyId(taxonomyId);
 		}
 	
 		return null;

@@ -25,20 +25,15 @@ public class DownloadExperiment implements RequestHandler {
 
 		String experimentId = request.getParameter(RequestParameters.EXPERIMENT.toString());
 		String sampleId		= request.getParameter(RequestParameters.SAMPLE.toString());
-		String taxonomyId	= request.getParameter(RequestParameters.TAXONOMY_ID.toString());
-		String expSource	= request.getParameter(RequestParameters.EXP_SOURCE.toString());
 
-		
 		if(experimentId != null && !experimentId.isEmpty() &&
-				sampleId != null && !sampleId.isEmpty() &&
-				taxonomyId != null && !taxonomyId.isEmpty() &&
-				expSource != null && !expSource.isEmpty()) {
+				sampleId != null && !sampleId.isEmpty()) {
 			
 			String content = "";
 			
 			GlammSession	sm 		= GlammSession.getGlammSession(request);
 			ExperimentDAO 	expDao 	= new ExperimentDAOImpl(sm);
-			Map<String, Set<Measurement>> id2Measurements = expDao.getMeasurements(experimentId, sampleId, taxonomyId, expSource);
+			Map<String, Set<Measurement>> id2Measurements = expDao.getMeasurements(experimentId, sampleId);
 			
 			for(Set<Measurement> measurementSet : id2Measurements.values()) {
 				for(Measurement measurement : measurementSet) {

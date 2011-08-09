@@ -119,8 +119,8 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	}
 	
 	@Override
-	public List<? extends GlammPrimitive> getMeasurementsForExperiment(String experimentId, String sampleId, String taxonomyId, String expSource) {
-		return GetExperiment.getMeasurementsForExperiment(getGlammSession(), experimentId, sampleId, taxonomyId, expSource);
+	public List<? extends GlammPrimitive> getMeasurementsForExperiment(String experimentId, String sampleId) {
+		return GetExperiment.getMeasurementsForExperiment(getGlammSession(), experimentId, sampleId);
 	}
 	
 	@Override

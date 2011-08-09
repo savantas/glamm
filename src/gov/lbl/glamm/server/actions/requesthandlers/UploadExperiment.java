@@ -4,6 +4,7 @@ import gov.lbl.glamm.client.model.Experiment;
 import gov.lbl.glamm.client.model.Measurement;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Sample;
+import gov.lbl.glamm.client.model.Sample.DataType;
 import gov.lbl.glamm.client.presenter.ExperimentUploadPresenter;
 import gov.lbl.glamm.server.FormRequestHandler;
 import gov.lbl.glamm.server.FormRequestHandler.LineParser;
@@ -89,7 +90,7 @@ public class UploadExperiment implements RequestHandler {
 
 
 		// construct the sample
-		Sample sample = new Sample(expId, sampleId, taxonomyId, Experiment.EXP_SRC_SESSION);
+		Sample sample = new Sample(expId, sampleId, DataType.SESSION);
 		sample.setClampValues(clampMin, clampMid, clampMax);
 		sample.setStress(stress);
 		sample.setTreatment(treatment, null);
@@ -97,7 +98,7 @@ public class UploadExperiment implements RequestHandler {
 		sample.setUnits(units);
 
 		// construct the experiment
-		Experiment experiment = new Experiment(expId, taxonomyId, Experiment.EXP_SRC_SESSION);
+		Experiment experiment = new Experiment(expId);
 		experiment.addSample(sample);
 		
 		// get the organism associated with this taxonomyId
@@ -108,7 +109,7 @@ public class UploadExperiment implements RequestHandler {
 		sm.addExperiment(experiment, organism);
 
 		// add the id2Measurement map to the session
-		sm.addMeasurements(expId, sampleId, organism, id2Measurement);
+		sm.addMeasurements(expId, sampleId, id2Measurement);
 
 		// handle response
 		ResponseHandler.asHtml(response, fuh.getErrorMessages(), HttpServletResponse.SC_OK);

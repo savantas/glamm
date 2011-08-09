@@ -5,9 +5,11 @@ import gov.lbl.glamm.client.events.SamplePickedEvent;
 import gov.lbl.glamm.client.events.ViewResizedEvent;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Sample;
+import gov.lbl.glamm.client.model.Sample.DataType;
 import gov.lbl.glamm.client.rpc.GlammServiceAsync;
 import gov.lbl.glamm.shared.RequestParameters;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +43,7 @@ import com.google.gwt.view.client.SingleSelectionModel;
 public class ExperimentPresenter {
 
 	public interface View {
-		
+
 		public static final String STRING_ADD_BUTTON 		= "Add to view subset";
 		public static final String STRING_DISCLOSURE_PANEL	= "Browse";
 		public static final String STRING_DOWNLOAD_BUTTON 	= "Download experiment";
@@ -58,6 +60,8 @@ public class ExperimentPresenter {
 		public static final String STRING_VIEW_EXPERIMENT	= "View experiment";
 		public static final String STRING_VIEW_LABEL 		= "View subset:";
 
+		public HasClickHandlers		addDataTypeChoice(final String caption, final boolean isDefault);
+		public void					clearDataTypeChoices();
 		public HasClickHandlers		getAddToSubsetButton();
 		public DisclosurePanel		getDisclosurePanel();
 		public HasClickHandlers 	getDownloadButton();
@@ -84,9 +88,26 @@ public class ExperimentPresenter {
 		NO_EXPERIMENTS,
 		HAS_EXPERIMENTS;
 	}
+
+	// DataType.NONE should be displayed first
+	private static final DataType[] dataTypeDisplayOrder = new DataType[]{ 
+		DataType.RNA, 
+		DataType.FITNESS, 
+		DataType.PROTEIN, 
+		DataType.RNASEQ, 
+		DataType.SESSION
+	};
 	
 	private static final String ACTION_DOWNLOAD_EXPERIMENT	= "downloadExperiment";
-
+	private static final Map<Sample.DataType, String> dataType2Caption = new HashMap<Sample.DataType, String>();
+	static {
+		dataType2Caption.put(Sample.DataType.NONE, "Show all experiments");
+		dataType2Caption.put(Sample.DataType.FITNESS, "Show only fitness experiments");
+		dataType2Caption.put(Sample.DataType.PROTEIN, "Show only proteomics experiments");
+		dataType2Caption.put(Sample.DataType.RNA, "Show only mRNA experiments");
+		dataType2Caption.put(Sample.DataType.RNASEQ, "Show only RNASeq experiments");
+		dataType2Caption.put(Sample.DataType.SESSION, "Show only uploaded experiments");
+	}
 
 	private GlammServiceAsync rpc = null;
 	private View view = null;
@@ -103,6 +124,8 @@ public class ExperimentPresenter {
 
 	private Organism organism = null;
 
+	private Map<DataType, List<Sample>> dataType2Samples;
+
 	public ExperimentPresenter(final GlammServiceAsync rpc, final View view, final SimpleEventBus eventBus) {
 		this.rpc = rpc;
 		this.view = view;
@@ -113,6 +136,8 @@ public class ExperimentPresenter {
 
 		suggestOracle = (MultiWordSuggestOracle) view.getExperimentSuggestBox().getSuggestOracle();
 		summary2Sample = new HashMap<String, Sample>();
+		
+		dataType2Samples = new HashMap<DataType, List<Sample>>();
 
 		initTable(view.getExperimentTable(), experimentDataProvider);
 		initTable(view.getViewSubsetTable(), viewSubsetDataProvider);
@@ -122,7 +147,52 @@ public class ExperimentPresenter {
 		bindView();
 	}
 
-	private void addSamples(final List<Sample> samples) {
+	private void addDataTypeChoice(final Sample.DataType dataType, final boolean isDefault) {
+		final String caption = dataType2Caption.get(dataType);
+
+		HasClickHandlers dataTypeChoice = view.addDataTypeChoice(caption, isDefault);
+
+		dataTypeChoice.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				filterSamples(dataType);
+			}
+		});
+	}
+
+	private void addSamples(final List<Sample> allSamples) {
+		
+		// hash samples by data type
+		dataType2Samples.clear();
+		dataType2Samples.put(DataType.NONE, allSamples);
+		
+		for(Sample sample : allSamples) {
+			List<Sample> samples = dataType2Samples.get(sample.getDataType());
+			if(samples == null) {
+				samples = new ArrayList<Sample>();
+				dataType2Samples.put(sample.getDataType(), samples);
+			}
+			samples.add(sample);
+		}
+		
+		// add data type choices to view
+		view.clearDataTypeChoices();
+		addDataTypeChoice(DataType.NONE, true);
+		for(DataType dataType : dataTypeDisplayOrder) {
+			if(dataType2Samples.get(dataType) != null)
+				addDataTypeChoice(dataType, false);
+		}
+		
+		filterSamples(DataType.NONE);
+	}
+
+	private void filterSamples(final DataType dataType) {
+		
+		((MultiWordSuggestOracle) view.getExperimentSuggestBox().getSuggestOracle()).clear();
+		experimentDataProvider.getList().clear();
+		viewSubsetDataProvider.getList().clear();
+		
+		List<Sample> samples = dataType2Samples.get(dataType);
 		List<Sample> dpList = experimentDataProvider.getList();
 		for(Sample sample : samples) {
 			String summary = sample.getSummary();
@@ -132,7 +202,7 @@ public class ExperimentPresenter {
 		}
 		view.getExperimentTable().setVisibleRange(0, samples.size());
 	}
-
+	
 	private void initTable(CellTable<Sample> table, ListDataProvider<Sample> dataProvider) {
 
 		if(table == null || dataProvider == null)
@@ -228,14 +298,11 @@ public class ExperimentPresenter {
 					urlBuilder.setPath("glammServlet");
 					urlBuilder.setParameter(RequestParameters.EXPERIMENT.toString(), experimentTableSelection.getExperimentId());
 					urlBuilder.setParameter(RequestParameters.SAMPLE.toString(), experimentTableSelection.getSampleId());
-					urlBuilder.setParameter(RequestParameters.TAXONOMY_ID.toString(), experimentTableSelection.getTaxonomyId());
-					urlBuilder.setParameter(RequestParameters.EXP_SOURCE.toString(), experimentTableSelection.getSource());
-
 					Window.open(urlBuilder.buildString(), "", "menubar=no,location=no,resizable=no,scrollbars=no,status=no,toolbar=false,width=0,height=0");
 				}
 			}
 		});
-		
+
 		view.getStatusUploadButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -330,42 +397,42 @@ public class ExperimentPresenter {
 				}
 			}
 		});
-		
+
 		view.getExperimentSuggestBox().addSelectionHandler(new SelectionHandler<Suggestion>() {
 			@Override
 			public void onSelection(SelectionEvent<Suggestion> event) {
 				Suggestion suggestion = event.getSelectedItem();
 				String summary = suggestion.getReplacementString();
-				
+
 				if(summary == null)
 					return;
-				
+
 				Sample sample = summary2Sample.get(summary);
-				
+
 				if(sample == null)
 					return;
-				
+
 				List<Sample> dpList = viewSubsetDataProvider.getList();
 				if(!dpList.contains(sample)) {
 					viewSubsetDataProvider.getList().add(sample);
 					setViewSubsetVisible(true);
 				}
-				
+
 				view.getViewSubsetTable().getSelectionModel().setSelected(sample, true);
 				view.getExperimentSuggestBox().setText(sample.getSummary());
 				view.minimize();
 				eventBus.fireEvent(new SamplePickedEvent(sample));
-				
+
 			}
 		});
-		
+
 		view.getDisclosurePanel().addOpenHandler(new OpenHandler<DisclosurePanel>() {
 			@Override
 			public void onOpen(OpenEvent<DisclosurePanel> event) {
 				eventBus.fireEvent(new ViewResizedEvent());
 			}
 		});
-		
+
 		view.getDisclosurePanel().addCloseHandler(new CloseHandler<DisclosurePanel>() {
 			@Override
 			public void onClose(CloseEvent<DisclosurePanel> event) {
@@ -382,7 +449,7 @@ public class ExperimentPresenter {
 		setViewState(State.NO_ORGANISM_SELECTED);
 		setViewSubsetVisible(false);
 	}
-	
+
 	public void clearSuggestBox() {
 		view.getExperimentSuggestBox().setText("");
 	}
@@ -414,7 +481,7 @@ public class ExperimentPresenter {
 			}
 		});
 	}
-	
+
 	public void setOrganism(final Organism organism) {
 		this.organism = organism;
 		populate();
