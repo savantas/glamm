@@ -66,10 +66,10 @@ public class AnnotatedMapPresenter {
 	}
 	
 	public interface View {
-		public HasAllMouseHandlers getAllMouseHandlers();
-		public HasClickHandlers getClickHandlers();
-		public HasDoubleClickHandlers getDoubleClickHandlers();
-		public Panel getMapPanel();
+		public HasAllMouseHandlers		getAllMouseHandlers();
+		public HasClickHandlers 		getClickHandlers();
+		public HasDoubleClickHandlers 	getDoubleClickHandlers();
+		public Panel 					getMapPanel();
 	}
 	
 	private enum Mode {
@@ -425,6 +425,9 @@ public class AnnotatedMapPresenter {
 			if(elements == null)
 				continue;
 			for(OMSVGElement element : elements) {
+				if(element.hasAttribute(AnnotatedMapData.ATTRIBUTE_ABSENT) && 
+						element.getAttribute(AnnotatedMapData.ATTRIBUTE_ABSENT).equals("true"))
+					continue;
 				element.setAttribute(AnnotatedMapData.ATTRIBUTE_HAS_DATA, "true");
 				element.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, cssColor);
 			}
