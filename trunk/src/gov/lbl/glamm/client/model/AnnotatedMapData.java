@@ -28,7 +28,7 @@ import com.google.gwt.dom.client.Node;
  */
 @SuppressWarnings("serial")
 public class AnnotatedMapData implements Serializable {
-	
+
 	public static final String ATTRIBUTE_ABSENT				= "absent";
 	public static final String ATTRIBUTE_CLASS 				= "class";
 	public static final String ATTRIBUTE_CPD_DST			= "cpddst";
@@ -45,18 +45,18 @@ public class AnnotatedMapData implements Serializable {
 	public static final String ATTRIBUTE_SEARCH_TARGET		= "searchtarget";
 	public static final String ATTRIBUTE_STATE				= "state";
 	public static final String ATTRIBUTE_WIDTH				= "width";
-	
+
 	public static final String CLASS_BACKGROUND 	= "background";
 	public static final String CLASS_CPD 			= "cpd";
 	public static final String CLASS_MAP 			= "map";
 	public static final String CLASS_RXN 			= "rxn";
-	
+
 	public static final String STATE_DEFAULT		= "default";
 	public static final String STATE_MOUSEOVER		= "mouseover";
 	public static final String STATE_SELECTED		= "selected";
-	
+
 	public static final String VIEWPORT_ID	= "viewport";
-	
+
 	private OMSVGSVGElement	svgRoot 	= null;
 	private OMSVGGElement 	viewport 	= null;
 	private Set<String> cpdDbNames = null;
@@ -66,10 +66,10 @@ public class AnnotatedMapData implements Serializable {
 	private Map<String, Set<OMSVGElement>> id2SvgElements = null;
 	private Set<OMSVGElement> cpdSvgElements = null;
 	private Set<OMSVGElement> rxnSvgElements = null;
-	
+
 	@SuppressWarnings("unused")
 	private AnnotatedMapData() {}
-	
+
 	/**
 	 * Constructor
 	 * @param resource The SVGResource containing the annotated map
@@ -77,7 +77,7 @@ public class AnnotatedMapData implements Serializable {
 	public AnnotatedMapData(final SVGResource resource, String mapId, String[] cpdDbNames, String[] rxnDbNames) {
 		// get svgRoot from resource
 		svgRoot = resource.getSvg();
-		
+
 		// get viewport from resource - a bit more involved
 		OMNodeList<OMNode> nodes = svgRoot.getChildNodes();
 		for(OMNode node : nodes) {
@@ -89,28 +89,28 @@ public class AnnotatedMapData implements Serializable {
 				}
 			}
 		}
-		
+
 		// allocate space for id2SvgElements
 		id2SvgElements = new HashMap<String, Set<OMSVGElement>>();
 		cpdSvgElements = new HashSet<OMSVGElement>();
 		rxnSvgElements = new HashSet<OMSVGElement>();
-		
+
 		this.mapId = mapId;
 		if(cpdDbNames != null && cpdDbNames.length > 0) {
 			this.cpdDbNames = new HashSet<String>();
 			for(int i = 0; i < cpdDbNames.length; i++) 
 				this.cpdDbNames.add(cpdDbNames[i]);
 		}
-		
+
 		if(rxnDbNames != null && rxnDbNames.length > 0) {
 			this.rxnDbNames = new HashSet<String>();
 			for(int i = 0; i < rxnDbNames.length; i++) 
 				this.rxnDbNames.add(rxnDbNames[i]);
 		}
-		
+
 		init();
 	}
-	
+
 	/**
 	 * Accessor
 	 * @return The names of the databases of compounds associated with this map.
@@ -118,7 +118,7 @@ public class AnnotatedMapData implements Serializable {
 	public Set<String> getCpdDbNames() {
 		return cpdDbNames;
 	}
-	
+
 	/**
 	 * Accessor
 	 * @return The SVG elements corresponding to compounds on this map.
@@ -126,7 +126,7 @@ public class AnnotatedMapData implements Serializable {
 	public Set<OMSVGElement> getCpdSvgElements() {
 		return cpdSvgElements;
 	}
-	
+
 	/**
 	 * Accessor
 	 * @return The map's ID.
@@ -134,7 +134,7 @@ public class AnnotatedMapData implements Serializable {
 	public String getMapId() {
 		return mapId;
 	}
-	
+
 	/**
 	 * Accessor
 	 * @return The names of the databases of reactions associated with this map.
@@ -142,7 +142,7 @@ public class AnnotatedMapData implements Serializable {
 	public Set<String> getRxnDbNames() {
 		return rxnDbNames;
 	}
-	
+
 	/**
 	 * Accessor
 	 * @return The SVG elements corresponding to reactions on this map.
@@ -150,7 +150,7 @@ public class AnnotatedMapData implements Serializable {
 	public Set<OMSVGElement> getRxnSvgElements() {
 		return rxnSvgElements;
 	}
-	
+
 	/**
 	 * Gets the root SVG element.
 	 * @return OMSVGSVGElement the root element
@@ -158,7 +158,7 @@ public class AnnotatedMapData implements Serializable {
 	public OMSVGSVGElement getSvg() {
 		return svgRoot;
 	}
-	
+
 	/**
 	 * Gets the set of SVG elements associated with this id
 	 * @param id
@@ -167,14 +167,14 @@ public class AnnotatedMapData implements Serializable {
 	public Set<OMSVGElement> getSvgElementsForId(final String id) {
 		return id2SvgElements.get(id);
 	}
-	
+
 	/**
 	 * Gets the set of SVG elements associated with this GlammPrimitive
 	 * @param primitive
 	 * @return HashSet<OMSVGElement> the elements associated with this primitive, null if none.
 	 */
 	public Set<OMSVGElement> getSvgElementsForGlammPrimitive(final GlammPrimitive primitive) {
-		
+
 		if(primitive.getType() == Compound.TYPE) {
 			Xref xref = primitive.getXrefForDbNames(getCpdDbNames());
 			String id = xref.getXrefId();
@@ -203,11 +203,11 @@ public class AnnotatedMapData implements Serializable {
 			}
 			return allSvgElements;
 		}
-		
-		
+
+
 		return null;
 	}
-	
+
 	/**
 	 * Gets the set of SVG elements associated with this collection of GlammPrimitives
 	 * @param primitive - The collection of GlammPrimitives
@@ -225,7 +225,7 @@ public class AnnotatedMapData implements Serializable {
 		}
 		return svgElements;
 	}
-	
+
 	/**
 	 * Gets the height attribute of the SVG root element, 0 if unspecified
 	 * @return float the height attribute the SVG root element.
@@ -236,7 +236,7 @@ public class AnnotatedMapData implements Serializable {
 			result = Float.parseFloat(svgRoot.getAttribute(ATTRIBUTE_HEIGHT));
 		return result;
 	}
-	
+
 	/**
 	 * Gets the width attribute of the SVG root element, 0 if unspecified
 	 * @return float the width attribute the SVG root element.
@@ -247,7 +247,7 @@ public class AnnotatedMapData implements Serializable {
 			result = Float.parseFloat(svgRoot.getAttribute(ATTRIBUTE_WIDTH));
 		return result;
 	}
-	
+
 	/**
 	 * Gets the top level group with id viewport.
 	 * @return The viewport group.
@@ -255,8 +255,8 @@ public class AnnotatedMapData implements Serializable {
 	public OMSVGGElement getViewport() {
 		return viewport;
 	}
-	
-	
+
+
 	/**
 	 * Initializes all SVG groups with class attributes set to cpd, map, or rxn.
 	 */
@@ -271,7 +271,7 @@ public class AnnotatedMapData implements Serializable {
 				initRxnGroup(g);
 		}
 	}
-	
+
 	/**
 	 * Initializes Compound groups
 	 * @param g The group
@@ -293,14 +293,14 @@ public class AnnotatedMapData implements Serializable {
 			}
 		}
 	}
-	
+
 	/**
 	 * Initializes map groups
 	 * @param g The group
 	 */
 	private void initMapGroup(OMSVGGElement g) {
 		OMNodeList<OMSVGElement> elements = g.getElementsByTagName(SVGConstants.SVG_T_SPAN_TAG);
-		
+
 		if(g.hasAttribute(ATTRIBUTE_KEGGID)) {
 			String mapId = g.getAttribute(ATTRIBUTE_KEGGID).substring(5);
 			Set<OMSVGElement> elementsForId = this.id2SvgElements.get(mapId);
@@ -312,20 +312,20 @@ public class AnnotatedMapData implements Serializable {
 				elementsForId.add(element);
 		}
 	}
-	
+
 	/**
 	 * Initializes Reaction groups
 	 * @param g The group.
 	 */
 	private void initRxnGroup(OMSVGGElement g) {
 		OMNodeList<OMSVGElement> elements = g.getElementsByTagName(SVGConstants.SVG_PATH_TAG);
-		
+
 		for(OMSVGElement element : elements) {
 			element.setAttribute(ATTRIBUTE_DEFAULT_COLOR, element.getAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE));
 			rxnSvgElements.add(element);
 		}
-		
-		if(g.hasAttribute(ATTRIBUTE_REACTION)) {
+
+		if(g.hasAttribute(ATTRIBUTE_REACTION) && !g.getAttribute(ATTRIBUTE_REACTION).isEmpty()) {
 			String rxnString = g.getAttribute(ATTRIBUTE_REACTION);
 			String[] rxnIds = rxnString.split("\\+");
 			for(String rxnId : rxnIds) {
@@ -340,28 +340,29 @@ public class AnnotatedMapData implements Serializable {
 				for(OMSVGElement element : elements) {
 					elementsForId.add(element);
 				}
-					
+
+			}
+
+
+
+			if(g.hasAttribute(ATTRIBUTE_ENZYME)) {
+				String ecNumString = g.getAttribute(ATTRIBUTE_ENZYME);
+				String[] ecNums = ecNumString.split("\\+");
+				for(String ecNum : ecNums) {
+					if(ecNum.isEmpty())
+						continue;
+					ecNum = ecNum.substring(3);
+					Set<OMSVGElement> elementsForId = this.id2SvgElements.get(ecNum);
+					if(elementsForId == null) {
+						elementsForId = new HashSet<OMSVGElement>();
+						this.id2SvgElements.put(ecNum, elementsForId);
+					}
+					for(OMSVGElement element : elements) {
+						elementsForId.add(element);
+					}
+				}
 			}
 		}
-		
-		
-		if(g.hasAttribute(ATTRIBUTE_ENZYME)) {
-			String ecNumString = g.getAttribute(ATTRIBUTE_ENZYME);
-			String[] ecNums = ecNumString.split("\\+");
-			for(String ecNum : ecNums) {
-				if(ecNum.isEmpty())
-					continue;
-				ecNum = ecNum.substring(3);
-				Set<OMSVGElement> elementsForId = this.id2SvgElements.get(ecNum);
-				if(elementsForId == null) {
-					elementsForId = new HashSet<OMSVGElement>();
-					this.id2SvgElements.put(ecNum, elementsForId);
-				}
-				for(OMSVGElement element : elements) {
-					elementsForId.add(element);
-				}
-			}
-		}
-		
+
 	}
 }
