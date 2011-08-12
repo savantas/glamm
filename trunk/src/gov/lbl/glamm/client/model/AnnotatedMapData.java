@@ -16,9 +16,17 @@ import org.vectomatic.dom.svg.OMSVGElement;
 import org.vectomatic.dom.svg.OMSVGGElement;
 import org.vectomatic.dom.svg.OMSVGSVGElement;
 import org.vectomatic.dom.svg.ui.SVGResource;
+import org.vectomatic.dom.svg.utils.OMSVGParser;
 import org.vectomatic.dom.svg.utils.SVGConstants;
 
 import com.google.gwt.dom.client.Node;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
 
 
 /**
@@ -67,49 +75,79 @@ public class AnnotatedMapData implements Serializable {
 	private Set<OMSVGElement> cpdSvgElements = null;
 	private Set<OMSVGElement> rxnSvgElements = null;
 
-	@SuppressWarnings("unused")
 	private AnnotatedMapData() {}
 
 	/**
 	 * Constructor
 	 * @param resource The SVGResource containing the annotated map
 	 */
-	public AnnotatedMapData(final SVGResource resource, String mapId, String[] cpdDbNames, String[] rxnDbNames) {
-		// get svgRoot from resource
-		svgRoot = resource.getSvg();
 
-		// get viewport from resource - a bit more involved
-		OMNodeList<OMNode> nodes = svgRoot.getChildNodes();
-		for(OMNode node : nodes) {
-			if(node.getNodeType() == Node.ELEMENT_NODE) {
-				OMElement element = (OMElement) node;
-				if(element.hasAttribute(ATTRIBUTE_ID) && element.getAttribute(ATTRIBUTE_ID).equals(VIEWPORT_ID))  {
-					viewport = (OMSVGGElement) element;
-					break;
-				}
-			}
-		}
+	private AnnotatedMapData(final String mapId, final String[] cpdDbNames, final String[] rxnDbNames) {
+
+		this.mapId = mapId;
+
+		this.cpdDbNames = new HashSet<String>();
+		for(int i = 0; i < cpdDbNames.length; i++) 
+			this.cpdDbNames.add(cpdDbNames[i]);
+
+		this.rxnDbNames = new HashSet<String>();
+		for(int i = 0; i < rxnDbNames.length; i++) 
+			this.rxnDbNames.add(rxnDbNames[i]);
 
 		// allocate space for id2SvgElements
 		id2SvgElements = new HashMap<String, Set<OMSVGElement>>();
 		cpdSvgElements = new HashSet<OMSVGElement>();
 		rxnSvgElements = new HashSet<OMSVGElement>();
-
-		this.mapId = mapId;
-		if(cpdDbNames != null && cpdDbNames.length > 0) {
-			this.cpdDbNames = new HashSet<String>();
-			for(int i = 0; i < cpdDbNames.length; i++) 
-				this.cpdDbNames.add(cpdDbNames[i]);
-		}
-
-		if(rxnDbNames != null && rxnDbNames.length > 0) {
-			this.rxnDbNames = new HashSet<String>();
-			for(int i = 0; i < rxnDbNames.length; i++) 
-				this.rxnDbNames.add(rxnDbNames[i]);
-		}
-
-		init();
 	}
+
+	public static AnnotatedMapData createFromSvgResource(final SVGResource resource, 
+			final String mapId, 
+			final String[] cpdDbNames, 
+			final String[] rxnDbNames) {
+		AnnotatedMapData mapData = new AnnotatedMapData(mapId, cpdDbNames, rxnDbNames);
+		mapData.svgRoot = resource.getSvg();
+		mapData.init();
+		return mapData;
+	}
+
+	public static AnnotatedMapData createFromRawSvg(final String rawSvg, 
+			final String mapId, 
+			final String[] cpdDbNames, 
+			final String[] rxnDbNames) {
+		AnnotatedMapData mapData = new AnnotatedMapData(mapId, cpdDbNames, rxnDbNames);
+		mapData.svgRoot = OMSVGParser.parse(rawSvg);
+		mapData.init();
+		return mapData;
+	}
+
+	public static AnnotatedMapData createFromUrl(final String url, 
+			final String mapId, 
+			final String[] cpdDbNames, 
+			final String[] rxnDbNames, 
+			final Command onLoad) {
+
+		final AnnotatedMapData mapData = new AnnotatedMapData(mapId, cpdDbNames, rxnDbNames);
+
+		try {
+			new RequestBuilder(RequestBuilder.GET, url).sendRequest("", new RequestCallback() {
+				@Override
+				public void onResponseReceived(Request request, Response response) {
+					mapData.svgRoot = OMSVGParser.parse(response.getText());
+					mapData.init();
+					onLoad.execute();
+				}
+				@Override
+				public void onError(Request request, Throwable exception) {
+					Window.alert("Could not open " + mapId + " at " + url);
+				}
+			});
+		} catch(RequestException e) {
+			Window.alert(e.getMessage());
+		}
+
+		return mapData;
+	}
+
 
 	/**
 	 * Accessor
@@ -261,8 +299,19 @@ public class AnnotatedMapData implements Serializable {
 	 * Initializes all SVG groups with class attributes set to cpd, map, or rxn.
 	 */
 	private void init() {
-		OMNodeList<OMSVGGElement> groups = viewport.getElementsByTagName(SVGConstants.SVG_G_TAG);
-		for(OMSVGGElement g : groups) {
+
+		// get viewport from resource - a bit more involved
+		for(OMNode node : svgRoot.getChildNodes()) {
+			if(node.getNodeType() == Node.ELEMENT_NODE) {
+				OMElement element = (OMElement) node;
+				if(element.hasAttribute(ATTRIBUTE_ID) && element.getAttribute(ATTRIBUTE_ID).equals(VIEWPORT_ID))  {
+					viewport = (OMSVGGElement) element;
+					break;
+				}
+			}
+		}
+
+		for(OMElement g : viewport.getElementsByTagName(SVGConstants.SVG_G_TAG)) {
 			if(g.hasAttribute(ATTRIBUTE_CLASS) && g.getAttribute(ATTRIBUTE_CLASS).equals(CLASS_CPD))
 				initCpdGroup(g);
 			if(g.hasAttribute(ATTRIBUTE_CLASS) && g.getAttribute(ATTRIBUTE_CLASS).equals(CLASS_MAP))
@@ -276,7 +325,7 @@ public class AnnotatedMapData implements Serializable {
 	 * Initializes Compound groups
 	 * @param g The group
 	 */
-	private void initCpdGroup(OMSVGGElement g) {
+	private void initCpdGroup(OMElement g) {
 		OMNodeList<OMSVGElement> elements = g.getElementsByTagName(SVGConstants.SVG_ELLIPSE_TAG);
 		if(g.hasAttribute(ATTRIBUTE_KEGGID)) {
 			String cpdId = g.getAttribute(ATTRIBUTE_KEGGID);
@@ -298,7 +347,7 @@ public class AnnotatedMapData implements Serializable {
 	 * Initializes map groups
 	 * @param g The group
 	 */
-	private void initMapGroup(OMSVGGElement g) {
+	private void initMapGroup(OMElement g) {
 		OMNodeList<OMSVGElement> elements = g.getElementsByTagName(SVGConstants.SVG_T_SPAN_TAG);
 
 		if(g.hasAttribute(ATTRIBUTE_KEGGID)) {
@@ -317,7 +366,7 @@ public class AnnotatedMapData implements Serializable {
 	 * Initializes Reaction groups
 	 * @param g The group.
 	 */
-	private void initRxnGroup(OMSVGGElement g) {
+	private void initRxnGroup(OMElement g) {
 		OMNodeList<OMSVGElement> elements = g.getElementsByTagName(SVGConstants.SVG_PATH_TAG);
 
 		for(OMSVGElement element : elements) {

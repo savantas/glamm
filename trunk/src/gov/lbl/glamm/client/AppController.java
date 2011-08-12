@@ -58,6 +58,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.http.client.UrlBuilder;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
@@ -68,18 +69,16 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
  * Top level application controller class.
  * 
  * @author jtbates
- *
+ * 
  */
 
 public class AppController {
-
-
 
 	private static AppController instance;
 
 	private GlammServiceAsync rpc;
 	private SimpleEventBus eventBus;
-	private AbsolutePanel 	mainPanel 	= null;
+	private AbsolutePanel mainPanel = null;
 
 	private AnnotatedMapData mapData;
 
@@ -151,13 +150,14 @@ public class AppController {
 		mainPanel = new AbsolutePanel();
 
 		// start with global map
-		mapData = new AnnotatedMapData(GlammClientBundle.INSTANCE.globalMap(), 
-				"map01100", 
-				new String[]{ "LIGAND-CPD", "GLYCAN"}, 
-				new String[]{"LIGAND-RXN"});
+		//		mapData = AnnotatedMapData.createFromRawSvg(GlammClientBundle.INSTANCE.globalMapText().getText(), 
+		//				"map01100", 
+		//				new String[] { "LIGAND-CPD", "GLYCAN" }, 
+		//				new String[] { "LIGAND-RXN" });
 
 		cpdDisambiguationView = new CpdDisambiguationView();
-		cpdDisambiguationPresenter = new CpdDisambiguationPresenter(rpc, cpdDisambiguationView, eventBus);
+		cpdDisambiguationPresenter = new CpdDisambiguationPresenter(rpc,
+				cpdDisambiguationView, eventBus);
 
 		interpolatorView = new InterpolatorView();
 		interpolatorPresenter = new InterpolatorPresenter(interpolatorView);
@@ -178,19 +178,23 @@ public class AppController {
 		miniMapPresenter = new MiniMapPresenter(miniMapView, eventBus);
 
 		panZoomView = new PanZoomControlView();
-		panZoomPresenter = new PanZoomControlPresenter(rpc, panZoomView, eventBus);
+		panZoomPresenter = new PanZoomControlPresenter(rpc, panZoomView,
+				eventBus);
 
 		organismView = new OrganismView();
 		organismPresenter = new OrganismPresenter(rpc, organismView, eventBus);
 
 		organismUploadView = new OrganismUploadView();
-		organismUploadPresenter = new OrganismUploadPresenter(organismUploadView, eventBus);
+		organismUploadPresenter = new OrganismUploadPresenter(
+				organismUploadView, eventBus);
 
 		experimentView = new ExperimentView();
-		experimentPresenter = new ExperimentPresenter(rpc, experimentView, eventBus);
+		experimentPresenter = new ExperimentPresenter(rpc, experimentView,
+				eventBus);
 
 		experimentUploadView = new ExperimentUploadView();
-		experimentUploadPresenter = new ExperimentUploadPresenter(experimentUploadView, eventBus);
+		experimentUploadPresenter = new ExperimentUploadPresenter(
+				experimentUploadView, eventBus);
 
 		citationsView = new ImagePopupView();
 		citationsPresenter = new ImagePopupPresenter(citationsView);
@@ -199,21 +203,24 @@ public class AppController {
 		helpPresenter = new ImagePopupPresenter(helpView);
 
 		retrosynthesisView = new RetrosynthesisView();
-		retrosynthesisPresenter = new RetrosynthesisPresenter(rpc, retrosynthesisView, eventBus);
+		retrosynthesisPresenter = new RetrosynthesisPresenter(rpc,
+				retrosynthesisView, eventBus);
 	}
 
 	/**
 	 * @return AppController singleton instance
 	 */
 	public static AppController instance() {
-		if(instance == null)
+		if (instance == null)
 			instance = new AppController();
 		return instance;
 	}
 
 	/**
 	 * Called by the entryPoint class Glamm
-	 * @param rlp The RootLayoutPanel
+	 * 
+	 * @param rlp
+	 *            The RootLayoutPanel
 	 */
 	public void start(final RootLayoutPanel rlp) {
 		rlp.add(layout);
@@ -240,14 +247,14 @@ public class AppController {
 
 		onResize();
 
-		eventBus.addHandler(ViewResizedEvent.TYPE, new ViewResizedEvent.Handler() {
+		eventBus.addHandler(ViewResizedEvent.TYPE,
+				new ViewResizedEvent.Handler() {
 			@Override
 			public void onViewResized(ViewResizedEvent event) {
 				onResize();
 			}
 		});
 	}
-
 
 	/**
 	 * Computes widget positions on window resize
@@ -257,16 +264,42 @@ public class AppController {
 		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
 			@Override
 			public void execute() {
-				mainPanel.setWidgetPosition(organismView, retrosynthesisView.getOffsetWidth() + 5, 0);
-				mainPanel.setWidgetPosition(experimentView, retrosynthesisView.getOffsetWidth() + organismView.getOffsetWidth() + 10, 0);
-				mainPanel.setWidgetPosition(miniMapView, 0, Window.getClientHeight() - miniMapView.getOffsetHeight());
-				mainPanel.setWidgetPosition(panZoomView, miniMapView.getOffsetWidth() + 1, Window.getClientHeight() - panZoomView.getOffsetHeight());
-				mainPanel.setWidgetPosition(loginView, Window.getClientWidth() - loginView.getOffsetWidth(), 0);
-				mainPanel.setWidgetPosition(citationsView, Window.getClientWidth() - citationsView.getOffsetWidth(), Window.getClientHeight() - citationsView.getOffsetHeight());
-				mainPanel.setWidgetPosition(interpolatorView, Window.getClientWidth() - interpolatorView.getOffsetWidth(), Window.getClientHeight() - citationsView.getOffsetHeight() - interpolatorView.getOffsetHeight() - 5);
-				mainPanel.setWidgetPosition(helpView, Window.getClientWidth() - helpView.getOffsetWidth(), loginView.getOffsetHeight() + 5);
+				mainPanel.setWidgetPosition(organismView,
+						retrosynthesisView.getOffsetWidth() + 5, 0);
+				mainPanel.setWidgetPosition(
+						experimentView,
+						retrosynthesisView.getOffsetWidth()
+						+ organismView.getOffsetWidth() + 10, 0);
+				mainPanel.setWidgetPosition(
+						miniMapView,
+						0,
+						Window.getClientHeight()
+						- miniMapView.getOffsetHeight());
+				mainPanel.setWidgetPosition(
+						panZoomView,
+						miniMapView.getOffsetWidth() + 1,
+						Window.getClientHeight()
+						- panZoomView.getOffsetHeight());
+				mainPanel.setWidgetPosition(
+						citationsView,
+						Window.getClientWidth()
+						- citationsView.getOffsetWidth(),
+						Window.getClientHeight()
+						- citationsView.getOffsetHeight());
+				mainPanel.setWidgetPosition(
+						interpolatorView,
+						Window.getClientWidth()
+						- interpolatorView.getOffsetWidth(),
+						Window.getClientHeight()
+						- citationsView.getOffsetHeight()
+						- interpolatorView.getOffsetHeight() - 5);
+				mainPanel.setWidgetPosition(helpView, Window.getClientWidth()
+						- helpView.getOffsetWidth(), 0);
+				mainPanel.setWidgetPosition(loginView,
+						Window.getClientWidth() - loginView.getOffsetWidth()
+						- helpView.getOffsetWidth() - 5, 0);
 			}
-		});		
+		});
 	}
 
 	/**
@@ -274,20 +307,24 @@ public class AppController {
 	 */
 	private void loadCpdDisambiguation() {
 
-		eventBus.addHandler(CpdDstPickedEvent.TYPE, new CpdDstPickedEvent.Handler() {
+		eventBus.addHandler(CpdDstPickedEvent.TYPE,
+				new CpdDstPickedEvent.Handler() {
 			@Override
 			public void onPicked(CpdDstPickedEvent event) {
 				cpdDisambiguationPresenter.clearCpdChoices();
-				cpdDisambiguationPresenter.addDstCompounds(event.getCompounds());
+				cpdDisambiguationPresenter.addDstCompounds(event
+						.getCompounds());
 				cpdDisambiguationView.showView();
 			}
 		});
 
-		eventBus.addHandler(CpdSrcPickedEvent.TYPE, new CpdSrcPickedEvent.Handler() {
+		eventBus.addHandler(CpdSrcPickedEvent.TYPE,
+				new CpdSrcPickedEvent.Handler() {
 			@Override
 			public void onPicked(CpdSrcPickedEvent event) {
 				cpdDisambiguationPresenter.clearCpdChoices();
-				cpdDisambiguationPresenter.addSrcCompounds(event.getCompounds());
+				cpdDisambiguationPresenter.addSrcCompounds(event
+						.getCompounds());
 				cpdDisambiguationView.showView();
 			}
 		});
@@ -306,18 +343,23 @@ public class AppController {
 	}
 
 	/**
-	 * Initializes popup displaying information about compounds, reactions, and pathways on the map
+	 * Initializes popup displaying information about compounds, reactions, and
+	 * pathways on the map
 	 */
 	private void loadMapElementPopup() {
-		eventBus.addHandler(MapElementClickEvent.TYPE, new MapElementClickEvent.Handler() {
+		eventBus.addHandler(MapElementClickEvent.TYPE,
+				new MapElementClickEvent.Handler() {
 			@Override
-			public void onMapElementClick(final MapElementClickEvent event) {
-				mapElementPresenter.showPopup(event.getElementClass(), event.getElementQuery(), 
-						event.getClientX(), event.getClientY());	
+			public void onMapElementClick(
+					final MapElementClickEvent event) {
+				mapElementPresenter.showPopup(event.getElementClass(),
+						event.getElementQuery(), event.getClientX(),
+						event.getClientY());
 			}
 		});
 
-		eventBus.addHandler(OrganismPickedEvent.TYPE, new OrganismPickedEvent.Handler() {
+		eventBus.addHandler(OrganismPickedEvent.TYPE,
+				new OrganismPickedEvent.Handler() {
 			@Override
 			public void onOrganismPicked(final OrganismPickedEvent event) {
 				mapElementPresenter.setOrganism(event.getOrganism());
@@ -325,7 +367,8 @@ public class AppController {
 			}
 		});
 
-		eventBus.addHandler(SamplePickedEvent.TYPE, new SamplePickedEvent.Handler() {
+		eventBus.addHandler(SamplePickedEvent.TYPE,
+				new SamplePickedEvent.Handler() {
 			@Override
 			public void onSamplePicked(final SamplePickedEvent event) {
 				mapElementPresenter.setSample(event.getSample());
@@ -335,7 +378,7 @@ public class AppController {
 		eventBus.addHandler(MapUpdateEvent.TYPE, new MapUpdateEvent.Handler() {
 			@Override
 			public void onMapUpdate(MapUpdateEvent event) {
-				mapElementPresenter.killPopup();	
+				mapElementPresenter.killPopup();
 			}
 		});
 	}
@@ -345,60 +388,84 @@ public class AppController {
 	 */
 	private void loadMapPanel() {
 
-		mapPresenter.setMapData(mapData);
+		UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
+		urlBuilder.setPath("/svg/map01100.svg");
+		mapData = AnnotatedMapData.createFromUrl(urlBuilder.buildString(), 
+				"map01100", 
+				new String[] { "LIGAND-CPD", "GLYCAN" }, 
+				new String[] { "LIGAND-RXN" },
+				new Command() {
+			@Override
+			public void execute() {
+				mapPresenter.setMapData(mapData);
+			}
+		});
+
+
 		mainPanel.add(mapView, 0, 0);
-		eventBus.addHandler(PanZoomControlEvent.TYPE, new PanZoomControlEvent.Handler() {
+		eventBus.addHandler(PanZoomControlEvent.TYPE,
+				new PanZoomControlEvent.Handler() {
 			public void onPanZoom(PanZoomControlEvent event) {
 
 				short action = event.getAction();
-				if(action == PanZoomControlEvent.ACTION_PAN_UP)
+				if (action == PanZoomControlEvent.ACTION_PAN_UP)
 					mapPresenter.translateNorm(0, -0.05f);
-				else if(action == PanZoomControlEvent.ACTION_PAN_DOWN)
+				else if (action == PanZoomControlEvent.ACTION_PAN_DOWN)
 					mapPresenter.translateNorm(0, 0.05f);
-				else if(action == PanZoomControlEvent.ACTION_PAN_LEFT)
+				else if (action == PanZoomControlEvent.ACTION_PAN_LEFT)
 					mapPresenter.translateNorm(0.05f, 0.0f);
-				else if(action == PanZoomControlEvent.ACTION_PAN_RIGHT)
+				else if (action == PanZoomControlEvent.ACTION_PAN_RIGHT)
 					mapPresenter.translateNorm(-0.05f, 0.0f);
-				else if(action == PanZoomControlEvent.ACTION_ZOOM_TO_FIT)
+				else if (action == PanZoomControlEvent.ACTION_ZOOM_TO_FIT)
 					mapPresenter.fitMapToPanel();
 				else
-					mapPresenter.setZoomNormAboutPoint(event.getZoomNorm(), Window.getClientWidth() >> 1, Window.getClientHeight() >> 1);
+					mapPresenter.setZoomNormAboutPoint(
+							event.getZoomNorm(),
+							Window.getClientWidth() >> 1,
+							Window.getClientHeight() >> 1);
 
 			}
 		});
 
-		eventBus.addHandler(OrganismPickedEvent.TYPE, new OrganismPickedEvent.Handler() {
+		eventBus.addHandler(OrganismPickedEvent.TYPE,
+				new OrganismPickedEvent.Handler() {
 			@Override
 			public void onOrganismPicked(OrganismPickedEvent event) {
 				mapPresenter.updateMapForOrganism(event.getOrganism());
 			}
 		});
 
-		eventBus.addHandler(SamplePickedEvent.TYPE, new SamplePickedEvent.Handler() {
+		eventBus.addHandler(SamplePickedEvent.TYPE,
+				new SamplePickedEvent.Handler() {
 			@Override
 			public void onSamplePicked(SamplePickedEvent event) {
 				mapPresenter.updateMapForSample(event.getSample());
 			}
 		});
 
-		eventBus.addHandler(RoutePickedEvent.TYPE, new RoutePickedEvent.Handler() {
+		eventBus.addHandler(RoutePickedEvent.TYPE,
+				new RoutePickedEvent.Handler() {
 			@Override
 			public void onPicked(RoutePickedEvent event) {
-				mapPresenter.updateMapForRoute(event.getCpdSrc(), event.getCpdDst(), event.getRoute());
+				mapPresenter.updateMapForRoute(event.getCpdSrc(),
+						event.getCpdDst(), event.getRoute());
 			}
 		});
 
-		eventBus.addHandler(RouteStepPickedEvent.TYPE, new RouteStepPickedEvent.Handler() {
+		eventBus.addHandler(RouteStepPickedEvent.TYPE,
+				new RouteStepPickedEvent.Handler() {
 			@Override
 			public void onPicked(RouteStepPickedEvent event) {
 				mapPresenter.updateMapForRouteStep(event.getReaction());
 			}
 		});
 
-		eventBus.addHandler(SearchTargetEvent.TYPE, new SearchTargetEvent.Handler() {
+		eventBus.addHandler(SearchTargetEvent.TYPE,
+				new SearchTargetEvent.Handler() {
 			@Override
 			public void onPicked(SearchTargetEvent event) {
-				mapPresenter.updateMapForSearchTarget(event.getPrimitives());
+				mapPresenter.updateMapForSearchTarget(event
+						.getPrimitives());
 			}
 		});
 	}
@@ -426,7 +493,8 @@ public class AppController {
 		mainPanel.add(organismView, 0, 0);
 		organismPresenter.populate();
 
-		eventBus.addHandler(OrganismUploadEvent.TYPE, new OrganismUploadEvent.Handler() {
+		eventBus.addHandler(OrganismUploadEvent.TYPE,
+				new OrganismUploadEvent.Handler() {
 			@Override
 			public void onRequest(OrganismUploadEvent event) {
 				return; // do nothing
@@ -438,7 +506,8 @@ public class AppController {
 			}
 		});
 
-		eventBus.addHandler(ExperimentUploadEvent.TYPE, new ExperimentUploadEvent.Handler() {
+		eventBus.addHandler(ExperimentUploadEvent.TYPE,
+				new ExperimentUploadEvent.Handler() {
 			@Override
 			public void onRequest(ExperimentUploadEvent event) {
 				return;
@@ -472,14 +541,16 @@ public class AppController {
 	private void loadExperimentPicker() {
 		mainPanel.add(experimentView, 0, 0);
 
-		eventBus.addHandler(OrganismPickedEvent.TYPE, new OrganismPickedEvent.Handler() {
+		eventBus.addHandler(OrganismPickedEvent.TYPE,
+				new OrganismPickedEvent.Handler() {
 			@Override
 			public void onOrganismPicked(OrganismPickedEvent event) {
 				experimentPresenter.setOrganism(event.getOrganism());
 			}
 		});
 
-		eventBus.addHandler(ExperimentUploadEvent.TYPE, new ExperimentUploadEvent.Handler() {
+		eventBus.addHandler(ExperimentUploadEvent.TYPE,
+				new ExperimentUploadEvent.Handler() {
 			@Override
 			public void onSuccess(ExperimentUploadEvent event) {
 				experimentPresenter.setOrganism(event.getOrganism());
@@ -491,7 +562,8 @@ public class AppController {
 			}
 		});
 
-		eventBus.addHandler(RoutePickedEvent.TYPE, new RoutePickedEvent.Handler() {
+		eventBus.addHandler(RoutePickedEvent.TYPE,
+				new RoutePickedEvent.Handler() {
 
 			@Override
 			public void onPicked(RoutePickedEvent event) {
@@ -519,14 +591,17 @@ public class AppController {
 	 * Initializes experiment upload panel
 	 */
 	private void loadExperimentUpload() {
-		eventBus.addHandler(OrganismPickedEvent.TYPE, new OrganismPickedEvent.Handler() {
+		eventBus.addHandler(OrganismPickedEvent.TYPE,
+				new OrganismPickedEvent.Handler() {
 			@Override
 			public void onOrganismPicked(OrganismPickedEvent event) {
-				experimentUploadPresenter.setOrganism(event.getOrganism());
+				experimentUploadPresenter.setOrganism(event
+						.getOrganism());
 			}
 		});
 
-		eventBus.addHandler(ExperimentUploadEvent.TYPE, new ExperimentUploadEvent.Handler() {
+		eventBus.addHandler(ExperimentUploadEvent.TYPE,
+				new ExperimentUploadEvent.Handler() {
 			@Override
 			public void onRequest(ExperimentUploadEvent event) {
 				experimentUploadView.showView();
@@ -545,28 +620,32 @@ public class AppController {
 	private void loadInterpolator() {
 		mainPanel.add(interpolatorView, 0, 0);
 
-		eventBus.addHandler(OrganismPickedEvent.TYPE, new OrganismPickedEvent.Handler() {
+		eventBus.addHandler(OrganismPickedEvent.TYPE,
+				new OrganismPickedEvent.Handler() {
 			@Override
 			public void onOrganismPicked(OrganismPickedEvent event) {
 				interpolatorView.hide();
 			}
 		});
 
-		eventBus.addHandler(RoutePickedEvent.TYPE, new RoutePickedEvent.Handler() {
+		eventBus.addHandler(RoutePickedEvent.TYPE,
+				new RoutePickedEvent.Handler() {
 			@Override
 			public void onPicked(RoutePickedEvent event) {
 				interpolatorView.hide();
 			}
 		});
 
-		eventBus.addHandler(SamplePickedEvent.TYPE, new SamplePickedEvent.Handler() {
+		eventBus.addHandler(SamplePickedEvent.TYPE,
+				new SamplePickedEvent.Handler() {
 			@Override
 			public void onSamplePicked(SamplePickedEvent event) {
 				Sample sample = event.getSample();
-				if(sample == null)
+				if (sample == null)
 					interpolatorView.hide();
 				else {
-					Interpolator interpolator = Interpolator.getInterpolatorForSample(sample);
+					Interpolator interpolator = Interpolator
+					.getInterpolatorForSample(sample);
 					interpolatorPresenter.setInterpolator(interpolator);
 					interpolatorView.show();
 					onResize();
@@ -576,14 +655,15 @@ public class AppController {
 	}
 
 	private void loadLogin() {
-		mainPanel.add(loginView, 0, 0);	
+		mainPanel.add(loginView, 0, 0);
 	}
 
 	/**
 	 * Initializes organism upload panel
 	 */
 	private void loadOrganismUpload() {
-		eventBus.addHandler(OrganismUploadEvent.TYPE, new OrganismUploadEvent.Handler() {
+		eventBus.addHandler(OrganismUploadEvent.TYPE,
+				new OrganismUploadEvent.Handler() {
 			@Override
 			public void onSuccess(OrganismUploadEvent event) {
 				return; // do nothing
@@ -618,8 +698,10 @@ public class AppController {
 		urlBuilder.setPath("glammServlet");
 		urlBuilder.setParameter("action", ACTION_GEN_CITATIONS);
 
-		citationsPresenter.setDefaultImageUrl(GlammClientBundle.INSTANCE.glammLogoDefault().getURL());
-		citationsPresenter.setMouseOverImageUrl(GlammClientBundle.INSTANCE.glammLogoMouseOver().getURL());
+		citationsPresenter.setDefaultImageUrl(GlammClientBundle.INSTANCE
+				.glammLogoDefault().getURL());
+		citationsPresenter.setMouseOverImageUrl(GlammClientBundle.INSTANCE
+				.glammLogoMouseOver().getURL());
 		citationsPresenter.setPopupContentUrl(urlBuilder.buildString());
 
 		citationsView.setImageSize("208px", "40px");
@@ -636,7 +718,8 @@ public class AppController {
 		UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
 		urlBuilder.setPath("tutorial/index.html");
 
-		helpPresenter.setDefaultImageUrl(GlammClientBundle.INSTANCE.helpIconDefault().getURL());
+		helpPresenter.setDefaultImageUrl(GlammClientBundle.INSTANCE
+				.helpIconDefault().getURL());
 		helpPresenter.setPopupContentUrl(urlBuilder.buildString());
 
 		helpView.setImageSize("32px", "32px");
@@ -653,9 +736,9 @@ public class AppController {
 
 		retrosynthesisPresenter.setMapData(mapData);
 		retrosynthesisPresenter.setOrganism(Organism.globalMap());
-		//		retrosynthesisPresenter.setOrganism(new Organism("224914","Brucella melitensis 16M"));
 
-		eventBus.addHandler(OrganismPickedEvent.TYPE, new OrganismPickedEvent.Handler() {
+		eventBus.addHandler(OrganismPickedEvent.TYPE,
+				new OrganismPickedEvent.Handler() {
 			@Override
 			public void onOrganismPicked(OrganismPickedEvent event) {
 				retrosynthesisPresenter.setOrganism(event.getOrganism());
@@ -663,21 +746,24 @@ public class AppController {
 			}
 		});
 
-		eventBus.addHandler(SamplePickedEvent.TYPE, new SamplePickedEvent.Handler() {
+		eventBus.addHandler(SamplePickedEvent.TYPE,
+				new SamplePickedEvent.Handler() {
 			@Override
 			public void onSamplePicked(SamplePickedEvent event) {
 				retrosynthesisPresenter.reset();
 			}
 		});
 
-		eventBus.addHandler(CpdDstDisambiguatedEvent.TYPE, new CpdDstDisambiguatedEvent.Handler() {
+		eventBus.addHandler(CpdDstDisambiguatedEvent.TYPE,
+				new CpdDstDisambiguatedEvent.Handler() {
 			@Override
 			public void onDisambiguated(CpdDstDisambiguatedEvent event) {
 				retrosynthesisPresenter.setCpdDst(event.getCompound());
 			}
 		});
 
-		eventBus.addHandler(CpdSrcDisambiguatedEvent.TYPE, new CpdSrcDisambiguatedEvent.Handler() {
+		eventBus.addHandler(CpdSrcDisambiguatedEvent.TYPE,
+				new CpdSrcDisambiguatedEvent.Handler() {
 			@Override
 			public void onDisambiguated(CpdSrcDisambiguatedEvent event) {
 				retrosynthesisPresenter.setCpdSrc(event.getCompound());
