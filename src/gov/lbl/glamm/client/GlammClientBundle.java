@@ -2,7 +2,6 @@ package gov.lbl.glamm.client;
 
 
 import org.vectomatic.dom.svg.ui.SVGResource;
-import org.vectomatic.dom.svg.ui.SVGResource.Validated;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
@@ -25,10 +24,6 @@ public interface GlammClientBundle extends ClientBundle {
 	
 	@Source(RESOURCE_PATH + "help.png")
 	public ImageResource helpIconDefault();
-	
-	@Source(RESOURCE_PATH + "map01100.svg")
-	@Validated(validated=false)
-	public SVGResource globalMap();
 	
 	@Source(RESOURCE_PATH + "map01100_250x152.png")
 	public ImageResource globalMiniMap();	
