@@ -1,5 +1,6 @@
 package gov.lbl.glamm.client.presenter;
 
+import gov.lbl.glamm.client.events.AnnotatedMapDataLoadedEvent;
 import gov.lbl.glamm.client.events.LoadingEvent;
 import gov.lbl.glamm.client.events.MapElementClickEvent;
 import gov.lbl.glamm.client.events.MapUpdateEvent;
@@ -27,6 +28,7 @@ import org.vectomatic.dom.svg.OMSVGMatrix;
 import org.vectomatic.dom.svg.OMSVGPathElement;
 import org.vectomatic.dom.svg.OMSVGPoint;
 import org.vectomatic.dom.svg.OMSVGRect;
+import org.vectomatic.dom.svg.utils.OMSVGParser;
 import org.vectomatic.dom.svg.utils.SVGConstants;
 
 import com.google.gwt.core.client.GWT;
@@ -54,6 +56,11 @@ import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.dom.client.MouseWheelHandler;
 import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Panel;
@@ -404,6 +411,29 @@ public class AnnotatedMapPresenter {
 		if(mapData.getViewport().getCTM() == null)
 			return 0.0f;
 		return (mapData.getViewport().getCTM().getA() - scaleMin) / (scaleMax - scaleMin);
+	}
+	
+	public void loadMapData(final String url, 
+			final String mapId, 
+			final String miniMapUrl) {
+
+		final AnnotatedMapData mapData = new AnnotatedMapData(mapId, miniMapUrl);
+
+		try {
+			new RequestBuilder(RequestBuilder.GET, url).sendRequest("", new RequestCallback() {
+				@Override
+				public void onResponseReceived(Request request, Response response) {
+					mapData.setSvgRoot(OMSVGParser.parse(response.getText()));
+					eventBus.fireEvent(new AnnotatedMapDataLoadedEvent(mapData));
+				}
+				@Override
+				public void onError(Request request, Throwable exception) {
+					Window.alert("Could not open " + mapId + " at " + url);
+				}
+			});
+		} catch(RequestException e) {
+			Window.alert(e.getMessage());
+		}
 	}
 
 	private void overlayDataForGene(final Gene gene, final Interpolator interpolator) {

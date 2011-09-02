@@ -1,5 +1,6 @@
 package gov.lbl.glamm.client;
 
+import gov.lbl.glamm.client.events.AnnotatedMapDataLoadedEvent;
 import gov.lbl.glamm.client.events.CpdDstDisambiguatedEvent;
 import gov.lbl.glamm.client.events.CpdDstPickedEvent;
 import gov.lbl.glamm.client.events.CpdSrcDisambiguatedEvent;
@@ -18,7 +19,6 @@ import gov.lbl.glamm.client.events.RouteStepPickedEvent;
 import gov.lbl.glamm.client.events.SamplePickedEvent;
 import gov.lbl.glamm.client.events.SearchTargetEvent;
 import gov.lbl.glamm.client.events.ViewResizedEvent;
-import gov.lbl.glamm.client.model.AnnotatedMapData;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Sample;
 import gov.lbl.glamm.client.presenter.AnnotatedMapPresenter;
@@ -58,7 +58,6 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.http.client.UrlBuilder;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
@@ -79,8 +78,6 @@ public class AppController {
 	private GlammServiceAsync rpc;
 	private SimpleEventBus eventBus;
 	private AbsolutePanel mainPanel = null;
-
-	private AnnotatedMapData mapData;
 
 	private ImagePopupPresenter citationsPresenter;
 	private ImagePopupView citationsView;
@@ -148,12 +145,6 @@ public class AppController {
 		rpc = GWT.create(GlammService.class);
 		eventBus = new SimpleEventBus();
 		mainPanel = new AbsolutePanel();
-
-		// start with global map
-		//		mapData = AnnotatedMapData.createFromRawSvg(GlammClientBundle.INSTANCE.globalMapText().getText(), 
-		//				"map01100", 
-		//				new String[] { "LIGAND-CPD", "GLYCAN" }, 
-		//				new String[] { "LIGAND-RXN" });
 
 		cpdDisambiguationView = new CpdDisambiguationView();
 		cpdDisambiguationPresenter = new CpdDisambiguationPresenter(rpc,
@@ -389,20 +380,22 @@ public class AppController {
 	private void loadMapPanel() {
 
 		UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
-		urlBuilder.setPath("/svg/map01100.svg");
-		mapData = AnnotatedMapData.createFromUrl(urlBuilder.buildString(), 
-				"map01100", 
-				new String[] { "LIGAND-CPD", "GLYCAN" }, 
-				new String[] { "LIGAND-RXN" },
-				new Command() {
-			@Override
-			public void execute() {
-				mapPresenter.setMapData(mapData);
-			}
-		});
+		String mapId = "map01100";
+		
+		mapPresenter.loadMapData(urlBuilder.setPath("/svg/" + mapId + ".svg").buildString(), 
+				mapId,
+				urlBuilder.setPath("/images/" + mapId + ".png").buildString());
 
 
 		mainPanel.add(mapView, 0, 0);
+		
+		eventBus.addHandler(AnnotatedMapDataLoadedEvent.TYPE, new AnnotatedMapDataLoadedEvent.Handler() {
+			@Override
+			public void onLoaded(AnnotatedMapDataLoadedEvent event) {
+				mapPresenter.setMapData(event.getMapData());
+			}
+		});
+		
 		eventBus.addHandler(PanZoomControlEvent.TYPE,
 				new PanZoomControlEvent.Handler() {
 			public void onPanZoom(PanZoomControlEvent event) {
@@ -474,9 +467,16 @@ public class AppController {
 	 * Initializes inset mini map panel
 	 */
 	private void loadMiniMapPanel() {
-		miniMapPresenter.setMiniMap(GlammClientBundle.INSTANCE.globalMiniMap());
+//		miniMapPresenter.setMiniMap(GlammClientBundle.INSTANCE.globalMiniMap().getURL());
 		mainPanel.add(miniMapView, 0, 0);
 
+		eventBus.addHandler(AnnotatedMapDataLoadedEvent.TYPE, new AnnotatedMapDataLoadedEvent.Handler() {
+			@Override
+			public void onLoaded(AnnotatedMapDataLoadedEvent event) {
+				miniMapPresenter.setMiniMapUrl(event.getMapData().getMiniMapUrl());
+			}
+		});
+		
 		eventBus.addHandler(MapUpdateEvent.TYPE, new MapUpdateEvent.Handler() {
 			@Override
 			public void onMapUpdate(MapUpdateEvent event) {
@@ -733,9 +733,14 @@ public class AppController {
 	 */
 	private void loadRetrosynthesis() {
 		mainPanel.add(retrosynthesisView, 0, 0);
-
-		retrosynthesisPresenter.setMapData(mapData);
 		retrosynthesisPresenter.setOrganism(Organism.globalMap());
+		
+		eventBus.addHandler(AnnotatedMapDataLoadedEvent.TYPE, new AnnotatedMapDataLoadedEvent.Handler() {
+			@Override
+			public void onLoaded(AnnotatedMapDataLoadedEvent event) {
+				retrosynthesisPresenter.setMapData(event.getMapData());
+			}
+		});
 
 		eventBus.addHandler(OrganismPickedEvent.TYPE,
 				new OrganismPickedEvent.Handler() {

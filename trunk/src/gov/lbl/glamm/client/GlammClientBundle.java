@@ -23,10 +23,7 @@ public interface GlammClientBundle extends ClientBundle {
 	public ImageResource glammLogoMouseOver();
 	
 	@Source(RESOURCE_PATH + "help.png")
-	public ImageResource helpIconDefault();
-	
-	@Source(RESOURCE_PATH + "map01100_250x152.png")
-	public ImageResource globalMiniMap();	
+	public ImageResource helpIconDefault();	
 	
 	@Source(RESOURCE_PATH + "locusTrackBlue.png")
 	public ImageResource locusTrackBlue();
