@@ -15,18 +15,9 @@ import org.vectomatic.dom.svg.OMNodeList;
 import org.vectomatic.dom.svg.OMSVGElement;
 import org.vectomatic.dom.svg.OMSVGGElement;
 import org.vectomatic.dom.svg.OMSVGSVGElement;
-import org.vectomatic.dom.svg.ui.SVGResource;
-import org.vectomatic.dom.svg.utils.OMSVGParser;
 import org.vectomatic.dom.svg.utils.SVGConstants;
 
 import com.google.gwt.dom.client.Node;
-import com.google.gwt.http.client.Request;
-import com.google.gwt.http.client.RequestBuilder;
-import com.google.gwt.http.client.RequestCallback;
-import com.google.gwt.http.client.RequestException;
-import com.google.gwt.http.client.Response;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
 
 
 /**
@@ -39,6 +30,7 @@ public class AnnotatedMapData implements Serializable {
 
 	public static final String ATTRIBUTE_ABSENT				= "absent";
 	public static final String ATTRIBUTE_CLASS 				= "class";
+	public static final String ATTRIBUTE_CPDDBS				= "cpddbs";
 	public static final String ATTRIBUTE_CPD_DST			= "cpddst";
 	public static final String ATTRIBUTE_CPD_SRC			= "cpdsrc";
 	public static final String ATTRIBUTE_DEFAULT_COLOR		= "defaultcolor";
@@ -50,6 +42,7 @@ public class AnnotatedMapData implements Serializable {
 	public static final String ATTRIBUTE_QUERY				= "query";
 	public static final String ATTRIBUTE_REACTION			= "reaction";
 	public static final String ATTRIBUTE_ROUTE				= "route";
+	public static final String ATTRIBUTE_RXNDBS				= "rxndbs";
 	public static final String ATTRIBUTE_SEARCH_TARGET		= "searchtarget";
 	public static final String ATTRIBUTE_STATE				= "state";
 	public static final String ATTRIBUTE_WIDTH				= "width";
@@ -65,16 +58,19 @@ public class AnnotatedMapData implements Serializable {
 
 	public static final String VIEWPORT_ID	= "viewport";
 
-	private OMSVGSVGElement	svgRoot 	= null;
-	private OMSVGGElement 	viewport 	= null;
-	private Set<String> cpdDbNames = null;
-	private String mapId = null;
-	private Set<String> rxnDbNames = null;
+	private OMSVGSVGElement	svgRoot;
+	private OMSVGGElement 	viewport;
+	private Set<String> cpdDbNames;
+	private String mapId;
+	private Set<String> rxnDbNames;
 
-	private Map<String, Set<OMSVGElement>> id2SvgElements = null;
-	private Set<OMSVGElement> cpdSvgElements = null;
-	private Set<OMSVGElement> rxnSvgElements = null;
+	private Map<String, Set<OMSVGElement>> id2SvgElements;
+	private Set<OMSVGElement> cpdSvgElements;
+	private Set<OMSVGElement> rxnSvgElements;
+	
+	private String miniMapUrl;
 
+	@SuppressWarnings("unused")
 	private AnnotatedMapData() {}
 
 	/**
@@ -82,72 +78,19 @@ public class AnnotatedMapData implements Serializable {
 	 * @param resource The SVGResource containing the annotated map
 	 */
 
-	private AnnotatedMapData(final String mapId, final String[] cpdDbNames, final String[] rxnDbNames) {
+	public AnnotatedMapData(final String mapId, final String miniMapUrl) {
 
 		this.mapId = mapId;
+		this.miniMapUrl = miniMapUrl;
 
 		this.cpdDbNames = new HashSet<String>();
-		for(int i = 0; i < cpdDbNames.length; i++) 
-			this.cpdDbNames.add(cpdDbNames[i]);
-
 		this.rxnDbNames = new HashSet<String>();
-		for(int i = 0; i < rxnDbNames.length; i++) 
-			this.rxnDbNames.add(rxnDbNames[i]);
 
 		// allocate space for id2SvgElements
 		id2SvgElements = new HashMap<String, Set<OMSVGElement>>();
 		cpdSvgElements = new HashSet<OMSVGElement>();
 		rxnSvgElements = new HashSet<OMSVGElement>();
 	}
-
-	public static AnnotatedMapData createFromSvgResource(final SVGResource resource, 
-			final String mapId, 
-			final String[] cpdDbNames, 
-			final String[] rxnDbNames) {
-		AnnotatedMapData mapData = new AnnotatedMapData(mapId, cpdDbNames, rxnDbNames);
-		mapData.svgRoot = resource.getSvg();
-		mapData.init();
-		return mapData;
-	}
-
-	public static AnnotatedMapData createFromRawSvg(final String rawSvg, 
-			final String mapId, 
-			final String[] cpdDbNames, 
-			final String[] rxnDbNames) {
-		AnnotatedMapData mapData = new AnnotatedMapData(mapId, cpdDbNames, rxnDbNames);
-		mapData.svgRoot = OMSVGParser.parse(rawSvg);
-		mapData.init();
-		return mapData;
-	}
-
-	public static AnnotatedMapData createFromUrl(final String url, 
-			final String mapId, 
-			final String[] cpdDbNames, 
-			final String[] rxnDbNames, 
-			final Command onLoad) {
-
-		final AnnotatedMapData mapData = new AnnotatedMapData(mapId, cpdDbNames, rxnDbNames);
-
-		try {
-			new RequestBuilder(RequestBuilder.GET, url).sendRequest("", new RequestCallback() {
-				@Override
-				public void onResponseReceived(Request request, Response response) {
-					mapData.svgRoot = OMSVGParser.parse(response.getText());
-					mapData.init();
-					onLoad.execute();
-				}
-				@Override
-				public void onError(Request request, Throwable exception) {
-					Window.alert("Could not open " + mapId + " at " + url);
-				}
-			});
-		} catch(RequestException e) {
-			Window.alert(e.getMessage());
-		}
-
-		return mapData;
-	}
-
 
 	/**
 	 * Accessor
@@ -171,6 +114,10 @@ public class AnnotatedMapData implements Serializable {
 	 */
 	public String getMapId() {
 		return mapId;
+	}
+	
+	public String getMiniMapUrl() {
+		return miniMapUrl;
 	}
 
 	/**
@@ -294,33 +241,6 @@ public class AnnotatedMapData implements Serializable {
 		return viewport;
 	}
 
-
-	/**
-	 * Initializes all SVG groups with class attributes set to cpd, map, or rxn.
-	 */
-	private void init() {
-
-		// get viewport from resource - a bit more involved
-		for(OMNode node : svgRoot.getChildNodes()) {
-			if(node.getNodeType() == Node.ELEMENT_NODE) {
-				OMElement element = (OMElement) node;
-				if(element.hasAttribute(ATTRIBUTE_ID) && element.getAttribute(ATTRIBUTE_ID).equals(VIEWPORT_ID))  {
-					viewport = (OMSVGGElement) element;
-					break;
-				}
-			}
-		}
-
-		for(OMElement g : viewport.getElementsByTagName(SVGConstants.SVG_G_TAG)) {
-			if(g.hasAttribute(ATTRIBUTE_CLASS) && g.getAttribute(ATTRIBUTE_CLASS).equals(CLASS_CPD))
-				initCpdGroup(g);
-			if(g.hasAttribute(ATTRIBUTE_CLASS) && g.getAttribute(ATTRIBUTE_CLASS).equals(CLASS_MAP))
-				initMapGroup(g);
-			if(g.hasAttribute(ATTRIBUTE_CLASS) && g.getAttribute(ATTRIBUTE_CLASS).equals(CLASS_RXN))
-				initRxnGroup(g);
-		}
-	}
-
 	/**
 	 * Initializes Compound groups
 	 * @param g The group
@@ -412,6 +332,44 @@ public class AnnotatedMapData implements Serializable {
 				}
 			}
 		}
+	}
+	
+	public void setSvgRoot(final OMSVGSVGElement svgRoot) {
+		this.svgRoot = svgRoot;
+		
+		// get cpddbs and rxndbs from svgRoot
+		if(svgRoot.hasAttribute(ATTRIBUTE_CPDDBS)) {
+			String cpdDbsString = svgRoot.getAttribute(ATTRIBUTE_CPDDBS);
+			String[] cpdDbs = cpdDbsString.split("\\+");
+			for(String cpdDb : cpdDbs)
+				cpdDbNames.add(cpdDb);
+		}
+		
+		if(svgRoot.hasAttribute(ATTRIBUTE_RXNDBS)) {
+			String rxnDbsString = svgRoot.getAttribute(ATTRIBUTE_RXNDBS);
+			String[] rxnDbs = rxnDbsString.split("\\+");
+			for(String rxnDb : rxnDbs)
+				rxnDbNames.add(rxnDb);
+		}
+		
+		// get viewport from resource - a bit more involved
+		for(OMNode node : svgRoot.getChildNodes()) {
+			if(node.getNodeType() == Node.ELEMENT_NODE) {
+				OMElement element = (OMElement) node;
+				if(element.hasAttribute(ATTRIBUTE_ID) && element.getAttribute(ATTRIBUTE_ID).equals(VIEWPORT_ID))  {
+					viewport = (OMSVGGElement) element;
+					break;
+				}
+			}
+		}
 
+		for(OMElement g : viewport.getElementsByTagName(SVGConstants.SVG_G_TAG)) {
+			if(g.hasAttribute(ATTRIBUTE_CLASS) && g.getAttribute(ATTRIBUTE_CLASS).equals(CLASS_CPD))
+				initCpdGroup(g);
+			if(g.hasAttribute(ATTRIBUTE_CLASS) && g.getAttribute(ATTRIBUTE_CLASS).equals(CLASS_MAP))
+				initMapGroup(g);
+			if(g.hasAttribute(ATTRIBUTE_CLASS) && g.getAttribute(ATTRIBUTE_CLASS).equals(CLASS_RXN))
+				initRxnGroup(g);
+		}
 	}
 }
