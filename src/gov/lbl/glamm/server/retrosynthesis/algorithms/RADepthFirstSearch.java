@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 public class RADepthFirstSearch extends RetrosynthesisAlgorithm {
-	
+
 	//********************************************************************************
 
 	private final int MAX_DEPTH = 10;
@@ -38,43 +38,44 @@ public class RADepthFirstSearch extends RetrosynthesisAlgorithm {
 	//********************************************************************************
 
 	protected void _calculateSubRoute(Route subRoute, String cpdSrcExtId, String cpdDstExtId, int depth) {
-		
+
 		// if we don't have a subRoute, make one
 		if(subRoute == null)
 			subRoute = new Route(taxonomyId, cpdSrcExtId, cpdDstExtId, this.getAlgorithm(), this.getMapTitle());
-		
+
 		// if the subroute is already more expensive than the lowest cost route already found,
 		// disregard it and move to the next one
 		int lowestCost = this.getLowestRouteCost();
 		if(lowestCost > 0 && subRoute.getTotalCost() > lowestCost)
 			return;
-		
+
 		// if we've overshot the max depth, return
 		if(depth > MAX_DEPTH)
 			return;
-		
+
 		// if we've found our endpoint, save the route
 		if(cpdSrcExtId.equals(cpdDstExtId)) {
 			addRoute(new Route(subRoute));
 			return;
 		}
-		
-		
+
 		// depth first search
 		Set<MNNode> nodes = network.getNodesForCpdId(cpdSrcExtId);
-		if(nodes != null) {
-			for(MNNode node : nodes) {
-				String cpdId = node.getCpd1ExtId();
-				if(!subRoute.visitedCompound(cpdId) &&															// check to see if compound was visited
-						!subRoute.isPreviousReaction(node.getRxnExtId())) {
-					subRoute.push(new Step(node, costForStep(node)));
-					depth++;
-					_calculateSubRoute(subRoute, cpdId, cpdDstExtId, depth);
-					subRoute.pop();
-					depth--;
-				}
+		if(nodes == null)
+			return;
+
+		for(MNNode node : nodes) {
+			String cpdId = node.getCpd1ExtId();
+			if(!subRoute.visitedCompound(cpdId) && 
+					!subRoute.visitedReaction(node.getRxnExtId())) {
+				subRoute.push(new Step(node, costForStep(node)));
+				depth++;
+				_calculateSubRoute(subRoute, cpdId, cpdDstExtId, depth);
+				subRoute.pop();
+				depth--;
 			}
 		}
+
 	}
 
 	//********************************************************************************

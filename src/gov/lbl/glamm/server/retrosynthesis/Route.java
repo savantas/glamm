@@ -4,7 +4,9 @@ import gov.lbl.glamm.client.model.MNNode;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Route {
 
@@ -52,7 +54,9 @@ public class Route {
 	private String 			taxonomyId	= null;
 	private String			mapTitle	= null;
 	private List<Step> steps 			= new ArrayList<Step>();
-
+	private Set<String> visitedCpdIds 	= new HashSet<String>();
+	private Set<String> visitedRxnIds	= new HashSet<String>();
+	
 	//********************************************************************************
 
 	public Route(String taxonomyId, String cpdSrcId, String cpdDstId, String algorithm, String mapTitle) {
@@ -61,6 +65,8 @@ public class Route {
 		this.cpdSrcId = cpdSrcId;
 		this.cpdDstId = cpdDstId;
 		this.mapTitle = mapTitle;
+		
+		visitedCpdIds.add(cpdSrcId);
 	}
 	
 	//********************************************************************************
@@ -87,6 +93,8 @@ public class Route {
 		
 		if(!steps.isEmpty()) {
 			step = steps.remove(steps.size() - 1);
+			visitedCpdIds.remove(step.node.getCpd1ExtId());
+			visitedRxnIds.remove(step.node.getRxnExtId());
 			totalCost -= step.cost;
 		}
 		
@@ -98,6 +106,8 @@ public class Route {
 	public void push(Step step) {
 		totalCost += step.cost;
 		steps.add(step);
+		visitedCpdIds.add(step.node.getCpd1ExtId());
+		visitedRxnIds.add(step.node.getRxnExtId());
 	}
 	
 	//********************************************************************************
@@ -175,24 +185,16 @@ public class Route {
 	//********************************************************************************
 	
 	public boolean visitedCompound(String cpdId) {
-	
-		for(Step step : steps) {
-			if(step.getNode().getCpd1ExtId().equals(cpdId) ||
-					step.getNode().getCpd0ExtId().equals(cpdId))
-				return true;
-		}
-		
-		return false;
+		return visitedCpdIds.contains(cpdId);
 	}
 	
 	//********************************************************************************
-	
-	public boolean isPreviousReaction(String rxnExtId) {
-		if(steps.size() == 0)
-			return false;
-		return rxnExtId.equals(getLastStep().getNode().getRxnExtId());
-	}
 
+	public boolean visitedReaction(String rxnId) {
+		return visitedRxnIds.contains(rxnId);
+	}
+	
 	//********************************************************************************
+	
 
 }
