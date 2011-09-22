@@ -714,6 +714,7 @@ public class RetrosynthesisPresenter {
 
 	public void setMapData(final AnnotatedMapData mapData) {
 		this.mapData = mapData;
+		setOrganism(Organism.globalMap());
 	}
 
 	public void setOrganism(final Organism organism) {
