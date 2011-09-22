@@ -19,7 +19,6 @@ import gov.lbl.glamm.client.events.RouteStepPickedEvent;
 import gov.lbl.glamm.client.events.SamplePickedEvent;
 import gov.lbl.glamm.client.events.SearchTargetEvent;
 import gov.lbl.glamm.client.events.ViewResizedEvent;
-import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Sample;
 import gov.lbl.glamm.client.presenter.AnnotatedMapPresenter;
 import gov.lbl.glamm.client.presenter.CpdDisambiguationPresenter;
@@ -733,7 +732,6 @@ public class AppController {
 	 */
 	private void loadRetrosynthesis() {
 		mainPanel.add(retrosynthesisView, 0, 0);
-		retrosynthesisPresenter.setOrganism(Organism.globalMap());
 		
 		eventBus.addHandler(AnnotatedMapDataLoadedEvent.TYPE, new AnnotatedMapDataLoadedEvent.Handler() {
 			@Override
