@@ -3,7 +3,7 @@ package gov.lbl.glamm.server;
 import gov.lbl.glamm.client.model.Compound;
 import gov.lbl.glamm.client.model.Experiment;
 import gov.lbl.glamm.client.model.Gene;
-import gov.lbl.glamm.client.model.GlammUser;
+import gov.lbl.glamm.client.model.User;
 import gov.lbl.glamm.client.model.MetabolicNetwork;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Pathway;
@@ -57,11 +57,11 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	}
 	
 	@Override
-	public GlammUser authenticateUser(final String userId, final String auth) {
+	public User authenticateUser(final String userId, final String auth) {
 		HttpServletRequest request = this.getThreadLocalRequest();
 		String remoteAddr = request.getRemoteAddr();
 		GlammSession sm = getGlammSession();
-		GlammUser user = AuthenticateUser.authenticateUser(sm, userId, auth, remoteAddr);
+		User user = AuthenticateUser.authenticateUser(sm, userId, auth, remoteAddr);
 		sm.setUser(user);
 		return user;
 	}
@@ -135,13 +135,13 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	}
 	
 	@Override
-	public GlammUser getLoggedInUser() {
+	public User getLoggedInUser() {
 		return getGlammSession().getUser();
 	}
 	
 	@Override
 	public void logOutUser() {
-		getGlammSession().setUser(GlammUser.guestUser());
+		getGlammSession().setUser(User.guestUser());
 	}
 	
 	@Override

@@ -1,6 +1,6 @@
 package gov.lbl.glamm.server.dao.impl;
 
-import gov.lbl.glamm.client.model.GlammUser;
+import gov.lbl.glamm.client.model.User;
 import gov.lbl.glamm.server.GlammDbConnectionPool;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.UserDAO;
@@ -51,7 +51,7 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public GlammUser getUserForUserId(final String userId) {
+	public User getUserForUserId(final String userId) {
 
 		if(userId == null || userId.isEmpty())
 			throw new IllegalArgumentException("userId is empty or null");
@@ -85,11 +85,11 @@ public class UserDAOImpl implements UserDAO {
 			e.printStackTrace();
 		}
 
-		return new GlammUser(userId, groupIds, email);
+		return new User(userId, groupIds, email);
 	}
 
 	@Override
-	public GlammUser getUserForEmail(final String email) {
+	public User getUserForEmail(final String email) {
 		
 		if(email == null || email.isEmpty())
 			throw new IllegalArgumentException("email is empty or null");
@@ -120,7 +120,7 @@ public class UserDAOImpl implements UserDAO {
 			e.printStackTrace();
 		}
 
-		return new GlammUser(userId, groupIds, email);
+		return new User(userId, groupIds, email);
 	}
 
 }

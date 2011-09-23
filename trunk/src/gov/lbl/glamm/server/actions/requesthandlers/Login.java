@@ -1,6 +1,6 @@
 package gov.lbl.glamm.server.actions.requesthandlers;
 
-import gov.lbl.glamm.client.model.GlammUser;
+import gov.lbl.glamm.client.model.User;
 import gov.lbl.glamm.client.presenter.LoginPresenter;
 import gov.lbl.glamm.server.FormRequestHandler;
 import gov.lbl.glamm.server.GlammSession;
@@ -42,7 +42,7 @@ public class Login implements RequestHandler {
 			return;
 		}
 
-		final GlammUser user	= userDao.getUserForEmail(email);
+		final User user	= userDao.getUserForEmail(email);
 		
 		final String userId 	= user.getUserId();
 		final String remoteAddr	= request.getRemoteAddr();
