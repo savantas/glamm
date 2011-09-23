@@ -3,13 +3,13 @@ package gov.lbl.glamm.client.rpc;
 import gov.lbl.glamm.client.model.Compound;
 import gov.lbl.glamm.client.model.Experiment;
 import gov.lbl.glamm.client.model.Gene;
-import gov.lbl.glamm.client.model.GlammPrimitive;
 import gov.lbl.glamm.client.model.GlammUser;
 import gov.lbl.glamm.client.model.MetabolicNetwork;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Pathway;
 import gov.lbl.glamm.client.model.Reaction;
 import gov.lbl.glamm.client.model.Sample;
+import gov.lbl.glamm.client.model.interfaces.HasMeasurements;
 
 import java.util.List;
 import java.util.Set;
@@ -29,7 +29,7 @@ public interface GlammService extends RemoteService {
 	public List<Pathway> getDirections(String taxonomyId, Compound cpdSrc, Compound cpdDst, String mapTitle, String algorithm);
 	public String getIsolateHost();
 	public MetabolicNetwork getMapConnectivity(String mapId);
-	public List<? extends GlammPrimitive> getMeasurementsForExperiment(String experimentId, String sampleId);
+	public List<? extends HasMeasurements> getMeasurementsForExperiment(String experimentId, String sampleId);
 	public String getMetagenomeHost();
 	public List<Reaction> getRxnsForOrganism(String taxonomyId, Set<String> rxnDbNames);
 	public GlammUser getLoggedInUser();

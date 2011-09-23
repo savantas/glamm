@@ -1,7 +1,18 @@
 package gov.lbl.glamm.client.model;
 
 
+import gov.lbl.glamm.client.model.interfaces.HasSynonyms;
+import gov.lbl.glamm.client.model.interfaces.HasXrefs;
+import gov.lbl.glamm.client.model.interfaces.Mappable;
+import gov.lbl.glamm.client.model.util.Synonym;
+import gov.lbl.glamm.client.model.util.Type;
+import gov.lbl.glamm.client.model.util.Xref;
+import gov.lbl.glamm.client.model.util.XrefSet;
+
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Representation of a Compound
@@ -9,18 +20,25 @@ import java.io.Serializable;
  *
  */
 @SuppressWarnings("serial")
-public class Compound extends GlammPrimitive implements Serializable {
+public class Compound
+implements HasSynonyms, Serializable, HasXrefs, Mappable {
 	
-	public static transient GlammPrimitive.Type TYPE = new GlammPrimitive.Type();
-	private String name		= null;
-	private String formula	= null;
-	private String mass		= null;
-	private String inchi	= null;
-	private String smiles	= null;
+	private String name;
+	private String formula;
+	private String mass;
+	private String inchi;
+	private String smiles;
+	private Set<Synonym> synonyms;
+	private XrefSet xrefs;
+	
+	public static transient final Type TYPE = new Type();
 	
 	//********************************************************************************
 	
-	public Compound() {}
+	public Compound() {
+		this.synonyms = new HashSet<Synonym>();
+		this.xrefs = new XrefSet();
+	}
 
 	/**
 	 * Accessor
@@ -90,14 +108,6 @@ public class Compound extends GlammPrimitive implements Serializable {
 		return inchi;
 	}
 	
-	/**
-	 * @return The GlammPrimitive Type
-	 */
-	@Override
-	public Type getType() {
-		return TYPE;
-	}
-	
 	//********************************************************************************
 
 	/**
@@ -127,6 +137,49 @@ public class Compound extends GlammPrimitive implements Serializable {
 	 */
 	public void setSmiles(String smiles) {
 		this.smiles = smiles;
+	}
+
+	@Override
+	public void addSynonym(final Synonym synonym) {
+		synonyms.add(synonym);
+	}
+
+	@Override
+	public Set<Synonym> getSynonyms() {
+		return synonyms;
+	}
+
+	@Override
+	public void setSynonyms(Set<Synonym> synonyms) {
+		if(this.synonyms != synonyms)
+			this.synonyms.clear();
+		if(synonyms != null && !synonyms.isEmpty())
+			this.synonyms.addAll(synonyms);
+	}
+
+	@Override
+	public Type getType() {
+		return TYPE;
+	}
+
+	@Override
+	public void addXref(Xref xref) {
+		xrefs.addXref(xref);
+	}
+
+	@Override
+	public Set<Xref> getXrefs() {
+		return xrefs.getXrefs();
+	}
+
+	@Override
+	public Xref getXrefForDbName(String dbName) {
+		return xrefs.getXrefForDbName(dbName);
+	}
+
+	@Override
+	public Xref getXrefForDbNames(Collection<String> dbNames) {
+		return xrefs.getXrefForDbNames(dbNames);
 	}
 	
 	//********************************************************************************

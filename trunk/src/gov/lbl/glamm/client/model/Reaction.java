@@ -1,11 +1,17 @@
 package gov.lbl.glamm.client.model;
 
 
+import gov.lbl.glamm.client.model.interfaces.HasXrefs;
+import gov.lbl.glamm.client.model.interfaces.Mappable;
+import gov.lbl.glamm.client.model.util.Type;
+import gov.lbl.glamm.client.model.util.Xref;
+import gov.lbl.glamm.client.model.util.XrefSet;
 import gov.lbl.glamm.client.util.ReactionColor;
 import gov.lbl.glamm.client.util.RowDependentSelectionCell;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,7 +22,8 @@ import java.util.Set;
 import com.google.gwt.view.client.ProvidesKey;
 
 @SuppressWarnings("serial")
-public class Reaction extends GlammPrimitive implements Serializable, RowDependentSelectionCell.HasOptions {
+public class Reaction
+implements Serializable, RowDependentSelectionCell.HasOptions, Mappable, HasXrefs {
 	
 	public enum Direction {
 		BOTH("both"),
@@ -79,19 +86,19 @@ public class Reaction extends GlammPrimitive implements Serializable, RowDepende
 	}
 	//********************************************************************************
 
-	public static transient GlammPrimitive.Type TYPE = new GlammPrimitive.Type();
+	public static transient final Type TYPE = new Type();
 	private Set<String> 	ecNums = null;
 	private String definition = null;
 	private Direction direction = Direction.BOTH;
 	private boolean isNative = true;
 	private Set<Participant>	products 	= null;
 	private Set<Participant> 	reactants 	= null;
-	private Set<GlammPrimitive.Reference> geneRefs = null;
 	private transient Organism selectedTransgenicCandidate = null;
 	private List<Organism> transgenicCandidates = null;
 	private Map<String, Organism> name2TransgenicCandidate = null;
 	private Map<Organism, Set<String>> transgenicCandidate2EcNums = null;
 	private transient ReactionColor color; // ReactionColor depends on resources from the client bundle - don't instantiate or try to set server-side.
+	private XrefSet xrefs;
 
 	public static final transient ProvidesKey<Reaction> KEY_PROVIDER = new ProvidesKey<Reaction>() {
 		public Object getKey(Reaction item) {
@@ -101,7 +108,9 @@ public class Reaction extends GlammPrimitive implements Serializable, RowDepende
 
 	//********************************************************************************
 
-	public Reaction() {}
+	public Reaction() {
+		xrefs = new XrefSet();
+	}
 
 	//********************************************************************************
 
@@ -110,16 +119,6 @@ public class Reaction extends GlammPrimitive implements Serializable, RowDepende
 			if(ecNums == null)
 				ecNums = new HashSet<String>();
 			ecNums.add(ecNum);
-		}
-	}
-
-	//********************************************************************************
-
-	public void addGeneReference(GlammPrimitive.Reference reference) {
-		if(reference != null) {
-			if(geneRefs == null) 
-				geneRefs = new HashSet<GlammPrimitive.Reference>();
-			geneRefs.add(reference);
 		}
 	}
 
@@ -190,11 +189,6 @@ public class Reaction extends GlammPrimitive implements Serializable, RowDepende
 			if (other.ecNums != null)
 				return false;
 		} else if (!ecNums.equals(other.ecNums))
-			return false;
-		if (geneRefs == null) {
-			if (other.geneRefs != null)
-				return false;
-		} else if (!geneRefs.equals(other.geneRefs))
 			return false;
 		if (products == null) {
 			if (other.products != null)
@@ -298,14 +292,6 @@ public class Reaction extends GlammPrimitive implements Serializable, RowDepende
 
 	//********************************************************************************
 
-
-	@Override
-	public Type getType() {
-		return TYPE;
-	}
-
-	//********************************************************************************
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -313,8 +299,6 @@ public class Reaction extends GlammPrimitive implements Serializable, RowDepende
 		result = prime * result
 		+ ((definition == null) ? 0 : definition.hashCode());
 		result = prime * result + ((ecNums == null) ? 0 : ecNums.hashCode());
-		result = prime * result
-		+ ((geneRefs == null) ? 0 : geneRefs.hashCode());
 		result = prime * result
 		+ ((products == null) ? 0 : products.hashCode());
 		result = prime * result
@@ -356,6 +340,31 @@ public class Reaction extends GlammPrimitive implements Serializable, RowDepende
 	public void sortTransgenicCandidates() {
 		if(transgenicCandidates != null) 
 			Collections.sort(transgenicCandidates, new Organism.OrganismComparator());
+	}
+
+	@Override
+	public Type getType() {
+		return TYPE;
+	}
+
+	@Override
+	public void addXref(Xref xref) {
+		xrefs.addXref(xref);
+	}
+
+	@Override
+	public Set<Xref> getXrefs() {
+		return xrefs.getXrefs();
+	}
+
+	@Override
+	public Xref getXrefForDbName(String dbName) {
+		return xrefs.getXrefForDbName(dbName);
+	}
+
+	@Override
+	public Xref getXrefForDbNames(Collection<String> dbNames) {
+		return xrefs.getXrefForDbNames(dbNames);
 	}
 
 	//********************************************************************************

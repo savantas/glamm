@@ -1,14 +1,13 @@
-package gov.lbl.glamm.client.model;
+package gov.lbl.glamm.client.model.util;
 
 
 import java.io.Serializable;
 
 @SuppressWarnings("serial")
-public class MNNode extends GlammPrimitive implements Serializable {
+public class MNNode implements Serializable {
 	
 	//********************************************************************************
 	
-	public static transient GlammPrimitive.Type TYPE = new GlammPrimitive.Type();
 	private String cpd0ExtId = null;
 	private String cpd1ExtId = null;
 	private String rxnExtId = null;	
@@ -48,11 +47,6 @@ public class MNNode extends GlammPrimitive implements Serializable {
 
 	public String getRxnExtId() {
 		return rxnExtId;
-	}
-
-	@Override
-	public Type getType() {
-		return TYPE;
 	}
 	
 	//********************************************************************************

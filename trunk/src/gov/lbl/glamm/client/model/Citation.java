@@ -8,14 +8,15 @@ import java.io.Serializable;
  * @author jtbates
  *
  */
-@SuppressWarnings({"unused", "serial"})
-public class Citation extends GlammPrimitive implements Serializable {
+@SuppressWarnings("serial")
+public class Citation
+implements Serializable {
 	
-	public static transient GlammPrimitive.Type TYPE = new GlammPrimitive.Type();
 	private String dbVersion = null;	
 	private String description = null;	
 	private String text = null;
 	
+	@SuppressWarnings("unused")
 	private Citation() {}
 	
 	/**
@@ -81,11 +82,5 @@ public class Citation extends GlammPrimitive implements Serializable {
 			return false;
 		return true;
 	}
-
-	@Override
-	public Type getType() {
-		return TYPE;
-	}
-	
 	
 }

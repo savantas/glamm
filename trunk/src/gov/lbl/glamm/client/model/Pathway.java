@@ -6,9 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("serial")
-public class Pathway extends GlammPrimitive implements Serializable {
-
-	public static transient GlammPrimitive.Type TYPE = new GlammPrimitive.Type();
+public class Pathway implements Serializable {
 	
 	private String name		= null;
 	private String mapId	= null;
@@ -32,11 +30,6 @@ public class Pathway extends GlammPrimitive implements Serializable {
 	
 	public List<Reaction> getReactions() {
 		return reactions;
-	}
-	
-	@Override
-	public Type getType() {
-		return TYPE;
 	}
 	
 	//********************************************************************************

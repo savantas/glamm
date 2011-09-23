@@ -3,13 +3,13 @@ package gov.lbl.glamm.client.rpc;
 import gov.lbl.glamm.client.model.Compound;
 import gov.lbl.glamm.client.model.Experiment;
 import gov.lbl.glamm.client.model.Gene;
-import gov.lbl.glamm.client.model.GlammPrimitive;
 import gov.lbl.glamm.client.model.GlammUser;
 import gov.lbl.glamm.client.model.MetabolicNetwork;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Pathway;
 import gov.lbl.glamm.client.model.Reaction;
 import gov.lbl.glamm.client.model.Sample;
+import gov.lbl.glamm.client.model.interfaces.HasMeasurements;
 
 import java.util.List;
 import java.util.Set;
@@ -27,7 +27,7 @@ public interface GlammServiceAsync {
 	public void getDirections(String taxonomyId, Compound cpdSrc, Compound cpdDst, String mapTitle, String algorithm, AsyncCallback<List<Pathway>> callback);
 	public void getIsolateHost(AsyncCallback<String> callback);
 	public void getMapConnectivity(String mapId, AsyncCallback<MetabolicNetwork> callback);
-	public void getMeasurementsForExperiment(String experimentId, String sampleId, AsyncCallback<List<? extends GlammPrimitive>> callback);
+	public void getMeasurementsForExperiment(String experimentId, String sampleId, AsyncCallback<List<? extends HasMeasurements>> callback);
 	public void getMetagenomeHost(AsyncCallback<String> callback);
 	public void getLoggedInUser(AsyncCallback<GlammUser> user);
 	public void getRxnsForOrganism(String taxonomyId, Set<String> rxnDbNames, AsyncCallback<List<Reaction>> callback);

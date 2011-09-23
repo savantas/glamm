@@ -7,14 +7,17 @@ import gov.lbl.glamm.client.events.MapUpdateEvent;
 import gov.lbl.glamm.client.model.AnnotatedMapData;
 import gov.lbl.glamm.client.model.Compound;
 import gov.lbl.glamm.client.model.Gene;
-import gov.lbl.glamm.client.model.GlammPrimitive;
-import gov.lbl.glamm.client.model.MNNode;
 import gov.lbl.glamm.client.model.Measurement;
 import gov.lbl.glamm.client.model.MetabolicNetwork;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Pathway;
 import gov.lbl.glamm.client.model.Reaction;
 import gov.lbl.glamm.client.model.Sample;
+import gov.lbl.glamm.client.model.interfaces.HasMeasurements;
+import gov.lbl.glamm.client.model.interfaces.HasType;
+import gov.lbl.glamm.client.model.interfaces.Mappable;
+import gov.lbl.glamm.client.model.util.MNNode;
+import gov.lbl.glamm.client.model.util.Xref;
 import gov.lbl.glamm.client.rpc.GlammServiceAsync;
 import gov.lbl.glamm.client.util.Interpolator;
 
@@ -605,10 +608,10 @@ public class AnnotatedMapPresenter {
 
 				// get all reactions from the RPC call
 				for(final Reaction rxn : result) {
-					Set<GlammPrimitive.Xref> xrefs = rxn.getXrefs();
+					Set<Xref> xrefs = rxn.getXrefs();
 
 					// get the xref that corresponds with the mapData's reaction database
-					for(final GlammPrimitive.Xref xref : xrefs) {
+					for(final Xref xref : xrefs) {
 						if(mapData.getRxnDbNames().contains(xref.getXrefDbName())) {
 							String rxnId = xref.getXrefId();
 
@@ -677,13 +680,13 @@ public class AnnotatedMapPresenter {
 		});
 		
 		// set source compound
-		for(OMSVGElement element : mapData.getSvgElementsForGlammPrimitive(cpdSrc)) {
+		for(OMSVGElement element : mapData.getSvgElements(cpdSrc)) {
 			element.removeAttribute(AnnotatedMapData.ATTRIBUTE_ROUTE);
 			element.setAttribute(AnnotatedMapData.ATTRIBUTE_CPD_SRC, "true");
 		}
 		
 		// set destination compound
-		for(OMSVGElement element : mapData.getSvgElementsForGlammPrimitive(cpdDst)) {
+		for(OMSVGElement element : mapData.getSvgElements(cpdDst)) {
 			element.removeAttribute(AnnotatedMapData.ATTRIBUTE_ROUTE);
 			element.setAttribute(AnnotatedMapData.ATTRIBUTE_CPD_DST, "true");
 		}
@@ -691,16 +694,16 @@ public class AnnotatedMapPresenter {
 		
 		// set routes in reaction
 		for(Reaction reaction : route.getReactions()) {
-			for(OMSVGElement element : mapData.getSvgElementsForGlammPrimitive(reaction)) 
+			for(OMSVGElement element : mapData.getSvgElements(reaction)) 
 				element.setAttribute(AnnotatedMapData.ATTRIBUTE_ROUTE, reaction.getReactionColor().getCssAttributeValue());
 		}
 		
-		final Set<OMSVGElement> svgElements = mapData.getSvgElementsForGlammPrimitives(route.getReactions());
+		final Set<OMSVGElement> svgElements = mapData.getSvgElements(route.getReactions());
 		centerMapAroundElements(svgElements);
 	}
 	
 	public void updateMapForRouteStep(final Reaction reaction) {
-		final Set<OMSVGElement> svgElements = mapData.getSvgElementsForGlammPrimitive(reaction);
+		final Set<OMSVGElement> svgElements = mapData.getSvgElements(reaction);
 		centerMapAroundElements(svgElements);
 	}
 	
@@ -731,7 +734,7 @@ public class AnnotatedMapPresenter {
 		// otherwise, get measurements for the given sample
 		rpc.getMeasurementsForExperiment(sample.getExperimentId(), 
 				sample.getSampleId(), 
-				new AsyncCallback<List<? extends GlammPrimitive>>() {
+				new AsyncCallback<List<? extends HasMeasurements>>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -742,7 +745,7 @@ public class AnnotatedMapPresenter {
 
 			@Override
 			public void onSuccess(
-					List<? extends GlammPrimitive> result) {
+					List<? extends HasMeasurements> result) {
 				
 				eventBus.fireEvent(new LoadingEvent(true));
 				
@@ -765,8 +768,8 @@ public class AnnotatedMapPresenter {
 				
 				Interpolator interpolator = Interpolator.getInterpolatorForSample(sample);
 
-				for(GlammPrimitive primitive : result) {
-					if(primitive.getType() == Gene.TYPE)
+				for(HasMeasurements primitive : result) {
+					if(((HasType) primitive).getType() == Gene.TYPE)
 						overlayDataForGene((Gene) primitive, interpolator);
 				}
 			}
@@ -774,8 +777,8 @@ public class AnnotatedMapPresenter {
 		});
 	}
 
-	public void updateMapForSearchTarget(final Set<GlammPrimitive> primitives) {
-		final Set<OMSVGElement> searchTargets = mapData.getSvgElementsForGlammPrimitives(primitives);
+	public void updateMapForSearchTarget(final Set<Mappable> targets) {
+		final Set<OMSVGElement> searchTargets = mapData.getSvgElements(targets);
 		
 		if(previousSearchTargets != null) {
 			for(OMSVGElement target : previousSearchTargets)

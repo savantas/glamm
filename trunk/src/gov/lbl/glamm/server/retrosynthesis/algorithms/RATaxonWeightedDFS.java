@@ -1,7 +1,7 @@
 package gov.lbl.glamm.server.retrosynthesis.algorithms;
 
-import gov.lbl.glamm.client.model.MNNode;
 import gov.lbl.glamm.client.model.MetabolicNetwork;
+import gov.lbl.glamm.client.model.util.MNNode;
 
 public class RATaxonWeightedDFS extends RADepthFirstSearch {
 	

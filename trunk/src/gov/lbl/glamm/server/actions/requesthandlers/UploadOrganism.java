@@ -2,12 +2,13 @@ package gov.lbl.glamm.server.actions.requesthandlers;
 
 import gov.lbl.glamm.client.model.Gene;
 import gov.lbl.glamm.client.model.Organism;
+import gov.lbl.glamm.client.model.util.Synonym;
 import gov.lbl.glamm.client.presenter.OrganismUploadPresenter;
 import gov.lbl.glamm.server.FormRequestHandler;
 import gov.lbl.glamm.server.FormRequestHandler.LineParser;
+import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.RequestHandler;
 import gov.lbl.glamm.server.ResponseHandler;
-import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.impl.GeneMetaMolDAOImpl;
 
 import java.io.IOException;
@@ -58,7 +59,7 @@ public class UploadOrganism implements RequestHandler {
 						id2Gene.put(id, gene);
 					}
 
-					gene.addSynonym(id, Gene.SYNONYM_TYPE_SESSION);
+					gene.addSynonym(new Synonym(id, Gene.SYNONYM_TYPE_SESSION));
 					gene.addEcNum(ecNum);
 
 				}

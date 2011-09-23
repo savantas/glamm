@@ -1,6 +1,7 @@
 package gov.lbl.glamm.client.model;
 
-import gov.lbl.glamm.client.model.GlammPrimitive.Xref;
+import gov.lbl.glamm.client.model.interfaces.Mappable;
+import gov.lbl.glamm.client.model.util.Xref;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -158,16 +159,18 @@ public class AnnotatedMapData implements Serializable {
 	 * @param primitive
 	 * @return HashSet<OMSVGElement> the elements associated with this primitive, null if none.
 	 */
-	public Set<OMSVGElement> getSvgElementsForGlammPrimitive(final GlammPrimitive primitive) {
+	public Set<OMSVGElement> getSvgElements(final Mappable primitive) {
 
 		if(primitive.getType() == Compound.TYPE) {
-			Xref xref = primitive.getXrefForDbNames(getCpdDbNames());
+			Compound compound = (Compound) primitive;
+			Xref xref = compound.getXrefForDbNames(getCpdDbNames());
 			String id = xref.getXrefId();
 			if(id != null)
 				return getSvgElementsForId(id);
 		}
 		else if(primitive.getType() == Reaction.TYPE) {
-			Xref xref = primitive.getXrefForDbNames(getRxnDbNames());
+			Reaction reaction = (Reaction) primitive;
+			Xref xref = reaction.getXrefForDbNames(getRxnDbNames());
 			String id = xref.getXrefId();
 			if(id != null)
 				return getSvgElementsForId(id);
@@ -198,10 +201,10 @@ public class AnnotatedMapData implements Serializable {
 	 * @param primitive - The collection of GlammPrimitives
 	 * @return HashSet<OMSVGElement> the elements associated with this collection, null if none.
 	 */
-	public Set<OMSVGElement> getSvgElementsForGlammPrimitives(final Collection<? extends GlammPrimitive> primitives) {
+	public Set<OMSVGElement> getSvgElements(final Collection<? extends Mappable> primitives) {
 		HashSet<OMSVGElement> svgElements = null;
-		for(GlammPrimitive primitive : primitives) {
-			Set<OMSVGElement> s = getSvgElementsForGlammPrimitive(primitive);
+		for(Mappable primitive : primitives) {
+			Set<OMSVGElement> s = getSvgElements(primitive);
 			if(s == null)
 				continue;
 			if(svgElements == null)

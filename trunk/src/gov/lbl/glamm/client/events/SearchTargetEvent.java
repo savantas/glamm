@@ -1,6 +1,6 @@
 package gov.lbl.glamm.client.events;
 
-import gov.lbl.glamm.client.model.GlammPrimitive;
+import gov.lbl.glamm.client.model.interfaces.Mappable;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -20,7 +20,7 @@ public class SearchTargetEvent extends GwtEvent<SearchTargetEvent.Handler> {
 	
 	public static final Type<Handler> TYPE = new Type<Handler>();
 	
-	private Set<GlammPrimitive> primitives = null;
+	private Set<Mappable> targets;
 
 	@Override
 	public com.google.gwt.event.shared.GwtEvent.Type<Handler> getAssociatedType() {
@@ -32,19 +32,20 @@ public class SearchTargetEvent extends GwtEvent<SearchTargetEvent.Handler> {
 		handler.onPicked(this);
 	}
 	
-	public SearchTargetEvent(GlammPrimitive primitive) {
-		if(primitive != null) {
-			this.primitives = new HashSet<GlammPrimitive>();
-			this.primitives.add(primitive);
-		}
+	public SearchTargetEvent(Mappable target) {
+		this.targets = new HashSet<Mappable>();
+		if(target != null)
+			this.targets.add(target);
 	}
 	
-	public SearchTargetEvent(Set<GlammPrimitive> primitives) {
-		this.primitives = primitives;
+	public SearchTargetEvent(Set<Mappable> targets) {
+		this.targets = new HashSet<Mappable>();
+		if(targets != null && !targets.isEmpty())
+			this.targets.addAll(targets);
 	}
 	
-	public Set<GlammPrimitive> getPrimitives() {
-		return primitives;
+	public Set<Mappable> getTargets() {
+		return targets;
 	}
 	
 }

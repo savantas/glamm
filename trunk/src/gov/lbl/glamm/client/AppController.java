@@ -456,8 +456,7 @@ public class AppController {
 				new SearchTargetEvent.Handler() {
 			@Override
 			public void onPicked(SearchTargetEvent event) {
-				mapPresenter.updateMapForSearchTarget(event
-						.getPrimitives());
+				mapPresenter.updateMapForSearchTarget(event.getTargets());
 			}
 		});
 	}

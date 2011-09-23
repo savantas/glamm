@@ -1,6 +1,7 @@
 package gov.lbl.glamm.server.dao.impl;
 
 import gov.lbl.glamm.client.model.Gene;
+import gov.lbl.glamm.client.model.util.Synonym;
 import gov.lbl.glamm.server.GlammDbConnectionPool;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.GeneDAO;
@@ -255,12 +256,12 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 			if(gene == null) {
 				gene = new Gene();
 				//gene.setVimmsId(locusId);
-				gene.addSynonym(locusId, Gene.SYNONYM_TYPE_VIMSS);
+				gene.addSynonym(new Synonym(locusId, Gene.SYNONYM_TYPE_VIMSS));
 				locusId2Gene.put(locusId, gene);
 			}
 
 			gene.addEcNum(ecNum);
-			gene.addSynonym(synName, synType);
+			gene.addSynonym(new Synonym(synName, synType));
 			
 		}
 

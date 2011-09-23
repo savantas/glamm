@@ -12,17 +12,18 @@ import java.util.List;
  * @author jtbates
  *
  */
-@SuppressWarnings({"unused", "serial"})
-public class Experiment extends GlammPrimitive implements Serializable {
+@SuppressWarnings("serial")
+public class Experiment 
+implements Serializable {
 	
 	public static transient final String DEFAULT_EXPERIMENT_ID = "-1";
 	
-	public static transient GlammPrimitive.Type TYPE = new GlammPrimitive.Type();
 	private String expId = null;
 	private List<Sample> samples	= null;
 	
 	//********************************************************************************
 	
+	@SuppressWarnings("unused")
 	private Experiment() {}
 	
 	/**
@@ -70,14 +71,5 @@ public class Experiment extends GlammPrimitive implements Serializable {
 		return samples;
 	}
 	
-	//********************************************************************************
-	
-	/**
-	 * @return The GlammPrimitive Type
-	 */
-	@Override
-	public Type getType() {
-		return TYPE;
-	}
 
 }
