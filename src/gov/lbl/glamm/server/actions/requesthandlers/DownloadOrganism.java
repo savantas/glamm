@@ -21,7 +21,8 @@ public class DownloadOrganism implements RequestHandler {
 	private final String DEFAULT_FILE_NAME = "organism.tab";
 
 	private Synonym getSynonymOfPreferredType(final Set<Synonym> synonyms) {
-		String types[] = { Gene.SYNONYM_TYPE_VIMSS, Gene.SYNONYM_TYPE_NAME, Gene.SYNONYM_TYPE_NCBI };
+		String types[] = { Gene.SYNONYM_TYPE_VIMSS };
+//		String types[] = { Gene.SYNONYM_TYPE_VIMSS, Gene.SYNONYM_TYPE_NAME, Gene.SYNONYM_TYPE_NCBI };
 		for(Synonym synonym : synonyms) 
 			for(String type : types) 
 				if(synonym.getType().equals(type))
