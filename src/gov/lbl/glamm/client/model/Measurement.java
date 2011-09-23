@@ -2,11 +2,9 @@ package gov.lbl.glamm.client.model;
 
 import java.io.Serializable;
 
-@SuppressWarnings({"unused", "serial"})
-public class Measurement extends GlammPrimitive implements Serializable {
-	
-	public static transient GlammPrimitive.Type TYPE = new GlammPrimitive.Type();
-	
+@SuppressWarnings("serial")
+public class Measurement implements Serializable {
+		
 	private String expId 			= null;
 	private String sampleId 		= null;
 	private float value 			= 0f;
@@ -16,6 +14,7 @@ public class Measurement extends GlammPrimitive implements Serializable {
 	
 	//********************************************************************************
 	
+	@SuppressWarnings("unused")
 	private Measurement() {}
 	
 	public Measurement(final String expId, 
@@ -61,14 +60,5 @@ public class Measurement extends GlammPrimitive implements Serializable {
 	}
 
 	//********************************************************************************
-	
-	@Override
-	public Type getType() {
-		return TYPE;
-	}
-	
-	//********************************************************************************
-	
-	
 
 }

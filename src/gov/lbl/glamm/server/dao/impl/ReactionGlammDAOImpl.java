@@ -1,7 +1,7 @@
 package gov.lbl.glamm.server.dao.impl;
 
-import gov.lbl.glamm.client.model.GlammPrimitive.Xref;
 import gov.lbl.glamm.client.model.Reaction;
+import gov.lbl.glamm.client.model.util.Xref;
 import gov.lbl.glamm.server.GlammDbConnectionPool;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.ReactionDAO;
@@ -225,7 +225,7 @@ public class ReactionGlammDAOImpl implements ReactionDAO {
 					Reaction reaction = guid2Reaction.get(guid);
 					if(reaction == null) { 
 						reaction = new Reaction();
-						reaction.addXref(xrefId, xrefDbName);
+						reaction.addXref(new Xref(xrefId, xrefDbName));
 						guid2Reaction.put(guid, reaction);
 					}
 				
@@ -269,7 +269,7 @@ public class ReactionGlammDAOImpl implements ReactionDAO {
 				while(rs.next()) {
 
 					Reaction reaction = new Reaction();
-					reaction.addXref(rs.getString("toXrefId"), rs.getString("xrefDbName"));
+					reaction.addXref(new Xref(rs.getString("toXrefId"), rs.getString("xrefDbName")));
 					reaction.addEcNum(rs.getString("ecNum"));
 
 					if(reactions == null)
@@ -327,7 +327,7 @@ public class ReactionGlammDAOImpl implements ReactionDAO {
 					}
 				
 					reaction.addEcNum(ecNum);
-					reaction.addXref(xrefId, xrefDbName);
+					reaction.addXref(new Xref(xrefId, xrefDbName));
 					
 				}
 

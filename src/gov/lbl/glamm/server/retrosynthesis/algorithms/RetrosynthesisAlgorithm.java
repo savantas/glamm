@@ -1,7 +1,7 @@
 package gov.lbl.glamm.server.retrosynthesis.algorithms;
 
-import gov.lbl.glamm.client.model.MNNode;
 import gov.lbl.glamm.client.model.MetabolicNetwork;
+import gov.lbl.glamm.client.model.util.MNNode;
 import gov.lbl.glamm.client.presenter.RetrosynthesisPresenter;
 import gov.lbl.glamm.server.retrosynthesis.Route;
 import gov.lbl.glamm.server.retrosynthesis.Route.RouteComparator;

@@ -1,6 +1,7 @@
 package gov.lbl.glamm.server.dao.impl;
 
 import gov.lbl.glamm.client.model.Compound;
+import gov.lbl.glamm.client.model.util.Xref;
 import gov.lbl.glamm.server.GlammDbConnectionPool;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.CompoundDAO;
@@ -177,7 +178,7 @@ public class CompoundGlammDAOImpl implements CompoundDAO {
 				cpd.setFormula(rs.getString("formula"));
 				cpd.setSmiles(rs.getString("smiles"));
 				cpd.setInchi(rs.getString("inchi"));
-				cpd.addXref(id, dbName);
+				cpd.addXref(new Xref(id, dbName));
 
 			}
 
@@ -226,7 +227,7 @@ public class CompoundGlammDAOImpl implements CompoundDAO {
 				Compound cpd = new Compound();
 
 				cpd.setName(rs.getString("synonym"));
-				cpd.addXref(rs.getString("toXrefId"), rs.getString("xrefDbName"));
+				cpd.addXref(new Xref(rs.getString("toXrefId"), rs.getString("xrefDbName")));
 				
 				if(cpds == null)
 					cpds = new ArrayList<Compound>();

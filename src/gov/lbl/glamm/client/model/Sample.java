@@ -7,9 +7,10 @@ import java.util.HashMap;
 
 import com.google.gwt.view.client.ProvidesKey;
 
-@SuppressWarnings({ "unused", "serial" })
+@SuppressWarnings("serial")
 
-public class Sample extends GlammPrimitive implements Serializable {
+public class Sample
+implements Serializable {
 
 	public static transient final String DEFAULT_SAMPLE_ID 	= "-1";
 
@@ -59,9 +60,6 @@ public class Sample extends GlammPrimitive implements Serializable {
 	private	String tTime			= null;
 	private String units			= null;
 
-
-	public static transient GlammPrimitive.Type TYPE = new GlammPrimitive.Type();
-
 	public static final transient ProvidesKey<Sample> KEY_PROVIDER = new ProvidesKey<Sample>() {
 		public Object getKey(Sample item) {
 			return item == null ? null : item.getExperimentId() + "_" + item.getSampleId();
@@ -71,6 +69,7 @@ public class Sample extends GlammPrimitive implements Serializable {
 
 	//********************************************************************************
 
+	@SuppressWarnings("unused")
 	private Sample() {}
 
 	public Sample(final String expId, final String sampleId, final DataType dataType) {
@@ -115,6 +114,22 @@ public class Sample extends GlammPrimitive implements Serializable {
 		return true;
 	}
 
+	public String getConfidenceType() {
+		return confidenceType;
+	}
+
+	public String getcTime() {
+		return cTime;
+	}
+
+	public String getFactorUnit() {
+		return factorUnit;
+	}
+
+	public String gettTime() {
+		return tTime;
+	}
+
 	public String getExperimentId() {
 		return experimentId;
 	}
@@ -154,11 +169,6 @@ public class Sample extends GlammPrimitive implements Serializable {
 
 	public final String getTreatment() {
 		return treatment;
-	}
-
-	@Override
-	public Type getType() {
-		return TYPE;
 	}
 
 	public final String getUnits() {

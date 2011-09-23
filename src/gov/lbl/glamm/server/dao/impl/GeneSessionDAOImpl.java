@@ -1,7 +1,7 @@
 package gov.lbl.glamm.server.dao.impl;
 
 import gov.lbl.glamm.client.model.Gene;
-import gov.lbl.glamm.client.model.GlammPrimitive.Synonym;
+import gov.lbl.glamm.client.model.util.Synonym;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.GeneDAO;
 

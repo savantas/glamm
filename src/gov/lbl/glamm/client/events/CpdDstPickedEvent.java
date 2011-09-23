@@ -1,9 +1,7 @@
 package gov.lbl.glamm.client.events;
 
 import gov.lbl.glamm.client.model.Compound;
-import gov.lbl.glamm.client.model.GlammPrimitive;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import com.google.gwt.event.shared.EventHandler;
@@ -37,12 +35,8 @@ public class CpdDstPickedEvent extends GwtEvent<CpdDstPickedEvent.Handler> {
 	 * Constructor
 	 * @param primitives The GlammPrimitives corresponding to the desired compound
 	 */
-	public CpdDstPickedEvent(Set<GlammPrimitive> primitives) {
-		compounds = new HashSet<Compound>();
-		for(GlammPrimitive primitive : primitives) {
-			if(primitive.getType() == Compound.TYPE)
-				compounds.add((Compound) primitive);
-		}
+	public CpdDstPickedEvent(Set<Compound> compounds) {
+		this.compounds = compounds;
 	}
 	
 	/**

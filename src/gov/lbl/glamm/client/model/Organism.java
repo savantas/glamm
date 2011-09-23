@@ -7,15 +7,13 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
-@SuppressWarnings({"unused", "serial"})
-public class Organism extends GlammPrimitive implements Serializable {
+@SuppressWarnings("serial")
+public class Organism implements Serializable {
 	
 	public static transient final String GLOBAL_MAP_NAME			= "Global Map";
 	public static transient final String GLOBAL_MAP_TAXONOMY_ID		= "0";
 	public static transient final long MIN_METAGENOME_TAXID = 1000000000000l;
-	
-	public static transient GlammPrimitive.Type TYPE = new GlammPrimitive.Type();
-	
+		
 	public static class OrganismComparator implements Comparator<Organism> {
 
 		@Override
@@ -35,6 +33,7 @@ public class Organism extends GlammPrimitive implements Serializable {
 	
 	//********************************************************************************
 
+	@SuppressWarnings("unused")
 	private Organism() {}
 	
 	//********************************************************************************
@@ -79,11 +78,6 @@ public class Organism extends GlammPrimitive implements Serializable {
 
 	public String getTaxonomyId() {
 		return this.taxonomyId;
-	}
-	
-	@Override
-	public Type getType() {
-		return TYPE;
 	}
 	
 	//********************************************************************************

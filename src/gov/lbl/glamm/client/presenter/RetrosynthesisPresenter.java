@@ -9,12 +9,12 @@ import gov.lbl.glamm.client.events.ViewResizedEvent;
 import gov.lbl.glamm.client.model.AnnotatedMapData;
 import gov.lbl.glamm.client.model.Compound;
 import gov.lbl.glamm.client.model.Gene;
-import gov.lbl.glamm.client.model.GlammPrimitive;
-import gov.lbl.glamm.client.model.GlammPrimitive.Synonym;
-import gov.lbl.glamm.client.model.GlammPrimitive.Xref;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Pathway;
 import gov.lbl.glamm.client.model.Reaction;
+import gov.lbl.glamm.client.model.interfaces.Mappable;
+import gov.lbl.glamm.client.model.util.Synonym;
+import gov.lbl.glamm.client.model.util.Xref;
 import gov.lbl.glamm.client.rpc.GlammServiceAsync;
 import gov.lbl.glamm.client.util.ReactionColor;
 import gov.lbl.glamm.client.util.RowDependentSelectionCell;
@@ -170,10 +170,10 @@ public class RetrosynthesisPresenter {
 
 	private List<Reaction> reactions = null;
 	// mapping between ids in the suggest boxes and their respective primitives
-	private Map<String, Set<GlammPrimitive>> cpdHash = null;
-	private Map<String, Set<GlammPrimitive>> rxnHash = null;
+	private Map<String, Set<Mappable>> cpdHash = null;
+	private Map<String, Set<Mappable>> rxnHash = null;
 
-	private Map<String, Set<GlammPrimitive>> locHash = null;
+	private Map<String, Set<Mappable>> locHash = null;
 	private Compound cpdSrc = null;
 
 	private Compound cpdDst = null;
@@ -195,9 +195,9 @@ public class RetrosynthesisPresenter {
 		this.view = view;
 		this.eventBus = eventBus;
 
-		cpdHash = new HashMap<String, Set<GlammPrimitive>>();
-		rxnHash = new HashMap<String, Set<GlammPrimitive>>();
-		locHash = new HashMap<String, Set<GlammPrimitive>>();
+		cpdHash = new HashMap<String, Set<Mappable>>();
+		rxnHash = new HashMap<String, Set<Mappable>>();
+		locHash = new HashMap<String, Set<Mappable>>();
 
 		routeDataProvider = new ListDataProvider<Reaction>(Reaction.KEY_PROVIDER);
 		
@@ -211,10 +211,10 @@ public class RetrosynthesisPresenter {
 
 	}
 
-	private void addToHash(String key, GlammPrimitive primitive, Map<String, Set<GlammPrimitive>> target) {
-		Set<GlammPrimitive> primitives = target.get(key);
+	private void addToHash(String key, Mappable primitive, Map<String, Set<Mappable>> target) {
+		Set<Mappable> primitives = target.get(key);
 		if(primitives == null) {
-			primitives = new HashSet<GlammPrimitive>();
+			primitives = new HashSet<Mappable>();
 			target.put(key, primitives);
 		}
 		primitives.add(primitive);
@@ -225,9 +225,13 @@ public class RetrosynthesisPresenter {
 		view.getCpdDstSuggestBox().addSelectionHandler(new SelectionHandler<Suggestion>() {
 			@Override
 			public void onSelection(SelectionEvent<Suggestion> event) {
-				Set<GlammPrimitive> primitives = getPrimitivesForId(event.getSelectedItem().getReplacementString());
-				if(primitives.size() > 1)
-					eventBus.fireEvent(new CpdDstPickedEvent(primitives));
+				Set<Mappable> primitives = getPrimitivesForId(event.getSelectedItem().getReplacementString());
+				if(primitives.size() > 1) {
+					Set<Compound> compounds = new HashSet<Compound>();
+					for(Mappable primitive : primitives) 
+						compounds.add((Compound) primitive);
+					eventBus.fireEvent(new CpdDstPickedEvent(compounds));
+				}
 				else
 					setCpdDst((Compound) primitives.toArray()[0]);
 			}
@@ -236,9 +240,13 @@ public class RetrosynthesisPresenter {
 		view.getCpdSrcSuggestBox().addSelectionHandler(new SelectionHandler<Suggestion>() {
 			@Override
 			public void onSelection(SelectionEvent<Suggestion> event) {
-				Set<GlammPrimitive> primitives = getPrimitivesForId(event.getSelectedItem().getReplacementString());
-				if(primitives.size() > 1)
-					eventBus.fireEvent(new CpdSrcPickedEvent(primitives));
+				Set<Mappable> primitives = getPrimitivesForId(event.getSelectedItem().getReplacementString());
+				if(primitives.size() > 1) {
+					Set<Compound> compounds = new HashSet<Compound>();
+					for(Mappable primitive : primitives) 
+						compounds.add((Compound) primitive);
+					eventBus.fireEvent(new CpdSrcPickedEvent(compounds));
+				}
 				else
 					setCpdSrc((Compound) primitives.toArray()[0]);
 			}
@@ -333,7 +341,7 @@ public class RetrosynthesisPresenter {
 		view.getSearchSuggestBox().addSelectionHandler(new SelectionHandler<Suggestion>() {
 			@Override
 			public void onSelection(SelectionEvent<Suggestion> event) {
-				Set<GlammPrimitive> primitives = getPrimitivesForId(event.getSelectedItem().getReplacementString());
+				Set<Mappable> primitives = getPrimitivesForId(event.getSelectedItem().getReplacementString());
 				eventBus.fireEvent(new SearchTargetEvent(primitives));
 			}
 		});
@@ -403,9 +411,9 @@ public class RetrosynthesisPresenter {
 		return html;
 	}
 
-	private Set<GlammPrimitive> getPrimitivesForId(String id) {
+	private Set<Mappable> getPrimitivesForId(String id) {
 
-		Set<GlammPrimitive> primitives = cpdHash.get(id);
+		Set<Mappable> primitives = cpdHash.get(id);
 		if(primitives != null)
 			return primitives;
 

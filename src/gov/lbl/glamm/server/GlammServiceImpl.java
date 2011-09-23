@@ -3,13 +3,13 @@ package gov.lbl.glamm.server;
 import gov.lbl.glamm.client.model.Compound;
 import gov.lbl.glamm.client.model.Experiment;
 import gov.lbl.glamm.client.model.Gene;
-import gov.lbl.glamm.client.model.GlammPrimitive;
 import gov.lbl.glamm.client.model.GlammUser;
 import gov.lbl.glamm.client.model.MetabolicNetwork;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Pathway;
 import gov.lbl.glamm.client.model.Reaction;
 import gov.lbl.glamm.client.model.Sample;
+import gov.lbl.glamm.client.model.interfaces.HasMeasurements;
 import gov.lbl.glamm.client.rpc.GlammService;
 import gov.lbl.glamm.server.actions.AuthenticateUser;
 import gov.lbl.glamm.server.actions.GenCpdPopup;
@@ -119,7 +119,7 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	}
 	
 	@Override
-	public List<? extends GlammPrimitive> getMeasurementsForExperiment(String experimentId, String sampleId) {
+	public List<? extends HasMeasurements> getMeasurementsForExperiment(String experimentId, String sampleId) {
 		return GetExperiment.getMeasurementsForExperiment(getGlammSession(), experimentId, sampleId);
 	}
 	

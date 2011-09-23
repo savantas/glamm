@@ -1,15 +1,15 @@
 package gov.lbl.glamm.server.actions.requesthandlers;
 
 import gov.lbl.glamm.client.model.Compound;
-import gov.lbl.glamm.client.model.GlammPrimitive.Xref;
 import gov.lbl.glamm.client.model.MetabolicNetwork;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Pathway;
 import gov.lbl.glamm.client.model.Reaction;
+import gov.lbl.glamm.client.model.util.Xref;
 import gov.lbl.glamm.client.presenter.RetrosynthesisPresenter;
+import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.RequestHandler;
 import gov.lbl.glamm.server.ResponseHandler;
-import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.GeneDAO;
 import gov.lbl.glamm.server.dao.MetabolicNetworkDAO;
 import gov.lbl.glamm.server.dao.OrganismDAO;
@@ -65,7 +65,7 @@ public class GetDirections implements RequestHandler {
 			Set<String> ecNums = geneDao.getEcNumsForOrganism(taxonomyId);
 			Set<String> rxnIds = rxnDao.getRxnIdsForEcNums(ecNums, dbNames);
 
-			network.setNativeRxns(taxonomyId, rxnIds);
+			network.setNativeRxns(rxnIds);
 		}
 
 		// calculate routes

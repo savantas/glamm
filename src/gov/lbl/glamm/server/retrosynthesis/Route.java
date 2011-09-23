@@ -1,6 +1,6 @@
 package gov.lbl.glamm.server.retrosynthesis;
 
-import gov.lbl.glamm.client.model.MNNode;
+import gov.lbl.glamm.client.model.util.MNNode;
 
 import java.util.ArrayList;
 import java.util.Comparator;

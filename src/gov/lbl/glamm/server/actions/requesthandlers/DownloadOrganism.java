@@ -1,7 +1,7 @@
 package gov.lbl.glamm.server.actions.requesthandlers;
 
 import gov.lbl.glamm.client.model.Gene;
-import gov.lbl.glamm.client.model.GlammPrimitive.Synonym;
+import gov.lbl.glamm.client.model.util.Synonym;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.RequestHandler;
 import gov.lbl.glamm.server.ResponseHandler;
@@ -20,6 +20,15 @@ public class DownloadOrganism implements RequestHandler {
 
 	private final String DEFAULT_FILE_NAME = "organism.tab";
 
+	private Synonym getSynonymOfPreferredType(final Set<Synonym> synonyms) {
+		String types[] = { Gene.SYNONYM_TYPE_VIMSS, Gene.SYNONYM_TYPE_NAME, Gene.SYNONYM_TYPE_NCBI };
+		for(Synonym synonym : synonyms) 
+			for(String type : types) 
+				if(synonym.getType().equals(type))
+					return synonym;
+		return null;
+	}
+	
 	@Override
 	public void handleRequest(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
@@ -38,10 +47,10 @@ public class DownloadOrganism implements RequestHandler {
 				if(ecNums != null) {
 
 					for(String ecNum : ecNums) {
-						String types[] = { Gene.SYNONYM_TYPE_VIMSS, Gene.SYNONYM_TYPE_NAME, Gene.SYNONYM_TYPE_NCBI };
-						Synonym synonym	= gene.getSynonymOfPreferredType(types);
+						
+						Synonym synonym	= getSynonymOfPreferredType(gene.getSynonyms());
 
-						if(synonym != null && ecNum != null)
+						if(synonym != null)
 							content += synonym.getName() + "\t" + ecNum + "\n";
 					}
 				}

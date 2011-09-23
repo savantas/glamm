@@ -1,8 +1,9 @@
 package gov.lbl.glamm.server.actions;
 
-import gov.lbl.glamm.client.model.GlammPrimitive;
-import gov.lbl.glamm.client.model.GlammPrimitive.Synonym;
 import gov.lbl.glamm.client.model.Measurement;
+import gov.lbl.glamm.client.model.interfaces.HasMeasurements;
+import gov.lbl.glamm.client.model.interfaces.HasSynonyms;
+import gov.lbl.glamm.client.model.util.Synonym;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.ExperimentDAO;
 import gov.lbl.glamm.server.dao.GeneDAO;
@@ -15,9 +16,9 @@ import java.util.Set;
 
 public class GetExperiment  {
 
-	public static List<? extends GlammPrimitive> getMeasurementsForExperiment(GlammSession sm, String experimentId, String sampleId) {
+	public static List<? extends HasMeasurements> getMeasurementsForExperiment(GlammSession sm, String experimentId, String sampleId) {
 
-		List<? extends GlammPrimitive> primitives = null;
+		List<? extends HasMeasurements> primitives = null;
 
 		if(experimentId == null || experimentId.isEmpty() ||
 				sampleId == null || sampleId.isEmpty()) 
@@ -47,8 +48,8 @@ public class GetExperiment  {
 			return null;
 
 		// add experiment to content
-		for(GlammPrimitive primitive : primitives) {
-			Set<Synonym> synonyms = primitive.getSynonyms();
+		for(HasMeasurements primitive : primitives) {
+			Set<Synonym> synonyms = ((HasSynonyms) primitive).getSynonyms();
 			for(Synonym synonym : synonyms) {
 				Set<Measurement> measurements = id2Measurements.get(synonym.getName());
 				if(measurements != null)

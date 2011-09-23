@@ -1,7 +1,7 @@
 package gov.lbl.glamm.server.dao.impl;
 
-import gov.lbl.glamm.client.model.MNNode;
 import gov.lbl.glamm.client.model.MetabolicNetwork;
+import gov.lbl.glamm.client.model.util.MNNode;
 import gov.lbl.glamm.server.GlammDbConnectionPool;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.MetabolicNetworkDAO;
