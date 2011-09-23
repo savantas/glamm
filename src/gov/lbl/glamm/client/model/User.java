@@ -6,24 +6,22 @@ import java.util.Set;
 
 
 @SuppressWarnings("serial")
-public class GlammUser implements Serializable {
+public class User implements Serializable {
 
 	private static final String MOL_ACL_GROUPID_PUBLIC	= "1";
 
-	private String auth = null;
-	private String userId = null;
-	private Set<String> groupIds = null;
-	private String email = null;
+	private String auth;
+	private String userId;
+	private Set<String> groupIds;
+	private String email;
 	
-	private static final GlammUser guestUser;
-	static {
-		guestUser = new GlammUser(null, null, null);
-	}
+	private static transient final User guestUser = new User(null, null, null);
+	
 
 	@SuppressWarnings("unused")
-	private GlammUser() {}
+	private User() {}
 
-	public static GlammUser guestUser() {
+	public static User guestUser() {
 		return guestUser;
 	}
 
@@ -31,7 +29,7 @@ public class GlammUser implements Serializable {
 		return (userId == null && email == null);
 	}
 
-	public GlammUser(final String userId, final Set<String> groupIds, final String email) {
+	public User(final String userId, final Set<String> groupIds, final String email) {
 		this.auth = null;
 		this.userId = userId;
 		if(groupIds != null && !groupIds.isEmpty())

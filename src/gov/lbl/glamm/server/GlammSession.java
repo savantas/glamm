@@ -2,7 +2,7 @@ package gov.lbl.glamm.server;
 
 import gov.lbl.glamm.client.model.Experiment;
 import gov.lbl.glamm.client.model.Gene;
-import gov.lbl.glamm.client.model.GlammUser;
+import gov.lbl.glamm.client.model.User;
 import gov.lbl.glamm.client.model.Measurement;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.server.retrosynthesis.Route;
@@ -37,7 +37,7 @@ public class GlammSession {
 	private Map<String, List<Experiment>> 	taxonomyId2Experiments;
 	private Map<String, List<Gene>>			taxonomyId2Genes;
 	private Map<String, Organism> 			taxonomyId2Organism;
-	private GlammUser						user;
+	private User						user;
 	
 	//********************************************************************************
 
@@ -66,7 +66,7 @@ public class GlammSession {
 		taxonomyId2Experiments		= new HashMap<String, List<Experiment>>();
 		taxonomyId2Genes 			= new HashMap<String, List<Gene>>();
 		taxonomyId2Organism			= new HashMap<String, Organism>();
-		user						= GlammUser.guestUser();
+		user						= User.guestUser();
 	}
 	
 	//********************************************************************************
@@ -224,7 +224,7 @@ public class GlammSession {
 	
 	//********************************************************************************
 
-	public GlammUser getUser() {
+	public User getUser() {
 		return user;
 	}
 	
@@ -260,7 +260,7 @@ public class GlammSession {
 	
 	//********************************************************************************
 
-	public void setUser(final GlammUser user) {
+	public void setUser(final User user) {
 		this.user = user;
 	}
 	

@@ -1,6 +1,6 @@
 package gov.lbl.glamm.client.events;
 
-import gov.lbl.glamm.client.model.GlammUser;
+import gov.lbl.glamm.client.model.User;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
@@ -13,7 +13,7 @@ public class LogInEvent extends GwtEvent<LogInEvent.Handler> {
 
 	public static final Type<Handler> TYPE = new Type<Handler>();
 
-	private GlammUser user;
+	private User user;
 	
 	@Override
 	public com.google.gwt.event.shared.GwtEvent.Type<Handler> getAssociatedType() {
@@ -25,11 +25,11 @@ public class LogInEvent extends GwtEvent<LogInEvent.Handler> {
 		handler.onLogIn(this);
 	}
 	
-	public LogInEvent(final GlammUser user) {
+	public LogInEvent(final User user) {
 		this.user = user;
 	}
 	
-	public GlammUser getUser() {
+	public User getUser() {
 		return user;
 	}
 }

@@ -3,7 +3,7 @@ package gov.lbl.glamm.client.presenter;
 import gov.lbl.glamm.client.events.LogInEvent;
 import gov.lbl.glamm.client.events.LogOutEvent;
 import gov.lbl.glamm.client.events.ViewResizedEvent;
-import gov.lbl.glamm.client.model.GlammUser;
+import gov.lbl.glamm.client.model.User;
 import gov.lbl.glamm.client.rpc.GlammServiceAsync;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -58,7 +58,7 @@ public class LoginPresenter {
 	private View view;
 	private SimpleEventBus eventBus;
 
-	private GlammUser user;
+	private User user;
 	private State state;
 
 	public LoginPresenter(final GlammServiceAsync rpc, final View view, final SimpleEventBus eventBus) {
@@ -67,7 +67,7 @@ public class LoginPresenter {
 		this.view = view;
 		this.eventBus = eventBus;
 
-		user = GlammUser.guestUser();
+		user = User.guestUser();
 		setState(State.LOGGED_OUT);
 
 		bindView();
@@ -80,7 +80,7 @@ public class LoginPresenter {
 			String auth = Cookies.getCookie(COOKIE_AUTH);
 			String userId = Cookies.getCookie(COOKIE_USERID);
 
-			rpc.authenticateUser(userId, auth, new AsyncCallback<GlammUser>() {
+			rpc.authenticateUser(userId, auth, new AsyncCallback<User>() {
 				@Override
 				public void onFailure(Throwable caught) {
 					Window.alert("Remote procedure call failure: authenticateUser");
@@ -88,7 +88,7 @@ public class LoginPresenter {
 				}
 
 				@Override
-				public void onSuccess(GlammUser result) {
+				public void onSuccess(User result) {
 					logIn(result);
 				}
 			});
@@ -151,7 +151,7 @@ public class LoginPresenter {
 				if(results != null && !results.isEmpty())
 					Window.alert(results);
 				else {
-					rpc.getLoggedInUser(new AsyncCallback<GlammUser>() {
+					rpc.getLoggedInUser(new AsyncCallback<User>() {
 
 						@Override
 						public void onFailure(Throwable caught) {
@@ -159,7 +159,7 @@ public class LoginPresenter {
 						}
 
 						@Override
-						public void onSuccess(GlammUser result) {
+						public void onSuccess(User result) {
 							view.getPopupPanel().hide();
 							logIn(result);	
 						}
@@ -177,7 +177,7 @@ public class LoginPresenter {
 		view.getPopupPanel().show();
 	}
 
-	private void logIn(final GlammUser user) {
+	private void logIn(final User user) {
 		
 		this.user = user;
 		if(user.isGuestUser()) {
