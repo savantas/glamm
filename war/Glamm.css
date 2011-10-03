@@ -204,5 +204,6 @@
 .rxn[route=magenta] { stroke: #FF00FF; stroke-width: 12; }
 .rxn[route=gray] 	{ stroke: #CCCCCC; stroke-width: 12; }
 .rxn[route=white] 	{ stroke: #FFFFFF; stroke-width: 12; }
+.rxn[route=none]	{ stroke: #888888; }
 .rxn[route=none][absent=true]   { stroke: #222222; stroke-width: 3 }
 .rxn[route=none][absent=false] { stroke: #888888; }
