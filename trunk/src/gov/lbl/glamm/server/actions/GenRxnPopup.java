@@ -18,20 +18,20 @@ import java.util.Set;
 
 public class GenRxnPopup {
 
-	public static String genRxnPopup(final GlammSession sm, final Set<String> rxnIds, final Set<String> dbNames, final String taxonomyId) {
+	public static String genRxnPopup(final GlammSession sm, final Set<String> rxnIds, final String taxonomyId) {
 
 		String html = "<html>No reactions found.</html>";
 		Map<String, List<Reaction>>	def2Rxns	= null;
 		Map<String, List<Gene>> 		ecNum2Genes	= null;
 
-		if(rxnIds == null || rxnIds.isEmpty() || dbNames == null)
+		if(rxnIds == null || rxnIds.isEmpty())
 			return html;
 
 		ReactionDAO rxnDao = new ReactionGlammDAOImpl(sm);
-		List<Reaction> rxns = rxnDao.getReactions(rxnIds, dbNames);
+		Set<Reaction> rxns = rxnDao.getReactions(rxnIds);
 		Set<String> ecNums = new HashSet<String>();
 
-		if(rxns == null) 
+		if(rxns == null || rxns.isEmpty()) 
 			return html;
 
 		// create definition to reaction hash
@@ -87,30 +87,6 @@ public class GenRxnPopup {
 
 	}
 
-	public static String genRxnPopupFromQueryString(GlammSession sm, String query, String taxonomyId) {
-
-		HashSet<String> rxnIds = null;
-		HashSet<String> dbNames = null;
-
-		for(String token : query.split("&")) {
-			String[] kv = token.split("=");
-			if(kv.length != 2)
-				continue;
-			if(kv[0].equals("extId")) {
-				if(rxnIds == null)
-					rxnIds = new HashSet<String>();
-				rxnIds.add(kv[1]);
-			}
-			else if(kv[0].equals("extIdName")) {
-				if(dbNames == null)
-					dbNames = new HashSet<String>();
-				dbNames.add(kv[1]);
-			}
-		}
-
-
-		return genRxnPopup(sm, rxnIds, dbNames, taxonomyId);
-	}
 
 	//********************************************************************************
 

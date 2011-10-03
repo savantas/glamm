@@ -1,5 +1,6 @@
 package gov.lbl.glamm.client;
 
+import gov.lbl.glamm.client.events.AMDPickedEvent;
 import gov.lbl.glamm.client.events.AnnotatedMapDataLoadedEvent;
 import gov.lbl.glamm.client.events.CpdDstDisambiguatedEvent;
 import gov.lbl.glamm.client.events.CpdDstPickedEvent;
@@ -19,7 +20,9 @@ import gov.lbl.glamm.client.events.RouteStepPickedEvent;
 import gov.lbl.glamm.client.events.SamplePickedEvent;
 import gov.lbl.glamm.client.events.SearchTargetEvent;
 import gov.lbl.glamm.client.events.ViewResizedEvent;
+import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Sample;
+import gov.lbl.glamm.client.presenter.AMDPresenter;
 import gov.lbl.glamm.client.presenter.AnnotatedMapPresenter;
 import gov.lbl.glamm.client.presenter.CpdDisambiguationPresenter;
 import gov.lbl.glamm.client.presenter.ExperimentPresenter;
@@ -37,6 +40,7 @@ import gov.lbl.glamm.client.presenter.RetrosynthesisPresenter;
 import gov.lbl.glamm.client.rpc.GlammService;
 import gov.lbl.glamm.client.rpc.GlammServiceAsync;
 import gov.lbl.glamm.client.util.Interpolator;
+import gov.lbl.glamm.client.view.AMDView;
 import gov.lbl.glamm.client.view.AnnotatedMapView;
 import gov.lbl.glamm.client.view.CpdDisambiguationView;
 import gov.lbl.glamm.client.view.ExperimentUploadView;
@@ -77,6 +81,9 @@ public class AppController {
 	private GlammServiceAsync rpc;
 	private SimpleEventBus eventBus;
 	private AbsolutePanel mainPanel = null;
+	
+	private AMDPresenter amdPresenter;
+	private AMDView amdView;
 
 	private ImagePopupPresenter citationsPresenter;
 	private ImagePopupView citationsView;
@@ -144,6 +151,9 @@ public class AppController {
 		rpc = GWT.create(GlammService.class);
 		eventBus = new SimpleEventBus();
 		mainPanel = new AbsolutePanel();
+		
+		amdView = new AMDView();
+		amdPresenter = new AMDPresenter(rpc, amdView, eventBus);
 
 		cpdDisambiguationView = new CpdDisambiguationView();
 		cpdDisambiguationPresenter = new CpdDisambiguationPresenter(rpc,
@@ -219,7 +229,8 @@ public class AppController {
 		mainPanel.setStylePrimaryName("glamm-global-map");
 		layout.add(mainPanel);
 
-		loadMapPanel();
+		loadMapPanel(); // always load first
+		loadAnnotatedMapPicker();
 		loadCpdDisambiguation();
 		loadInterpolator();
 		loadLoadingPanel();
@@ -254,49 +265,37 @@ public class AppController {
 		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
 			@Override
 			public void execute() {
-				mainPanel.setWidgetPosition(organismView,
-						retrosynthesisView.getOffsetWidth() + 5, 0);
-				mainPanel.setWidgetPosition(
-						experimentView,
-						retrosynthesisView.getOffsetWidth()
-						+ organismView.getOffsetWidth() + 10, 0);
-				mainPanel.setWidgetPosition(
-						miniMapView,
-						0,
-						Window.getClientHeight()
-						- miniMapView.getOffsetHeight());
-				mainPanel.setWidgetPosition(
-						panZoomView,
-						miniMapView.getOffsetWidth() + 1,
-						Window.getClientHeight()
-						- panZoomView.getOffsetHeight());
-				mainPanel.setWidgetPosition(
-						citationsView,
-						Window.getClientWidth()
-						- citationsView.getOffsetWidth(),
-						Window.getClientHeight()
-						- citationsView.getOffsetHeight());
-				mainPanel.setWidgetPosition(
-						interpolatorView,
-						Window.getClientWidth()
-						- interpolatorView.getOffsetWidth(),
-						Window.getClientHeight()
-						- citationsView.getOffsetHeight()
-						- interpolatorView.getOffsetHeight() - 5);
-				mainPanel.setWidgetPosition(helpView, Window.getClientWidth()
-						- helpView.getOffsetWidth(), 0);
-				mainPanel.setWidgetPosition(loginView,
-						Window.getClientWidth() - loginView.getOffsetWidth()
-						- helpView.getOffsetWidth() - 5, 0);
+				mainPanel.setWidgetPosition(organismView, retrosynthesisView.getOffsetWidth() + 5, 0);
+				mainPanel.setWidgetPosition(experimentView, retrosynthesisView.getOffsetWidth() + organismView.getOffsetWidth() + 10, 0);
+				mainPanel.setWidgetPosition(miniMapView, 0, Window.getClientHeight() - miniMapView.getOffsetHeight());
+				mainPanel.setWidgetPosition(panZoomView, miniMapView.getOffsetWidth() + 1, Window.getClientHeight() - panZoomView.getOffsetHeight());
+				mainPanel.setWidgetPosition(amdView, 0, Window.getClientHeight() - amdView.getOffsetHeight() - miniMapView.getOffsetHeight() - 5);
+				mainPanel.setWidgetPosition(citationsView, Window.getClientWidth() - citationsView.getOffsetWidth(), Window.getClientHeight() - citationsView.getOffsetHeight());
+				mainPanel.setWidgetPosition(interpolatorView, Window.getClientWidth() - interpolatorView.getOffsetWidth(), Window.getClientHeight() - citationsView.getOffsetHeight() - interpolatorView.getOffsetHeight() - 5);
+				mainPanel.setWidgetPosition(helpView, Window.getClientWidth() - helpView.getOffsetWidth(), 0);
+				mainPanel.setWidgetPosition(loginView, Window.getClientWidth() - loginView.getOffsetWidth() - helpView.getOffsetWidth() - 5, 0);
 			}
 		});
 	}
 
+	private void loadAnnotatedMapPicker() {
+		mainPanel.add(amdView, 0, 0);
+		amdPresenter.populate("map01110");
+	}
+	
 	/**
 	 * Initializes compound disambiguation panel
 	 */
 	private void loadCpdDisambiguation() {
 
+		eventBus.addHandler(AnnotatedMapDataLoadedEvent.TYPE, new AnnotatedMapDataLoadedEvent.Handler() {
+			@Override
+			public void onLoaded(AnnotatedMapDataLoadedEvent event) {
+				cpdDisambiguationPresenter.clearCpdChoices();
+				cpdDisambiguationView.hideView();
+			}
+		});
+		
 		eventBus.addHandler(CpdDstPickedEvent.TYPE,
 				new CpdDstPickedEvent.Handler() {
 			@Override
@@ -342,9 +341,8 @@ public class AppController {
 			@Override
 			public void onMapElementClick(
 					final MapElementClickEvent event) {
-				mapElementPresenter.showPopup(event.getElementClass(),
-						event.getElementQuery(), event.getClientX(),
-						event.getClientY());
+				mapElementPresenter.showPopup(event.getElementClass(), event.getIds(), 
+						event.getClientX(), event.getClientY());
 			}
 		});
 
@@ -378,20 +376,19 @@ public class AppController {
 	 */
 	private void loadMapPanel() {
 
-		UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
-		String mapId = "map01100";
-		
-		mapPresenter.loadMapData(urlBuilder.setPath("/svg/" + mapId + ".svg").buildString(), 
-				mapId,
-				urlBuilder.setPath("/images/" + mapId + ".png").buildString());
-
-
 		mainPanel.add(mapView, 0, 0);
 		
 		eventBus.addHandler(AnnotatedMapDataLoadedEvent.TYPE, new AnnotatedMapDataLoadedEvent.Handler() {
 			@Override
 			public void onLoaded(AnnotatedMapDataLoadedEvent event) {
 				mapPresenter.setMapData(event.getMapData());
+			}
+		});
+		
+		eventBus.addHandler(AMDPickedEvent.TYPE, new AMDPickedEvent.Handler() {
+			@Override
+			public void onPicked(AMDPickedEvent event) {
+				mapPresenter.loadMapDataFromDescriptor(event.getDescriptor());
 			}
 		});
 		
@@ -471,7 +468,7 @@ public class AppController {
 		eventBus.addHandler(AnnotatedMapDataLoadedEvent.TYPE, new AnnotatedMapDataLoadedEvent.Handler() {
 			@Override
 			public void onLoaded(AnnotatedMapDataLoadedEvent event) {
-				miniMapPresenter.setMiniMapUrl(event.getMapData().getMiniMapUrl());
+				miniMapPresenter.setMiniMapUrl(event.getMapData().getIconUrl());
 			}
 		});
 		
@@ -490,6 +487,13 @@ public class AppController {
 	private void loadOrganismPicker() {
 		mainPanel.add(organismView, 0, 0);
 		organismPresenter.populate();
+		
+		eventBus.addHandler(AnnotatedMapDataLoadedEvent.TYPE, new AnnotatedMapDataLoadedEvent.Handler() {
+			@Override
+			public void onLoaded(AnnotatedMapDataLoadedEvent event) {
+				organismPresenter.setOrganism(Organism.globalMap(), false);
+			}
+		});
 
 		eventBus.addHandler(OrganismUploadEvent.TYPE,
 				new OrganismUploadEvent.Handler() {
@@ -539,6 +543,13 @@ public class AppController {
 	private void loadExperimentPicker() {
 		mainPanel.add(experimentView, 0, 0);
 
+		eventBus.addHandler(AnnotatedMapDataLoadedEvent.TYPE, new AnnotatedMapDataLoadedEvent.Handler() {
+			@Override
+			public void onLoaded(AnnotatedMapDataLoadedEvent event) {
+				experimentPresenter.setOrganism(Organism.globalMap());
+			}
+		});
+		
 		eventBus.addHandler(OrganismPickedEvent.TYPE,
 				new OrganismPickedEvent.Handler() {
 			@Override
@@ -618,6 +629,13 @@ public class AppController {
 	private void loadInterpolator() {
 		mainPanel.add(interpolatorView, 0, 0);
 
+		eventBus.addHandler(AnnotatedMapDataLoadedEvent.TYPE, new AnnotatedMapDataLoadedEvent.Handler() {
+			@Override
+			public void onLoaded(AnnotatedMapDataLoadedEvent event) {
+				interpolatorView.hide();
+			}
+		});
+		
 		eventBus.addHandler(OrganismPickedEvent.TYPE,
 				new OrganismPickedEvent.Handler() {
 			@Override
@@ -735,7 +753,9 @@ public class AppController {
 		eventBus.addHandler(AnnotatedMapDataLoadedEvent.TYPE, new AnnotatedMapDataLoadedEvent.Handler() {
 			@Override
 			public void onLoaded(AnnotatedMapDataLoadedEvent event) {
+				retrosynthesisPresenter.setOrganism(Organism.globalMap());
 				retrosynthesisPresenter.setMapData(event.getMapData());
+				retrosynthesisPresenter.reset();
 			}
 		});
 

@@ -9,44 +9,32 @@ import gov.lbl.glamm.server.dao.PathwayDAO;
 import gov.lbl.glamm.server.dao.impl.KeggPathwayDAOImpl;
 import gov.lbl.glamm.server.util.GlammUtils;
 
+import java.util.Set;
+
 public class GenPwyPopup {
 
 	public static String genPwyPopup(final GlammSession sm, 
-			final String mapId, 
+			final Set<String> mapIds, 
 			final String taxonomyId, 
 			final String experimentId, 
 			final String sampleId) {
-		String html			= "<html>No results found for " + mapId + ".</html>";
+
+		if(mapIds == null || mapIds.isEmpty())
+			return "<html>No results found for map.</html>";
+
+		StringBuilder builder = new StringBuilder().append("<html>");
 
 		PathwayDAO pwyDao = new KeggPathwayDAOImpl(sm);
-		Pathway pwy = pwyDao.getPathway(mapId);
 
-		if(pwy != null) {
-			html = "<html>";
-			html += genKeggMapLink(sm, pwy, taxonomyId, experimentId, sampleId);
-			html += genImgLink(sm, pwy);
-			html += "</html>";
+		for(String mapId : mapIds) {
+			Pathway pwy = pwyDao.getPathway(mapId);
+			if(pwy != null) {
+				builder.append(genKeggMapLink(sm, pwy, taxonomyId, experimentId, sampleId));
+				builder.append(genImgLink(sm, pwy));
+			}
 		}
 
-		return html;
-	}
-	
-	public static String genPwyPopupFromQueryString(final GlammSession sm, 
-			final String query, 
-			final String taxonomyId, 
-			final String experimentId, 
-			final String sampleId) {
-		String mapId = null;
-		
-		for(String token : query.split("&")) {
-			String kv[] = token.split("=");
-			if(kv.length != 2)
-				continue;
-			if(kv[0].equals("keggMapId"))
-				mapId = kv[1];
-		}
-		
-		return genPwyPopup(sm, mapId, taxonomyId, experimentId, sampleId);
+		return builder.append("</html>").toString();
 	}
 
 	//********************************************************************************
@@ -82,7 +70,7 @@ public class GenPwyPopup {
 		if(	experimentId != null && !experimentId.equals(Experiment.DEFAULT_EXPERIMENT_ID) &&
 				sampleId != null && !sampleId.equals(Sample.DEFAULT_SAMPLE_ID) &&
 				taxonomyId != null && !taxonomyId.equals(Organism.GLOBAL_MAP_TAXONOMY_ID)) {
-			
+
 			url = "http://" + sm.getServerConfig().getIsolateHost() + "/cgi-bin/microarray/reportSet.cgi?disp=3&";
 			url += "mapId=" + mapId;
 			url += "&taxId=" + taxonomyId;

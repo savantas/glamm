@@ -83,16 +83,16 @@ public class OrganismPresenter {
 		addDataTypeChoice(Sample.DataType.NONE, true);
 		addDataTypeChoice(Sample.DataType.RNA, false);
 		addDataTypeChoice(Sample.DataType.FITNESS, false);
-		
-		setOrganism(Organism.globalMap(), true);
+
+		setOrganism(Organism.globalMap(), false);
 
 		bindView();
 	}
 
 	public void updateDataTypeChoices() {
-		
+
 		view.clearDataTypeChoices();
-		
+
 		addDataTypeChoice(Sample.DataType.NONE, true);
 		rpc.getAvailableExperimentTypes(new AsyncCallback<List<Sample.DataType>>() {
 			@Override
@@ -111,11 +111,11 @@ public class OrganismPresenter {
 			}
 		});
 	}
-	
+
 	private void addDataTypeChoice(final Sample.DataType dataType, final boolean isDefault) {
 		final OrganismPresenter thePresenter = this;
 		final String caption = dataType2Caption.get(dataType);
-		
+
 		HasClickHandlers dataTypeChoice = view.addDataTypeChoice(caption, isDefault);
 
 		dataTypeChoice.addClickHandler(new ClickHandler() {
@@ -144,7 +144,7 @@ public class OrganismPresenter {
 				ListBox listBox = view.getOrganismListBox();
 				int index = listBox.getSelectedIndex();
 				String organismName = listBox.getItemText(index);
-				thePresenter.setOrganism(name2Organism.get(organismName), false);
+				thePresenter.setOrganism(name2Organism.get(organismName), true);
 				view.minimize();
 			}
 		});
@@ -168,14 +168,14 @@ public class OrganismPresenter {
 				eventBus.fireEvent(new OrganismUploadEvent(OrganismUploadEvent.Action.REQUEST));
 			}
 		});
-		
+
 		view.getDisclosurePanel().addOpenHandler(new OpenHandler<DisclosurePanel>() {
 			@Override
 			public void onOpen(OpenEvent<DisclosurePanel> event) {
 				eventBus.fireEvent(new ViewResizedEvent());
 			}
 		});
-		
+
 		view.getDisclosurePanel().addCloseHandler(new CloseHandler<DisclosurePanel>() {
 			@Override
 			public void onClose(CloseEvent<DisclosurePanel> event) {
@@ -204,7 +204,7 @@ public class OrganismPresenter {
 		final MultiWordSuggestOracle suggestOracle = (MultiWordSuggestOracle) view.getOrganismSuggestBox().getSuggestOracle();
 
 		updatePopulatingStatus(false);
-		
+
 		suggestOracle.clear();
 		view.getOrganismListBox().clear();
 		name2Organism.clear();
@@ -234,31 +234,32 @@ public class OrganismPresenter {
 					view.getOrganismListBox().addItem(name);
 					name2Organism.put(name, organism);
 				}
-				
+
 				updatePopulatingStatus(true);
 			}
 		});
 	}
 
-	private void setOrganism(Organism organism, boolean selectInListBox) {
+	public void setOrganism(Organism organism, boolean shouldFireEvent) {
 
 		this.organism = organism;
 
 		if(this.organism != null) {
 			view.getOrganismSuggestBox().setText(this.organism.getName());
-			if(selectInListBox) {
-				for(int i = 0; i < view.getOrganismListBox().getItemCount(); i++) {
-					if(view.getOrganismListBox().getItemText(i).equals(this.organism.getName())) {
-						view.getOrganismListBox().setItemSelected(i, true);
-						break;
-					}
+
+			for(int i = 0; i < view.getOrganismListBox().getItemCount(); i++) {
+				if(view.getOrganismListBox().getItemText(i).equals(this.organism.getName())) {
+					view.getOrganismListBox().setItemSelected(i, true);
+					break;
 				}
 			}
+
 			view.minimize();
-			eventBus.fireEvent(new OrganismPickedEvent(organism));
+			if(shouldFireEvent)
+				eventBus.fireEvent(new OrganismPickedEvent(organism));
 		}
 	}
-	
+
 	private void updatePopulatingStatus(final boolean donePopulating) {
 		final String POPULATING_TEXT = "Populating...";
 		if(donePopulating) {

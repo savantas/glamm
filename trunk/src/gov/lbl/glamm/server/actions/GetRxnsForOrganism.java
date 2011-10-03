@@ -14,11 +14,11 @@ import java.util.Set;
 
 public class GetRxnsForOrganism {
 	
-	public static List<Reaction> getRxnsForOrganism(final GlammSession sm, final String taxonomyId, final Set<String> dbNames) {
+	public static Set<Reaction> getRxnsForOrganism(final GlammSession sm, final String taxonomyId) {
 		
 		GeneDAO geneDao = new GeneDAOImpl(sm);
 		ReactionDAO rxnDao = new ReactionGlammDAOImpl(sm);
-		List<Reaction> rxns = null;
+		Set<Reaction> rxns = null;
 		
 		List<Gene> genes = geneDao.getGenesForOrganism(taxonomyId);
 	
@@ -29,7 +29,7 @@ public class GetRxnsForOrganism {
 				if(ecNumsForGene != null)
 					ecNums.addAll(ecNumsForGene);
 			}
-			rxns = rxnDao.getReactionsForEcNums(ecNums, dbNames);
+			rxns = rxnDao.getReactionsForEcNums(ecNums);
 		}
 		
 		return rxns;

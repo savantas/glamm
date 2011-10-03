@@ -106,7 +106,7 @@ public class RetrosynthesisPresenter {
 		public SuggestBox 			getSearchSuggestBox();
 		public Label 				getStatusLabel();
 	}
-	
+
 	private String isolateHost;
 	private String metagenomeHost;
 
@@ -128,19 +128,19 @@ public class RetrosynthesisPresenter {
 
 	private String genEcNumLinkForSessionOrganism(String ecNum, Organism organism) {
 		String link = "<b>" + ecNum + "</b>";
-		
+
 		// get set of all molTaxonomyIds
 		Set<String> metaMolTaxonomyIds = organism.getMolTaxonomyIds();
-		
+
 		if(metagenomeHost == null || metaMolTaxonomyIds == null || metaMolTaxonomyIds.isEmpty())
 			return link;
-		
+
 		link = "<a href=\"http://" + metagenomeHost + "/cgi-bin/fetchEC2.cgi?ec=" + ecNum;
 		for(String taxonomyId : metaMolTaxonomyIds) 
 			link += taxonomyId != null ? "&taxId=" + taxonomyId : "";
 		link += "\" target=\"_new\">";
 		link += "<b>" + ecNum + "</b></a>";
-	
+
 		return link;
 	}
 
@@ -152,12 +152,12 @@ public class RetrosynthesisPresenter {
 		// annotate ecNum
 		if(organism == null || organism.isGlobalMap())
 			return ecNum;
-		
+
 		if(organism.isSessionOrganism())
 			return genEcNumLinkForSessionOrganism(ecNum, organism);
 		return genEcNumLinkForMolOrganism(ecNum, organism);
 	}
-	
+
 	private GlammServiceAsync rpc = null;
 	private View view = null;
 
@@ -165,17 +165,13 @@ public class RetrosynthesisPresenter {
 	private AnnotatedMapData mapData = null;
 
 	private Organism organism = null;
-	// these two collections are not organism-specific and hence should ideally be retrieved only once
-	private List<Compound> compounds = null;
 
-	private List<Reaction> reactions = null;
 	// mapping between ids in the suggest boxes and their respective primitives
-	private Map<String, Set<Mappable>> cpdHash = null;
-	private Map<String, Set<Mappable>> rxnHash = null;
+	private Map<String, Set<Mappable>> cpdHash;
+	private Map<String, Set<Mappable>> rxnHash;
+	private Map<String, Set<Mappable>> locHash;
 
-	private Map<String, Set<Mappable>> locHash = null;
 	private Compound cpdSrc = null;
-
 	private Compound cpdDst = null;
 	private List<Pathway> routes = null;
 	private int routeIndex = -1;
@@ -200,7 +196,7 @@ public class RetrosynthesisPresenter {
 		locHash = new HashMap<String, Set<Mappable>>();
 
 		routeDataProvider = new ListDataProvider<Reaction>(Reaction.KEY_PROVIDER);
-		
+
 		loadIsolateHost();
 		loadMetagenomeHost();
 
@@ -275,7 +271,7 @@ public class RetrosynthesisPresenter {
 				urlBuilder.setParameter(RequestParameters.CPD_DST.toString(), cpdDstXref.getXrefId());
 				for(String dbName : mapData.getCpdDbNames()) 
 					urlBuilder.setParameter(RequestParameters.DBNAME.toString(), dbName);
-				urlBuilder.setParameter(RequestParameters.MAP_TITLE.toString(), mapData.getMapId());
+				urlBuilder.setParameter(RequestParameters.MAPID.toString(), mapData.getDescriptor().getMapId());
 				urlBuilder.setParameter(RequestParameters.ALGORITHM.toString(), algorithm);
 				urlBuilder.setParameter(RequestParameters.AS_TEXT.toString(), "true");
 				if(organism != null && !organism.isGlobalMap())
@@ -293,7 +289,7 @@ public class RetrosynthesisPresenter {
 					String algorithm = view.getAlgorithmsListBox().getValue(index);
 					rpc.getDirections(organism.getTaxonomyId(), 
 							cpdSrc, cpdDst, 
-							mapData.getMapId(), 
+							mapData.getDescriptor().getMapId(), 
 							algorithm,
 							new AsyncCallback<List<Pathway>>() {
 						@Override
@@ -521,7 +517,7 @@ public class RetrosynthesisPresenter {
 		final SingleSelectionModel<Reaction> selectionModel = new SingleSelectionModel<Reaction>(Reaction.KEY_PROVIDER);
 		table.setSelectionModel(selectionModel);
 	}
-	
+
 	private void loadIsolateHost() {
 		rpc.getIsolateHost(new AsyncCallback<String>() {
 			@Override
@@ -535,7 +531,7 @@ public class RetrosynthesisPresenter {
 			}
 		});
 	}
-	
+
 	private void loadMetagenomeHost() {
 		rpc.getMetagenomeHost(new AsyncCallback<String>() {
 			@Override
@@ -560,24 +556,21 @@ public class RetrosynthesisPresenter {
 		cpdSrcOracle.clear();
 		cpdDstOracle.clear();
 
+		cpdHash.clear();
+		rxnHash.clear();
+		locHash.clear();
+
 		compoundsPopulated = false;
 		genesPopulated = false;
 		reactionsPopulated = false;
-		
+
 		updatePopulatingStatus();
 
-		if(mapData != null) {
-			
-			if(compounds == null)
-				populateCompoundSearch();
-			else
-				populateWithCompounds(compounds, false);
-
-			if(reactions == null)
-				populateReactionSearch();
-			else
-				populateWithReactions(reactions, false);
-		}
+		if(mapData == null)
+			return;
+		
+		populateCompoundSearch();
+		populateReactionSearch();
 
 		if(organism != null && !organism.isGlobalMap())
 			populateLocusSearch();
@@ -586,7 +579,7 @@ public class RetrosynthesisPresenter {
 	}
 
 	private void populateCompoundSearch() {
-		rpc.populateCompoundSearch(mapData.getCpdDbNames(), new AsyncCallback<List<Compound>>() {
+		rpc.populateCompoundSearch(mapData.getDescriptor().getMapId(), new AsyncCallback<Set<Compound>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				// Show the RPC error message to the user
@@ -594,10 +587,9 @@ public class RetrosynthesisPresenter {
 			}
 
 			@Override
-			public void onSuccess(List<Compound> result) {
-				compounds = result;
-				if(compounds != null)
-					populateWithCompounds(compounds, true);
+			public void onSuccess(Set<Compound> result) {
+				if(result != null)
+					populateWithCompounds(result);
 			}
 		});
 	}
@@ -619,7 +611,7 @@ public class RetrosynthesisPresenter {
 	}
 
 	private void populateReactionSearch() {
-		rpc.populateReactionSearch(mapData.getRxnDbNames(), new AsyncCallback<List<Reaction>>() {
+		rpc.populateReactionSearch(mapData.getDescriptor().getMapId(), new AsyncCallback<Set<Reaction>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				// Show the RPC error message to the user
@@ -627,15 +619,15 @@ public class RetrosynthesisPresenter {
 			}
 
 			@Override
-			public void onSuccess(List<Reaction> result) {
-				reactions = result;
-				if(reactions != null)
-					populateWithReactions(reactions, true);
+			public void onSuccess(Set<Reaction> result) {
+				if(result != null)
+					populateWithReactions(result);
 			}
 		});
 	}
 
-	private void populateWithCompounds(final Collection<Compound> compounds, final boolean populateHash) {
+	private void populateWithCompounds(final Collection<Compound> compounds) {
+
 		MultiWordSuggestOracle searchOracle = (MultiWordSuggestOracle) view.getSearchSuggestBox().getSuggestOracle();
 		MultiWordSuggestOracle cpdSrcOracle = (MultiWordSuggestOracle) view.getCpdSrcSuggestBox().getSuggestOracle();
 		MultiWordSuggestOracle cpdDstOracle = (MultiWordSuggestOracle) view.getCpdDstSuggestBox().getSuggestOracle();
@@ -646,8 +638,7 @@ public class RetrosynthesisPresenter {
 				searchOracle.add(name);
 				cpdSrcOracle.add(name);
 				cpdDstOracle.add(name);
-				if(populateHash)
-					addToHash(name, compound, cpdHash);
+				addToHash(name, compound, cpdHash);
 			}
 
 			Set<Synonym> synonyms = compound.getSynonyms();
@@ -656,8 +647,7 @@ public class RetrosynthesisPresenter {
 					searchOracle.add(synonym.getName());
 					cpdSrcOracle.add(synonym.getName());
 					cpdDstOracle.add(synonym.getName());
-					if(populateHash)
-						addToHash(synonym.getName(), compound, cpdHash);
+					addToHash(synonym.getName(), compound, cpdHash);
 				}
 			}
 		}
@@ -683,16 +673,15 @@ public class RetrosynthesisPresenter {
 		updatePopulatingStatus();
 	}
 
-	private void populateWithReactions(final Collection<Reaction> reactions, final boolean populateHash) {
+	private void populateWithReactions(final Collection<Reaction> reactions) {
 		MultiWordSuggestOracle searchOracle = (MultiWordSuggestOracle) view.getSearchSuggestBox().getSuggestOracle();
 
 		for(Reaction reaction : reactions) {
 			Set<String> ecNums = reaction.getEcNums();
 			if(ecNums != null) {
 				for(String ecNum : ecNums) {
-					searchOracle.add(ecNum);
-					if(populateHash) 
-						addToHash(ecNum, reaction, rxnHash);
+					searchOracle.add(ecNum); 
+					addToHash(ecNum, reaction, rxnHash);
 				}
 			}
 		}
@@ -722,7 +711,6 @@ public class RetrosynthesisPresenter {
 
 	public void setMapData(final AnnotatedMapData mapData) {
 		this.mapData = mapData;
-		setOrganism(Organism.globalMap());
 	}
 
 	public void setOrganism(final Organism organism) {

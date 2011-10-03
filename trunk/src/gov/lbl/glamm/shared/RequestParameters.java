@@ -9,7 +9,7 @@ public enum RequestParameters {
 	CPD_DST("cpdDst"),
 	DBNAME("dbName"),
 	EXPERIMENT("experiment"),
-	MAP_TITLE("mapTitle"),
+	MAPID("mapId"),
 	SAMPLE("sample"),
 	TAXONOMY_ID("taxonomyId");
 	
