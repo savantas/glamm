@@ -5,10 +5,10 @@ import gov.lbl.glamm.client.events.LoadingEvent;
 import gov.lbl.glamm.client.events.MapElementClickEvent;
 import gov.lbl.glamm.client.events.MapUpdateEvent;
 import gov.lbl.glamm.client.model.AnnotatedMapData;
+import gov.lbl.glamm.client.model.AnnotatedMapDescriptor;
 import gov.lbl.glamm.client.model.Compound;
 import gov.lbl.glamm.client.model.Gene;
 import gov.lbl.glamm.client.model.Measurement;
-import gov.lbl.glamm.client.model.MetabolicNetwork;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Pathway;
 import gov.lbl.glamm.client.model.Reaction;
@@ -21,6 +21,7 @@ import gov.lbl.glamm.client.model.util.Xref;
 import gov.lbl.glamm.client.rpc.GlammServiceAsync;
 import gov.lbl.glamm.client.util.Interpolator;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -64,6 +65,8 @@ import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Panel;
@@ -74,14 +77,14 @@ public class AnnotatedMapPresenter {
 	private interface MapElementCommand {
 		public void execute(final OMSVGElement element);
 	}
-	
+
 	public interface View {
 		public HasAllMouseHandlers		getAllMouseHandlers();
 		public HasClickHandlers 		getClickHandlers();
 		public HasDoubleClickHandlers 	getDoubleClickHandlers();
 		public Panel 					getMapPanel();
 	}
-	
+
 	private enum Mode {
 		INITIAL,
 		NONE,
@@ -89,29 +92,26 @@ public class AnnotatedMapPresenter {
 		ZOOM;
 	}
 
-	private OMSVGPoint			p0 		= null;
-	private OMSVGMatrix			ctm0	= null;
+	private OMSVGPoint			p0;
+	private OMSVGMatrix			ctm0;
 
 	private float				scaleMin;
 	private float				scaleMax;
-	private GlammServiceAsync rpc 		= null;
+	private GlammServiceAsync rpc;
 
-	private SimpleEventBus 	eventBus 	= null;
-	private View			view		= null;
+	private SimpleEventBus 	eventBus;
+	private View			view;
 
-	private AnnotatedMapData mapData 	= null;
+	private AnnotatedMapData mapData;	
+	private Set<OMSVGElement> previousSearchTargets;
 
-	private MetabolicNetwork network 	= null;
-	
-	private Set<OMSVGElement> previousSearchTargets = null;
-	
 	private Mode mode = Mode.INITIAL;
 
 	private Organism organism = null;
 	private int dyThreshold;
 
 	public AnnotatedMapPresenter(final GlammServiceAsync rpc, final View view, final SimpleEventBus eventBus) {
-		
+
 		this.rpc = rpc;
 		this.view = view;
 		this.eventBus = eventBus;
@@ -119,18 +119,18 @@ public class AnnotatedMapPresenter {
 		dyThreshold = 3;
 		if(Window.Navigator.getUserAgent().contains("Chrome") || Window.Navigator.getUserAgent().contains("Safari"))
 			dyThreshold = 1;
-		
+
 		bindView();
 	}
 
-	private void addMouseHandlers(final OMElement group, final String tagName) {
+	private void addMouseHandlersToElement(final OMElement group, final String tagName) {
 		for(final OMElement child : group.getElementsByTagName(tagName)) {
-			addMouseOverHandler((HasMouseOverHandlers) child, tagName);
-			addMouseOutHandler((HasMouseOutHandlers) child, tagName);
+			addMouseOverHandlerToElement((HasMouseOverHandlers) child, tagName);
+			addMouseOutHandlerToElement((HasMouseOutHandlers) child, tagName);
 		}
 	}
-	
-	private void addMouseOutHandler(final HasMouseOutHandlers element, final String tagName) {
+
+	private void addMouseOutHandlerToElement(final HasMouseOutHandlers element, final String tagName) {
 		element.addMouseOutHandler(new MouseOutHandler() {
 			public void onMouseOut(MouseOutEvent event) {
 				Element element = event.getRelativeElement();
@@ -155,7 +155,7 @@ public class AnnotatedMapPresenter {
 		});
 	}
 
-	private void addMouseOverHandler(final HasMouseOverHandlers element, final String tagName) {
+	private void addMouseOverHandlerToElement(final HasMouseOverHandlers element, final String tagName) {
 		element.addMouseOverHandler(new MouseOverHandler() {
 			public void onMouseOver(MouseOverEvent event) {
 				Element element = event.getRelativeElement();
@@ -187,7 +187,35 @@ public class AnnotatedMapPresenter {
 		this.mapData.getSvg().addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				event.preventDefault();
-				eventBus.fireEvent(new MapElementClickEvent(event));
+				Element element = DOM.eventGetTarget(Event.as(event.getNativeEvent()));
+				String elementClass = element.getAttribute(AnnotatedMapData.ATTRIBUTE_CLASS);
+				int clientX = event.getClientX();
+				int clientY = event.getClientY();
+				String idsString = null;
+
+				Element parentElement = element.getParentElement();
+				while(parentElement != null && !parentElement.hasAttribute(AnnotatedMapData.ATTRIBUTE_CLASS))
+					parentElement = parentElement.getParentElement();
+
+				if(parentElement == null)
+					return; // fail silently
+
+				if(elementClass.equals(AnnotatedMapData.CLASS_CPD))
+					idsString = parentElement.getAttribute(AnnotatedMapData.ATTRIBUTE_COMPOUND);
+				else if(elementClass.equals(AnnotatedMapData.CLASS_MAP))
+					idsString = parentElement.getAttribute(AnnotatedMapData.ATTRIBUTE_MAP);
+				else if(elementClass.equals(AnnotatedMapData.CLASS_RXN))
+					idsString = parentElement.getAttribute(AnnotatedMapData.ATTRIBUTE_REACTION);
+				else
+					return; // fail silently
+
+				String[] idsArray = idsString.split("\\+");
+				Set<String> ids = new HashSet<String>();
+				for(String id : idsArray)
+					ids.add(id);
+
+				eventBus.fireEvent(new MapElementClickEvent(elementClass, ids, clientX, clientY));
+
 			}
 		});
 
@@ -197,11 +225,11 @@ public class AnnotatedMapPresenter {
 			if(group.hasAttribute(AnnotatedMapData.ATTRIBUTE_CLASS)) {
 				String theClass = group.getAttribute(AnnotatedMapData.ATTRIBUTE_CLASS);
 				if(theClass.equals(AnnotatedMapData.CLASS_CPD))
-					addMouseHandlers(group, SVGConstants.SVG_ELLIPSE_TAG);
+					addMouseHandlersToElement(group, SVGConstants.SVG_ELLIPSE_TAG);
 				else if(theClass.equals(AnnotatedMapData.CLASS_RXN))
-					addMouseHandlers(group, SVGConstants.SVG_PATH_TAG);
+					addMouseHandlersToElement(group, SVGConstants.SVG_PATH_TAG);
 				else if(theClass.equals(AnnotatedMapData.CLASS_MAP))
-					addMouseHandlers(group, SVGConstants.SVG_T_SPAN_TAG);
+					addMouseHandlersToElement(group, SVGConstants.SVG_T_SPAN_TAG);
 			}
 		}
 	}
@@ -251,15 +279,15 @@ public class AnnotatedMapPresenter {
 		});
 
 		hasAllMouseHandlers.addMouseWheelHandler(new MouseWheelHandler() {
-	
+
 			@Override
 			public void onMouseWheel(MouseWheelEvent event) {
 				event.preventDefault();
-				
+
 				int dy = event.getDeltaY();
-				
+
 				GWT.log("dy: " + dy);
-				
+
 				if(Math.abs(dy) > dyThreshold) {
 					float delta = dy > 0 ? 0.9f : 1.1f;
 					float scale = mapData.getViewport().getCTM().getA();
@@ -285,28 +313,28 @@ public class AnnotatedMapPresenter {
 	}
 
 	private void centerMapAroundElements(final Set<OMSVGElement> svgElements) {
-		
+
 		if(svgElements == null || svgElements.isEmpty())
 			return;
 
 		OMSVGRect bBox = null;
 
-			// compute the bounding box for all elements in the list in absolute coordinates
-			for(OMSVGElement element : svgElements) {
-				OMSVGRect elementBBox = getBoundingBoxForElement(element);
+		// compute the bounding box for all elements in the list in absolute coordinates
+		for(OMSVGElement element : svgElements) {
+			OMSVGRect elementBBox = getBoundingBoxForElement(element);
 
-				if(bBox == null)
-					bBox = elementBBox;
-				else if(elementBBox != null)
-					bBox = getBoundingBoxUnion(bBox, elementBBox);
-			}
+			if(bBox == null)
+				bBox = elementBBox;
+			else if(elementBBox != null)
+				bBox = getBoundingBoxUnion(bBox, elementBBox);
+		}
 
 		if(bBox != null)
 			centerMapAroundRect(bBox);
 	}
-	
+
 	private void centerMapAroundRect(final OMSVGRect rect) {
-		
+
 		float x = rect.getCenterX();
 		float y = rect.getCenterY();
 
@@ -333,7 +361,7 @@ public class AnnotatedMapPresenter {
 	private void executeOnMapElements(final MapElementCommand command) {
 		for(OMSVGElement element : mapData.getRxnSvgElements()) 
 			command.execute(element);
-		
+
 		for(OMSVGElement element : mapData.getCpdSvgElements())
 			command.execute(element);
 	}
@@ -367,7 +395,7 @@ public class AnnotatedMapPresenter {
 
 		return bBox;
 	}
-	
+
 	private OMSVGRect getBoundingBoxForEllipse(OMSVGEllipseElement element) {
 		float cx = Float.parseFloat(element.getAttribute("cx"));
 		float cy = Float.parseFloat(element.getAttribute("cy"));
@@ -376,11 +404,11 @@ public class AnnotatedMapPresenter {
 
 		return mapData.getSvg().createSVGRect(cx - rx, cy - ry, 2 * rx, 2 * ry);
 	}
-	
+
 	private OMSVGRect getBoundingBoxForPath(OMSVGPathElement element) {
 		return element.getBBox();
 	}
-	
+
 	private OMSVGRect getBoundingBoxUnion(OMSVGRect r0, OMSVGRect r1) {
 
 		float minX = Math.min(r0.getX(), r1.getX());
@@ -390,7 +418,7 @@ public class AnnotatedMapPresenter {
 
 		return mapData.getSvg().createSVGRect(minX, minY, maxX - minX, maxY - minY);
 	}
-	
+
 	private OMSVGRect getViewRectNorm() {
 
 		OMSVGMatrix ctm = mapData.getViewport().getCTM();
@@ -415,15 +443,12 @@ public class AnnotatedMapPresenter {
 			return 0.0f;
 		return (mapData.getViewport().getCTM().getA() - scaleMin) / (scaleMax - scaleMin);
 	}
-	
-	public void loadMapData(final String url, 
-			final String mapId, 
-			final String miniMapUrl) {
 
-		final AnnotatedMapData mapData = new AnnotatedMapData(mapId, miniMapUrl);
-
+	public void loadMapDataFromDescriptor(final AnnotatedMapDescriptor descriptor) {
+		final AnnotatedMapData mapData = new AnnotatedMapData(descriptor);
 		try {
-			new RequestBuilder(RequestBuilder.GET, url).sendRequest("", new RequestCallback() {
+			new RequestBuilder(RequestBuilder.GET, mapData.getSvgUrl())
+			.sendRequest("", new RequestCallback() {
 				@Override
 				public void onResponseReceived(Request request, Response response) {
 					mapData.setSvgRoot(OMSVGParser.parse(response.getText()));
@@ -431,7 +456,10 @@ public class AnnotatedMapPresenter {
 				}
 				@Override
 				public void onError(Request request, Throwable exception) {
-					Window.alert("Could not open " + mapId + " at " + url);
+					Window.alert("Could not open " + 
+							mapData.getDescriptor().getMapId() + 
+							" at " + 
+							mapData.getSvgUrl());
 				}
 			});
 		} catch(RequestException e) {
@@ -488,21 +516,13 @@ public class AnnotatedMapPresenter {
 		if(mapData == null)
 			return;
 
+
+		eventBus.fireEvent(new LoadingEvent(false));
+
+		if(this.mapData != null)
+			view.getMapPanel().getElement().removeChild(this.mapData.getSvg().getElement());
+
 		this.mapData = mapData;
-		rpc.getMapConnectivity(mapData.getMapId(), new AsyncCallback<MetabolicNetwork>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				// Show the RPC error message to the user
-				Window.alert("Remote procedure call failure: getRxnsForOrganism");
-			}
-
-			@Override
-			public void onSuccess(MetabolicNetwork result) {
-				network = result;
-			}
-
-		});
 
 		// attach the svg root to the browser element of the map panel
 		view.getMapPanel().getElement().appendChild(this.mapData.getSvg().getElement());
@@ -512,6 +532,8 @@ public class AnnotatedMapPresenter {
 
 		// bind map events
 		bindMapEvents();
+
+		eventBus.fireEvent(new LoadingEvent(true));
 
 	}
 
@@ -523,10 +545,10 @@ public class AnnotatedMapPresenter {
 		matrix.getE() + "," + 
 		matrix.getF() + ")";
 		element.setAttribute("transform", transformValue);
-		
+
 		OMSVGRect viewRectNorm = getViewRectNorm();
 		float zoomNorm = getZoomNorm();
-		
+
 		if(mode != Mode.INITIAL)
 			eventBus.fireEvent(new MapUpdateEvent(matrix, viewRectNorm, zoomNorm));
 	}
@@ -535,17 +557,17 @@ public class AnnotatedMapPresenter {
 		float scale = scaleMin + (zoomNorm * (scaleMax - scaleMin));
 		scaleAboutPoint(scale, x, y);
 	}
-	
+
 	public void translateNorm(final float txNorm, final float tyNorm) {
 		float invScale = 1.0f / mapData.getViewport().getCTM().getA();
 		OMSVGMatrix m = mapData.getViewport().getCTM().translate(invScale * (txNorm * mapData.getSvgWidth()), invScale * (tyNorm * mapData.getSvgHeight()));
 		setTransform(mapData.getViewport(), m);
 	}
-	
+
 	public void updateMapForOrganism(final Organism organism) {
-		
+
 		this.organism = organism;
-		
+
 		if(organism.isGlobalMap()) {
 			executeOnMapElements(new MapElementCommand() {
 				@Override
@@ -565,9 +587,9 @@ public class AnnotatedMapPresenter {
 			});
 			return;
 		}
-		
+
 		eventBus.fireEvent(new LoadingEvent(false));
-		rpc.getRxnsForOrganism(organism.getTaxonomyId(), mapData.getRxnDbNames(), new AsyncCallback<List<Reaction>>() {
+		rpc.getRxnsForOrganism(organism.getTaxonomyId(), new AsyncCallback<Set<Reaction>>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -577,15 +599,15 @@ public class AnnotatedMapPresenter {
 			}
 
 			@Override
-			public void onSuccess(List<Reaction> result) {
+			public void onSuccess(Set<Reaction> result) {
 
 				eventBus.fireEvent(new LoadingEvent(true));
-				
-				if(network == null) {
-					Window.alert("Could not find map connectivity data for " + mapData.getMapId());
+
+				if(mapData.getDescriptor().getMetabolicNetwork() == null) {
+					Window.alert("Could not find map connectivity data for " + mapData.getDescriptor().getMapId());
 					return;
 				}
-				
+
 				executeOnMapElements(new MapElementCommand() {
 					@Override
 					public void execute(OMSVGElement element) {
@@ -602,7 +624,7 @@ public class AnnotatedMapPresenter {
 						}
 					}
 				});
-				
+
 				if(result == null)
 					return;
 
@@ -610,44 +632,42 @@ public class AnnotatedMapPresenter {
 				for(final Reaction rxn : result) {
 					Set<Xref> xrefs = rxn.getXrefs();
 
-					// get the xref that corresponds with the mapData's reaction database
 					for(final Xref xref : xrefs) {
-						if(mapData.getRxnDbNames().contains(xref.getXrefDbName())) {
-							String rxnId = xref.getXrefId();
 
-							// set all svg elements corresponding with this xref to present
-							Set<OMSVGElement> elements = mapData.getSvgElementsForId(rxnId);
-							if(elements != null) {
-								for(OMSVGElement element : elements) {
-									element.setAttribute(AnnotatedMapData.ATTRIBUTE_ABSENT, "false");
+						String rxnId = xref.getXrefId();
+
+						// set all svg elements corresponding with this xref to present
+						Set<OMSVGElement> elements = mapData.getSvgElementsForId(rxnId);
+						if(elements == null) 
+							continue;
+
+						for(OMSVGElement element : elements) 
+							element.setAttribute(AnnotatedMapData.ATTRIBUTE_ABSENT, "false");
+
+						// get the compound nodes associated with this reaction and set them to present
+						Set<MNNode> mnNodes = mapData.getDescriptor().getMetabolicNetwork().getNodesForRxnId(rxnId);
+
+						if(mnNodes == null)
+							continue;
+
+						for(final MNNode mnNode : mnNodes) {
+
+							{
+								String cpdId = mnNode.getCpd0ExtId();
+								Set<OMSVGElement> cpdElements = mapData.getSvgElementsForId(cpdId);
+								if(cpdElements != null) {
+									for(OMSVGElement cpdElement : cpdElements) {
+										cpdElement.setAttribute(AnnotatedMapData.ATTRIBUTE_ABSENT, "false");
+									}
 								}
 							}
 
-							// get the compound nodes associated with this reaction and set them to present
-							Set<MNNode> mnNodes = network.getNodesForRxnId(rxnId);
-
-							if(mnNodes == null)
-								continue;
-
-							for(final MNNode mnNode : mnNodes) {
-
-								{
-									String cpdId = mnNode.getCpd0ExtId();
-									Set<OMSVGElement> cpdElements = mapData.getSvgElementsForId(cpdId);
-									if(cpdElements != null) {
-										for(OMSVGElement cpdElement : cpdElements) {
-											cpdElement.setAttribute(AnnotatedMapData.ATTRIBUTE_ABSENT, "false");
-										}
-									}
-								}
-
-								{
-									String cpdId = mnNode.getCpd1ExtId();
-									Set<OMSVGElement> cpdElements = mapData.getSvgElementsForId(cpdId);
-									if(cpdElements != null) {
-										for(OMSVGElement cpdElement : cpdElements) {
-											cpdElement.setAttribute(AnnotatedMapData.ATTRIBUTE_ABSENT, "false");
-										}
+							{
+								String cpdId = mnNode.getCpd1ExtId();
+								Set<OMSVGElement> cpdElements = mapData.getSvgElementsForId(cpdId);
+								if(cpdElements != null) {
+									for(OMSVGElement cpdElement : cpdElements) {
+										cpdElement.setAttribute(AnnotatedMapData.ATTRIBUTE_ABSENT, "false");
 									}
 								}
 							}
@@ -657,9 +677,9 @@ public class AnnotatedMapPresenter {
 			}
 		});
 	}
-	
+
 	public void updateMapForRoute(final Compound cpdSrc, final Compound cpdDst, final Pathway route) {
-		
+
 		// almost like resetting the map, but we're also setting the route attribute to none
 		executeOnMapElements(new MapElementCommand() {
 			@Override
@@ -678,37 +698,37 @@ public class AnnotatedMapPresenter {
 				}
 			}
 		});
-		
+
 		// set source compound
 		for(OMSVGElement element : mapData.getSvgElements(cpdSrc)) {
 			element.removeAttribute(AnnotatedMapData.ATTRIBUTE_ROUTE);
 			element.setAttribute(AnnotatedMapData.ATTRIBUTE_CPD_SRC, "true");
 		}
-		
+
 		// set destination compound
 		for(OMSVGElement element : mapData.getSvgElements(cpdDst)) {
 			element.removeAttribute(AnnotatedMapData.ATTRIBUTE_ROUTE);
 			element.setAttribute(AnnotatedMapData.ATTRIBUTE_CPD_DST, "true");
 		}
-			
-		
+
+
 		// set routes in reaction
 		for(Reaction reaction : route.getReactions()) {
 			for(OMSVGElement element : mapData.getSvgElements(reaction)) 
 				element.setAttribute(AnnotatedMapData.ATTRIBUTE_ROUTE, reaction.getReactionColor().getCssAttributeValue());
 		}
-		
+
 		final Set<OMSVGElement> svgElements = mapData.getSvgElements(route.getReactions());
 		centerMapAroundElements(svgElements);
 	}
-	
+
 	public void updateMapForRouteStep(final Reaction reaction) {
 		final Set<OMSVGElement> svgElements = mapData.getSvgElements(reaction);
 		centerMapAroundElements(svgElements);
 	}
-	
+
 	public void updateMapForSample(final Sample sample) {
-		
+
 		// if the sample is null, reset to default state
 		if(sample == null) {
 			executeOnMapElements(new MapElementCommand() {
@@ -728,9 +748,9 @@ public class AnnotatedMapPresenter {
 			});
 			return;
 		}
-		
+
 		eventBus.fireEvent(new LoadingEvent(false));
-		
+
 		// otherwise, get measurements for the given sample
 		rpc.getMeasurementsForExperiment(sample.getExperimentId(), 
 				sample.getSampleId(), 
@@ -746,9 +766,9 @@ public class AnnotatedMapPresenter {
 			@Override
 			public void onSuccess(
 					List<? extends HasMeasurements> result) {
-				
+
 				eventBus.fireEvent(new LoadingEvent(true));
-				
+
 				if(result == null)
 					return;
 
@@ -765,7 +785,7 @@ public class AnnotatedMapPresenter {
 						}
 					}
 				});
-				
+
 				Interpolator interpolator = Interpolator.getInterpolatorForSample(sample);
 
 				for(HasMeasurements primitive : result) {
@@ -779,18 +799,18 @@ public class AnnotatedMapPresenter {
 
 	public void updateMapForSearchTarget(final Set<Mappable> targets) {
 		final Set<OMSVGElement> searchTargets = mapData.getSvgElements(targets);
-		
+
 		if(previousSearchTargets != null) {
 			for(OMSVGElement target : previousSearchTargets)
 				target.removeAttribute(AnnotatedMapData.ATTRIBUTE_SEARCH_TARGET);
 		}
-		
+
 		if(searchTargets != null) {
 			for(OMSVGElement target : searchTargets)
 				target.setAttribute(AnnotatedMapData.ATTRIBUTE_SEARCH_TARGET, "true");
 			centerMapAroundElements(searchTargets);
 		}
-		
+
 		previousSearchTargets = searchTargets;
 	}
 

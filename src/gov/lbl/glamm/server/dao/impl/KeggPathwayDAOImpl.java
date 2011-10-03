@@ -27,7 +27,9 @@ public class KeggPathwayDAOImpl implements PathwayDAO {
 
 			Connection connection = GlammDbConnectionPool.getConnection(sm);
 			PreparedStatement ps = connection.prepareStatement(sql);
-
+			
+			if(mapId.startsWith("map"))
+				mapId = mapId.substring(3);
 			ps.setString(1, mapId);
 
 			ResultSet rs = ps.executeQuery();

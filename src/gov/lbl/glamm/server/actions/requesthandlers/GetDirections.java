@@ -10,12 +10,12 @@ import gov.lbl.glamm.client.presenter.RetrosynthesisPresenter;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.RequestHandler;
 import gov.lbl.glamm.server.ResponseHandler;
+import gov.lbl.glamm.server.dao.AnnotatedMapDescriptorDAO;
 import gov.lbl.glamm.server.dao.GeneDAO;
-import gov.lbl.glamm.server.dao.MetabolicNetworkDAO;
 import gov.lbl.glamm.server.dao.OrganismDAO;
 import gov.lbl.glamm.server.dao.ReactionDAO;
+import gov.lbl.glamm.server.dao.impl.AnnotatedMapDescriptorDAOImpl;
 import gov.lbl.glamm.server.dao.impl.GeneDAOImpl;
-import gov.lbl.glamm.server.dao.impl.MetabolicNetworkGlammDAOImpl;
 import gov.lbl.glamm.server.dao.impl.OrganismDAOImpl;
 import gov.lbl.glamm.server.dao.impl.ReactionGlammDAOImpl;
 import gov.lbl.glamm.server.retrosynthesis.Route;
@@ -41,16 +41,14 @@ public class GetDirections implements RequestHandler {
 	private static GeneDAO 				geneDao 	= null;
 	private static ReactionDAO 			rxnDao 		= null;
 	private static OrganismDAO 			organismDao	= null;
-	private static MetabolicNetworkDAO 	networkDao 	= null;
 
-	private static List<Route> getRoutes(GlammSession sm, String taxonomyId, String cpdSrcExtId, String cpdDstExtId, String mapTitle, String algorithm) {
+	private static List<Route> getRoutes(GlammSession sm, String taxonomyId, String cpdSrcExtId, String cpdDstExtId, String mapId, String algorithm) {
 
-		if(cpdSrcExtId == null || cpdDstExtId == null || mapTitle == null || algorithm == null )
+		if(cpdSrcExtId == null || cpdDstExtId == null || mapId == null || algorithm == null )
 			return null;
 
-		networkDao = new MetabolicNetworkGlammDAOImpl(sm);
-
-		MetabolicNetwork network = networkDao.getNetworkForMapId(mapTitle);
+		AnnotatedMapDescriptorDAO amdDao = new AnnotatedMapDescriptorDAOImpl();
+		MetabolicNetwork network = amdDao.getAnnotatedMapDescriptor(mapId).getMetabolicNetwork();
 
 		// in the event of taxon-weighted depth first search, set up the metabolic network
 		// to indicate which reactions are native and which aren't
@@ -60,10 +58,8 @@ public class GetDirections implements RequestHandler {
 			rxnDao = new ReactionGlammDAOImpl(sm);
 			organismDao = new OrganismDAOImpl(sm);
 
-			Set<String> dbNames = new HashSet<String>();
-			dbNames.add("LIGAND-RXN");
 			Set<String> ecNums = geneDao.getEcNumsForOrganism(taxonomyId);
-			Set<String> rxnIds = rxnDao.getRxnIdsForEcNums(ecNums, dbNames);
+			Set<String> rxnIds = rxnDao.getRxnIdsForEcNums(ecNums);
 
 			network.setNativeRxns(rxnIds);
 		}
@@ -102,7 +98,7 @@ public class GetDirections implements RequestHandler {
 		String taxonomyId 	= request.getParameter(RequestParameters.TAXONOMY_ID.toString());
 		String cpdSrcExtId	= request.getParameter(RequestParameters.CPD_SRC.toString());
 		String cpdDstExtId	= request.getParameter(RequestParameters.CPD_DST.toString());
-		String mapTitle		= request.getParameter(RequestParameters.MAP_TITLE.toString());
+		String mapTitle		= request.getParameter(RequestParameters.MAPID.toString());
 		String algorithm	= request.getParameter(RequestParameters.ALGORITHM.toString());
 		String asText		= request.getParameter(RequestParameters.AS_TEXT.toString());
 		
@@ -133,9 +129,7 @@ public class GetDirections implements RequestHandler {
 		// get rxnIds for all routes
 		Set<String> rxnIds = getRxnIdsForRoutes(routes);
 		ReactionDAO rxnDao = new ReactionGlammDAOImpl(sm);
-		Set<String> dbNames = new HashSet<String>();
-		dbNames.add("LIGAND-RXN");
-		List<Reaction> rxns = rxnDao.getReactions(rxnIds, dbNames);
+		Set<Reaction> rxns = rxnDao.getReactions(rxnIds);
 
 		// hash resulting reactions by xrefId
 		Map<String, Reaction> rxnId2Rxn = hashReactionsById(rxns);
@@ -166,9 +160,7 @@ public class GetDirections implements RequestHandler {
 		// get rxnIds for all routes
 		Set<String> rxnIds = getRxnIdsForRoutes(routes);
 		ReactionDAO rxnDao = new ReactionGlammDAOImpl(sm);
-		Set<String> dbNames = new HashSet<String>();
-		dbNames.add("LIGAND-RXN");
-		List<Reaction> rxns = rxnDao.getReactions(rxnIds, dbNames);
+		Set<Reaction> rxns = rxnDao.getReactions(rxnIds);
 
 		// hash resulting reactions by xrefId
 		Map<String, Reaction> rxnId2Rxn = hashReactionsById(rxns);
@@ -237,7 +229,7 @@ public class GetDirections implements RequestHandler {
 		return rxnId2Rxn;
 	}
 
-	private static void addTransgenicCandidates(List<Reaction> rxns) {
+	private static void addTransgenicCandidates(Set<Reaction> rxns) {
 
 		// get all ec numbers
 		Set<String> ecNums = new HashSet<String>();

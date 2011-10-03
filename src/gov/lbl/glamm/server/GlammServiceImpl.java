@@ -1,23 +1,23 @@
 package gov.lbl.glamm.server;
 
+import gov.lbl.glamm.client.model.AnnotatedMapDescriptor;
 import gov.lbl.glamm.client.model.Compound;
 import gov.lbl.glamm.client.model.Experiment;
 import gov.lbl.glamm.client.model.Gene;
-import gov.lbl.glamm.client.model.User;
-import gov.lbl.glamm.client.model.MetabolicNetwork;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Pathway;
 import gov.lbl.glamm.client.model.Reaction;
 import gov.lbl.glamm.client.model.Sample;
+import gov.lbl.glamm.client.model.User;
 import gov.lbl.glamm.client.model.interfaces.HasMeasurements;
 import gov.lbl.glamm.client.rpc.GlammService;
 import gov.lbl.glamm.server.actions.AuthenticateUser;
 import gov.lbl.glamm.server.actions.GenCpdPopup;
 import gov.lbl.glamm.server.actions.GenPwyPopup;
 import gov.lbl.glamm.server.actions.GenRxnPopup;
+import gov.lbl.glamm.server.actions.GetAnnotatedMapDescriptors;
 import gov.lbl.glamm.server.actions.GetAvailableExperimentTypes;
 import gov.lbl.glamm.server.actions.GetExperiment;
-import gov.lbl.glamm.server.actions.GetMapConnectivity;
 import gov.lbl.glamm.server.actions.GetRxnsForOrganism;
 import gov.lbl.glamm.server.actions.PopulateCompoundSearch;
 import gov.lbl.glamm.server.actions.PopulateExperiments;
@@ -72,8 +72,8 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	}
 	
 	@Override
-	public String genCpdPopup(String extId, String extIdName, String taxonomyId) {
-		return GenCpdPopup.genCpdPopup(getGlammSession(), extId, extIdName, taxonomyId);
+	public String genCpdPopup(String id, String taxonomyId) {
+		return GenCpdPopup.genCpdPopupForId(getGlammSession(), id, taxonomyId);
 	}
 	
 	/**
@@ -83,18 +83,23 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	 * @return The compound popup HTML.
 	 */
 	@Override
-	public String genCpdPopup(String query, String taxonomyId) {
-		return GenCpdPopup.genCpdPopupFromQueryString(getGlammSession(), query, taxonomyId);
+	public String genCpdPopup(Set<String> ids, String taxonomyId) {
+		return GenCpdPopup.genCpdPopupForIds(getGlammSession(), ids, taxonomyId);
 	}
 	
 	@Override
-	public String genKeggPwyPopup(String query, String taxonomyId, String experimentId, String sampleId) {
-		return GenPwyPopup.genPwyPopupFromQueryString(getGlammSession(), query, taxonomyId, experimentId, sampleId);
+	public String genPwyPopup(Set<String> ids, String taxonomyId, String experimentId, String sampleId) {
+		return GenPwyPopup.genPwyPopup(getGlammSession(), ids, taxonomyId, experimentId, sampleId);
 	}
 	
 	@Override
-	public String genRxnPopup(String query, String taxonomyId) {
-		return GenRxnPopup.genRxnPopupFromQueryString(getGlammSession(), query, taxonomyId);
+	public String genRxnPopup(Set<String> ids, String taxonomyId) {
+		return GenRxnPopup.genRxnPopup(getGlammSession(), ids, taxonomyId);
+	}
+	
+	@Override
+	public List<AnnotatedMapDescriptor> getAnnotatedMapDescriptors() {
+		return GetAnnotatedMapDescriptors.getAnnotatedMapDescriptors();
 	}
 	
 	@Override
@@ -113,10 +118,10 @@ public class GlammServiceImpl extends RemoteServiceServlet
 		return sm.getServerConfig().getIsolateHost();
 	}
 	
-	@Override
-	public MetabolicNetwork getMapConnectivity(String mapId) {
-		return GetMapConnectivity.getMapConnectivity(getGlammSession(), mapId);
-	}
+//	@Override
+//	public MetabolicNetwork getMapConnectivity(String mapId) {
+//		return GetMapConnectivity.getMapConnectivity(getGlammSession(), mapId);
+//	}
 	
 	@Override
 	public List<? extends HasMeasurements> getMeasurementsForExperiment(String experimentId, String sampleId) {
@@ -130,8 +135,8 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	}
 	
 	@Override
-	public List<Reaction> getRxnsForOrganism(String taxonomyId, Set<String> dbNames) {
-		return GetRxnsForOrganism.getRxnsForOrganism(getGlammSession(), taxonomyId, dbNames);
+	public Set<Reaction> getRxnsForOrganism(String taxonomyId) {
+		return GetRxnsForOrganism.getRxnsForOrganism(getGlammSession(), taxonomyId);
 	}
 	
 	@Override
@@ -145,8 +150,8 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	}
 	
 	@Override
-	public List<Compound> populateCompoundSearch(Set<String> dbNames) {
-		return PopulateCompoundSearch.populateCompoundSearch(getGlammSession(), dbNames);
+	public Set<Compound> populateCompoundSearch(String mapId) {
+		return PopulateCompoundSearch.populateCompoundSearch(getGlammSession(), mapId);
 	}
 	
 	@Override
@@ -165,8 +170,8 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	}
 	
 	@Override
-	public List<Reaction> populateReactionSearch(Set<String> dbNames) {
-		return PopulateReactionSearch.populateReactionSearch(getGlammSession(), dbNames);
+	public Set<Reaction> populateReactionSearch(String mapId) {
+		return PopulateReactionSearch.populateReactionSearch(getGlammSession(), mapId);
 	}
 	
 	@Override

@@ -45,9 +45,14 @@ public class MiniMapPresenter {
 			@Override
 			public void onBrowserEvent(Event event) {
 				if(Event.ONLOAD == event.getTypeInt()) {
+					
 					imgWidth = view.getImage().getWidth();
 					imgHeight = view.getImage().getHeight();
 
+					// remove the old svg element from the panel
+					if(svg != null)
+						view.getMiniMapPanel().getElement().removeChild(svg.getElement());
+					
 					OMSVGDocument doc = OMSVGParser.currentDocument();
 					svg =  doc.createSVGSVGElement();
 					img = doc.createSVGImageElement(0, 0, imgWidth, imgHeight, view.getImage().getUrl());

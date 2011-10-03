@@ -94,6 +94,7 @@ public class OrganismMetaMolDAOImpl implements OrganismDAO {
 			"where S.isGenomic=1 and S.isActive=1 and S.length >= 1000 " +
 			"and A.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getUser().getGroupIds()) : "1") + ") and A.requesterType='group' and A.read=1 " +
 			"and L2E.ecNum in (" + GlammUtils.joinCollection(ecNums) + ") " +
+			"and T.taxonomyId >= 1000000000000 " +
 			"order by T.name;";
 		
 		try {
