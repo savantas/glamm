@@ -59,6 +59,12 @@ public class ReactionGlammDAOImpl implements ReactionDAO {
 				String definition 	= rs.getString("definition");
 				String xrefId		= rs.getString("toXrefId");
 				String xrefDbName	= rs.getString("xrefDbName");
+				
+				// TODO: Awful hack here - in the future, make sure to specify the external id from the database from which this reaction was
+				// TODO: originally sourced.  This will probably require a re-import (ugh.)
+				
+				if(definition.equals(definition.toUpperCase()))
+					continue;
 
 				Reaction reaction = def2Rxn.get(definition);
 				if(reaction == null) {
