@@ -47,7 +47,7 @@ public class GetDirections implements RequestHandler {
 		if(cpdSrcExtId == null || cpdDstExtId == null || mapId == null || algorithm == null )
 			return null;
 
-		AnnotatedMapDescriptorDAO amdDao = new AnnotatedMapDescriptorDAOImpl();
+		AnnotatedMapDescriptorDAO amdDao = new AnnotatedMapDescriptorDAOImpl(sm);
 		MetabolicNetwork network = amdDao.getAnnotatedMapDescriptor(mapId).getMetabolicNetwork();
 
 		// in the event of taxon-weighted depth first search, set up the metabolic network

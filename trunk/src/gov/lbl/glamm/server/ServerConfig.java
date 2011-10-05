@@ -101,6 +101,7 @@ public class ServerConfig implements Serializable {
 	public enum Attribute {
 		
 		SERVER_DOMAIN("serverdomain", true),
+		HIBERNATE_CFG("hibernatecfg", true),
 		ISOLATE_HOST("isolatehost", true),
 		LOGIN_URL("loginurl", true),
 		METAGENOME_HOST("metagenomehost", false),
@@ -140,6 +141,10 @@ public class ServerConfig implements Serializable {
 
 	public final String getServerDomain() {
 		return (String) map.get(Attribute.SERVER_DOMAIN);
+	}
+	
+	public final String getHibernateCfg() {
+		return (String) map.get(Attribute.HIBERNATE_CFG);
 	}
 
 	public final String getIsolateHost() {

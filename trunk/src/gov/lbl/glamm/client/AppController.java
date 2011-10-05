@@ -336,6 +336,15 @@ public class AppController {
 	 * pathways on the map
 	 */
 	private void loadMapElementPopup() {
+		
+		eventBus.addHandler(AnnotatedMapDataLoadedEvent.TYPE, new AnnotatedMapDataLoadedEvent.Handler() {
+			@Override
+			public void onLoaded(AnnotatedMapDataLoadedEvent event) {
+				mapElementPresenter.setOrganism(Organism.globalMap());
+				mapElementPresenter.setSample(null);
+			}
+		});
+		
 		eventBus.addHandler(MapElementClickEvent.TYPE,
 				new MapElementClickEvent.Handler() {
 			@Override
@@ -755,6 +764,7 @@ public class AppController {
 			public void onLoaded(AnnotatedMapDataLoadedEvent event) {
 				retrosynthesisPresenter.setMapData(event.getMapData());
 				retrosynthesisPresenter.setOrganism(Organism.globalMap());
+				retrosynthesisPresenter.populate();
 				retrosynthesisPresenter.reset();
 			}
 		});
@@ -764,6 +774,7 @@ public class AppController {
 			@Override
 			public void onOrganismPicked(OrganismPickedEvent event) {
 				retrosynthesisPresenter.setOrganism(event.getOrganism());
+				retrosynthesisPresenter.populate();
 				retrosynthesisPresenter.reset();
 			}
 		});

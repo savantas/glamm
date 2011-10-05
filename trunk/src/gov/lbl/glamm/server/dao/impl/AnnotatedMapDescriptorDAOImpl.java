@@ -1,6 +1,7 @@
 package gov.lbl.glamm.server.dao.impl;
 
 import gov.lbl.glamm.client.model.AnnotatedMapDescriptor;
+import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.AnnotatedMapDescriptorDAO;
 import gov.lbl.glammdb.domain.AnnotatedMap;
 import gov.lbl.glammdb.util.HibernateUtil;
@@ -14,9 +15,15 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
 public class AnnotatedMapDescriptorDAOImpl implements AnnotatedMapDescriptorDAO {
+	
+	private GlammSession sm;
+	
+	public AnnotatedMapDescriptorDAOImpl(final GlammSession sm) {
+		this.sm = sm;
+	}
 
-	private static List<AnnotatedMap> getAnnotatedMaps() {
-		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+	private List<AnnotatedMap> getAnnotatedMaps() {
+		Session session = HibernateUtil.getSessionFactory(sm).getCurrentSession();
 		session.beginTransaction();
 		@SuppressWarnings("unchecked")
 		List<AnnotatedMap> result = (List<AnnotatedMap>) session.createCriteria(AnnotatedMap.class)
@@ -29,7 +36,7 @@ public class AnnotatedMapDescriptorDAOImpl implements AnnotatedMapDescriptorDAO 
 	
 	@Override
 	public AnnotatedMapDescriptor getAnnotatedMapDescriptor(final String mapId) {
-		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		Session session = HibernateUtil.getSessionFactory(sm).getCurrentSession();
 		session.beginTransaction();
 		AnnotatedMap result = (AnnotatedMap) session.createCriteria(AnnotatedMap.class)
 		.add(Restrictions.eq("mapId", mapId))

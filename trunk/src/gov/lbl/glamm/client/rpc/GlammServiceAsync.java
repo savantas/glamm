@@ -27,7 +27,6 @@ public interface GlammServiceAsync {
 	public void getAvailableExperimentTypes(AsyncCallback<List<Sample.DataType>> callback);
 	public void getDirections(String taxonomyId, Compound cpdSrc, Compound cpdDst, String mapTitle, String algorithm, AsyncCallback<List<Pathway>> callback);
 	public void getIsolateHost(AsyncCallback<String> callback);
-//	public void getMapConnectivity(String mapId, AsyncCallback<MetabolicNetwork> callback);
 	public void getMeasurementsForExperiment(String experimentId, String sampleId, AsyncCallback<List<? extends HasMeasurements>> callback);
 	public void getMetagenomeHost(AsyncCallback<String> callback);
 	public void getLoggedInUser(AsyncCallback<User> user);
