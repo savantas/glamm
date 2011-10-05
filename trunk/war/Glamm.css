@@ -187,7 +187,7 @@
 .rxn[state=default] 		{ stroke-width: 6.5; }
 .rxn[state=mouseover] 		{ stroke-width: 14; }
 .rxn[state=selected] 		{ stroke-width: 14; }
-.rxn[absent=true] 			{ stroke: #444444; stroke-width: 3; }
+.rxn[absent=true] 			{ stroke: #444444; stroke-width: 4.5; }
 .rxn[searchtarget=true]		{ stroke: #FF00FF; stroke-width: 24; }
 .rxn[searchtarget=true][route]		{ stroke: #FF00FF; stroke-width: 24; }
 .rxn[searchtarget=true][route][absent]		{ stroke: #FF00FF; stroke-width: 24; }
@@ -205,5 +205,5 @@
 .rxn[route=gray] 	{ stroke: #CCCCCC; stroke-width: 12; }
 .rxn[route=white] 	{ stroke: #FFFFFF; stroke-width: 12; }
 .rxn[route=none]	{ stroke: #888888; }
-.rxn[route=none][absent=true]   { stroke: #222222; stroke-width: 3 }
+.rxn[route=none][absent=true]   { stroke: #222222; stroke-width: 4.5 }
 .rxn[route=none][absent=false] { stroke: #888888; }
