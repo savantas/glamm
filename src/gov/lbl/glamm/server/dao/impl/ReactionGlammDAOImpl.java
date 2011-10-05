@@ -123,7 +123,7 @@ public class ReactionGlammDAOImpl implements ReactionDAO {
 	@Override
 	public Set<Reaction> getReactionsForSearch(String mapId) {
 		
-		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		Session session = HibernateUtil.getSessionFactory(sm).getCurrentSession();
 		session.beginTransaction();
 		Pathway result = (Pathway) session.createCriteria(Pathway.class)
 		.add(Restrictions.eq("mapId", mapId))

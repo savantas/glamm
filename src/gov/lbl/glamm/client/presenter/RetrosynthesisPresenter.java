@@ -725,8 +725,6 @@ public class RetrosynthesisPresenter {
 			view.getAlgorithmsListBox().addItem(View.ALGORITHM_TW_DFS_TEXT, View.ALGORITHM_TW_DFS_VALUE);
 			view.getAlgorithmsListBox().addItem(View.ALGORITHM_DFS_TEXT, View.ALGORITHM_DFS_VALUE);
 		}
-
-		populate();
 	}
 
 	private void setRoute(final Pathway route) {

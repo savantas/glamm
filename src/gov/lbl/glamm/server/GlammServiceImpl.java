@@ -99,7 +99,7 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	
 	@Override
 	public List<AnnotatedMapDescriptor> getAnnotatedMapDescriptors() {
-		return GetAnnotatedMapDescriptors.getAnnotatedMapDescriptors();
+		return GetAnnotatedMapDescriptors.getAnnotatedMapDescriptors(getGlammSession());
 	}
 	
 	@Override
@@ -117,11 +117,6 @@ public class GlammServiceImpl extends RemoteServiceServlet
 		GlammSession sm = getGlammSession();
 		return sm.getServerConfig().getIsolateHost();
 	}
-	
-//	@Override
-//	public MetabolicNetwork getMapConnectivity(String mapId) {
-//		return GetMapConnectivity.getMapConnectivity(getGlammSession(), mapId);
-//	}
 	
 	@Override
 	public List<? extends HasMeasurements> getMeasurementsForExperiment(String experimentId, String sampleId) {
