@@ -1,7 +1,6 @@
 package gov.lbl.glamm.server.dao.impl;
 
 import gov.lbl.glamm.client.model.Compound;
-import gov.lbl.glamm.client.model.Reaction;
 import gov.lbl.glamm.client.model.util.Xref;
 import gov.lbl.glamm.server.GlammDbConnectionPool;
 import gov.lbl.glamm.server.GlammSession;

@@ -280,7 +280,7 @@ public class AppController {
 
 	private void loadAnnotatedMapPicker() {
 		mainPanel.add(amdView, 0, 0);
-		amdPresenter.populate("map01110");
+		amdPresenter.populate("map01100");
 	}
 	
 	/**
@@ -753,8 +753,8 @@ public class AppController {
 		eventBus.addHandler(AnnotatedMapDataLoadedEvent.TYPE, new AnnotatedMapDataLoadedEvent.Handler() {
 			@Override
 			public void onLoaded(AnnotatedMapDataLoadedEvent event) {
-				retrosynthesisPresenter.setOrganism(Organism.globalMap());
 				retrosynthesisPresenter.setMapData(event.getMapData());
+				retrosynthesisPresenter.setOrganism(Organism.globalMap());
 				retrosynthesisPresenter.reset();
 			}
 		});
