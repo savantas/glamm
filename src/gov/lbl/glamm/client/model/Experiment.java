@@ -18,8 +18,8 @@ implements Serializable {
 	
 	public static transient final String DEFAULT_EXPERIMENT_ID = "-1";
 	
-	private String expId = null;
-	private List<Sample> samples	= null;
+	private String expId;
+	private List<Sample> samples;
 	
 	//********************************************************************************
 	
@@ -33,8 +33,8 @@ implements Serializable {
 	 * @param source A description of the experiment's source
 	 */
 	public Experiment(final String expId) {
-		super();
 		this.expId = expId;
+		this.samples = new ArrayList<Sample>();
 	}
 
 	//********************************************************************************
@@ -45,8 +45,6 @@ implements Serializable {
 	public void addSample(final Sample sample) {
 
 		if(sample != null) {
-			if( samples == null )
-				samples = new ArrayList<Sample>();
 			samples.add(sample);
 		}
 	}

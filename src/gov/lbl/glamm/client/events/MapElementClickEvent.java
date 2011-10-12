@@ -1,5 +1,7 @@
 package gov.lbl.glamm.client.events;
 
+import gov.lbl.glamm.client.model.AnnotatedMapData;
+
 import java.util.Set;
 
 import com.google.gwt.event.shared.EventHandler;
@@ -17,7 +19,7 @@ public class MapElementClickEvent extends GwtEvent<MapElementClickEvent.Handler>
 	
 	public static final Type<Handler> TYPE = new Type<Handler>();
 	
-	private String elementClass;
+	private AnnotatedMapData.ElementClass elementClass;
 	private Set<String> ids;
 	private int clientX;
 	private int clientY;
@@ -27,7 +29,7 @@ public class MapElementClickEvent extends GwtEvent<MapElementClickEvent.Handler>
 	 * @param event The GWT ClickEvent corresponding with this event
 	 */
 	
-	public MapElementClickEvent(final String elementClass, final Set<String> ids, final int clientX, final int clientY) {
+	public MapElementClickEvent(final AnnotatedMapData.ElementClass elementClass, final Set<String> ids, final int clientX, final int clientY) {
 		this.elementClass = elementClass;
 		this.ids = ids;
 		this.clientX = clientX;
@@ -44,7 +46,7 @@ public class MapElementClickEvent extends GwtEvent<MapElementClickEvent.Handler>
 		handler.onMapElementClick(this);
 	}
 
-	public String getElementClass() {
+	public AnnotatedMapData.ElementClass getElementClass() {
 		return elementClass;
 	}
 

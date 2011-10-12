@@ -12,13 +12,13 @@ public class Pathway implements Serializable {
 	private String mapId	= null;
 	private List<Reaction> reactions = null;
 	
-	public Pathway() {}
+	public Pathway() {
+		reactions = new ArrayList<Reaction>();
+	}
 	
 	//********************************************************************************
 	
 	public void addReaction(Reaction reaction) {
-		if(reactions == null)
-			reactions = new ArrayList<Reaction>();
 		reactions.add(reaction);
 	}
 	

@@ -51,10 +51,35 @@ public class AnnotatedMapData implements Serializable {
 	public static final String ATTRIBUTE_STATE				= "state";
 	public static final String ATTRIBUTE_WIDTH				= "width";
 
-	public static final String CLASS_BACKGROUND 	= "background";
-	public static final String CLASS_CPD 			= "cpd";
-	public static final String CLASS_MAP 			= "map";
-	public static final String CLASS_RXN 			= "rxn";
+	public enum ElementClass {
+		
+		BACKGROUND("background"),
+		CPD("cpd"),
+		MAP("map"),
+		RXN("rxn");
+
+		private String cssClass;
+
+		private ElementClass(final String cssClass) {
+			this.cssClass = cssClass;
+		}
+
+		public static ElementClass fromCssClass(final String cssClass) {
+			ElementClass result = null;
+			if(cssClass != null) {
+				for(ElementClass value : ElementClass.values()) 
+					if(value.cssClass.equals(cssClass))
+						result = value;
+			}
+			if(result == null) 
+				throw new IllegalArgumentException("cssClass is invalid or null.");
+			return result;
+		}
+		
+		public String getCssClass() {
+			return cssClass;
+		}
+	}
 
 	public static final String STATE_DEFAULT		= "default";
 	public static final String STATE_MOUSEOVER		= "mouseover";
@@ -164,16 +189,16 @@ public class AnnotatedMapData implements Serializable {
 		Set<OMSVGElement> svgElements = new HashSet<OMSVGElement>();
 		if(xrefs == null || xrefs.isEmpty())
 			return svgElements;
-		
+
 		for(Xref xref : xrefs) {
 			Set<OMSVGElement> svgElementsForXref = id2SvgElements.get(xref.getXrefId());
 			if(svgElementsForXref != null && !svgElementsForXref.isEmpty())
 				svgElements.addAll(svgElementsForXref);
 		}
-		
+
 		return svgElements;
 	}
-	
+
 	/**
 	 * Gets the set of SVG elements associated with this GlammPrimitive
 	 * @param primitive
@@ -266,7 +291,7 @@ public class AnnotatedMapData implements Serializable {
 
 		if(!g.hasAttribute(ATTRIBUTE_COMPOUND)) 
 			return;
-		
+
 		OMNodeList<OMSVGElement> elements = g.getElementsByTagName(SVGConstants.SVG_ELLIPSE_TAG);
 		String cpdIds[] = g.getAttribute(ATTRIBUTE_COMPOUND).split("\\+");
 		for(String cpdId : cpdIds) {
@@ -289,10 +314,10 @@ public class AnnotatedMapData implements Serializable {
 	 * @param g The group
 	 */
 	private void initMapGroup(OMElement g) {
-		
+
 		if(!g.hasAttribute(ATTRIBUTE_MAP))
 			return;
-		
+
 		OMNodeList<OMSVGElement> elements = g.getElementsByTagName(SVGConstants.SVG_T_SPAN_TAG);
 		String mapIds[] = g.getAttribute(ATTRIBUTE_MAP).split("\\+");
 		for(String mapId : mapIds) {
@@ -370,11 +395,11 @@ public class AnnotatedMapData implements Serializable {
 		}
 
 		for(OMElement g : viewport.getElementsByTagName(SVGConstants.SVG_G_TAG)) {
-			if(g.hasAttribute(ATTRIBUTE_CLASS) && g.getAttribute(ATTRIBUTE_CLASS).equals(CLASS_CPD))
+			if(g.hasAttribute(ATTRIBUTE_CLASS) && g.getAttribute(ATTRIBUTE_CLASS).equals(ElementClass.CPD.getCssClass()))
 				initCpdGroup(g);
-			if(g.hasAttribute(ATTRIBUTE_CLASS) && g.getAttribute(ATTRIBUTE_CLASS).equals(CLASS_MAP))
+			if(g.hasAttribute(ATTRIBUTE_CLASS) && g.getAttribute(ATTRIBUTE_CLASS).equals(ElementClass.MAP.getCssClass()))
 				initMapGroup(g);
-			if(g.hasAttribute(ATTRIBUTE_CLASS) && g.getAttribute(ATTRIBUTE_CLASS).equals(CLASS_RXN))
+			if(g.hasAttribute(ATTRIBUTE_CLASS) && g.getAttribute(ATTRIBUTE_CLASS).equals(ElementClass.RXN.getCssClass()))
 				initRxnGroup(g);
 		}
 	}

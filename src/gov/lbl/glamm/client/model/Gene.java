@@ -26,13 +26,16 @@ implements Serializable, HasSynonyms, HasMeasurements, Mappable {
 	public static transient final String SYNONYM_TYPE_SESSION	= "S";
 	public static transient final String SYNONYM_TYPE_VIMSS		= "VIMSS";
 
-	private Set<String> ecNums 			= null;
-	private Set<String> molTaxonomyIds 	= null;
-	private Set<String> metaMolTaxonomyIds = null;
+	private Set<String> ecNums;
+	private Set<String> molTaxonomyIds;
+	private Set<String> metaMolTaxonomyIds;
 	private Set<Measurement> measurements;
 	private Set<Synonym> synonyms;
 
 	public Gene() {
+		ecNums = new HashSet<String>();
+		molTaxonomyIds = new HashSet<String>();
+		metaMolTaxonomyIds = new HashSet<String>();
 		measurements = new HashSet<Measurement>();
 		synonyms = new HashSet<Synonym>();
 	}
@@ -53,8 +56,6 @@ implements Serializable, HasSynonyms, HasMeasurements, Mappable {
 	 * @param ecNum The EC number
 	 */
 	public void addEcNum(String ecNum) {
-		if(ecNums == null)
-			ecNums = new HashSet<String>();
 		ecNums.add(ecNum);
 	}	
 
@@ -65,8 +66,6 @@ implements Serializable, HasSynonyms, HasMeasurements, Mappable {
 	}
 	
 	public void addMolTaxonomyId(String taxonomyId) {
-		if(molTaxonomyIds == null)
-			molTaxonomyIds = new HashSet<String>();
 		molTaxonomyIds.add(taxonomyId);
 	}
 	
@@ -75,8 +74,6 @@ implements Serializable, HasSynonyms, HasMeasurements, Mappable {
 	}
 	
 	public void addMetaMolTaxonomyId(String taxonomyId) {
-		if(metaMolTaxonomyIds == null)
-			metaMolTaxonomyIds = new HashSet<String>();
 		metaMolTaxonomyIds.add(taxonomyId);
 	}
 	

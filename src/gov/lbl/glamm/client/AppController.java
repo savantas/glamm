@@ -20,6 +20,7 @@ import gov.lbl.glamm.client.events.RouteStepPickedEvent;
 import gov.lbl.glamm.client.events.SamplePickedEvent;
 import gov.lbl.glamm.client.events.SearchTargetEvent;
 import gov.lbl.glamm.client.events.ViewResizedEvent;
+import gov.lbl.glamm.client.model.AnnotatedMapData;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Sample;
 import gov.lbl.glamm.client.presenter.AMDPresenter;
@@ -81,7 +82,7 @@ public class AppController {
 	private GlammServiceAsync rpc;
 	private SimpleEventBus eventBus;
 	private AbsolutePanel mainPanel = null;
-	
+
 	private AMDPresenter amdPresenter;
 	private AMDView amdView;
 
@@ -109,6 +110,9 @@ public class AppController {
 	@SuppressWarnings("unused")
 	private LoginPresenter loginPresenter;
 	private LoginView loginView;
+
+	private MapElementPresenter rxnElementPresenter;
+	private MapElementView rxnElementView;
 
 	private MapElementPresenter mapElementPresenter;
 	private MapElementView mapElementView;
@@ -151,7 +155,7 @@ public class AppController {
 		rpc = GWT.create(GlammService.class);
 		eventBus = new SimpleEventBus();
 		mainPanel = new AbsolutePanel();
-		
+
 		amdView = new AMDView();
 		amdPresenter = new AMDPresenter(rpc, amdView, eventBus);
 
@@ -170,6 +174,9 @@ public class AppController {
 
 		mapElementView = new MapElementView();
 		mapElementPresenter = new MapElementPresenter(rpc, mapElementView);
+
+		rxnElementView = new MapElementView();
+		rxnElementPresenter = new MapElementPresenter(rpc, rxnElementView);
 
 		mapView = new AnnotatedMapView();
 		mapPresenter = new AnnotatedMapPresenter(rpc, mapView, eventBus);
@@ -235,6 +242,7 @@ public class AppController {
 		loadInterpolator();
 		loadLoadingPanel();
 		loadMapElementPopup();
+		loadRxnElementPopup();
 		loadMiniMapPanel();
 		loadPanZoomControl();
 		loadOrganismPicker();
@@ -265,8 +273,19 @@ public class AppController {
 		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
 			@Override
 			public void execute() {
+				
+				int minWidth = retrosynthesisView.getOffsetWidth() + 
+					organismView.getOffsetWidth() + 
+					experimentView.getOffsetWidth() + 
+					loginView.getOffsetWidth() + 
+					helpView.getOffsetWidth() + 
+					20;
+
 				mainPanel.setWidgetPosition(organismView, retrosynthesisView.getOffsetWidth() + 5, 0);
-				mainPanel.setWidgetPosition(experimentView, retrosynthesisView.getOffsetWidth() + organismView.getOffsetWidth() + 10, 0);
+				if(Window.getClientWidth() > minWidth) 
+					mainPanel.setWidgetPosition(experimentView, retrosynthesisView.getOffsetWidth() + organismView.getOffsetWidth() + 10, 0);
+				else
+					mainPanel.setWidgetPosition(experimentView, 0, organismView.getOffsetHeight() + 5);
 				mainPanel.setWidgetPosition(miniMapView, 0, Window.getClientHeight() - miniMapView.getOffsetHeight());
 				mainPanel.setWidgetPosition(panZoomView, miniMapView.getOffsetWidth() + 1, Window.getClientHeight() - panZoomView.getOffsetHeight());
 				mainPanel.setWidgetPosition(amdView, 0, Window.getClientHeight() - amdView.getOffsetHeight() - miniMapView.getOffsetHeight() - 5);
@@ -282,7 +301,7 @@ public class AppController {
 		mainPanel.add(amdView, 0, 0);
 		amdPresenter.populate("map01100");
 	}
-	
+
 	/**
 	 * Initializes compound disambiguation panel
 	 */
@@ -295,7 +314,7 @@ public class AppController {
 				cpdDisambiguationView.hideView();
 			}
 		});
-		
+
 		eventBus.addHandler(CpdDstPickedEvent.TYPE,
 				new CpdDstPickedEvent.Handler() {
 			@Override
@@ -336,7 +355,7 @@ public class AppController {
 	 * pathways on the map
 	 */
 	private void loadMapElementPopup() {
-		
+
 		eventBus.addHandler(AnnotatedMapDataLoadedEvent.TYPE, new AnnotatedMapDataLoadedEvent.Handler() {
 			@Override
 			public void onLoaded(AnnotatedMapDataLoadedEvent event) {
@@ -344,14 +363,16 @@ public class AppController {
 				mapElementPresenter.setSample(null);
 			}
 		});
-		
+
 		eventBus.addHandler(MapElementClickEvent.TYPE,
 				new MapElementClickEvent.Handler() {
 			@Override
 			public void onMapElementClick(
 					final MapElementClickEvent event) {
-				mapElementPresenter.showPopup(event.getElementClass(), event.getIds(), 
-						event.getClientX(), event.getClientY());
+				mapElementPresenter.killPopup();
+				if(!event.getElementClass().equals(AnnotatedMapData.ElementClass.RXN))
+					mapElementPresenter.showPopup(event.getElementClass(), event.getIds(), 
+							event.getClientX(), event.getClientY());
 			}
 		});
 
@@ -380,27 +401,74 @@ public class AppController {
 		});
 	}
 
+	private void loadRxnElementPopup() {
+
+		eventBus.addHandler(AnnotatedMapDataLoadedEvent.TYPE, new AnnotatedMapDataLoadedEvent.Handler() {
+			@Override
+			public void onLoaded(AnnotatedMapDataLoadedEvent event) {
+				rxnElementPresenter.setOrganism(Organism.globalMap());
+				rxnElementPresenter.setSample(null);
+			}
+		});
+
+		eventBus.addHandler(MapElementClickEvent.TYPE,
+				new MapElementClickEvent.Handler() {
+			@Override
+			public void onMapElementClick(
+					final MapElementClickEvent event) {
+				rxnElementPresenter.killPopup();
+				if(event.getElementClass().equals(AnnotatedMapData.ElementClass.RXN))
+					rxnElementPresenter.showPopup(event.getElementClass(), event.getIds(), 
+							event.getClientX(), event.getClientY());
+			}
+		});
+
+		eventBus.addHandler(OrganismPickedEvent.TYPE,
+				new OrganismPickedEvent.Handler() {
+			@Override
+			public void onOrganismPicked(final OrganismPickedEvent event) {
+				rxnElementPresenter.setOrganism(event.getOrganism());
+				rxnElementPresenter.setSample(null);
+			}
+		});
+
+		eventBus.addHandler(SamplePickedEvent.TYPE,
+				new SamplePickedEvent.Handler() {
+			@Override
+			public void onSamplePicked(final SamplePickedEvent event) {
+				rxnElementPresenter.setSample(event.getSample());
+			}
+		});
+
+		eventBus.addHandler(MapUpdateEvent.TYPE, new MapUpdateEvent.Handler() {
+			@Override
+			public void onMapUpdate(MapUpdateEvent event) {
+				rxnElementPresenter.killPopup();
+			}
+		});
+	}
+
 	/**
 	 * Initializes the map view and presenter
 	 */
 	private void loadMapPanel() {
 
 		mainPanel.add(mapView, 0, 0);
-		
+
 		eventBus.addHandler(AnnotatedMapDataLoadedEvent.TYPE, new AnnotatedMapDataLoadedEvent.Handler() {
 			@Override
 			public void onLoaded(AnnotatedMapDataLoadedEvent event) {
 				mapPresenter.setMapData(event.getMapData());
 			}
 		});
-		
+
 		eventBus.addHandler(AMDPickedEvent.TYPE, new AMDPickedEvent.Handler() {
 			@Override
 			public void onPicked(AMDPickedEvent event) {
 				mapPresenter.loadMapDataFromDescriptor(event.getDescriptor());
 			}
 		});
-		
+
 		eventBus.addHandler(PanZoomControlEvent.TYPE,
 				new PanZoomControlEvent.Handler() {
 			public void onPanZoom(PanZoomControlEvent event) {
@@ -471,7 +539,7 @@ public class AppController {
 	 * Initializes inset mini map panel
 	 */
 	private void loadMiniMapPanel() {
-//		miniMapPresenter.setMiniMap(GlammClientBundle.INSTANCE.globalMiniMap().getURL());
+		//		miniMapPresenter.setMiniMap(GlammClientBundle.INSTANCE.globalMiniMap().getURL());
 		mainPanel.add(miniMapView, 0, 0);
 
 		eventBus.addHandler(AnnotatedMapDataLoadedEvent.TYPE, new AnnotatedMapDataLoadedEvent.Handler() {
@@ -480,7 +548,7 @@ public class AppController {
 				miniMapPresenter.setMiniMapUrl(event.getMapData().getIconUrl());
 			}
 		});
-		
+
 		eventBus.addHandler(MapUpdateEvent.TYPE, new MapUpdateEvent.Handler() {
 			@Override
 			public void onMapUpdate(MapUpdateEvent event) {
@@ -496,7 +564,7 @@ public class AppController {
 	private void loadOrganismPicker() {
 		mainPanel.add(organismView, 0, 0);
 		organismPresenter.populate();
-		
+
 		eventBus.addHandler(AnnotatedMapDataLoadedEvent.TYPE, new AnnotatedMapDataLoadedEvent.Handler() {
 			@Override
 			public void onLoaded(AnnotatedMapDataLoadedEvent event) {
@@ -558,7 +626,7 @@ public class AppController {
 				experimentPresenter.setOrganism(Organism.globalMap());
 			}
 		});
-		
+
 		eventBus.addHandler(OrganismPickedEvent.TYPE,
 				new OrganismPickedEvent.Handler() {
 			@Override
@@ -644,7 +712,7 @@ public class AppController {
 				interpolatorView.hide();
 			}
 		});
-		
+
 		eventBus.addHandler(OrganismPickedEvent.TYPE,
 				new OrganismPickedEvent.Handler() {
 			@Override
@@ -758,7 +826,7 @@ public class AppController {
 	 */
 	private void loadRetrosynthesis() {
 		mainPanel.add(retrosynthesisView, 0, 0);
-		
+
 		eventBus.addHandler(AnnotatedMapDataLoadedEvent.TYPE, new AnnotatedMapDataLoadedEvent.Handler() {
 			@Override
 			public void onLoaded(AnnotatedMapDataLoadedEvent event) {

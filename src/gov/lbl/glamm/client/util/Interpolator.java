@@ -60,7 +60,7 @@ public class Interpolator {
 	
 	/**
 	 * Constructor
-	 * @param sample The Sample for which measurments are being interpolated
+	 * @param sample The Sample for which measurements are being interpolated
 	 */
 	public Interpolator(final Sample sample) {
 		this(sample.getUnits(), sample.getClampMin(), sample.getClampMid(), sample.getClampMax());
