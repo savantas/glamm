@@ -45,7 +45,6 @@ public class MetabolicNetwork implements Serializable {
 		nodes.add(node);
 
 		addNodeToHash(node.getCpd0ExtId(), cpdId2Nodes, node);
-	//	addNodeToHash(node.getCpd1ExtId(), cpdId2Nodes, node);
 		addNodeToHash(node.getRxnExtId(), rxnId2Nodes, node);
 	}
 

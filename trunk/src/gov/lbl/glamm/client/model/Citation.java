@@ -12,9 +12,9 @@ import java.io.Serializable;
 public class Citation
 implements Serializable {
 	
-	private String dbVersion = null;	
-	private String description = null;	
-	private String text = null;
+	private String dbVersion;	
+	private String description;	
+	private String text;
 	
 	@SuppressWarnings("unused")
 	private Citation() {}

@@ -188,7 +188,7 @@ public class AnnotatedMapPresenter {
 			public void onClick(ClickEvent event) {
 				event.preventDefault();
 				Element element = DOM.eventGetTarget(Event.as(event.getNativeEvent()));
-				String elementClass = element.getAttribute(AnnotatedMapData.ATTRIBUTE_CLASS);
+				String cssClass = element.getAttribute(AnnotatedMapData.ATTRIBUTE_CLASS);
 				int clientX = event.getClientX();
 				int clientY = event.getClientY();
 				String idsString = null;
@@ -200,11 +200,11 @@ public class AnnotatedMapPresenter {
 				if(parentElement == null)
 					return; // fail silently
 
-				if(elementClass.equals(AnnotatedMapData.CLASS_CPD))
+				if(cssClass.equals(AnnotatedMapData.ElementClass.CPD.getCssClass()))
 					idsString = parentElement.getAttribute(AnnotatedMapData.ATTRIBUTE_COMPOUND);
-				else if(elementClass.equals(AnnotatedMapData.CLASS_MAP))
+				else if(cssClass.equals(AnnotatedMapData.ElementClass.MAP.getCssClass()))
 					idsString = parentElement.getAttribute(AnnotatedMapData.ATTRIBUTE_MAP);
-				else if(elementClass.equals(AnnotatedMapData.CLASS_RXN))
+				else if(cssClass.equals(AnnotatedMapData.ElementClass.RXN.getCssClass()))
 					idsString = parentElement.getAttribute(AnnotatedMapData.ATTRIBUTE_REACTION);
 				else
 					return; // fail silently
@@ -214,7 +214,7 @@ public class AnnotatedMapPresenter {
 				for(String id : idsArray)
 					ids.add(id);
 
-				eventBus.fireEvent(new MapElementClickEvent(elementClass, ids, clientX, clientY));
+				eventBus.fireEvent(new MapElementClickEvent(AnnotatedMapData.ElementClass.fromCssClass(cssClass), ids, clientX, clientY));
 
 			}
 		});
@@ -223,12 +223,12 @@ public class AnnotatedMapPresenter {
 		// Directly add handlers to the elements we care about
 		for(OMElement group : this.mapData.getSvg().getElementsByTagName(SVGConstants.SVG_G_TAG)) {
 			if(group.hasAttribute(AnnotatedMapData.ATTRIBUTE_CLASS)) {
-				String theClass = group.getAttribute(AnnotatedMapData.ATTRIBUTE_CLASS);
-				if(theClass.equals(AnnotatedMapData.CLASS_CPD))
+				String cssClass = group.getAttribute(AnnotatedMapData.ATTRIBUTE_CLASS);
+				if(cssClass.equals(AnnotatedMapData.ElementClass.CPD.getCssClass()))
 					addMouseHandlersToElement(group, SVGConstants.SVG_ELLIPSE_TAG);
-				else if(theClass.equals(AnnotatedMapData.CLASS_RXN))
+				else if(cssClass.equals(AnnotatedMapData.ElementClass.RXN.getCssClass()))
 					addMouseHandlersToElement(group, SVGConstants.SVG_PATH_TAG);
-				else if(theClass.equals(AnnotatedMapData.CLASS_MAP))
+				else if(cssClass.equals(AnnotatedMapData.ElementClass.MAP.getCssClass()))
 					addMouseHandlersToElement(group, SVGConstants.SVG_T_SPAN_TAG);
 			}
 		}

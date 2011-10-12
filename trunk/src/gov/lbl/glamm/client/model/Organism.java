@@ -29,7 +29,7 @@ public class Organism implements Serializable {
 	private String name = "";
 	private boolean isSessionOrganism = false;
 	
-	private Set<String> molTaxonomyIds = null;
+	private Set<String> molTaxonomyIds;
 	
 	//********************************************************************************
 
@@ -48,21 +48,16 @@ public class Organism implements Serializable {
 		this.taxonomyId = taxonomyId;
 		this.name = name;
 		this.isSessionOrganism = isSessionOrganism;
-		
-		
+		this.molTaxonomyIds = new HashSet<String>();
 	}
 	
 	//********************************************************************************
 	
 	public void addMolTaxonomyId(String taxonomyId) {
-		if(molTaxonomyIds == null)
-			molTaxonomyIds = new HashSet<String>();
 		molTaxonomyIds.add(taxonomyId);
 	}
 	
 	public void addMolTaxonomyIds(Collection<String> taxonomyIds) {
-		if(molTaxonomyIds == null)
-			molTaxonomyIds = new HashSet<String>();
 		molTaxonomyIds.addAll(taxonomyIds);
 	}
 	

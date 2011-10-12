@@ -109,6 +109,12 @@ implements Serializable, RowDependentSelectionCell.HasOptions, Mappable, HasXref
 	//********************************************************************************
 
 	public Reaction() {
+		ecNums = new HashSet<String>();
+		products = new HashSet<Participant>();
+		reactants = new HashSet<Participant>();
+		transgenicCandidates = new ArrayList<Organism>();
+		name2TransgenicCandidate = new HashMap<String, Organism>();
+		transgenicCandidate2EcNums = new HashMap<Organism, Set<String>>();
 		xrefs = new XrefSet();
 	}
 
@@ -116,8 +122,6 @@ implements Serializable, RowDependentSelectionCell.HasOptions, Mappable, HasXref
 
 	public void addEcNum(String ecNum) {
 		if(ecNum != null && !ecNum.isEmpty()) {
-			if(ecNums == null)
-				ecNums = new HashSet<String>();
 			ecNums.add(ecNum);
 		}
 	}
@@ -127,8 +131,6 @@ implements Serializable, RowDependentSelectionCell.HasOptions, Mappable, HasXref
 	public void addProduct(Participant rp) {
 		if(rp == null)
 			return;
-		if(products == null)
-			products = new HashSet<Participant>();
 		products.add(rp);
 	}
 
@@ -137,8 +139,6 @@ implements Serializable, RowDependentSelectionCell.HasOptions, Mappable, HasXref
 	public void addReactant(Participant rp) {
 		if(rp == null)
 			return;
-		if(reactants == null)
-			reactants = new HashSet<Participant>();
 		reactants.add(rp);
 	}
 
@@ -148,22 +148,16 @@ implements Serializable, RowDependentSelectionCell.HasOptions, Mappable, HasXref
 		if(organism == null)
 			return;
 		// add to list
-		if(transgenicCandidates == null)
-			transgenicCandidates = new ArrayList<Organism>();
 		if(!transgenicCandidates.contains(organism))
 			transgenicCandidates.add(organism);
 
 		// add to map
-		if(transgenicCandidate2EcNums == null)
-			transgenicCandidate2EcNums = new HashMap<Organism, Set<String>>();
 		Set<String> ecNums = transgenicCandidate2EcNums.get(organism);
 		if(ecNums == null) {
 			ecNums = new HashSet<String>();
 			transgenicCandidate2EcNums.put(organism, ecNums);
 		}
 
-		if(name2TransgenicCandidate == null)
-			name2TransgenicCandidate = new HashMap<String, Organism>();
 		name2TransgenicCandidate.put(organism.getName(), organism);
 		ecNums.add(ecNum);
 

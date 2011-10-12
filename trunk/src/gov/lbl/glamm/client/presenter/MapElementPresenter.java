@@ -47,7 +47,7 @@ public class MapElementPresenter {
 		this.sample = sample;
 	}
 		
-	public void showPopup(final String elementClass, final Set<String> ids, final int clientX, final int clientY) {
+	public void showPopup(final AnnotatedMapData.ElementClass elementClass, final Set<String> ids, final int clientX, final int clientY) {
 		AsyncCallback<String> callback = new AsyncCallback<String>() {
 			@Override
 			public void onFailure(Throwable caught) {
@@ -63,17 +63,17 @@ public class MapElementPresenter {
 		
 		final String loadingMsg = "<html>Loading...</html>";
 		
-		if(elementClass.equals(AnnotatedMapData.CLASS_CPD)) {
+		if(elementClass.equals(AnnotatedMapData.ElementClass.CPD)) {
 			String taxonomyId = (organism == null ? null : organism.getTaxonomyId());
 			view.showPopup(loadingMsg, clientX, clientY);
 			rpc.genCpdPopup(ids, taxonomyId, callback);
 		}
-		else if(elementClass.equals(AnnotatedMapData.CLASS_RXN)) {
+		else if(elementClass.equals(AnnotatedMapData.ElementClass.RXN)) {
 			String taxonomyId = (organism == null ? null : organism.getTaxonomyId());
 			view.showPopup(loadingMsg, clientX, clientY);
 			rpc.genRxnPopup(ids, taxonomyId, callback);
 		}
-		else if(elementClass.equals(AnnotatedMapData.CLASS_MAP)) {
+		else if(elementClass.equals(AnnotatedMapData.ElementClass.MAP)) {
 			String taxonomyId = (organism == null ? null : organism.getTaxonomyId());
 			String experimentId = (sample == null ? null : sample.getExperimentId());
 			String sampleId = (sample == null ? null : sample.getSampleId());
