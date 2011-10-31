@@ -2,7 +2,7 @@
 <config>
 	<server 
 		serverdomain="default" 
-		hibernatecfg="hibernate-lut.cfg.xml"
+		hibernatecfg="hibernate-gtldb2.cfg.xml"
 		isolatehost="microbesonline.org" 
 		loginurl="http://microbesonline.org/cgi-bin/login" 
 		metagenomehost="meta.microbesonline.org" 
@@ -16,7 +16,7 @@
 		db="debug"/>
 	<server 
 		serverdomain="brc-kb.org" 
-		hibernatecfg="hibernate-lut.cfg.xml"
+		hibernatecfg="hibernate-gtldb2.cfg.xml"
 		isolatehost="brc:bioenergy@www.brc-kb.org" 
 		loginurl="http://brc-kb.org/cgi-bin/login"
 		db="gobi"/>
