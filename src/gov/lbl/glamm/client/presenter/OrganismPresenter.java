@@ -94,7 +94,7 @@ public class OrganismPresenter {
 		view.clearDataTypeChoices();
 
 		addDataTypeChoice(Sample.DataType.NONE, true);
-		rpc.getAvailableExperimentTypes(new AsyncCallback<List<Sample.DataType>>() {
+		rpc.getAvailableSampleTypes(new AsyncCallback<List<Sample.DataType>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				Window.alert("Remote procedure call failure: getAvailableExperimentTypes");

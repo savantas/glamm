@@ -43,13 +43,21 @@ implements Serializable, RowDependentSelectionCell.HasOptions, Mappable, HasXref
 		}
 	}
 
-	public static class Participant {
+	public static class Participant implements Serializable {
 		
 		public enum KeggRpairRole {
 			MAIN("main"),
 			OTHER("other");
 			
 			private String theString = null;
+			
+			public static KeggRpairRole fromString(final String theString) {
+				if(theString == null)
+					return OTHER;
+				else if(theString.equals("main") || theString.equals("trans"))
+					return MAIN;
+				return OTHER;
+			}
 			
 			private KeggRpairRole(final String theString) {
 				this.theString = theString;
@@ -61,14 +69,17 @@ implements Serializable, RowDependentSelectionCell.HasOptions, Mappable, HasXref
 			}
 		}
 		
-		private String coefficient = null;
-		private Compound compound = null;
-		private KeggRpairRole role = null;
+		private String coefficient;
+		private Compound compound;
+		private KeggRpairRole role;
+		
+		@SuppressWarnings("unused")
+		private Participant() {}
 		
 		public Participant(final Compound compound, final String coefficient, final KeggRpairRole role) {
 			this.compound = compound;
 			this.coefficient = coefficient;
-			this.role = role;
+			setRole(role);
 		}
 
 		public final String getCoefficient() {
@@ -83,20 +94,29 @@ implements Serializable, RowDependentSelectionCell.HasOptions, Mappable, HasXref
 			return role;
 		}
 		
+		public final void setRole(final KeggRpairRole role) {
+			this.role = role;
+		}
+		
+		public final void setRole(final String role) {
+			setRole(KeggRpairRole.fromString(role));
+		}
+		
 	}
 	//********************************************************************************
 
 	public static transient final Type TYPE = new Type();
-	private Set<String> 	ecNums = null;
-	private String definition = null;
-	private Direction direction = Direction.BOTH;
-	private boolean isNative = true;
-	private Set<Participant>	products 	= null;
-	private Set<Participant> 	reactants 	= null;
-	private transient Organism selectedTransgenicCandidate = null;
-	private List<Organism> transgenicCandidates = null;
-	private Map<String, Organism> name2TransgenicCandidate = null;
-	private Map<Organism, Set<String>> transgenicCandidate2EcNums = null;
+	private String guid;
+	private Set<String> 	ecNums;
+	private String definition;
+	private Direction direction;
+	private boolean isNative;
+	private Set<Participant>	products;
+	private Set<Participant> 	substrates;
+	private transient Organism selectedTransgenicCandidate;
+	private List<Organism> transgenicCandidates;
+	private Map<String, Organism> name2TransgenicCandidate;
+	private Map<Organism, Set<String>> transgenicCandidate2EcNums;
 	private transient ReactionColor color; // ReactionColor depends on resources from the client bundle - don't instantiate or try to set server-side.
 	private XrefSet xrefs;
 
@@ -109,9 +129,11 @@ implements Serializable, RowDependentSelectionCell.HasOptions, Mappable, HasXref
 	//********************************************************************************
 
 	public Reaction() {
+		direction = Direction.BOTH;
+		isNative = true;
 		ecNums = new HashSet<String>();
 		products = new HashSet<Participant>();
-		reactants = new HashSet<Participant>();
+		substrates = new HashSet<Participant>();
 		transgenicCandidates = new ArrayList<Organism>();
 		name2TransgenicCandidate = new HashMap<String, Organism>();
 		transgenicCandidate2EcNums = new HashMap<Organism, Set<String>>();
@@ -128,7 +150,7 @@ implements Serializable, RowDependentSelectionCell.HasOptions, Mappable, HasXref
 
 	//********************************************************************************
 
-	public void addProduct(Participant rp) {
+	public void addProduct(final Participant rp) {
 		if(rp == null)
 			return;
 		products.add(rp);
@@ -136,15 +158,15 @@ implements Serializable, RowDependentSelectionCell.HasOptions, Mappable, HasXref
 
 	//********************************************************************************
 
-	public void addReactant(Participant rp) {
+	public void addSubstrate(final Participant rp) {
 		if(rp == null)
 			return;
-		reactants.add(rp);
+		substrates.add(rp);
 	}
 
 	//********************************************************************************
 
-	public void addTransgenicCandidate(String ecNum, Organism organism) {
+	public void addTransgenicCandidate(final String ecNum, final Organism organism) {
 		if(organism == null)
 			return;
 		// add to list
@@ -189,10 +211,10 @@ implements Serializable, RowDependentSelectionCell.HasOptions, Mappable, HasXref
 				return false;
 		} else if (!products.equals(other.products))
 			return false;
-		if (reactants == null) {
-			if (other.reactants != null)
+		if (substrates == null) {
+			if (other.substrates != null)
 				return false;
-		} else if (!reactants.equals(other.reactants))
+		} else if (!substrates.equals(other.substrates))
 			return false;
 		return true;
 	}
@@ -221,6 +243,12 @@ implements Serializable, RowDependentSelectionCell.HasOptions, Mappable, HasXref
 		return transgenicCandidate2EcNums.get(organism);
 	}
 
+	//********************************************************************************
+
+	public String getGuid() {
+		return guid;
+	}
+	
 	//********************************************************************************
 
 	@Override
@@ -262,8 +290,8 @@ implements Serializable, RowDependentSelectionCell.HasOptions, Mappable, HasXref
 
 	//********************************************************************************
 
-	public Set<Participant> getReactants() {
-		return reactants;
+	public Set<Participant> getSubstrates() {
+		return substrates;
 	}
 
 	//********************************************************************************
@@ -296,7 +324,7 @@ implements Serializable, RowDependentSelectionCell.HasOptions, Mappable, HasXref
 		result = prime * result
 		+ ((products == null) ? 0 : products.hashCode());
 		result = prime * result
-		+ ((reactants == null) ? 0 : reactants.hashCode());
+		+ ((substrates == null) ? 0 : substrates.hashCode());
 		return result;
 	}
 	
@@ -323,6 +351,12 @@ implements Serializable, RowDependentSelectionCell.HasOptions, Mappable, HasXref
 		this.direction = direction;
 	}
 
+	public void setGuid(final String guid) {
+		if(guid == null)
+			throw new IllegalArgumentException("Attempting to set null guid");
+		this.guid = guid;
+	}
+	
 	public void setNative(boolean isNative) {
 		this.isNative = isNative;
 	}

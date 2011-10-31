@@ -8,9 +8,9 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class Pathway implements Serializable {
 	
-	private String name		= null;
-	private String mapId	= null;
-	private List<Reaction> reactions = null;
+	private String name;
+	private String mapId;
+	private List<Reaction> reactions;
 	
 	public Pathway() {
 		reactions = new ArrayList<Reaction>();

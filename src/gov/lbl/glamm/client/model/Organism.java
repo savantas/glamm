@@ -25,9 +25,9 @@ public class Organism implements Serializable {
 		
 	}
 	
-	private String taxonomyId = "";
-	private String name = "";
-	private boolean isSessionOrganism = false;
+	private String taxonomyId;
+	private String name;
+	private boolean isSessionOrganism;
 	
 	private Set<String> molTaxonomyIds;
 	

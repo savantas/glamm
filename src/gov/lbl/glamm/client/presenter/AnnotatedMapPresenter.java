@@ -9,6 +9,7 @@ import gov.lbl.glamm.client.model.AnnotatedMapDescriptor;
 import gov.lbl.glamm.client.model.Compound;
 import gov.lbl.glamm.client.model.Gene;
 import gov.lbl.glamm.client.model.Measurement;
+import gov.lbl.glamm.client.model.MetabolicNetwork.MNNode;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Pathway;
 import gov.lbl.glamm.client.model.Reaction;
@@ -16,7 +17,6 @@ import gov.lbl.glamm.client.model.Sample;
 import gov.lbl.glamm.client.model.interfaces.HasMeasurements;
 import gov.lbl.glamm.client.model.interfaces.HasType;
 import gov.lbl.glamm.client.model.interfaces.Mappable;
-import gov.lbl.glamm.client.model.util.MNNode;
 import gov.lbl.glamm.client.model.util.Xref;
 import gov.lbl.glamm.client.rpc.GlammServiceAsync;
 import gov.lbl.glamm.client.util.Interpolator;
@@ -752,7 +752,7 @@ public class AnnotatedMapPresenter {
 		eventBus.fireEvent(new LoadingEvent(false));
 
 		// otherwise, get measurements for the given sample
-		rpc.getMeasurementsForExperiment(sample.getExperimentId(), 
+		rpc.getSample(sample.getExperimentId(), 
 				sample.getSampleId(), 
 				new AsyncCallback<List<? extends HasMeasurements>>() {
 

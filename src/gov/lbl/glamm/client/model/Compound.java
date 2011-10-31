@@ -23,6 +23,7 @@ import java.util.Set;
 public class Compound
 implements HasSynonyms, Serializable, HasXrefs, Mappable {
 	
+	private String guid;
 	private String name;
 	private String formula;
 	private String mass;
@@ -137,6 +138,14 @@ implements HasSynonyms, Serializable, HasXrefs, Mappable {
 	 */
 	public void setSmiles(String smiles) {
 		this.smiles = smiles;
+	}
+	
+	public String getGuid() {
+		return guid;
+	}
+
+	public void setGuid(String guid) {
+		this.guid = guid;
 	}
 
 	@Override
