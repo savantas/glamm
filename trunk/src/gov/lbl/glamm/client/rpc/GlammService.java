@@ -21,15 +21,14 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface GlammService extends RemoteService {
 	public User authenticateUser(final String userId, final String auth);
 	public String genCpdPopup(Compound compound, String taxonomyId);
-	public String genCpdPopup(String id, String taxonomyId);
 	public String genCpdPopup(Set<String> ids, String taxonomyId);
 	public String genPwyPopup(Set<String> ids, String taxonomyId, String experimentId, String sampleId);
 	public String genRxnPopup(Set<String> ids, String taxonomyId);
 	public List<AnnotatedMapDescriptor> getAnnotatedMapDescriptors();
-	public List<Sample.DataType> getAvailableExperimentTypes();
+	public List<Sample.DataType> getAvailableSampleTypes();
 	public List<Pathway> getDirections(String taxonomyId, Compound cpdSrc, Compound cpdDst, String mapTitle, String algorithm);
 	public String getIsolateHost();
-	public List<? extends HasMeasurements> getMeasurementsForExperiment(String experimentId, String sampleId);
+	public List<? extends HasMeasurements> getSample(String experimentId, String sampleId);
 	public String getMetagenomeHost();
 	public Set<Reaction> getRxnsForOrganism(String taxonomyId);
 	public User getLoggedInUser();

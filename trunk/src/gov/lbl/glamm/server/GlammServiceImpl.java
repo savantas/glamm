@@ -70,12 +70,7 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	public String genCpdPopup(Compound compound, String taxonomyId) {
 		return GenCpdPopup.genCpdPopup(getGlammSession(), compound, taxonomyId);
 	}
-	
-	@Override
-	public String genCpdPopup(String id, String taxonomyId) {
-		return GenCpdPopup.genCpdPopupForId(getGlammSession(), id, taxonomyId);
-	}
-	
+		
 	/**
 	 * Generates the HTML for the compound popups.
 	 * @param query The query string encoded in the map's svg representation
@@ -103,7 +98,7 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	}
 	
 	@Override
-	public List<Sample.DataType> getAvailableExperimentTypes() {
+	public List<Sample.DataType> getAvailableSampleTypes() {
 		return GetAvailableExperimentTypes.getAvailableExperimentTypes(getGlammSession());
 	}
 	
@@ -119,7 +114,7 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	}
 	
 	@Override
-	public List<? extends HasMeasurements> getMeasurementsForExperiment(String experimentId, String sampleId) {
+	public List<? extends HasMeasurements> getSample(String experimentId, String sampleId) {
 		return GetExperiment.getMeasurementsForExperiment(getGlammSession(), experimentId, sampleId);
 	}
 	

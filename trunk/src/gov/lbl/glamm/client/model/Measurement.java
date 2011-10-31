@@ -5,12 +5,12 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 public class Measurement implements Serializable {
 		
-	private String expId 			= null;
-	private String sampleId 		= null;
-	private float value 			= 0f;
-	private float confidence 		= 0f;
+	private String expId;
+	private String sampleId;
+	private float value;
+	private float confidence;
 	
-	private String targetId			= null;
+	private String targetId;
 	
 	//********************************************************************************
 	

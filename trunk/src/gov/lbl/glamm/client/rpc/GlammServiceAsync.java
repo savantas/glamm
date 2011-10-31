@@ -19,15 +19,14 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public interface GlammServiceAsync {
 	public void authenticateUser(final String userId, final String auth, AsyncCallback<User> callback);
 	public void genCpdPopup(Compound compound, String taxonomyId, AsyncCallback<String> callback);
-	public void genCpdPopup(String id, String taxonomyId, AsyncCallback<String> callback);
 	public void genCpdPopup(Set<String> ids, String taxonomyId, AsyncCallback<String> callback);
 	public void genPwyPopup(Set<String> ids, String taxonomyId, String experimentId, String sampleId, AsyncCallback<String> callback);
 	public void genRxnPopup(Set<String> ids, String taxonomyId, AsyncCallback<String> callback);
 	public void getAnnotatedMapDescriptors(AsyncCallback<List<AnnotatedMapDescriptor>> callback);
-	public void getAvailableExperimentTypes(AsyncCallback<List<Sample.DataType>> callback);
+	public void getAvailableSampleTypes(AsyncCallback<List<Sample.DataType>> callback);
 	public void getDirections(String taxonomyId, Compound cpdSrc, Compound cpdDst, String mapTitle, String algorithm, AsyncCallback<List<Pathway>> callback);
 	public void getIsolateHost(AsyncCallback<String> callback);
-	public void getMeasurementsForExperiment(String experimentId, String sampleId, AsyncCallback<List<? extends HasMeasurements>> callback);
+	public void getSample(String experimentId, String sampleId, AsyncCallback<List<? extends HasMeasurements>> callback);
 	public void getMetagenomeHost(AsyncCallback<String> callback);
 	public void getLoggedInUser(AsyncCallback<User> user);
 	public void getRxnsForOrganism(String taxonomyId, AsyncCallback<Set<Reaction>> callback);
