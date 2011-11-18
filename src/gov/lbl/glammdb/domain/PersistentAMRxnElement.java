@@ -1,8 +1,6 @@
 package gov.lbl.glammdb.domain;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,48 +15,58 @@ import javax.persistence.Table;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name="PwyElement")
-public class PwyElement implements Serializable {
-	
+@Table(name="AMRxnElement")
+public class PersistentAMRxnElement implements Serializable {
+
 	public enum Type {
-		CPD(new String[]{"cpd", "gl"}),
-		EC(new String[]{"ec"}),
-		MAP(new String[]{"map"}),
-		RXN(new String[]{"rn"});
-		
-		private Set<String> values;
-		
-		private Type(final String[] values) {
-			this.values = new HashSet<String>();
-			for(String value : values)
-				this.values.add(value);
+		PRODUCT("product"),
+		REACTION("reaction"),
+		SUBSTRATE("substrate");
+
+		private String value;
+
+		private Type(final String value) {
+			this.value = value;
 		}
-		
+
 		public static Type fromValue(final String value) {
 			if(value != null) {
 				for(Type type : values())
-					if(type.values.contains(value))
+					if(type.value.equals(value))
 						return type;
 			}
 			throw new IllegalArgumentException("Invalid Type: " + value);
 		}
+
+		@Override
+		public String toString() {
+			return value;
+		}
+	
 	}
-	
+
 	@Id
-	@Column(name="id")
 	@GeneratedValue
+	@Column(name="id")
 	private Long id;
-	
+
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "pathway_id", nullable = false, unique = false)
-	private Pathway pathway;
-	
+	@JoinColumn(name = "amRxn_id", nullable = false, unique = false)
+	private PersistentAMRxn reaction;
+
 	@Column(name="xrefId", nullable=false)
 	private String xrefId;
-	
+
 	@Enumerated(EnumType.STRING)
 	@Column(name="type", nullable=false)
 	private Type type;
+
+	public PersistentAMRxnElement() {}
+
+	public PersistentAMRxnElement(final String xrefId, final Type type) {
+		this.xrefId = xrefId;
+		this.type = type;
+	}
 
 	public Long getId() {
 		return id;
@@ -67,13 +75,13 @@ public class PwyElement implements Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
-	public Pathway getPathway() {
-		return pathway;
+
+	public void setReaction(PersistentAMRxn reaction) {
+		this.reaction = reaction;
 	}
 
-	public void setPathway(Pathway pathway) {
-		this.pathway = pathway;
+	public PersistentAMRxn getReaction() {
+		return reaction;
 	}
 
 	public String getXrefId() {
@@ -90,5 +98,10 @@ public class PwyElement implements Serializable {
 
 	public void setType(Type type) {
 		this.type = type;
-	}	
+	}
+	
+	@Override
+	public String toString() {
+		return this.getType() + " " + this.getXrefId();
+	}
 }

@@ -23,43 +23,43 @@ public class ExperimentView extends Composite
 	private final String RB_GROUP = "EXPERIMENT_RB_GROUP";
 		
 	// the widget
-	private DecoratorPanel		decoratorPanel 				= null;
-	private VerticalPanel		mainPanel 					= null;
+	private DecoratorPanel		decoratorPanel;
+	private VerticalPanel		mainPanel;
 	
 	// header
-	private HorizontalPanel		headerPanel					= null;
-	private Label				experimentLabel				= null;
-	private SuggestBox			experimentSuggestBox 		= null;
-	private Button				prevButton 					= null;
-	private Button				nextButton					= null;
+	private HorizontalPanel		headerPanel;
+	private Label				experimentLabel;
+	private SuggestBox			experimentSuggestBox;
+	private Button				prevButton;
+	private Button				nextButton;
 	
 	// disclosure panel
-	private DisclosurePanel		disclosurePanel				= null;
-	private VerticalPanel		disclosurePanelContent		= null;
+	private DisclosurePanel		disclosurePanel;
+	private VerticalPanel		disclosurePanelContent;
 	
 	// status panel
-	private HorizontalPanel		statusPanel					= null;
-	private Label				statusLabel					= null;
-	private Button				statusUploadButton			= null;
+	private HorizontalPanel		statusPanel;
+	private Label				statusLabel;
+	private Button				statusUploadButton;
 	
 	// experiment panel
-	private VerticalPanel		radioButtonPanel			= null;
-	private VerticalPanel		experimentPanel				= null;
-	private ScrollPanel			experimentTableScrollPanel	= null;
-	private CellTable<Sample> 	experimentTable				= null;
-	private HorizontalPanel		expButtonPanel				= null;
-	private Button				addButton					= null;
-	private Button				uploadButton				= null;
-	private Button				downloadButton				= null;
+	private VerticalPanel		radioButtonPanel;
+	private VerticalPanel		experimentPanel;
+	private ScrollPanel			experimentTableScrollPanel;
+	private CellTable<Sample> 	experimentTable;
+	private HorizontalPanel		expButtonPanel;
+	private Button				addButton;
+	private Button				uploadButton;
+	private Button				downloadButton;
 	
-	private VerticalPanel		viewSubsetPanel				= null;
-	private Label				viewSubsetLabel				= null;
-	private ScrollPanel			viewSubsetTableScrollPanel 	= null;
-	private CellTable<Sample> 	viewSubsetTable				= null;
-	private HorizontalPanel		viewButtonPanel				= null;
-	private Button				viewExperimentButton		= null;
-	private Button				removeButton				= null;
-	private Button				resetButton					= null;
+	private VerticalPanel		viewSubsetPanel;
+	private Label				viewSubsetLabel;
+	private ScrollPanel			viewSubsetTableScrollPanel;
+	private CellTable<Sample> 	viewSubsetTable;
+	private HorizontalPanel		viewButtonPanel;
+	private Button				viewExperimentButton;
+	private Button				removeButton;
+	private Button				resetButton;
 	
 	public ExperimentView() {
 		

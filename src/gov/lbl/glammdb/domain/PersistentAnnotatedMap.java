@@ -22,7 +22,7 @@ import javax.persistence.Table;
 @SuppressWarnings("serial")
 @Entity
 @Table(name="AnnotatedMap")
-public class AnnotatedMap implements Serializable {
+public class PersistentAnnotatedMap implements Serializable {
 
 	@Id
 	@GeneratedValue
@@ -44,7 +44,7 @@ public class AnnotatedMap implements Serializable {
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
 	@JoinColumn(name = "am_id")
 	@OrderBy("id")
-	private Set<AMRxn> network = new LinkedHashSet<AMRxn>();
+	private Set<PersistentAMRxn> network = new LinkedHashSet<PersistentAMRxn>();
 
 	public Long getId() {
 		return id;
@@ -86,18 +86,18 @@ public class AnnotatedMap implements Serializable {
 		this.title = title;
 	}
 
-	public Set<AMRxn> getNetwork() {
+	public Set<PersistentAMRxn> getNetwork() {
 		return network;
 	}
 
-	public void setNetwork(Set<AMRxn> network) {
+	public void setNetwork(Set<PersistentAMRxn> network) {
 		if(this.network != network)
 			this.network.clear();
 		if(network != null && !network.isEmpty())
 			this.network.addAll(network);
 	}
 
-	public void addRxnToNetwork(AMRxn rxn) {
+	public void addRxnToNetwork(PersistentAMRxn rxn) {
 		rxn.setAnnotatedMap(this);
 		network.add(rxn);
 	}
@@ -113,13 +113,13 @@ public class AnnotatedMap implements Serializable {
 	private MetabolicNetwork genMetabolicNetwork() {
 		MetabolicNetwork mn = new MetabolicNetwork(this.getTitle());
 		
-		Set<AMRxnElement> reactions 	= new LinkedHashSet<AMRxnElement>();
-		Set<AMRxnElement> substrates 	= new LinkedHashSet<AMRxnElement>();
-		Set<AMRxnElement> products 		= new LinkedHashSet<AMRxnElement>();
+		Set<PersistentAMRxnElement> reactions 	= new LinkedHashSet<PersistentAMRxnElement>();
+		Set<PersistentAMRxnElement> substrates 	= new LinkedHashSet<PersistentAMRxnElement>();
+		Set<PersistentAMRxnElement> products 		= new LinkedHashSet<PersistentAMRxnElement>();
 		
-		for(AMRxn reaction : this.getNetwork()) {
+		for(PersistentAMRxn reaction : this.getNetwork()) {
 			
-			for(AMRxnElement element : reaction.getElements()) {
+			for(PersistentAMRxnElement element : reaction.getElements()) {
 				switch(element.getType()) {
 					case REACTION: 	reactions.add(element); 	break;
 					case SUBSTRATE: substrates.add(element); 	break;
@@ -127,9 +127,9 @@ public class AnnotatedMap implements Serializable {
 				}
 			}
 
-			for(AMRxnElement rxn : reactions) {
-				for(AMRxnElement substrate : substrates) {
-					for(AMRxnElement product : products) {
+			for(PersistentAMRxnElement rxn : reactions) {
+				for(PersistentAMRxnElement substrate : substrates) {
+					for(PersistentAMRxnElement product : products) {
 						mn.addNode(new MNNode(rxn.getXrefId(), substrate.getXrefId(), product.getXrefId()));
 						mn.addNode(new MNNode(rxn.getXrefId(), product.getXrefId(), substrate.getXrefId()));
 					}

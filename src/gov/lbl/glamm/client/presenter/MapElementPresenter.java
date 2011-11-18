@@ -68,11 +68,6 @@ public class MapElementPresenter {
 			view.showPopup(loadingMsg, clientX, clientY);
 			rpc.genCpdPopup(ids, taxonomyId, callback);
 		}
-		else if(elementClass.equals(AnnotatedMapData.ElementClass.RXN)) {
-			String taxonomyId = (organism == null ? null : organism.getTaxonomyId());
-			view.showPopup(loadingMsg, clientX, clientY);
-			rpc.genRxnPopup(ids, taxonomyId, callback);
-		}
 		else if(elementClass.equals(AnnotatedMapData.ElementClass.MAP)) {
 			String taxonomyId = (organism == null ? null : organism.getTaxonomyId());
 			String experimentId = (sample == null ? null : sample.getExperimentId());

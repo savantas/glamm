@@ -9,7 +9,6 @@ import gov.lbl.glamm.server.dao.impl.GeneDAOImpl;
 import gov.lbl.glamm.server.dao.impl.ReactionGlammDAOImpl;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class GetRxnsForOrganism {
@@ -20,7 +19,7 @@ public class GetRxnsForOrganism {
 		ReactionDAO rxnDao = new ReactionGlammDAOImpl(sm);
 		Set<Reaction> rxns = null;
 		
-		List<Gene> genes = geneDao.getGenesForOrganism(taxonomyId);
+		Set<Gene> genes = geneDao.getGenesForOrganism(taxonomyId);
 	
 		if(genes != null && !genes.isEmpty()) {
 			Set<String> ecNums = new HashSet<String>();

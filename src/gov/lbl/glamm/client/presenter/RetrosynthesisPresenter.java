@@ -595,7 +595,7 @@ public class RetrosynthesisPresenter {
 	}
 
 	private void populateLocusSearch() {
-		rpc.populateLocusSearch(organism.getTaxonomyId(), new AsyncCallback<List<Gene>>() {
+		rpc.populateLocusSearch(organism.getTaxonomyId(), new AsyncCallback<Set<Gene>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				// Show the RPC error message to the user
@@ -603,7 +603,7 @@ public class RetrosynthesisPresenter {
 			}
 
 			@Override
-			public void onSuccess(List<Gene> result) {
+			public void onSuccess(Set<Gene> result) {
 				if(result != null)
 					populateWithGenes(result);
 			}

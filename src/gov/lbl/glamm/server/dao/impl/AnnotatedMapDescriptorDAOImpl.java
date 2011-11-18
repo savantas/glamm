@@ -3,7 +3,7 @@ package gov.lbl.glamm.server.dao.impl;
 import gov.lbl.glamm.client.model.AnnotatedMapDescriptor;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.AnnotatedMapDescriptorDAO;
-import gov.lbl.glammdb.domain.AnnotatedMap;
+import gov.lbl.glammdb.domain.PersistentAnnotatedMap;
 import gov.lbl.glammdb.util.HibernateUtil;
 
 import java.util.ArrayList;
@@ -22,11 +22,11 @@ public class AnnotatedMapDescriptorDAOImpl implements AnnotatedMapDescriptorDAO 
 		this.sm = sm;
 	}
 
-	private List<AnnotatedMap> getAnnotatedMaps() {
+	private List<PersistentAnnotatedMap> getAnnotatedMaps() {
 		Session session = HibernateUtil.getSessionFactory(sm).getCurrentSession();
 		session.beginTransaction();
 		@SuppressWarnings("unchecked")
-		List<AnnotatedMap> result = (List<AnnotatedMap>) session.createCriteria(AnnotatedMap.class)
+		List<PersistentAnnotatedMap> result = (List<PersistentAnnotatedMap>) session.createCriteria(PersistentAnnotatedMap.class)
 		.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
 		.setFetchMode("network", FetchMode.JOIN)
 		.list();
@@ -38,7 +38,7 @@ public class AnnotatedMapDescriptorDAOImpl implements AnnotatedMapDescriptorDAO 
 	public AnnotatedMapDescriptor getAnnotatedMapDescriptor(final String mapId) {
 		Session session = HibernateUtil.getSessionFactory(sm).getCurrentSession();
 		session.beginTransaction();
-		AnnotatedMap result = (AnnotatedMap) session.createCriteria(AnnotatedMap.class)
+		PersistentAnnotatedMap result = (PersistentAnnotatedMap) session.createCriteria(PersistentAnnotatedMap.class)
 		.add(Restrictions.eq("mapId", mapId))
 		.uniqueResult();
 		session.getTransaction().commit();
@@ -52,10 +52,10 @@ public class AnnotatedMapDescriptorDAOImpl implements AnnotatedMapDescriptorDAO 
 	@Override
 	public List<AnnotatedMapDescriptor> getAnnotatedMapDescriptors() {
 		List<AnnotatedMapDescriptor> amds = new ArrayList<AnnotatedMapDescriptor>();
-		List<AnnotatedMap> annotatedMaps = getAnnotatedMaps();
+		List<PersistentAnnotatedMap> annotatedMaps = getAnnotatedMaps();
 		
 		if(annotatedMaps != null && !annotatedMaps.isEmpty()) {
-			for(AnnotatedMap am : annotatedMaps)
+			for(PersistentAnnotatedMap am : annotatedMaps)
 				amds.add(am.toAnnotatedMapDescriptor());
 		}
 		

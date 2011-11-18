@@ -14,10 +14,10 @@ import gov.lbl.glamm.client.rpc.GlammService;
 import gov.lbl.glamm.server.actions.AuthenticateUser;
 import gov.lbl.glamm.server.actions.GenCpdPopup;
 import gov.lbl.glamm.server.actions.GenPwyPopup;
-import gov.lbl.glamm.server.actions.GenRxnPopup;
 import gov.lbl.glamm.server.actions.GetAnnotatedMapDescriptors;
 import gov.lbl.glamm.server.actions.GetAvailableExperimentTypes;
 import gov.lbl.glamm.server.actions.GetExperiment;
+import gov.lbl.glamm.server.actions.GetReactions;
 import gov.lbl.glamm.server.actions.GetRxnsForOrganism;
 import gov.lbl.glamm.server.actions.PopulateCompoundSearch;
 import gov.lbl.glamm.server.actions.PopulateExperiments;
@@ -88,11 +88,6 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	}
 	
 	@Override
-	public String genRxnPopup(Set<String> ids, String taxonomyId) {
-		return GenRxnPopup.genRxnPopup(getGlammSession(), ids, taxonomyId);
-	}
-	
-	@Override
 	public List<AnnotatedMapDescriptor> getAnnotatedMapDescriptors() {
 		return GetAnnotatedMapDescriptors.getAnnotatedMapDescriptors(getGlammSession());
 	}
@@ -114,14 +109,18 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	}
 	
 	@Override
-	public List<? extends HasMeasurements> getSample(String experimentId, String sampleId) {
+	public Set<? extends HasMeasurements> getSample(String experimentId, String sampleId) {
 		return GetExperiment.getMeasurementsForExperiment(getGlammSession(), experimentId, sampleId);
 	}
 	
 	@Override
 	public String getMetagenomeHost() {
-		GlammSession sm = getGlammSession();
-		return sm.getServerConfig().getMetagenomeHost();
+		return getGlammSession().getServerConfig().getMetagenomeHost();
+	}
+	
+	@Override
+	public Set<Reaction> getReactions(final Set<String> ids, final Organism organism, final Sample sample) {
+		return GetReactions.getReactions(getGlammSession(), ids, organism, sample);
 	}
 	
 	@Override
@@ -150,7 +149,7 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	}
 	
 	@Override
-	public List<Gene> populateLocusSearch(String taxonomyId) {
+	public Set<Gene> populateLocusSearch(String taxonomyId) {
 		return PopulateLocusSearch.populateLocusSearch(getGlammSession(), taxonomyId);
 	}
 

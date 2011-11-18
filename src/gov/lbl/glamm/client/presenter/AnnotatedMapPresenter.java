@@ -754,7 +754,7 @@ public class AnnotatedMapPresenter {
 		// otherwise, get measurements for the given sample
 		rpc.getSample(sample.getExperimentId(), 
 				sample.getSampleId(), 
-				new AsyncCallback<List<? extends HasMeasurements>>() {
+				new AsyncCallback<Set<? extends HasMeasurements>>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -765,7 +765,7 @@ public class AnnotatedMapPresenter {
 
 			@Override
 			public void onSuccess(
-					List<? extends HasMeasurements> result) {
+					Set<? extends HasMeasurements> result) {
 
 				eventBus.fireEvent(new LoadingEvent(true));
 

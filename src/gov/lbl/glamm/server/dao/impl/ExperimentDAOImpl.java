@@ -7,6 +7,7 @@ import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.ExperimentDAO;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -98,5 +99,13 @@ public class ExperimentDAOImpl implements ExperimentDAO {
 		if(sm != null && sm.isSessionExperiment(experimentId))
 			return expSessionDao.getTaxonomyIdForExperimentId(experimentId);
 		return expUArrayDao.getTaxonomyIdForExperimentId(experimentId);
+	}
+
+	@Override
+	public Map<String, Set<Measurement>> getMeasurementsForIds(
+			String experimentId, String sampleId, Collection<String> ids) {
+		if(sm != null && sm.isSessionExperiment(experimentId))
+			return expSessionDao.getMeasurementsForIds(experimentId, sampleId, ids);
+		return expUArrayDao.getMeasurementsForIds(experimentId, sampleId, ids);
 	}
 }

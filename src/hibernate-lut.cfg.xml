@@ -32,11 +32,11 @@
         <!-- Drop and re-create the database schema on startup -->
         <property name="hbm2ddl.auto">update</property>
 
-        <mapping class="gov.lbl.glammdb.domain.AMRxn"/>
-        <mapping class="gov.lbl.glammdb.domain.AMRxnElement"/>
-        <mapping class="gov.lbl.glammdb.domain.AnnotatedMap"/>
-        <mapping class="gov.lbl.glammdb.domain.Pathway"/>
-        <mapping class="gov.lbl.glammdb.domain.PwyElement"/>
+        <mapping class="gov.lbl.glammdb.domain.PersistentAMRxn"/>
+        <mapping class="gov.lbl.glammdb.domain.PersistentAMRxnElement"/>
+        <mapping class="gov.lbl.glammdb.domain.PersistentAnnotatedMap"/>
+        <mapping class="gov.lbl.glammdb.domain.PersistentPathway"/>
+        <mapping class="gov.lbl.glammdb.domain.PersistentPwyElement"/>
         
 
     </session-factory>

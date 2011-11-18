@@ -12,11 +12,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -77,9 +75,9 @@ public class GeneMolDAOImpl implements GeneDAO {
 	//********************************************************************************
 
 	@Override
-	public List<Gene> getGenesForEcNums(String taxonomyId, Collection<String> ecNums) {
+	public Set<Gene> getGenesForEcNums(String taxonomyId, Collection<String> ecNums) {
 
-		List<Gene> genes = null;
+		Set<Gene> genes = null;
 
 		if(taxonomyId != null && !taxonomyId.isEmpty() && 
 				ecNums != null && ecNums.size() > 0) {
@@ -117,9 +115,9 @@ public class GeneMolDAOImpl implements GeneDAO {
 	//********************************************************************************
 
 	@Override
-	public List<Gene> getGenesForOrganism(String taxonomyId) {
+	public Set<Gene> getGenesForOrganism(String taxonomyId) {
 
-		List<Gene> genes = null;
+		Set<Gene> genes = null;
 
 		if(taxonomyId != null && !taxonomyId.isEmpty()) {
 			
@@ -155,9 +153,9 @@ public class GeneMolDAOImpl implements GeneDAO {
 	//********************************************************************************
 
 	@Override
-	public List<Gene> getGenesForRxnIds(String taxonomyId, String[] rxnIds) {
+	public Set<Gene> getGenesForRxnIds(String taxonomyId, String[] rxnIds) {
 
-		List<Gene> genes = null;
+		Set<Gene> genes = null;
 
 		if(taxonomyId != null && !taxonomyId.isEmpty() && 
 				rxnIds != null && rxnIds.length > 0) {
@@ -195,10 +193,10 @@ public class GeneMolDAOImpl implements GeneDAO {
 
 	//********************************************************************************
 
-	private List<Gene> processResultSet(ResultSet rs) 
+	private Set<Gene> processResultSet(ResultSet rs) 
 	throws SQLException {
 		
-		List<Gene> genes = null;
+		Set<Gene> genes = new HashSet<Gene>();
 		Map<String, Gene> locusId2Gene = new HashMap<String, Gene>();
 
 		while(rs.next()) {
@@ -222,10 +220,7 @@ public class GeneMolDAOImpl implements GeneDAO {
 			
 		}
 
-		if(locusId2Gene.values().size() > 0) {
-			genes = new ArrayList<Gene>();
-			genes.addAll(locusId2Gene.values());
-		}
+		genes.addAll(locusId2Gene.values());
 
 		return genes;
 	}
@@ -233,7 +228,7 @@ public class GeneMolDAOImpl implements GeneDAO {
 	//********************************************************************************
 
 	@Override
-	public List<Gene> getGenesForSynonyms(String taxonomyId,
+	public Set<Gene> getGenesForSynonyms(String taxonomyId,
 			Collection<String> synonyms) {
 		//TODO get genes for synonyms other than VIMSS ids
 		return getGenesForVimssIds(taxonomyId, synonyms);
@@ -242,8 +237,8 @@ public class GeneMolDAOImpl implements GeneDAO {
 	//********************************************************************************
 	
 	@Override
-	public List<Gene> getGenesForVimssIds(String taxonomyId, Collection<String> extIds) {
-		List<Gene> genes = null;
+	public Set<Gene> getGenesForVimssIds(String taxonomyId, Collection<String> extIds) {
+		Set<Gene> genes = null;
 
 		if(taxonomyId != null && !taxonomyId.isEmpty() && 
 				extIds != null && extIds.size() > 0) {

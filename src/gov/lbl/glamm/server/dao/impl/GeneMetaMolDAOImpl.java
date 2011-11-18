@@ -12,18 +12,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class GeneMetaMolDAOImpl implements GeneDAO {
-	
+
 	private GlammSession sm;
-	
+
 	public GeneMetaMolDAOImpl(final GlammSession sm) {
 		this.sm = sm;
 	}
@@ -31,17 +29,17 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 	@Override
 	public Set<String> getEcNumsForOrganism(String taxonomyId) {
 		Set<String> ecNums = null;
-		
+
 		if(!sm.getServerConfig().hasMetagenomeHost())
 			return ecNums;
-		
+
 		if(taxonomyId != null && !taxonomyId.isEmpty()) {
 			String sql = "select distinct L2E.ecNum " +
 			"from meta2010jul.Locus2Ec L2E " + 
 			"join meta2010jul.Locus L on (L2E.locusId=L.locusId) " +
 			"where L.priority=1 and " +
 			"L.taxonomyId=?";
-			
+
 			try {
 
 				Connection connection = GlammDbConnectionPool.getConnection(sm);
@@ -52,14 +50,14 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 				ResultSet rs = ps.executeQuery();
 
 				while(rs.next()) {
-					
+
 					String ecNum 		= rs.getString("ecNum");
-					
+
 					if(ecNums == null)
 						ecNums = new HashSet<String>();
-					
+
 					ecNums.add(ecNum);
-					
+
 				}
 
 				rs.close();
@@ -69,17 +67,17 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 				e.printStackTrace();
 			}
 		}
-		
+
 		return ecNums;
 	}
 
 	@Override
-	public List<Gene> getGenesForEcNums(String taxonomyId, Collection<String> ecNums) {
+	public Set<Gene> getGenesForEcNums(String taxonomyId, Collection<String> ecNums) {
 
-		List<Gene> genes = null;
-		
+		Set<Gene> genes = null;
+
 		if(!sm.getServerConfig().hasMetagenomeHost())
-			return genes;
+			return new HashSet<Gene>();
 
 		if(taxonomyId != null && !taxonomyId.isEmpty() && 
 				ecNums != null && ecNums.size() > 0) {
@@ -114,11 +112,11 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 	}
 
 	@Override
-	public List<Gene> getGenesForVimssIds(String taxonomyId, Collection<String> extIds) {
-		List<Gene> genes = null;
-		
+	public Set<Gene> getGenesForVimssIds(String taxonomyId, Collection<String> extIds) {
+		Set<Gene> genes = null;
+
 		if(!sm.getServerConfig().hasMetagenomeHost())
-			return genes;
+			return new HashSet<Gene>();
 
 		if(taxonomyId != null && !taxonomyId.isEmpty() && 
 				extIds != null && extIds.size() > 0) {
@@ -153,15 +151,15 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 	}
 
 	@Override
-	public List<Gene> getGenesForOrganism(String taxonomyId) {
+	public Set<Gene> getGenesForOrganism(String taxonomyId) {
 
-		List<Gene> genes = null;
-		
+		Set<Gene> genes = null;
+
 		if(!sm.getServerConfig().hasMetagenomeHost())
-			return genes;
+			return new HashSet<Gene>();
 
 		if(taxonomyId != null && !taxonomyId.isEmpty()) {
-			
+
 			String sql = "select distinct L2E.ecNum, L2E.locusId, Syn.name, Syn.type " +
 			"from meta2010jul.Locus2Ec L2E " + 
 			"join meta2010jul.Locus L on (L2E.locusId=L.locusId) " +
@@ -186,30 +184,30 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 				e.printStackTrace();
 			}
 		}
-		
+
 		return genes;
 	}
 
 	@Override
-	public List<Gene> getGenesForRxnIds(String taxonomyId, String[] rxnIds) {
+	public Set<Gene> getGenesForRxnIds(String taxonomyId, String[] rxnIds) {
 
-		List<Gene> genes = null;
-		
+		Set<Gene> genes = null;
+
 		if(!sm.getServerConfig().hasMetagenomeHost())
-			return genes;
+			return new HashSet<Gene>();
 
 		if(taxonomyId != null && !taxonomyId.isEmpty() && 
 				rxnIds != null && rxnIds.length > 0) {
 
 			String sql = "select distinct L2E.locusId, L2E.ecNum, Syn.name, Syn.type " +
-					"from meta2010jul.Locus2Ec L2E " +
-					"join glamm.GlammEnzyme E on (E.ecNum=L2E.ecNum) " +
-					"join glamm.GlammXref X on (E.reactionGuid=X.fromGuid) " +
-					"left outer join meta2010jul.Synonym Syn on (Syn.locusId=L2E.locusId) " +
-					"join meta2010jul.Locus L on (L2E.locusId=L.locusId) " +
-					"where L.taxonomyId=" + taxonomyId + " and " +
-					"L.priority=1 and " +
-					"X.toXrefId in (" + GlammUtils.joinArray(rxnIds) + ");";
+			"from meta2010jul.Locus2Ec L2E " +
+			"join glamm.GlammEnzyme E on (E.ecNum=L2E.ecNum) " +
+			"join glamm.GlammXref X on (E.reactionGuid=X.fromGuid) " +
+			"left outer join meta2010jul.Synonym Syn on (Syn.locusId=L2E.locusId) " +
+			"join meta2010jul.Locus L on (L2E.locusId=L.locusId) " +
+			"where L.taxonomyId=" + taxonomyId + " and " +
+			"L.priority=1 and " +
+			"X.toXrefId in (" + GlammUtils.joinArray(rxnIds) + ");";
 
 			try {
 
@@ -232,16 +230,16 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 	}
 
 	@Override
-	public List<Gene> getGenesForSynonyms(String taxonomyId,
+	public Set<Gene> getGenesForSynonyms(String taxonomyId,
 			Collection<String> synonyms) {
 		//TODO get genes for synonyms other than VIMSS ids
 		return getGenesForVimssIds(taxonomyId, synonyms);
 	}
-	
-	private List<Gene> processResultSet(ResultSet rs) 
+
+	private Set<Gene> processResultSet(ResultSet rs) 
 	throws SQLException {
-		
-		List<Gene> genes = null;
+
+		Set<Gene> genes = new HashSet<Gene>();
 		Map<String, Gene> locusId2Gene = new HashMap<String, Gene>();
 
 		while(rs.next()) {
@@ -250,9 +248,9 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 			String ecNum 	= rs.getString("ecNum");
 			String synName 	= rs.getString("name");
 			String synType	= rs.getString("type");
-			
+
 			Gene gene = locusId2Gene.get(locusId);
-			
+
 			if(gene == null) {
 				gene = new Gene();
 				//gene.setVimmsId(locusId);
@@ -262,88 +260,85 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 
 			gene.addEcNum(ecNum);
 			gene.addSynonym(new Synonym(synName, synType));
-			
+
 		}
 
-		if(locusId2Gene.values().size() > 0) {
-			genes = new ArrayList<Gene>();
-			genes.addAll(locusId2Gene.values());
-		}
+		genes.addAll(locusId2Gene.values());
 
 		return genes;
 	}
-	
+
 	public Map<String, String> getVimssId2TaxonomyIdMapping(Collection<String> vimssIds) {
 		if(vimssIds == null || vimssIds.isEmpty())
 			return null;
-		
+
 		Map<String, String> mapping = null;
-		
+
 		if(!sm.getServerConfig().hasMetagenomeHost())
 			return mapping;
-		
+
 		String sql = "select L.locusId, L.taxonomyId " +
-				"from meta2010jul.Locus L " +
-				"where L.locusId in ("+ GlammUtils.joinCollection(vimssIds) + ") " +
-				"and L.isActive=1;";
-		
+		"from meta2010jul.Locus L " +
+		"where L.locusId in ("+ GlammUtils.joinCollection(vimssIds) + ") " +
+		"and L.isActive=1;";
+
 		try {
 			Connection connection = GlammDbConnectionPool.getConnection(sm);
 			Statement statement = connection.createStatement();
-			
+
 			ResultSet rs = statement.executeQuery(sql);
-			
+
 			while(rs.next()) {
 				String locusId = rs.getString("locusId");
 				String taxonomyId = rs.getString("taxonomyId");
-				
+
 				if(mapping == null)
 					mapping = new HashMap<String, String>();
-				
+
 				mapping.put(locusId, taxonomyId);
 			}
-			
+
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return mapping;
 	}
-	
+
 	public Set<String> getTaxonomyIdsForVimssIds(Collection<String> vimssIds) {
 		if(vimssIds == null || vimssIds.isEmpty())
 			return null;
-		
+
 		Set<String> taxonomyIds = null;
-		
+
 		if(!sm.getServerConfig().hasMetagenomeHost())
 			return taxonomyIds;
-		
+
 		String sql = "select distinct(L.taxonomyId) " +
-				"from meta2010jul.Locus L " +
-				"where L.locusId in ("+ GlammUtils.joinCollection(vimssIds) + ") " +
-				"and L.isActive=1;";
-		
+		"from meta2010jul.Locus L " +
+		"where L.locusId in ("+ GlammUtils.joinCollection(vimssIds) + ") " +
+		"and L.isActive=1;";
+
 		try {
 			Connection connection = GlammDbConnectionPool.getConnection(sm);
 			Statement statement = connection.createStatement();
-			
+
 			ResultSet rs = statement.executeQuery(sql);
-			
+
 			while(rs.next()) {
 
 				String taxonomyId = rs.getString("taxonomyId");
-				
+
 				if(taxonomyIds == null)
 					taxonomyIds = new HashSet<String>();
-				
+
 				taxonomyIds.add(taxonomyId);
 			}
-			
+
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return taxonomyIds;
 	}
 

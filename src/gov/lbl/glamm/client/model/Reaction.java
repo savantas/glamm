@@ -110,6 +110,7 @@ implements Serializable, RowDependentSelectionCell.HasOptions, Mappable, HasXref
 	private Set<String> 	ecNums;
 	private String definition;
 	private Direction direction;
+	private Set<Gene> genes;
 	private boolean isNative;
 	private Set<Participant>	products;
 	private Set<Participant> 	substrates;
@@ -132,6 +133,7 @@ implements Serializable, RowDependentSelectionCell.HasOptions, Mappable, HasXref
 		direction = Direction.BOTH;
 		isNative = true;
 		ecNums = new HashSet<String>();
+		genes = new HashSet<Gene>();
 		products = new HashSet<Participant>();
 		substrates = new HashSet<Participant>();
 		transgenicCandidates = new ArrayList<Organism>();
@@ -148,6 +150,11 @@ implements Serializable, RowDependentSelectionCell.HasOptions, Mappable, HasXref
 		}
 	}
 
+	public void addGene(final Gene gene) {
+		if(gene != null)
+			genes.add(gene);
+	}
+	
 	//********************************************************************************
 
 	public void addProduct(final Participant rp) {
@@ -241,6 +248,10 @@ implements Serializable, RowDependentSelectionCell.HasOptions, Mappable, HasXref
 
 	public Set<String> getEcNumsForTransgenicCandidate(Organism organism) {
 		return transgenicCandidate2EcNums.get(organism);
+	}
+	
+	public Set<Gene> getGenes() {
+		return genes;
 	}
 
 	//********************************************************************************

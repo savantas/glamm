@@ -52,7 +52,7 @@ public class OrganismSessionDAOImpl implements OrganismDAO {
 				return null;
 			ecNum2Organisms = new HashMap<String, Set<Organism>>();
 			for(Organism organism : sessionOrganisms) {
-				List<Gene> genes = sm.getGenesForOrganism(organism);
+				Set<Gene> genes = sm.getGenesForOrganism(organism);
 				if(genes == null)
 					continue;
 				for(Gene gene : genes) {

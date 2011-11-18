@@ -12,8 +12,8 @@ import gov.lbl.glamm.server.ResponseHandler;
 import gov.lbl.glamm.server.dao.impl.GeneMetaMolDAOImpl;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -84,7 +84,7 @@ public class UploadOrganism implements RequestHandler {
 		
 		// add organism to session
 		sm.addOrganism(organism);
-		sm.addGenesForOrganism(organism, new ArrayList<Gene>(id2Gene.values()));
+		sm.addGenesForOrganism(organism, new HashSet<Gene>(id2Gene.values()));
 		
 		// handle response
 		ResponseHandler.asHtml(response, fuh.getErrorMessages(), HttpServletResponse.SC_OK);

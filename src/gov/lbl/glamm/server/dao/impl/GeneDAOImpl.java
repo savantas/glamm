@@ -6,7 +6,6 @@ import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.GeneDAO;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 public class GeneDAOImpl implements GeneDAO {
@@ -35,7 +34,7 @@ public class GeneDAOImpl implements GeneDAO {
 	}
 	
 	@Override
-	public List<Gene> getGenesForEcNums(String taxonomyId,
+	public Set<Gene> getGenesForEcNums(String taxonomyId,
 			Collection<String> ecNums) {
 		if(sm != null && sm.isSessionOrganism(taxonomyId))
 			return sessionDao.getGenesForEcNums(taxonomyId, ecNums);
@@ -45,7 +44,7 @@ public class GeneDAOImpl implements GeneDAO {
 	}
 	
 	@Override
-	public List<Gene> getGenesForVimssIds(String taxonomyId, Collection<String> vimssIds) {
+	public Set<Gene> getGenesForVimssIds(String taxonomyId, Collection<String> vimssIds) {
 		if(sm != null && sm.isSessionOrganism(taxonomyId))
 			return sessionDao.getGenesForVimssIds(taxonomyId, vimssIds);
 		if(Long.parseLong(taxonomyId) >= Organism.MIN_METAGENOME_TAXID)
@@ -55,7 +54,7 @@ public class GeneDAOImpl implements GeneDAO {
 
 
 	@Override
-	public List<Gene> getGenesForOrganism(String taxonomyId) {
+	public Set<Gene> getGenesForOrganism(String taxonomyId) {
 		if(sm != null && sm.isSessionOrganism(taxonomyId))
 			return sessionDao.getGenesForOrganism(taxonomyId);
 		if(Long.parseLong(taxonomyId) >= Organism.MIN_METAGENOME_TAXID)
@@ -64,7 +63,7 @@ public class GeneDAOImpl implements GeneDAO {
 	}
 
 	@Override
-	public List<Gene> getGenesForRxnIds(String taxonomyId, String[] rxnIds) {
+	public Set<Gene> getGenesForRxnIds(String taxonomyId, String[] rxnIds) {
 		if(sm != null && sm.isSessionOrganism(taxonomyId))
 			return sessionDao.getGenesForRxnIds(taxonomyId, rxnIds);
 		if(Long.parseLong(taxonomyId) >= Organism.MIN_METAGENOME_TAXID)
@@ -73,7 +72,7 @@ public class GeneDAOImpl implements GeneDAO {
 	}
 
 	@Override
-	public List<Gene> getGenesForSynonyms(String taxonomyId,
+	public Set<Gene> getGenesForSynonyms(String taxonomyId,
 			Collection<String> synonyms) {
 		if(sm != null && sm.isSessionOrganism(taxonomyId))
 			return sessionDao.getGenesForSynonyms(taxonomyId, synonyms);

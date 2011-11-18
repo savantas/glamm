@@ -21,7 +21,7 @@ import org.hibernate.annotations.Type;
 @SuppressWarnings("serial")
 @Entity
 @Table(name="AMRxn")
-public class AMRxn implements Serializable {
+public class PersistentAMRxn implements Serializable {
 
 	@Id
 	@GeneratedValue
@@ -30,19 +30,19 @@ public class AMRxn implements Serializable {
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "am_id", nullable = false, unique = false)
-	private AnnotatedMap annotatedMap;
+	private PersistentAnnotatedMap annotatedMap;
 
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
 	@JoinColumn(name = "amRxn_id")
 	@OrderBy("id")
-	private Set<AMRxnElement> elements = new LinkedHashSet<AMRxnElement>();
+	private Set<PersistentAMRxnElement> elements = new LinkedHashSet<PersistentAMRxnElement>();
 
 	@Column(name="reversible", nullable=false)
 	@Type(type="yes_no")
 	private boolean reversible;
 
 	
-	public AMRxn() {}
+	public PersistentAMRxn() {}
 
 	public Long getId() {
 		return id;
@@ -52,24 +52,24 @@ public class AMRxn implements Serializable {
 		this.id = id;
 	}
 
-	public AnnotatedMap getAnnotatedMap() {
+	public PersistentAnnotatedMap getAnnotatedMap() {
 		return annotatedMap;
 	}
 
-	public void setAnnotatedMap(AnnotatedMap annotatedMap) {
+	public void setAnnotatedMap(PersistentAnnotatedMap annotatedMap) {
 		this.annotatedMap = annotatedMap;
 	}
 
-	public void addElement(final AMRxnElement element) {
+	public void addElement(final PersistentAMRxnElement element) {
 		element.setReaction(this);
 		elements.add(element);
 	}
 
-	public Set<AMRxnElement> getElements() {
+	public Set<PersistentAMRxnElement> getElements() {
 		return elements;
 	}
 
-	public void setElements(Set<AMRxnElement> elements) {
+	public void setElements(Set<PersistentAMRxnElement> elements) {
 		if(this.elements != elements) {
 			this.elements.clear();
 		}
@@ -91,7 +91,7 @@ public class AMRxn implements Serializable {
 		StringBuilder builder = new StringBuilder();
 		builder.append("id: ").append(this.getId()).append(" reversible: ").append(this.isReversible());
 		builder.append(" [ ");
-		for(AMRxnElement element : this.getElements())
+		for(PersistentAMRxnElement element : this.getElements())
 			builder.append(element.toString()).append(" ");
 		builder.append(" ]");
 		return builder.toString();
