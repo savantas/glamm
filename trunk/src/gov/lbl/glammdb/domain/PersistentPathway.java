@@ -18,7 +18,7 @@ import javax.persistence.Table;
 @SuppressWarnings("serial")
 @Entity
 @Table(name="Pathway")
-public class Pathway implements Serializable {
+public class PersistentPathway implements Serializable {
 
 	@Id
 	@Column(name="id")
@@ -34,9 +34,9 @@ public class Pathway implements Serializable {
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
     @JoinColumn(name = "pathway_id")
     @OrderBy("id")
-	private Set<PwyElement> elements = new LinkedHashSet<PwyElement>();
+	private Set<PersistentPwyElement> elements = new LinkedHashSet<PersistentPwyElement>();
 	
-	public Pathway() {}
+	public PersistentPathway() {}
 	
 	public Long getId() {
 		return id;
@@ -62,18 +62,18 @@ public class Pathway implements Serializable {
 		this.mapId = xrefId;
 	}
 
-	public void setElements(Set<PwyElement> elements) {
+	public void setElements(Set<PersistentPwyElement> elements) {
 		if(this.elements != elements)
 			this.elements.clear();
 		if(elements != null && !elements.isEmpty())
 			this.elements.addAll(elements);
 	}
 
-	public Set<PwyElement> getElements() {
+	public Set<PersistentPwyElement> getElements() {
 		return elements;
 	}
 	
-	public void addElement(PwyElement element) {
+	public void addElement(PersistentPwyElement element) {
 		element.setPathway(this);
 		elements.add(element);
 	}	

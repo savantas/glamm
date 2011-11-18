@@ -1,7 +1,7 @@
 package gov.lbl.glammdb.kegg.kgml;
 
-import gov.lbl.glammdb.domain.AMRxn;
-import gov.lbl.glammdb.domain.AMRxnElement;
+import gov.lbl.glammdb.domain.PersistentAMRxn;
+import gov.lbl.glammdb.domain.PersistentAMRxnElement;
 
 import java.util.List;
 
@@ -53,8 +53,8 @@ public class KgmlReactions {
 		return kgmlReactions;
 	}
 	
-	private AMRxn processReactionNode(final Node reactionNode) {
-		AMRxn amRxn = new AMRxn();
+	private PersistentAMRxn processReactionNode(final Node reactionNode) {
+		PersistentAMRxn amRxn = new PersistentAMRxn();
 		Element element = (Element) reactionNode;
 		
 		// set the reaction type
@@ -64,14 +64,14 @@ public class KgmlReactions {
 		// add the reaction ids
 		List<String> rxnIds = KgmlDocument.extractIdsFromAttributeValue(((Element) reactionNode).getAttribute(Attribute.NAME.toString()));
 		for(String rxnId : rxnIds)
-			amRxn.addElement(new AMRxnElement(rxnId, AMRxnElement.Type.REACTION));
+			amRxn.addElement(new PersistentAMRxnElement(rxnId, PersistentAMRxnElement.Type.REACTION));
 		
 		// add the substrates
 		List<Node> substrateNodes = KgmlDocument.getElementsWithTag(reactionNode, Tag.SUBSTRATE.toString());
 		for(Node node : substrateNodes) {
 			List<String> substrateIds = KgmlDocument.extractIdsFromAttributeValue(((Element) node).getAttribute(Attribute.NAME.toString()));
 			for(String id : substrateIds)
-				amRxn.addElement(new AMRxnElement(id, AMRxnElement.Type.SUBSTRATE));
+				amRxn.addElement(new PersistentAMRxnElement(id, PersistentAMRxnElement.Type.SUBSTRATE));
 		}
 		
 		// add the products
@@ -79,7 +79,7 @@ public class KgmlReactions {
 		for(Node node : productNodes) {
 			List<String> productIds = KgmlDocument.extractIdsFromAttributeValue(((Element) node).getAttribute(Attribute.NAME.toString()));
 			for(String id : productIds)
-				amRxn.addElement(new AMRxnElement(id, AMRxnElement.Type.PRODUCT));
+				amRxn.addElement(new PersistentAMRxnElement(id, PersistentAMRxnElement.Type.PRODUCT));
 		}
 		
 		return amRxn;
@@ -88,7 +88,7 @@ public class KgmlReactions {
 	public void process() {
 		List<Node> reactionNodes =  KgmlDocument.getElementsWithTag(document.getReactionsNode(), Tag.REACTION.toString());
 		for(Node node : reactionNodes) {
-			AMRxn rxn = processReactionNode(node);
+			PersistentAMRxn rxn = processReactionNode(node);
 			document.getAnnotatedMap().addRxnToNetwork(rxn);
 		}
 	}

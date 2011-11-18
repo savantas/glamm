@@ -14,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -264,7 +265,10 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 	@Override
 	public Map<String, Set<Measurement>> getMeasurements(String experimentId, String sampleId) {
 
-		Map<String, Set<Measurement>> id2Measurement = null;
+		Map<String, Set<Measurement>> id2Measurement = new HashMap<String, Set<Measurement>>();
+
+		if(experimentId == null || sampleId == null)
+			return id2Measurement;
 
 		String sql = "select meanLogRNorm, zScore, locusId from microarray.MeanLogRatio where expId=? and setId=?;";
 
@@ -284,8 +288,52 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 				float confidence 	= rs.getFloat("zScore");
 				String targetId		= rs.getString("locusId");
 
-				if(id2Measurement == null)
-					id2Measurement = new HashMap<String, Set<Measurement>>();
+				Set<Measurement> measurements = id2Measurement.get(targetId);
+
+				if(measurements == null) {
+					measurements = new HashSet<Measurement>();
+					id2Measurement.put(targetId, measurements);
+				}
+
+				measurements.add(new Measurement(experimentId, sampleId, value, confidence, targetId));
+			}
+
+			rs.close();
+			connection.close();
+
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+
+		return id2Measurement;
+	}
+
+
+	@Override
+	public Map<String, Set<Measurement>> getMeasurementsForIds(String experimentId, String sampleId, Collection<String> ids) {
+
+		Map<String, Set<Measurement>> id2Measurement = new HashMap<String, Set<Measurement>>();
+
+		if(experimentId == null || sampleId == null || ids == null || ids.isEmpty())
+			return id2Measurement;
+
+		String sql = "select meanLogRNorm, zScore, locusId from microarray.MeanLogRatio where expId=? and setId=? and locusId in (" + GlammUtils.joinCollection(ids) + ");";
+
+		try {
+
+			Connection connection = GlammDbConnectionPool.getConnection(sm);
+			PreparedStatement ps = connection.prepareStatement(sql);
+
+			ps.setString(1, experimentId);
+			ps.setString(2, sampleId);
+
+			ResultSet rs = ps.executeQuery();
+
+			while(rs.next()) {
+
+				float value			= rs.getFloat("meanLogRNorm");
+				float confidence 	= rs.getFloat("zScore");
+				String targetId		= rs.getString("locusId");
 
 				Set<Measurement> measurements = id2Measurement.get(targetId);
 
@@ -308,6 +356,8 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 	}
 
 	//********************************************************************************
+
+
 
 	@Override
 	public String getTaxonomyIdForExperimentId(String experimentId) {

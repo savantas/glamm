@@ -1,6 +1,8 @@
 package gov.lbl.glammdb.domain;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,58 +17,48 @@ import javax.persistence.Table;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name="AMRxnElement")
-public class AMRxnElement implements Serializable {
-
+@Table(name="PwyElement")
+public class PersistentPwyElement implements Serializable {
+	
 	public enum Type {
-		PRODUCT("product"),
-		REACTION("reaction"),
-		SUBSTRATE("substrate");
-
-		private String value;
-
-		private Type(final String value) {
-			this.value = value;
+		CPD(new String[]{"cpd", "gl"}),
+		EC(new String[]{"ec"}),
+		MAP(new String[]{"map"}),
+		RXN(new String[]{"rn"});
+		
+		private Set<String> values;
+		
+		private Type(final String[] values) {
+			this.values = new HashSet<String>();
+			for(String value : values)
+				this.values.add(value);
 		}
-
+		
 		public static Type fromValue(final String value) {
 			if(value != null) {
 				for(Type type : values())
-					if(type.value.equals(value))
+					if(type.values.contains(value))
 						return type;
 			}
 			throw new IllegalArgumentException("Invalid Type: " + value);
 		}
-
-		@Override
-		public String toString() {
-			return value;
-		}
-	
 	}
-
+	
 	@Id
-	@GeneratedValue
 	@Column(name="id")
+	@GeneratedValue
 	private Long id;
-
+	
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "amRxn_id", nullable = false, unique = false)
-	private AMRxn reaction;
-
+	@JoinColumn(name = "pathway_id", nullable = false, unique = false)
+	private PersistentPathway pathway;
+	
 	@Column(name="xrefId", nullable=false)
 	private String xrefId;
-
+	
 	@Enumerated(EnumType.STRING)
 	@Column(name="type", nullable=false)
 	private Type type;
-
-	public AMRxnElement() {}
-
-	public AMRxnElement(final String xrefId, final Type type) {
-		this.xrefId = xrefId;
-		this.type = type;
-	}
 
 	public Long getId() {
 		return id;
@@ -75,13 +67,13 @@ public class AMRxnElement implements Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
-
-	public void setReaction(AMRxn reaction) {
-		this.reaction = reaction;
+	
+	public PersistentPathway getPathway() {
+		return pathway;
 	}
 
-	public AMRxn getReaction() {
-		return reaction;
+	public void setPathway(PersistentPathway pathway) {
+		this.pathway = pathway;
 	}
 
 	public String getXrefId() {
@@ -98,10 +90,5 @@ public class AMRxnElement implements Serializable {
 
 	public void setType(Type type) {
 		this.type = type;
-	}
-	
-	@Override
-	public String toString() {
-		return this.getType() + " " + this.getXrefId();
-	}
+	}	
 }

@@ -9,8 +9,8 @@ import gov.lbl.glamm.server.GlammDbConnectionPool;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.ReactionDAO;
 import gov.lbl.glamm.server.util.GlammUtils;
-import gov.lbl.glammdb.domain.Pathway;
-import gov.lbl.glammdb.domain.PwyElement;
+import gov.lbl.glammdb.domain.PersistentPathway;
+import gov.lbl.glammdb.domain.PersistentPwyElement;
 import gov.lbl.glammdb.util.HibernateUtil;
 
 import java.sql.Connection;
@@ -106,6 +106,9 @@ public class ReactionGlammDAOImpl implements ReactionDAO {
 						rxn.addProduct(p);
 				}
 			}
+			
+			rs.close();
+			connection.close();
 			
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -214,7 +217,7 @@ public class ReactionGlammDAOImpl implements ReactionDAO {
 
 		Session session = HibernateUtil.getSessionFactory(sm).getCurrentSession();
 		session.beginTransaction();
-		Pathway result = (Pathway) session.createCriteria(Pathway.class)
+		PersistentPathway result = (PersistentPathway) session.createCriteria(PersistentPathway.class)
 		.add(Restrictions.eq("mapId", mapId))
 		.uniqueResult();
 		session.getTransaction().commit();
@@ -223,8 +226,8 @@ public class ReactionGlammDAOImpl implements ReactionDAO {
 			return new HashSet<Reaction>();
 
 		Set<String> rxnIds = new HashSet<String>();
-		for(PwyElement element : result.getElements()) {
-			if(element.getType() == PwyElement.Type.RXN)
+		for(PersistentPwyElement element : result.getElements()) {
+			if(element.getType() == PersistentPwyElement.Type.RXN)
 				rxnIds.add(element.getXrefId());
 		}
 

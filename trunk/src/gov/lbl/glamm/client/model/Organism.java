@@ -29,7 +29,7 @@ public class Organism implements Serializable {
 	private String name;
 	private boolean isSessionOrganism;
 	
-	private Set<String> molTaxonomyIds;
+	private transient Set<String> molTaxonomyIds;
 	
 	//********************************************************************************
 
@@ -82,7 +82,13 @@ public class Organism implements Serializable {
 	}
 	
 	//********************************************************************************
+
+	public final boolean isMetagenome() {
+		return Long.parseLong(taxonomyId) >= MIN_METAGENOME_TAXID;
+	}
 	
+	//********************************************************************************
+
 	public final boolean isSessionOrganism() {
 		return isSessionOrganism;
 	}

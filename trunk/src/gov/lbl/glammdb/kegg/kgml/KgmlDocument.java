@@ -1,6 +1,6 @@
 package gov.lbl.glammdb.kegg.kgml;
 
-import gov.lbl.glammdb.domain.AnnotatedMap;
+import gov.lbl.glammdb.domain.PersistentAnnotatedMap;
 import gov.lbl.glammdb.util.HibernateUtil;
 
 import java.io.File;
@@ -53,7 +53,7 @@ public final class KgmlDocument {
 	private Node svgNode;
 	private Node reactionsNode;
 	
-	private AnnotatedMap annotatedMap;
+	private PersistentAnnotatedMap annotatedMap;
 	
 	@SuppressWarnings("unused")
 	private String kgmlPath;
@@ -64,7 +64,7 @@ public final class KgmlDocument {
 		this.svgPath = svgPath;
 		this.document = document;
 		
-		this.annotatedMap = new AnnotatedMap();
+		this.annotatedMap = new PersistentAnnotatedMap();
 		annotatedMap.setMapId(mapId);
 		annotatedMap.setTitle(mapTitle);
 		annotatedMap.setIcon(mapId + ".png");
@@ -111,7 +111,7 @@ public final class KgmlDocument {
 		return normalized.substring(0, normalized.length() - 1);
 	}
 	
-	public AnnotatedMap getAnnotatedMap() {
+	public PersistentAnnotatedMap getAnnotatedMap() {
 		return annotatedMap;
 	}
 	

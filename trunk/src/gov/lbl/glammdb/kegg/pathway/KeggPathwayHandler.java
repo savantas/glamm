@@ -1,7 +1,7 @@
 package gov.lbl.glammdb.kegg.pathway;
 
-import gov.lbl.glammdb.domain.Pathway;
-import gov.lbl.glammdb.domain.PwyElement;
+import gov.lbl.glammdb.domain.PersistentPathway;
+import gov.lbl.glammdb.domain.PersistentPwyElement;
 import gov.lbl.glammdb.util.HibernateUtil;
 
 import java.io.File;
@@ -12,14 +12,14 @@ import java.util.Scanner;
 import org.hibernate.Session;
 
 public class KeggPathwayHandler {
-	private Map<String, Pathway> id2Maps;
+	private Map<String, PersistentPathway> id2Maps;
 	private File mapTitleFile;
 	private File mapListFile;
 
 	private KeggPathwayHandler(final File mapTitleFile, final File mapListFile) {
 		this.mapTitleFile = mapTitleFile;
 		this.mapListFile = mapListFile;
-		id2Maps = new LinkedHashMap<String, Pathway>();
+		id2Maps = new LinkedHashMap<String, PersistentPathway>();
 	}
 
 	public static KeggPathwayHandler create(final String mapTitlePath, final String mapListPath) {
@@ -50,7 +50,7 @@ public class KeggPathwayHandler {
 				String title = tokens[1];
 				
 				// map ids are unique in this file
-				Pathway map = new Pathway();
+				PersistentPathway map = new PersistentPathway();
 				
 				
 				map.setXrefId(xrefId);
@@ -75,7 +75,7 @@ public class KeggPathwayHandler {
 					continue;
 				
 				String mapXrefId = tokens[0].split("\\:")[1];
-				Pathway pm = id2Maps.get(mapXrefId);
+				PersistentPathway pm = id2Maps.get(mapXrefId);
 				
 				if(pm == null)
 					continue;
@@ -84,8 +84,8 @@ public class KeggPathwayHandler {
 				String elementXrefId = elementTokens[1];
 				
 				try {
-					PwyElement.Type elementType = PwyElement.Type.fromValue(elementTokens[0]);
-					PwyElement element = new PwyElement();
+					PersistentPwyElement.Type elementType = PersistentPwyElement.Type.fromValue(elementTokens[0]);
+					PersistentPwyElement element = new PersistentPwyElement();
 					element.setType(elementType);
 					element.setXrefId(elementXrefId);
 					
@@ -100,7 +100,7 @@ public class KeggPathwayHandler {
 		}
 	}
 	
-	private Long storeMap(final Pathway pm) {
+	private Long storeMap(final PersistentPathway pm) {
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 
@@ -111,7 +111,7 @@ public class KeggPathwayHandler {
 	}
 	
 	public void store() {
-		for(Pathway pm : this.id2Maps.values()) {
+		for(PersistentPathway pm : this.id2Maps.values()) {
 			storeMap(pm);
 		}
 	}

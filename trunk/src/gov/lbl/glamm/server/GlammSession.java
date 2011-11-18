@@ -2,13 +2,14 @@ package gov.lbl.glamm.server;
 
 import gov.lbl.glamm.client.model.Experiment;
 import gov.lbl.glamm.client.model.Gene;
-import gov.lbl.glamm.client.model.User;
 import gov.lbl.glamm.client.model.Measurement;
 import gov.lbl.glamm.client.model.Organism;
+import gov.lbl.glamm.client.model.User;
 import gov.lbl.glamm.server.retrosynthesis.Route;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -35,7 +36,7 @@ public class GlammSession {
 	private Map<String, List<Route>>		routes;
 	private ServerConfig					serverConfig;
 	private Map<String, List<Experiment>> 	taxonomyId2Experiments;
-	private Map<String, List<Gene>>			taxonomyId2Genes;
+	private Map<String, Set<Gene>>			taxonomyId2Genes;
 	private Map<String, Organism> 			taxonomyId2Organism;
 	private User						user;
 	
@@ -64,7 +65,7 @@ public class GlammSession {
 		organismsWithUserData		= new ArrayList<Organism>();
 		routes						= new HashMap<String, List<Route>>();
 		taxonomyId2Experiments		= new HashMap<String, List<Experiment>>();
-		taxonomyId2Genes 			= new HashMap<String, List<Gene>>();
+		taxonomyId2Genes 			= new HashMap<String, Set<Gene>>();
 		taxonomyId2Organism			= new HashMap<String, Organism>();
 		user						= User.guestUser();
 	}
@@ -89,7 +90,7 @@ public class GlammSession {
 
 	//********************************************************************************
 
-	public void addGenesForOrganism(Organism organism, List<Gene> genes) {
+	public void addGenesForOrganism(Organism organism, Set<Gene> genes) {
 		if(organism != null && genes != null) {
 			String taxonomyId = organism.getTaxonomyId();
 			addGenesForTaxonomyId(taxonomyId, genes);
@@ -98,7 +99,7 @@ public class GlammSession {
 
 	//********************************************************************************
 
-	public void addGenesForTaxonomyId(String taxonomyId, List<Gene> genes) {
+	public void addGenesForTaxonomyId(String taxonomyId, Set<Gene> genes) {
 		if(taxonomyId != null && genes != null) 
 			taxonomyId2Genes.put(taxonomyId, genes);
 	}
@@ -160,20 +161,20 @@ public class GlammSession {
 	//********************************************************************************
 
 
-	public List<Gene> getGenesForOrganism(Organism organism) {
+	public Set<Gene> getGenesForOrganism(Organism organism) {
 		if(organism != null) {
 			String taxonomyId = organism.getTaxonomyId();
 			return getGenesForTaxonomyId(taxonomyId);
 		}
-		return null;
+		return new HashSet<Gene>();
 	}
 
 	//********************************************************************************
 
-	public List<Gene> getGenesForTaxonomyId(String taxonomyId) {
+	public Set<Gene> getGenesForTaxonomyId(String taxonomyId) {
 		if(taxonomyId != null)
 			return taxonomyId2Genes.get(taxonomyId);
-		return null;
+		return new HashSet<Gene>();
 	}
 	
 	//********************************************************************************

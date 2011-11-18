@@ -10,7 +10,6 @@ import gov.lbl.glamm.server.dao.impl.GeneDAOImpl;
 import gov.lbl.glamm.shared.RequestParameters;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,7 +38,7 @@ public class DownloadOrganism implements RequestHandler {
 
 		GeneDAO geneDao = new GeneDAOImpl(GlammSession.getGlammSession(request));
 
-		List<Gene> genes = geneDao.getGenesForOrganism(taxonomyId);
+		Set<Gene> genes = geneDao.getGenesForOrganism(taxonomyId);
 
 		if(genes != null) {
 			for(Gene gene : genes) {

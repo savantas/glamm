@@ -11,6 +11,8 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.google.gwt.view.client.ProvidesKey;
+
 /**
  * Representation of a Gene
  * @author jtbates
@@ -31,6 +33,12 @@ implements Serializable, HasSynonyms, HasMeasurements, Mappable {
 	private Set<String> metaMolTaxonomyIds;
 	private Set<Measurement> measurements;
 	private Set<Synonym> synonyms;
+	
+	public static final transient ProvidesKey<Gene> KEY_PROVIDER = new ProvidesKey<Gene>() {
+		public Object getKey(Gene item) {
+			return item == null ? null : item.hashCode();
+		}
+	};
 
 	public Gene() {
 		ecNums = new HashSet<String>();
@@ -86,6 +94,22 @@ implements Serializable, HasSynonyms, HasMeasurements, Mappable {
 	public Set<Synonym> getSynonyms() {
 		return synonyms;
 	}
+	
+	public String getSynonymWithType(final String type) {
+		for(Synonym synonym : getSynonyms()) {
+			if(synonym.getType().equals(type))
+				return synonym.getName();
+		}
+		return null;
+	}
+	
+	public String getVimssId() {
+		for(Synonym synonym : getSynonyms()) {
+			if(synonym.getType().equals(SYNONYM_TYPE_VIMSS))
+				return synonym.getName();
+		}
+		return null;
+	}
 
 	@Override
 	public void setSynonyms(Set<Synonym> synonyms) {
@@ -116,6 +140,61 @@ implements Serializable, HasSynonyms, HasMeasurements, Mappable {
 	@Override
 	public Type getType() {
 		return TYPE;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((ecNums == null) ? 0 : ecNums.hashCode());
+		result = prime * result
+				+ ((measurements == null) ? 0 : measurements.hashCode());
+		result = prime
+				* result
+				+ ((metaMolTaxonomyIds == null) ? 0 : metaMolTaxonomyIds
+						.hashCode());
+		result = prime * result
+				+ ((molTaxonomyIds == null) ? 0 : molTaxonomyIds.hashCode());
+		result = prime * result
+				+ ((synonyms == null) ? 0 : synonyms.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Gene other = (Gene) obj;
+		if (ecNums == null) {
+			if (other.ecNums != null)
+				return false;
+		} else if (!ecNums.equals(other.ecNums))
+			return false;
+		if (measurements == null) {
+			if (other.measurements != null)
+				return false;
+		} else if (!measurements.equals(other.measurements))
+			return false;
+		if (metaMolTaxonomyIds == null) {
+			if (other.metaMolTaxonomyIds != null)
+				return false;
+		} else if (!metaMolTaxonomyIds.equals(other.metaMolTaxonomyIds))
+			return false;
+		if (molTaxonomyIds == null) {
+			if (other.molTaxonomyIds != null)
+				return false;
+		} else if (!molTaxonomyIds.equals(other.molTaxonomyIds))
+			return false;
+		if (synonyms == null) {
+			if (other.synonyms != null)
+				return false;
+		} else if (!synonyms.equals(other.synonyms))
+			return false;
+		return true;
 	}
 
 }

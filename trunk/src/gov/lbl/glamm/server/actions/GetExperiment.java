@@ -10,15 +10,14 @@ import gov.lbl.glamm.server.dao.GeneDAO;
 import gov.lbl.glamm.server.dao.impl.ExperimentDAOImpl;
 import gov.lbl.glamm.server.dao.impl.GeneDAOImpl;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class GetExperiment  {
 
-	public static List<? extends HasMeasurements> getMeasurementsForExperiment(GlammSession sm, String experimentId, String sampleId) {
+	public static Set<? extends HasMeasurements> getMeasurementsForExperiment(GlammSession sm, String experimentId, String sampleId) {
 
-		List<? extends HasMeasurements> primitives = null;
+		Set<? extends HasMeasurements> primitives = null;
 
 		if(experimentId == null || experimentId.isEmpty() ||
 				sampleId == null || sampleId.isEmpty()) 

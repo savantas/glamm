@@ -38,6 +38,7 @@ import gov.lbl.glamm.client.presenter.OrganismPresenter;
 import gov.lbl.glamm.client.presenter.OrganismUploadPresenter;
 import gov.lbl.glamm.client.presenter.PanZoomControlPresenter;
 import gov.lbl.glamm.client.presenter.RetrosynthesisPresenter;
+import gov.lbl.glamm.client.presenter.RxnPopupPresenter;
 import gov.lbl.glamm.client.rpc.GlammService;
 import gov.lbl.glamm.client.rpc.GlammServiceAsync;
 import gov.lbl.glamm.client.util.Interpolator;
@@ -56,6 +57,7 @@ import gov.lbl.glamm.client.view.OrganismUploadView;
 import gov.lbl.glamm.client.view.OrganismView;
 import gov.lbl.glamm.client.view.PanZoomControlView;
 import gov.lbl.glamm.client.view.RetrosynthesisView;
+import gov.lbl.glamm.client.view.RxnPopupView;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -111,8 +113,8 @@ public class AppController {
 	private LoginPresenter loginPresenter;
 	private LoginView loginView;
 
-	private MapElementPresenter rxnElementPresenter;
-	private MapElementView rxnElementView;
+	private RxnPopupPresenter rxnElementPresenter;
+	private RxnPopupView rxnElementView;
 
 	private MapElementPresenter mapElementPresenter;
 	private MapElementView mapElementView;
@@ -175,8 +177,8 @@ public class AppController {
 		mapElementView = new MapElementView();
 		mapElementPresenter = new MapElementPresenter(rpc, mapElementView);
 
-		rxnElementView = new MapElementView();
-		rxnElementPresenter = new MapElementPresenter(rpc, rxnElementView);
+		rxnElementView = new RxnPopupView();
+		rxnElementPresenter = new RxnPopupPresenter(rpc, rxnElementView, eventBus);
 
 		mapView = new AnnotatedMapView();
 		mapPresenter = new AnnotatedMapPresenter(rpc, mapView, eventBus);
@@ -418,7 +420,7 @@ public class AppController {
 					final MapElementClickEvent event) {
 				rxnElementPresenter.killPopup();
 				if(event.getElementClass().equals(AnnotatedMapData.ElementClass.RXN))
-					rxnElementPresenter.showPopup(event.getElementClass(), event.getIds(), 
+					rxnElementPresenter.showPopup(event.getIds(), 
 							event.getClientX(), event.getClientY());
 			}
 		});
