@@ -3,7 +3,7 @@ package gov.lbl.glamm.client.model;
 
 import gov.lbl.glamm.client.model.interfaces.HasMeasurements;
 import gov.lbl.glamm.client.model.interfaces.HasSynonyms;
-import gov.lbl.glamm.client.model.interfaces.Mappable;
+import gov.lbl.glamm.client.model.interfaces.HasType;
 import gov.lbl.glamm.client.model.util.Synonym;
 import gov.lbl.glamm.client.model.util.Type;
 
@@ -20,7 +20,7 @@ import com.google.gwt.view.client.ProvidesKey;
  */
 @SuppressWarnings("serial")
 public class Gene
-implements Serializable, HasSynonyms, HasMeasurements, Mappable {
+implements Serializable, HasSynonyms, HasMeasurements, HasType {
 
 	public static transient final Type TYPE = new Type();
 	public static transient final String SYNONYM_TYPE_NAME		= "0";

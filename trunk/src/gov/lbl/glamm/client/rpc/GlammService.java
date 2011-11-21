@@ -27,7 +27,7 @@ public interface GlammService extends RemoteService {
 	public List<Sample.DataType> getAvailableSampleTypes();
 	public List<Pathway> getDirections(String taxonomyId, Compound cpdSrc, Compound cpdDst, String mapTitle, String algorithm);
 	public String getIsolateHost();
-	public Set<? extends HasMeasurements> getSample(String experimentId, String sampleId);
+	public Set<? extends HasMeasurements> getSample(final Sample sample);
 	public String getMetagenomeHost();
 	public Set<Reaction> getReactions(final Set<String> ids, final Organism organism, final Sample sample);
 	public Set<Reaction> getRxnsForOrganism(String taxonomyId);

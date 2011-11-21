@@ -243,17 +243,6 @@ public class ReactionPresenter {
 
 			StringBuilder builder = new StringBuilder();
 			for(String ecNum : ecNums) {
-				Set<Gene> test = ecNum2Genes.get(ecNum);
-				if(test != null) {
-					Set<String> vimssIds = new HashSet<String>();
-					String testOut = ecNum + " " + test.size() + ": ";
-					for(Gene gene : test) {
-						vimssIds.add(gene.getVimssId());
-						testOut += gene.getVimssId() + " ";
-					}
-					testOut = " " + vimssIds.size();
-					testOut = "";
-				}
 				int numGenes = ecNum2Genes.get(ecNum) != null ? ecNum2Genes.get(ecNum).size() : 0;
 				builder.append(genEcNumLink(ecNum, numGenes));
 				if(organism != null && !organism.isGlobalMap()) {

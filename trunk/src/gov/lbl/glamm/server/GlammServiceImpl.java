@@ -16,7 +16,7 @@ import gov.lbl.glamm.server.actions.GenCpdPopup;
 import gov.lbl.glamm.server.actions.GenPwyPopup;
 import gov.lbl.glamm.server.actions.GetAnnotatedMapDescriptors;
 import gov.lbl.glamm.server.actions.GetAvailableExperimentTypes;
-import gov.lbl.glamm.server.actions.GetExperiment;
+import gov.lbl.glamm.server.actions.GetSample;
 import gov.lbl.glamm.server.actions.GetReactions;
 import gov.lbl.glamm.server.actions.GetRxnsForOrganism;
 import gov.lbl.glamm.server.actions.PopulateCompoundSearch;
@@ -109,8 +109,8 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	}
 	
 	@Override
-	public Set<? extends HasMeasurements> getSample(String experimentId, String sampleId) {
-		return GetExperiment.getMeasurementsForExperiment(getGlammSession(), experimentId, sampleId);
+	public Set<? extends HasMeasurements> getSample(final Sample sample) {
+		return GetSample.getMeasurementsForSample(getGlammSession(), sample);
 	}
 	
 	@Override

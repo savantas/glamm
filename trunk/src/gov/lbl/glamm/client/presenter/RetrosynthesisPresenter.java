@@ -12,7 +12,7 @@ import gov.lbl.glamm.client.model.Gene;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Pathway;
 import gov.lbl.glamm.client.model.Reaction;
-import gov.lbl.glamm.client.model.interfaces.Mappable;
+import gov.lbl.glamm.client.model.interfaces.HasType;
 import gov.lbl.glamm.client.model.util.Synonym;
 import gov.lbl.glamm.client.model.util.Xref;
 import gov.lbl.glamm.client.rpc.GlammServiceAsync;
@@ -167,9 +167,9 @@ public class RetrosynthesisPresenter {
 	private Organism organism = null;
 
 	// mapping between ids in the suggest boxes and their respective primitives
-	private Map<String, Set<Mappable>> cpdHash;
-	private Map<String, Set<Mappable>> rxnHash;
-	private Map<String, Set<Mappable>> locHash;
+	private Map<String, Set<HasType>> cpdHash;
+	private Map<String, Set<HasType>> rxnHash;
+	private Map<String, Set<HasType>> locHash;
 
 	private Compound cpdSrc = null;
 	private Compound cpdDst = null;
@@ -191,9 +191,9 @@ public class RetrosynthesisPresenter {
 		this.view = view;
 		this.eventBus = eventBus;
 
-		cpdHash = new HashMap<String, Set<Mappable>>();
-		rxnHash = new HashMap<String, Set<Mappable>>();
-		locHash = new HashMap<String, Set<Mappable>>();
+		cpdHash = new HashMap<String, Set<HasType>>();
+		rxnHash = new HashMap<String, Set<HasType>>();
+		locHash = new HashMap<String, Set<HasType>>();
 
 		routeDataProvider = new ListDataProvider<Reaction>(Reaction.KEY_PROVIDER);
 
@@ -207,10 +207,10 @@ public class RetrosynthesisPresenter {
 
 	}
 
-	private void addToHash(String key, Mappable primitive, Map<String, Set<Mappable>> target) {
-		Set<Mappable> primitives = target.get(key);
+	private void addToHash(String key, HasType primitive, Map<String, Set<HasType>> target) {
+		Set<HasType> primitives = target.get(key);
 		if(primitives == null) {
-			primitives = new HashSet<Mappable>();
+			primitives = new HashSet<HasType>();
 			target.put(key, primitives);
 		}
 		primitives.add(primitive);
@@ -221,10 +221,10 @@ public class RetrosynthesisPresenter {
 		view.getCpdDstSuggestBox().addSelectionHandler(new SelectionHandler<Suggestion>() {
 			@Override
 			public void onSelection(SelectionEvent<Suggestion> event) {
-				Set<Mappable> primitives = getPrimitivesForId(event.getSelectedItem().getReplacementString());
+				Set<HasType> primitives = getPrimitivesForId(event.getSelectedItem().getReplacementString());
 				if(primitives.size() > 1) {
 					Set<Compound> compounds = new HashSet<Compound>();
-					for(Mappable primitive : primitives) 
+					for(HasType primitive : primitives) 
 						compounds.add((Compound) primitive);
 					eventBus.fireEvent(new CpdDstPickedEvent(compounds));
 				}
@@ -236,10 +236,10 @@ public class RetrosynthesisPresenter {
 		view.getCpdSrcSuggestBox().addSelectionHandler(new SelectionHandler<Suggestion>() {
 			@Override
 			public void onSelection(SelectionEvent<Suggestion> event) {
-				Set<Mappable> primitives = getPrimitivesForId(event.getSelectedItem().getReplacementString());
+				Set<HasType> primitives = getPrimitivesForId(event.getSelectedItem().getReplacementString());
 				if(primitives.size() > 1) {
 					Set<Compound> compounds = new HashSet<Compound>();
-					for(Mappable primitive : primitives) 
+					for(HasType primitive : primitives) 
 						compounds.add((Compound) primitive);
 					eventBus.fireEvent(new CpdSrcPickedEvent(compounds));
 				}
@@ -337,7 +337,7 @@ public class RetrosynthesisPresenter {
 		view.getSearchSuggestBox().addSelectionHandler(new SelectionHandler<Suggestion>() {
 			@Override
 			public void onSelection(SelectionEvent<Suggestion> event) {
-				Set<Mappable> primitives = getPrimitivesForId(event.getSelectedItem().getReplacementString());
+				Set<HasType> primitives = getPrimitivesForId(event.getSelectedItem().getReplacementString());
 				eventBus.fireEvent(new SearchTargetEvent(primitives));
 			}
 		});
@@ -407,9 +407,9 @@ public class RetrosynthesisPresenter {
 		return html;
 	}
 
-	private Set<Mappable> getPrimitivesForId(String id) {
+	private Set<HasType> getPrimitivesForId(String id) {
 
-		Set<Mappable> primitives = cpdHash.get(id);
+		Set<HasType> primitives = cpdHash.get(id);
 		if(primitives != null)
 			return primitives;
 

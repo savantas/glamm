@@ -1,8 +1,9 @@
 package gov.lbl.glamm.client.model;
 
 
+import gov.lbl.glamm.client.model.interfaces.HasMeasurements;
+import gov.lbl.glamm.client.model.interfaces.HasType;
 import gov.lbl.glamm.client.model.interfaces.HasXrefs;
-import gov.lbl.glamm.client.model.interfaces.Mappable;
 import gov.lbl.glamm.client.model.util.Type;
 import gov.lbl.glamm.client.model.util.Xref;
 import gov.lbl.glamm.client.model.util.XrefSet;
@@ -23,7 +24,7 @@ import com.google.gwt.view.client.ProvidesKey;
 
 @SuppressWarnings("serial")
 public class Reaction
-implements Serializable, RowDependentSelectionCell.HasOptions, Mappable, HasXrefs {
+implements Serializable, RowDependentSelectionCell.HasOptions, HasMeasurements, HasType, HasXrefs {
 	
 	public enum Direction {
 		BOTH("both"),
@@ -404,6 +405,24 @@ implements Serializable, RowDependentSelectionCell.HasOptions, Mappable, HasXref
 	@Override
 	public Xref getXrefForDbNames(Collection<String> dbNames) {
 		return xrefs.getXrefForDbNames(dbNames);
+	}
+
+	@Override
+	public void addMeasurement(Measurement measurement) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Set<Measurement> getMeasurements() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setMeasurements(Set<Measurement> measurements) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	//********************************************************************************

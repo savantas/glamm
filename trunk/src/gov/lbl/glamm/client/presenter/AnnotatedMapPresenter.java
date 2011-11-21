@@ -16,7 +16,6 @@ import gov.lbl.glamm.client.model.Reaction;
 import gov.lbl.glamm.client.model.Sample;
 import gov.lbl.glamm.client.model.interfaces.HasMeasurements;
 import gov.lbl.glamm.client.model.interfaces.HasType;
-import gov.lbl.glamm.client.model.interfaces.Mappable;
 import gov.lbl.glamm.client.model.util.Xref;
 import gov.lbl.glamm.client.rpc.GlammServiceAsync;
 import gov.lbl.glamm.client.util.Interpolator;
@@ -466,33 +465,33 @@ public class AnnotatedMapPresenter {
 		}
 	}
 
-	private void overlayDataForGene(final Gene gene, final Interpolator interpolator) {
-		Set<Measurement> measurements = gene.getMeasurements();
-		Set<String> ecNums = gene.getEcNums();
-
-		if(measurements == null || ecNums == null)
-			return;
-
-		float value = 0;
-		for(Measurement measurement : measurements)
-			value += measurement.getValue();
-		value /= (float) (measurements.size());
-
-		String cssColor = interpolator.calcCssColor(value);
-
-		for(String ecNum : ecNums) {
-			Set<OMSVGElement> elements = mapData.getSvgElementsForId(ecNum);
-			if(elements == null)
-				continue;
-			for(OMSVGElement element : elements) {
-				if(element.hasAttribute(AnnotatedMapData.ATTRIBUTE_ABSENT) && 
-						element.getAttribute(AnnotatedMapData.ATTRIBUTE_ABSENT).equals("true"))
-					continue;
-				element.setAttribute(AnnotatedMapData.ATTRIBUTE_HAS_DATA, "true");
-				element.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, cssColor);
-			}
-		}
-	}
+	//	private void overlayDataForGene(final Gene gene, final Interpolator interpolator) {
+	//		Set<Measurement> measurements = gene.getMeasurements();
+	//		Set<String> ecNums = gene.getEcNums();
+	//
+	//		if(measurements == null || ecNums == null)
+	//			return;
+	//
+	//		float value = 0;
+	//		for(Measurement measurement : measurements)
+	//			value += measurement.getValue();
+	//		value /= (float) (measurements.size());
+	//
+	//		String cssColor = interpolator.calcCssColor(value);
+	//
+	//		for(String ecNum : ecNums) {
+	//			Set<OMSVGElement> elements = mapData.getSvgElementsForId(ecNum);
+	//			if(elements == null)
+	//				continue;
+	//			for(OMSVGElement element : elements) {
+	//				if(element.hasAttribute(AnnotatedMapData.ATTRIBUTE_ABSENT) && 
+	//						element.getAttribute(AnnotatedMapData.ATTRIBUTE_ABSENT).equals("true"))
+	//					continue;
+	//				element.setAttribute(AnnotatedMapData.ATTRIBUTE_HAS_DATA, "true");
+	//				element.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, cssColor);
+	//			}
+	//		}
+	//	}
 
 	private void scaleAboutPoint(float scale, final int x, final int y) {
 
@@ -751,8 +750,7 @@ public class AnnotatedMapPresenter {
 		eventBus.fireEvent(new LoadingEvent(false));
 
 		// otherwise, get measurements for the given sample
-		rpc.getSample(sample.getExperimentId(), 
-				sample.getSampleId(), 
+		rpc.getSample(sample,
 				new AsyncCallback<Set<? extends HasMeasurements>>() {
 
 			@Override
@@ -788,15 +786,42 @@ public class AnnotatedMapPresenter {
 				Interpolator interpolator = Interpolator.getInterpolatorForSample(sample);
 
 				for(HasMeasurements primitive : result) {
-					if(((HasType) primitive).getType() == Gene.TYPE)
-						overlayDataForGene((Gene) primitive, interpolator);
+					
+					// we only deal with Genes associated with Reactions right now
+					int numMeasurements = 0;
+					float mean = 0.0f;
+					Reaction reaction = (Reaction) primitive;
+					for(Gene gene : reaction.getGenes()) {
+						for(Measurement measurement : gene.getMeasurements()) {
+							mean += measurement.getValue();
+							numMeasurements++;
+						}
+					}
+					
+					mean /= (float) numMeasurements;
+					
+					// calculate the css color for the mean
+					String cssColor = interpolator.calcCssColor(mean);
+
+					// set the css color on all SVG elements associated with id
+					Set<OMSVGElement> elements = mapData.getSvgElements((HasType) primitive);
+					if(elements == null)
+						continue;
+					for(OMSVGElement element : elements) {
+						if(element.hasAttribute(AnnotatedMapData.ATTRIBUTE_ABSENT) && 
+								element.getAttribute(AnnotatedMapData.ATTRIBUTE_ABSENT).equals("true"))
+							continue;
+						element.setAttribute(AnnotatedMapData.ATTRIBUTE_HAS_DATA, "true");
+						element.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, cssColor);
+					}
 				}
+
 			}
 
 		});
 	}
 
-	public void updateMapForSearchTarget(final Set<Mappable> targets) {
+	public void updateMapForSearchTarget(final Set<HasType> targets) {
 		final Set<OMSVGElement> searchTargets = mapData.getSvgElements(targets);
 
 		if(previousSearchTargets != null) {
