@@ -1,6 +1,6 @@
 package gov.lbl.glamm.client.model;
 
-import gov.lbl.glamm.client.model.interfaces.Mappable;
+import gov.lbl.glamm.client.model.interfaces.HasType;
 import gov.lbl.glamm.client.model.util.Xref;
 
 import java.io.Serializable;
@@ -95,7 +95,7 @@ public class AnnotatedMapData implements Serializable {
 	private Map<String, Set<OMSVGElement>> id2SvgElements;
 	private Set<OMSVGElement> cpdSvgElements;
 	private Set<OMSVGElement> rxnSvgElements;
-
+	
 	private AnnotatedMapDescriptor descriptor;
 	private String svgUrl;
 	private String iconUrl;
@@ -112,9 +112,9 @@ public class AnnotatedMapData implements Serializable {
 		// allocate space for id2SvgElements
 		id2SvgElements = new HashMap<String, Set<OMSVGElement>>();
 		cpdSvgElements = new HashSet<OMSVGElement>();
-		rxnSvgElements = new HashSet<OMSVGElement>();
+		rxnSvgElements = new HashSet<OMSVGElement>();		
 	}
-
+	
 	/**
 	 * Accessor
 	 * @return The names of the databases of compounds associated with this map.
@@ -204,7 +204,7 @@ public class AnnotatedMapData implements Serializable {
 	 * @param primitive
 	 * @return HashSet<OMSVGElement> the elements associated with this primitive, null if none.
 	 */
-	public Set<OMSVGElement> getSvgElements(final Mappable primitive) {
+	public Set<OMSVGElement> getSvgElements(final HasType primitive) {
 
 		if(primitive.getType() == Compound.TYPE) {
 			Compound compound = (Compound) primitive;
@@ -240,9 +240,9 @@ public class AnnotatedMapData implements Serializable {
 	 * @param primitive - The collection of GlammPrimitives
 	 * @return HashSet<OMSVGElement> the elements associated with this collection, null if none.
 	 */
-	public Set<OMSVGElement> getSvgElements(final Collection<? extends Mappable> primitives) {
+	public Set<OMSVGElement> getSvgElements(final Collection<? extends HasType> primitives) {
 		HashSet<OMSVGElement> svgElements = null;
-		for(Mappable primitive : primitives) {
+		for(HasType primitive : primitives) {
 			Set<OMSVGElement> s = getSvgElements(primitive);
 			if(s == null)
 				continue;

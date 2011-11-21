@@ -29,6 +29,14 @@ public class Measurement implements Serializable {
 		this.targetId 	= targetId;
 	}
 
+	public Measurement(final Measurement measurement) {
+		this.expId 		= measurement.expId;
+		this.sampleId 	= measurement.sampleId;
+		this.value 		= measurement.value;
+		this.confidence = measurement.confidence;
+		this.targetId 	= measurement.targetId;
+	}
+	
 	//********************************************************************************
 
 	public String getExpId() {

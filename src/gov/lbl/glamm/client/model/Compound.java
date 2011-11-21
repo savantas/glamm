@@ -2,8 +2,8 @@ package gov.lbl.glamm.client.model;
 
 
 import gov.lbl.glamm.client.model.interfaces.HasSynonyms;
+import gov.lbl.glamm.client.model.interfaces.HasType;
 import gov.lbl.glamm.client.model.interfaces.HasXrefs;
-import gov.lbl.glamm.client.model.interfaces.Mappable;
 import gov.lbl.glamm.client.model.util.Synonym;
 import gov.lbl.glamm.client.model.util.Type;
 import gov.lbl.glamm.client.model.util.Xref;
@@ -21,7 +21,7 @@ import java.util.Set;
  */
 @SuppressWarnings("serial")
 public class Compound
-implements HasSynonyms, Serializable, HasXrefs, Mappable {
+implements HasSynonyms, Serializable, HasXrefs, HasType {
 	
 	private String guid;
 	private String name;
