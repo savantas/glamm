@@ -22,7 +22,6 @@ import gov.lbl.glamm.client.rpc.GlammServiceAsync;
 import gov.lbl.glamm.client.util.Interpolator;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.vectomatic.dom.svg.OMElement;
