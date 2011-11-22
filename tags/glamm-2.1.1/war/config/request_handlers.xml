@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<RequestHandlers>
+	<RequestHandler action="downloadExperiment"		class="gov.lbl.glamm.server.actions.requesthandlers.DownloadExperiment"/>
+	<RequestHandler action="downloadOrganism"		class="gov.lbl.glamm.server.actions.requesthandlers.DownloadOrganism"/>
+	<RequestHandler action="genCitationsPopup" 		class="gov.lbl.glamm.server.actions.requesthandlers.GenCitationsPopup"/>
+	<RequestHandler action="getDirections"			class="gov.lbl.glamm.server.actions.requesthandlers.GetDirections"/>
+	<RequestHandler action="login"					class="gov.lbl.glamm.server.actions.requesthandlers.Login"/>
+	<RequestHandler action="uploadExperiment"		class="gov.lbl.glamm.server.actions.requesthandlers.UploadExperiment"/>
+	<RequestHandler action="uploadOrganism"			class="gov.lbl.glamm.server.actions.requesthandlers.UploadOrganism"/>
+</RequestHandlers>
