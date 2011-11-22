@@ -14,6 +14,7 @@ import java.util.Set;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.http.client.UrlBuilder;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellTable;
@@ -176,7 +177,7 @@ public class ReactionPresenter {
 				public SafeHtml getValue(Gene gene) {
 					SafeHtmlBuilder builder = new SafeHtmlBuilder();
 					for(Measurement measurement : gene.getMeasurements()) {
-						builder.appendHtmlConstant(measurement.getValue() + "<br>");
+						builder.appendHtmlConstant(NumberFormat.getFormat("#.###").format(measurement.getValue()) + "<br>");
 					}
 					return builder.toSafeHtml();
 				}
@@ -192,6 +193,7 @@ public class ReactionPresenter {
 
 		// set the data provider
 		dataProvider.addDataDisplay(table);
+		table.setVisibleRange(0, dataProvider.getList().size());
 
 		// add a selection model
 		final SingleSelectionModel<Gene> selectionModel = new SingleSelectionModel<Gene>(Gene.KEY_PROVIDER);

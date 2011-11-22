@@ -465,34 +465,6 @@ public class AnnotatedMapPresenter {
 		}
 	}
 
-	//	private void overlayDataForGene(final Gene gene, final Interpolator interpolator) {
-	//		Set<Measurement> measurements = gene.getMeasurements();
-	//		Set<String> ecNums = gene.getEcNums();
-	//
-	//		if(measurements == null || ecNums == null)
-	//			return;
-	//
-	//		float value = 0;
-	//		for(Measurement measurement : measurements)
-	//			value += measurement.getValue();
-	//		value /= (float) (measurements.size());
-	//
-	//		String cssColor = interpolator.calcCssColor(value);
-	//
-	//		for(String ecNum : ecNums) {
-	//			Set<OMSVGElement> elements = mapData.getSvgElementsForId(ecNum);
-	//			if(elements == null)
-	//				continue;
-	//			for(OMSVGElement element : elements) {
-	//				if(element.hasAttribute(AnnotatedMapData.ATTRIBUTE_ABSENT) && 
-	//						element.getAttribute(AnnotatedMapData.ATTRIBUTE_ABSENT).equals("true"))
-	//					continue;
-	//				element.setAttribute(AnnotatedMapData.ATTRIBUTE_HAS_DATA, "true");
-	//				element.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, cssColor);
-	//			}
-	//		}
-	//	}
-
 	private void scaleAboutPoint(float scale, final int x, final int y) {
 
 		if(scale >= scaleMax) 
