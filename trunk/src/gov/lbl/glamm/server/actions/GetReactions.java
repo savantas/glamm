@@ -60,7 +60,7 @@ public class GetReactions {
 							Set<Measurement> measurements = measurementMap.get(synonym.getName());
 							if(measurements != null)
 								for(Measurement measurement : measurements)
-									gene.addMeasurement(measurement);
+									gene.getMeasurementSet().addMeasurement(measurement);
 						}
 					}
 				}

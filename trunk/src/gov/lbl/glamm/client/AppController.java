@@ -275,7 +275,10 @@ public class AppController {
 		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
 			@Override
 			public void execute() {
-				
+//				{
+//					mainPanel.setWidgetPosition(organismView, 0, 0);
+//					mainPanel.setWidgetPosition(experimentView, 0, organismView.getOffsetHeight() + 5);
+//				}
 				int minWidth = retrosynthesisView.getOffsetWidth() + 
 					organismView.getOffsetWidth() + 
 					experimentView.getOffsetWidth() + 

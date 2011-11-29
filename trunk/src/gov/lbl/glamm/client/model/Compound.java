@@ -1,16 +1,16 @@
 package gov.lbl.glamm.client.model;
 
 
+import gov.lbl.glamm.client.model.interfaces.HasMeasurements;
 import gov.lbl.glamm.client.model.interfaces.HasSynonyms;
 import gov.lbl.glamm.client.model.interfaces.HasType;
 import gov.lbl.glamm.client.model.interfaces.HasXrefs;
+import gov.lbl.glamm.client.model.util.MeasurementSet;
 import gov.lbl.glamm.client.model.util.Synonym;
 import gov.lbl.glamm.client.model.util.Type;
-import gov.lbl.glamm.client.model.util.Xref;
 import gov.lbl.glamm.client.model.util.XrefSet;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,7 +21,7 @@ import java.util.Set;
  */
 @SuppressWarnings("serial")
 public class Compound
-implements HasSynonyms, Serializable, HasXrefs, HasType {
+implements HasMeasurements, HasSynonyms, Serializable, HasXrefs, HasType {
 	
 	private String guid;
 	private String name;
@@ -30,15 +30,17 @@ implements HasSynonyms, Serializable, HasXrefs, HasType {
 	private String inchi;
 	private String smiles;
 	private Set<Synonym> synonyms;
-	private XrefSet xrefs;
+	private MeasurementSet measurementSet;
+	private XrefSet xrefSet;
 	
 	public static transient final Type TYPE = new Type();
 	
-	//********************************************************************************
+
 	
 	public Compound() {
 		this.synonyms = new HashSet<Synonym>();
-		this.xrefs = new XrefSet();
+		this.measurementSet = new MeasurementSet();
+		this.xrefSet = new XrefSet();
 	}
 
 	/**
@@ -49,7 +51,7 @@ implements HasSynonyms, Serializable, HasXrefs, HasType {
 		return name;
 	}
 	
-	//********************************************************************************
+
 
 	/**
 	 * Mutator
@@ -59,7 +61,7 @@ implements HasSynonyms, Serializable, HasXrefs, HasType {
 		this.name = name;
 	}
 
-	//********************************************************************************
+
 
 	/**
 	 * Accessor
@@ -69,7 +71,7 @@ implements HasSynonyms, Serializable, HasXrefs, HasType {
 		return formula;
 	}
 
-	//********************************************************************************
+
 
 	/**
 	 * Mutator
@@ -79,7 +81,7 @@ implements HasSynonyms, Serializable, HasXrefs, HasType {
 		this.formula = formula;
 	}
 
-	//********************************************************************************
+
 
 	/**
 	 * Accessor - TODO: Treat mass as a floating point value
@@ -89,7 +91,7 @@ implements HasSynonyms, Serializable, HasXrefs, HasType {
 		return mass;
 	}
 
-	//********************************************************************************
+
 
 	/**
 	 * Mutator - TODO: Treat mass as a floating point value
@@ -99,7 +101,7 @@ implements HasSynonyms, Serializable, HasXrefs, HasType {
 		this.mass = mass;
 	}
 
-	//********************************************************************************
+
 
 	/**
 	 * Accessor
@@ -109,7 +111,7 @@ implements HasSynonyms, Serializable, HasXrefs, HasType {
 		return inchi;
 	}
 	
-	//********************************************************************************
+
 
 	/**
 	 * Mutator
@@ -120,7 +122,7 @@ implements HasSynonyms, Serializable, HasXrefs, HasType {
 	}
 	
 	
-	//********************************************************************************
+
 
 	/**
 	 * Accessor
@@ -130,7 +132,7 @@ implements HasSynonyms, Serializable, HasXrefs, HasType {
 		return smiles;
 	}
 	
-	//********************************************************************************
+
 
 	/**
 	 * Mutator
@@ -167,30 +169,20 @@ implements HasSynonyms, Serializable, HasXrefs, HasType {
 	}
 
 	@Override
+	public MeasurementSet getMeasurementSet() {
+		return measurementSet;
+	}
+	
+	@Override
 	public Type getType() {
 		return TYPE;
 	}
-
+	
 	@Override
-	public void addXref(Xref xref) {
-		xrefs.addXref(xref);
-	}
-
-	@Override
-	public Set<Xref> getXrefs() {
-		return xrefs.getXrefs();
-	}
-
-	@Override
-	public Xref getXrefForDbName(String dbName) {
-		return xrefs.getXrefForDbName(dbName);
-	}
-
-	@Override
-	public Xref getXrefForDbNames(Collection<String> dbNames) {
-		return xrefs.getXrefForDbNames(dbNames);
+	public XrefSet getXrefSet() {
+		return xrefSet;
 	}
 	
-	//********************************************************************************
+
 	
 }

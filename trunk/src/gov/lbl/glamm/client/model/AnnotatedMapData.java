@@ -34,25 +34,27 @@ public class AnnotatedMapData implements Serializable {
 	private static final String PATH_ICON = "/images/";
 	private static final String PATH_SVG = "/svg/";
 
-	public static final String ATTRIBUTE_ABSENT				= "absent";
-	public static final String ATTRIBUTE_CLASS 				= "class";
-	public static final String ATTRIBUTE_COMPOUND			= "compound";
-	public static final String ATTRIBUTE_CPD_DST			= "cpddst";
-	public static final String ATTRIBUTE_CPD_SRC			= "cpdsrc";
-	public static final String ATTRIBUTE_DEFAULT_COLOR		= "defaultcolor";
-	public static final String ATTRIBUTE_ENZYME				= "enzyme";
-	public static final String ATTRIBUTE_HAS_DATA			= "hasdata";
-	public static final String ATTRIBUTE_HEIGHT				= "height";
-	public static final String ATTRIBUTE_ID					= "id";
-	public static final String ATTRIBUTE_MAP				= "map";
-	public static final String ATTRIBUTE_REACTION			= "reaction";
-	public static final String ATTRIBUTE_ROUTE				= "route";
-	public static final String ATTRIBUTE_SEARCH_TARGET		= "searchtarget";
-	public static final String ATTRIBUTE_STATE				= "state";
-	public static final String ATTRIBUTE_WIDTH				= "width";
+	public static interface Attribute {
+		String ABSENT			= "absent";
+		String CLASS			= "class";
+		String COMPOUND			= "compound";
+		String CPD_DST			= "cpddst";
+		String CPD_SRC			= "cpdsrc";
+		String DEFAULT_COLOR	= "defaultcolor";
+		String ENZYME			= "enzyme";
+		String HAS_DATA			= "hasdata";
+		String HEIGHT			= "height";
+		String ID				= "id";
+		String MAP				= "map";
+		String REACTION			= "reaction";
+		String ROUTE			= "route";
+		String SEARCH_TARGET	= "searchtarget";
+		String STATE			= "state";
+		String WIDTH			= "width";
+	}
 
-	public enum ElementClass {
-		
+	public static enum ElementClass {
+
 		BACKGROUND("background"),
 		CPD("cpd"),
 		MAP("map"),
@@ -75,15 +77,17 @@ public class AnnotatedMapData implements Serializable {
 				throw new IllegalArgumentException("cssClass is invalid or null.");
 			return result;
 		}
-		
+
 		public String getCssClass() {
 			return cssClass;
 		}
 	}
 
-	public static final String STATE_DEFAULT		= "default";
-	public static final String STATE_MOUSEOVER		= "mouseover";
-	public static final String STATE_SELECTED		= "selected";
+	public interface State {
+		String DEFAULT		= "default";
+		String MOUSEOVER	= "mouseover";
+		String SELECTED		= "selected";
+	}
 
 	public static final String VIEWPORT_ID	= "viewport";
 
@@ -95,7 +99,7 @@ public class AnnotatedMapData implements Serializable {
 	private Map<String, Set<OMSVGElement>> id2SvgElements;
 	private Set<OMSVGElement> cpdSvgElements;
 	private Set<OMSVGElement> rxnSvgElements;
-	
+
 	private AnnotatedMapDescriptor descriptor;
 	private String svgUrl;
 	private String iconUrl;
@@ -114,7 +118,7 @@ public class AnnotatedMapData implements Serializable {
 		cpdSvgElements = new HashSet<OMSVGElement>();
 		rxnSvgElements = new HashSet<OMSVGElement>();		
 	}
-	
+
 	/**
 	 * Accessor
 	 * @return The names of the databases of compounds associated with this map.
@@ -208,11 +212,11 @@ public class AnnotatedMapData implements Serializable {
 
 		if(primitive.getType() == Compound.TYPE) {
 			Compound compound = (Compound) primitive;
-			return getSvgElementsForXrefs(compound.getXrefs());
+			return getSvgElementsForXrefs(compound.getXrefSet().getXrefs());
 		}
 		else if(primitive.getType() == Reaction.TYPE) {
 			Reaction reaction = (Reaction) primitive;
-			return getSvgElementsForXrefs(reaction.getXrefs());
+			return getSvgElementsForXrefs(reaction.getXrefSet().getXrefs());
 		}
 		else if(primitive.getType() == Gene.TYPE) {
 			Gene gene = (Gene) primitive;
@@ -259,8 +263,8 @@ public class AnnotatedMapData implements Serializable {
 	 */
 	public float getSvgHeight() {
 		float result = 0;
-		if(svgRoot.hasAttribute(ATTRIBUTE_HEIGHT))
-			result = Float.parseFloat(svgRoot.getAttribute(ATTRIBUTE_HEIGHT));
+		if(svgRoot.hasAttribute(Attribute.HEIGHT))
+			result = Float.parseFloat(svgRoot.getAttribute(Attribute.HEIGHT));
 		return result;
 	}
 
@@ -270,8 +274,8 @@ public class AnnotatedMapData implements Serializable {
 	 */
 	public float getSvgWidth() {
 		float result = 0;
-		if(svgRoot.hasAttribute(ATTRIBUTE_WIDTH))
-			result = Float.parseFloat(svgRoot.getAttribute(ATTRIBUTE_WIDTH));
+		if(svgRoot.hasAttribute(Attribute.WIDTH))
+			result = Float.parseFloat(svgRoot.getAttribute(Attribute.WIDTH));
 		return result;
 	}
 
@@ -289,11 +293,11 @@ public class AnnotatedMapData implements Serializable {
 	 */
 	private void initCpdGroup(OMElement g) {
 
-		if(!g.hasAttribute(ATTRIBUTE_COMPOUND)) 
+		if(!g.hasAttribute(Attribute.COMPOUND)) 
 			return;
 
 		OMNodeList<OMSVGElement> elements = g.getElementsByTagName(SVGConstants.SVG_ELLIPSE_TAG);
-		String cpdIds[] = g.getAttribute(ATTRIBUTE_COMPOUND).split("\\+");
+		String cpdIds[] = g.getAttribute(Attribute.COMPOUND).split("\\+");
 		for(String cpdId : cpdIds) {
 			Set<OMSVGElement> elementsForId = this.id2SvgElements.get(cpdId);
 			if(elementsForId == null) {
@@ -301,7 +305,7 @@ public class AnnotatedMapData implements Serializable {
 				this.id2SvgElements.put(cpdId, elementsForId);
 			}
 			for(OMSVGElement element : elements) {
-				element.setAttribute(ATTRIBUTE_DEFAULT_COLOR, element.getAttribute(SVGConstants.SVG_FILL_ATTRIBUTE));
+				element.setAttribute(Attribute.DEFAULT_COLOR, element.getAttribute(SVGConstants.SVG_FILL_ATTRIBUTE));
 				cpdSvgElements.add(element);
 				elementsForId.add(element);
 			}
@@ -315,11 +319,11 @@ public class AnnotatedMapData implements Serializable {
 	 */
 	private void initMapGroup(OMElement g) {
 
-		if(!g.hasAttribute(ATTRIBUTE_MAP))
+		if(!g.hasAttribute(Attribute.MAP))
 			return;
 
 		OMNodeList<OMSVGElement> elements = g.getElementsByTagName(SVGConstants.SVG_T_SPAN_TAG);
-		String mapIds[] = g.getAttribute(ATTRIBUTE_MAP).split("\\+");
+		String mapIds[] = g.getAttribute(Attribute.MAP).split("\\+");
 		for(String mapId : mapIds) {
 			Set<OMSVGElement> elementsForId = this.id2SvgElements.get(mapId);
 			if(elementsForId == null) {
@@ -339,12 +343,12 @@ public class AnnotatedMapData implements Serializable {
 		OMNodeList<OMSVGElement> elements = g.getElementsByTagName(SVGConstants.SVG_PATH_TAG);
 
 		for(OMSVGElement element : elements) {
-			element.setAttribute(ATTRIBUTE_DEFAULT_COLOR, element.getAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE));
+			element.setAttribute(Attribute.DEFAULT_COLOR, element.getAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE));
 			rxnSvgElements.add(element);
 		}
 
-		if(g.hasAttribute(ATTRIBUTE_REACTION) && !g.getAttribute(ATTRIBUTE_REACTION).isEmpty()) {
-			String rxnString = g.getAttribute(ATTRIBUTE_REACTION);
+		if(g.hasAttribute(Attribute.REACTION) && !g.getAttribute(Attribute.REACTION).isEmpty()) {
+			String rxnString = g.getAttribute(Attribute.REACTION);
 			String[] rxnIds = rxnString.split("\\+");
 			for(String rxnId : rxnIds) {
 				if(rxnId.isEmpty())
@@ -361,8 +365,8 @@ public class AnnotatedMapData implements Serializable {
 
 
 
-			if(g.hasAttribute(ATTRIBUTE_ENZYME)) {
-				String ecNumString = g.getAttribute(ATTRIBUTE_ENZYME);
+			if(g.hasAttribute(Attribute.ENZYME)) {
+				String ecNumString = g.getAttribute(Attribute.ENZYME);
 				String[] ecNums = ecNumString.split("\\+");
 				for(String ecNum : ecNums) {
 					if(ecNum.isEmpty())
@@ -387,7 +391,7 @@ public class AnnotatedMapData implements Serializable {
 		for(OMNode node : svgRoot.getChildNodes()) {
 			if(node.getNodeType() == Node.ELEMENT_NODE) {
 				OMElement element = (OMElement) node;
-				if(element.hasAttribute(ATTRIBUTE_ID) && element.getAttribute(ATTRIBUTE_ID).equals(VIEWPORT_ID))  {
+				if(element.hasAttribute(Attribute.ID) && element.getAttribute(Attribute.ID).equals(VIEWPORT_ID))  {
 					viewport = (OMSVGGElement) element;
 					break;
 				}
@@ -395,11 +399,11 @@ public class AnnotatedMapData implements Serializable {
 		}
 
 		for(OMElement g : viewport.getElementsByTagName(SVGConstants.SVG_G_TAG)) {
-			if(g.hasAttribute(ATTRIBUTE_CLASS) && g.getAttribute(ATTRIBUTE_CLASS).equals(ElementClass.CPD.getCssClass()))
+			if(g.hasAttribute(Attribute.CLASS) && g.getAttribute(Attribute.CLASS).equals(ElementClass.CPD.getCssClass()))
 				initCpdGroup(g);
-			if(g.hasAttribute(ATTRIBUTE_CLASS) && g.getAttribute(ATTRIBUTE_CLASS).equals(ElementClass.MAP.getCssClass()))
+			if(g.hasAttribute(Attribute.CLASS) && g.getAttribute(Attribute.CLASS).equals(ElementClass.MAP.getCssClass()))
 				initMapGroup(g);
-			if(g.hasAttribute(ATTRIBUTE_CLASS) && g.getAttribute(ATTRIBUTE_CLASS).equals(ElementClass.RXN.getCssClass()))
+			if(g.hasAttribute(Attribute.CLASS) && g.getAttribute(Attribute.CLASS).equals(ElementClass.RXN.getCssClass()))
 				initRxnGroup(g);
 		}
 	}

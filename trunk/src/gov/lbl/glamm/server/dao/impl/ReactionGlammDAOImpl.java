@@ -158,7 +158,7 @@ public class ReactionGlammDAOImpl implements ReactionDAO {
 					reaction = new Reaction();
 					reaction.setGuid(guid);
 					reaction.setDefinition(definition);
-					reaction.addXref(new Xref(xrefId, xrefDbName));
+					reaction.getXrefSet().addXref(new Xref(xrefId, xrefDbName));
 					def2Rxn.put(definition, reaction);
 				}
 				reaction.addEcNum(ecNum);
@@ -197,7 +197,7 @@ public class ReactionGlammDAOImpl implements ReactionDAO {
 			while(rs.next()) {
 
 				Reaction reaction = new Reaction();
-				reaction.addXref(new Xref(rs.getString("toXrefId"), rs.getString("xrefDbName")));
+				reaction.getXrefSet().addXref(new Xref(rs.getString("toXrefId"), rs.getString("xrefDbName")));
 				reaction.addEcNum(rs.getString("ecNum"));
 				reactions.add(reaction);
 			}
@@ -245,7 +245,7 @@ public class ReactionGlammDAOImpl implements ReactionDAO {
 
 		Set<Reaction> rxns = getReactionsForEcNums(ecNums);
 		for(Reaction rxn : rxns) {
-			Set<Xref> xrefs = rxn.getXrefs();
+			Set<Xref> xrefs = rxn.getXrefSet().getXrefs();
 			for(Xref xref : xrefs)
 				rxnIds.add(xref.getXrefId());
 		}
