@@ -1,7 +1,5 @@
 package gov.lbl.glamm.client.model.util;
 
-import gov.lbl.glamm.client.model.interfaces.HasXrefs;
-
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
@@ -9,7 +7,7 @@ import java.util.Set;
 
 @SuppressWarnings("serial")
 public class XrefSet
-implements HasXrefs, Serializable {
+implements Serializable {
 	
 	private Set<Xref> xrefs;
 	
@@ -17,17 +15,19 @@ implements HasXrefs, Serializable {
 		xrefs = new HashSet<Xref>();
 	}
 
-	@Override
 	public void addXref(Xref xref) {
 		xrefs.add(xref);
 	}
+	
+	public void addXrefs(Collection<Xref> xrefs) {
+		if(xrefs != null && !xrefs.isEmpty())
+			xrefs.addAll(xrefs);
+	}
 
-	@Override
 	public Set<Xref> getXrefs() {
 		return xrefs;
 	}
 
-	@Override
 	public Xref getXrefForDbName(String dbName) {
 		for(Xref xref : xrefs) {
 			if(xref.getXrefDbName().equals(dbName))
@@ -36,7 +36,6 @@ implements HasXrefs, Serializable {
 		return null;
 	}
 	
-	@Override
 	public Xref getXrefForDbNames(Collection<String> dbNames) {
 		for(Xref xref : xrefs) {
 			if(dbNames.contains(xref.getXrefDbName()))
@@ -44,5 +43,32 @@ implements HasXrefs, Serializable {
 		}
 		return null;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((xrefs == null) ? 0 : xrefs.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		XrefSet other = (XrefSet) obj;
+		if (xrefs == null) {
+			if (other.xrefs != null)
+				return false;
+		} else if (!xrefs.equals(other.xrefs))
+			return false;
+		return true;
+	}
+	
+	
 
 }

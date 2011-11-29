@@ -116,6 +116,7 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 				sample.setClampValues(UARRAY_CLAMP_MIN, UARRAY_CLAMP_MID, UARRAY_CLAMP_MAX);
 				sample.setUnits(UARRAY_UNITS);
 				sample.setConfidenceType(UARRAY_CONFIDENCE_TYPE);
+				sample.setTargetType(Sample.TargetType.GENE);
 
 				experiment.addSample(sample);
 			}
@@ -185,6 +186,7 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 				sample.setClampValues(UARRAY_CLAMP_MIN, UARRAY_CLAMP_MID, UARRAY_CLAMP_MAX);
 				sample.setUnits(UARRAY_UNITS);
 				sample.setConfidenceType(UARRAY_CONFIDENCE_TYPE);
+				sample.setTargetType(Sample.TargetType.GENE);
 
 				exp.addSample(sample);
 			}
@@ -245,6 +247,7 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 				sample.setClampValues(UARRAY_CLAMP_MIN, UARRAY_CLAMP_MID, UARRAY_CLAMP_MAX);
 				sample.setUnits(UARRAY_UNITS);
 				sample.setConfidenceType(UARRAY_CONFIDENCE_TYPE);
+				sample.setTargetType(Sample.TargetType.GENE);
 
 				if(samples == null)
 					samples = new ArrayList<Sample>();

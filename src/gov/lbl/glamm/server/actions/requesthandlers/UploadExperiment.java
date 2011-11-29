@@ -5,12 +5,13 @@ import gov.lbl.glamm.client.model.Measurement;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Sample;
 import gov.lbl.glamm.client.model.Sample.DataType;
+import gov.lbl.glamm.client.model.Sample.TargetType;
 import gov.lbl.glamm.client.presenter.ExperimentUploadPresenter;
 import gov.lbl.glamm.server.FormRequestHandler;
 import gov.lbl.glamm.server.FormRequestHandler.LineParser;
+import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.RequestHandler;
 import gov.lbl.glamm.server.ResponseHandler;
-import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.OrganismDAO;
 import gov.lbl.glamm.server.dao.impl.OrganismDAOImpl;
 
@@ -79,15 +80,15 @@ public class UploadExperiment implements RequestHandler {
 		});
 
 		// get relevant fields
-		final float clampMin 	= Float.parseFloat(fuh.getFormField(ExperimentUploadPresenter.View.FIELD_EXP_UPLOAD_CLAMP_MIN));
-		final float clampMid 	= Float.parseFloat(fuh.getFormField(ExperimentUploadPresenter.View.FIELD_EXP_UPLOAD_CLAMP_MID));
-		final float clampMax 	= Float.parseFloat(fuh.getFormField(ExperimentUploadPresenter.View.FIELD_EXP_UPLOAD_CLAMP_MAX));
-		final String stress 	= fuh.getFormField(ExperimentUploadPresenter.View.FIELD_EXP_UPLOAD_STRESS);
-		final String treatment 	= fuh.getFormField(ExperimentUploadPresenter.View.FIELD_EXP_UPLOAD_TREATMENT);
-		final String control 	= fuh.getFormField(ExperimentUploadPresenter.View.FIELD_EXP_UPLOAD_CONTROL);
-		final String taxonomyId = fuh.getFormField(ExperimentUploadPresenter.View.FIELD_EXP_UPLOAD_TAXONOMY_ID);
-		final String units 		= fuh.getFormField(ExperimentUploadPresenter.View.FIELD_EXP_UPLOAD_UNITS);
-
+		final float clampMin 	= Float.parseFloat(fuh.getFormField(ExperimentUploadPresenter.FormField.CLAMP_MIN.toString()));
+		final float clampMid 	= Float.parseFloat(fuh.getFormField(ExperimentUploadPresenter.FormField.CLAMP_MID.toString()));
+		final float clampMax 	= Float.parseFloat(fuh.getFormField(ExperimentUploadPresenter.FormField.CLAMP_MAX.toString()));
+		final String stress 	= fuh.getFormField(ExperimentUploadPresenter.FormField.STRESS.toString());
+		final String treatment 	= fuh.getFormField(ExperimentUploadPresenter.FormField.TREATMENT.toString());
+		final String control 	= fuh.getFormField(ExperimentUploadPresenter.FormField.CONTROL.toString());
+		final String taxonomyId = fuh.getFormField(ExperimentUploadPresenter.FormField.TAXONOMY_ID.toString());
+		final String units 		= fuh.getFormField(ExperimentUploadPresenter.FormField.UNITS.toString());
+		final TargetType targetType = Sample.TargetType.fromString(fuh.getFormField(ExperimentUploadPresenter.FormField.TARGET_TYPE.toString()));
 
 		// construct the sample
 		Sample sample = new Sample(expId, sampleId, DataType.SESSION);
@@ -96,7 +97,8 @@ public class UploadExperiment implements RequestHandler {
 		sample.setTreatment(treatment, null);
 		sample.setControl(control, null);
 		sample.setUnits(units);
-
+		sample.setTargetType(targetType);
+		
 		// construct the experiment
 		Experiment experiment = new Experiment(expId);
 		experiment.addSample(sample);

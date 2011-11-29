@@ -120,7 +120,7 @@ public class ReactionPresenter {
 		// determine whether or not we have measurement data
 		boolean hasMeasurementData = false;
 		for(Gene gene : dataProvider.getList()){
-			if(gene.getMeasurements().size() > 0) {
+			if(gene.getMeasurementSet().getMeasurements().size() > 0) {
 				hasMeasurementData = true;
 				break;
 			}
@@ -176,7 +176,7 @@ public class ReactionPresenter {
 				@Override
 				public SafeHtml getValue(Gene gene) {
 					SafeHtmlBuilder builder = new SafeHtmlBuilder();
-					for(Measurement measurement : gene.getMeasurements()) {
+					for(Measurement measurement : gene.getMeasurementSet().getMeasurements()) {
 						builder.appendHtmlConstant(NumberFormat.getFormat("#.###").format(measurement.getValue()) + "<br>");
 					}
 					return builder.toSafeHtml();

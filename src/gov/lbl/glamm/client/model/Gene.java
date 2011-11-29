@@ -4,6 +4,7 @@ package gov.lbl.glamm.client.model;
 import gov.lbl.glamm.client.model.interfaces.HasMeasurements;
 import gov.lbl.glamm.client.model.interfaces.HasSynonyms;
 import gov.lbl.glamm.client.model.interfaces.HasType;
+import gov.lbl.glamm.client.model.util.MeasurementSet;
 import gov.lbl.glamm.client.model.util.Synonym;
 import gov.lbl.glamm.client.model.util.Type;
 
@@ -31,7 +32,7 @@ implements Serializable, HasSynonyms, HasMeasurements, HasType {
 	private Set<String> ecNums;
 	private Set<String> molTaxonomyIds;
 	private Set<String> metaMolTaxonomyIds;
-	private Set<Measurement> measurements;
+	private MeasurementSet measurementSet;
 	private Set<Synonym> synonyms;
 	
 	public static final transient ProvidesKey<Gene> KEY_PROVIDER = new ProvidesKey<Gene>() {
@@ -44,7 +45,7 @@ implements Serializable, HasSynonyms, HasMeasurements, HasType {
 		ecNums = new HashSet<String>();
 		molTaxonomyIds = new HashSet<String>();
 		metaMolTaxonomyIds = new HashSet<String>();
-		measurements = new HashSet<Measurement>();
+		measurementSet = new MeasurementSet();
 		synonyms = new HashSet<Synonym>();
 	}
 
@@ -120,21 +121,8 @@ implements Serializable, HasSynonyms, HasMeasurements, HasType {
 	}
 
 	@Override
-	public void addMeasurement(Measurement measurement) {
-		measurements.add(measurement);
-	}
-
-	@Override
-	public Set<Measurement> getMeasurements() {
-		return measurements;
-	}
-
-	@Override
-	public void setMeasurements(Set<Measurement> measurements) {
-		if(this.measurements != measurements)
-			measurements.clear();
-		if(measurements != null && !measurements.isEmpty())
-			this.measurements.addAll(measurements);
+	public MeasurementSet getMeasurementSet() {
+		return measurementSet;
 	}
 
 	@Override
@@ -148,7 +136,7 @@ implements Serializable, HasSynonyms, HasMeasurements, HasType {
 		int result = 1;
 		result = prime * result + ((ecNums == null) ? 0 : ecNums.hashCode());
 		result = prime * result
-				+ ((measurements == null) ? 0 : measurements.hashCode());
+				+ ((measurementSet == null) ? 0 : measurementSet.hashCode());
 		result = prime
 				* result
 				+ ((metaMolTaxonomyIds == null) ? 0 : metaMolTaxonomyIds
@@ -174,10 +162,10 @@ implements Serializable, HasSynonyms, HasMeasurements, HasType {
 				return false;
 		} else if (!ecNums.equals(other.ecNums))
 			return false;
-		if (measurements == null) {
-			if (other.measurements != null)
+		if (measurementSet == null) {
+			if (other.measurementSet != null)
 				return false;
-		} else if (!measurements.equals(other.measurements))
+		} else if (!measurementSet.equals(other.measurementSet))
 			return false;
 		if (metaMolTaxonomyIds == null) {
 			if (other.metaMolTaxonomyIds != null)
@@ -196,5 +184,7 @@ implements Serializable, HasSynonyms, HasMeasurements, HasType {
 			return false;
 		return true;
 	}
+
+	
 
 }

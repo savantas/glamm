@@ -59,7 +59,7 @@ public class CompoundGlammDAOImpl implements CompoundDAO {
 				cpd.setFormula(rs.getString("formula"));
 				cpd.setSmiles(rs.getString("smiles"));
 				cpd.setInchi(rs.getString("inchi"));
-				cpd.addXref(new Xref(rs.getString("toXrefId"), rs.getString("xrefDbName")));
+				cpd.getXrefSet().addXref(new Xref(rs.getString("toXrefId"), rs.getString("xrefDbName")));
 
 				cpds.add(cpd);
 			}
@@ -104,7 +104,7 @@ public class CompoundGlammDAOImpl implements CompoundDAO {
 				cpd.setFormula(rs.getString("formula"));
 				cpd.setSmiles(rs.getString("smiles"));
 				cpd.setInchi(rs.getString("inchi"));
-				cpd.addXref(new Xref(id, dbName));
+				cpd.getXrefSet().addXref(new Xref(id, dbName));
 
 			}
 
@@ -172,7 +172,7 @@ public class CompoundGlammDAOImpl implements CompoundDAO {
 				Compound cpd = new Compound();
 
 				cpd.setName(rs.getString("synonym"));
-				cpd.addXref(new Xref(rs.getString("toXrefId"), rs.getString("xrefDbName")));
+				cpd.getXrefSet().addXref(new Xref(rs.getString("toXrefId"), rs.getString("xrefDbName")));
 				cpds.add(cpd);
 
 			}

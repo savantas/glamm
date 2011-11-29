@@ -4,15 +4,14 @@ package gov.lbl.glamm.client.model;
 import gov.lbl.glamm.client.model.interfaces.HasMeasurements;
 import gov.lbl.glamm.client.model.interfaces.HasType;
 import gov.lbl.glamm.client.model.interfaces.HasXrefs;
+import gov.lbl.glamm.client.model.util.MeasurementSet;
 import gov.lbl.glamm.client.model.util.Type;
-import gov.lbl.glamm.client.model.util.Xref;
 import gov.lbl.glamm.client.model.util.XrefSet;
 import gov.lbl.glamm.client.util.ReactionColor;
 import gov.lbl.glamm.client.util.RowDependentSelectionCell;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -104,7 +103,7 @@ implements Serializable, RowDependentSelectionCell.HasOptions, HasMeasurements, 
 		}
 		
 	}
-	//********************************************************************************
+
 
 	public static transient final Type TYPE = new Type();
 	private String guid;
@@ -120,7 +119,8 @@ implements Serializable, RowDependentSelectionCell.HasOptions, HasMeasurements, 
 	private Map<String, Organism> name2TransgenicCandidate;
 	private Map<Organism, Set<String>> transgenicCandidate2EcNums;
 	private transient ReactionColor color; // ReactionColor depends on resources from the client bundle - don't instantiate or try to set server-side.
-	private XrefSet xrefs;
+	private MeasurementSet measurementSet;
+	private XrefSet xrefSet;
 
 	public static final transient ProvidesKey<Reaction> KEY_PROVIDER = new ProvidesKey<Reaction>() {
 		public Object getKey(Reaction item) {
@@ -128,7 +128,7 @@ implements Serializable, RowDependentSelectionCell.HasOptions, HasMeasurements, 
 		}
 	};
 
-	//********************************************************************************
+
 
 	public Reaction() {
 		direction = Direction.BOTH;
@@ -140,10 +140,11 @@ implements Serializable, RowDependentSelectionCell.HasOptions, HasMeasurements, 
 		transgenicCandidates = new ArrayList<Organism>();
 		name2TransgenicCandidate = new HashMap<String, Organism>();
 		transgenicCandidate2EcNums = new HashMap<Organism, Set<String>>();
-		xrefs = new XrefSet();
+		measurementSet = new MeasurementSet();
+		xrefSet = new XrefSet();
 	}
 
-	//********************************************************************************
+
 
 	public void addEcNum(String ecNum) {
 		if(ecNum != null && !ecNum.isEmpty()) {
@@ -156,7 +157,7 @@ implements Serializable, RowDependentSelectionCell.HasOptions, HasMeasurements, 
 			genes.add(gene);
 	}
 	
-	//********************************************************************************
+
 
 	public void addProduct(final Participant rp) {
 		if(rp == null)
@@ -164,7 +165,7 @@ implements Serializable, RowDependentSelectionCell.HasOptions, HasMeasurements, 
 		products.add(rp);
 	}
 
-	//********************************************************************************
+
 
 	public void addSubstrate(final Participant rp) {
 		if(rp == null)
@@ -172,7 +173,7 @@ implements Serializable, RowDependentSelectionCell.HasOptions, HasMeasurements, 
 		substrates.add(rp);
 	}
 
-	//********************************************************************************
+
 
 	public void addTransgenicCandidate(final String ecNum, final Organism organism) {
 		if(organism == null)
@@ -193,7 +194,7 @@ implements Serializable, RowDependentSelectionCell.HasOptions, HasMeasurements, 
 
 	}
 
-	//********************************************************************************
+
 
 	@Override
 	public boolean equals(Object obj) {
@@ -227,25 +228,25 @@ implements Serializable, RowDependentSelectionCell.HasOptions, HasMeasurements, 
 		return true;
 	}
 
-	//********************************************************************************
+
 
 	public String getDefinition() {
 		return definition;
 	}
 
-	//********************************************************************************
+
 
 	public final Direction getDirection() {
 		return direction;
 	}
 
-	//********************************************************************************
+
 
 	public Set<String> getEcNums() {
 		return ecNums;
 	}
 
-	//********************************************************************************
+
 
 	public Set<String> getEcNumsForTransgenicCandidate(Organism organism) {
 		return transgenicCandidate2EcNums.get(organism);
@@ -255,13 +256,13 @@ implements Serializable, RowDependentSelectionCell.HasOptions, HasMeasurements, 
 		return genes;
 	}
 
-	//********************************************************************************
+
 
 	public String getGuid() {
 		return guid;
 	}
 	
-	//********************************************************************************
+
 
 	@Override
 	public String getNoOptionsString() {
@@ -272,7 +273,7 @@ implements Serializable, RowDependentSelectionCell.HasOptions, HasMeasurements, 
 		return "Native";
 	}
 
-	//********************************************************************************
+
 
 	@Override
 	public List<String> getOptions() {
@@ -282,7 +283,7 @@ implements Serializable, RowDependentSelectionCell.HasOptions, HasMeasurements, 
 		return options;
 	}
 	
-	//********************************************************************************
+
 
 	@Override
 	public List<String> getOptionsPreamble() {
@@ -294,37 +295,37 @@ implements Serializable, RowDependentSelectionCell.HasOptions, HasMeasurements, 
 		return optionsPreamble;
 	}
 
-	//********************************************************************************
+
 
 	public Set<Participant> getProducts() {
 		return products;
 	}
 
-	//********************************************************************************
+
 
 	public Set<Participant> getSubstrates() {
 		return substrates;
 	}
 
-	//********************************************************************************
+
 
 	public ReactionColor getReactionColor() {
 		return color;
 	}
 
-	//********************************************************************************
+
 
 	public Organism getSelectedTransgenicCandidate() {
 		return selectedTransgenicCandidate;
 	}
 
-	//********************************************************************************
+
 
 	public List<Organism> getTransgenicCandidates() {
 		return transgenicCandidates;
 	}
 
-	//********************************************************************************
+
 
 	@Override
 	public int hashCode() {
@@ -386,44 +387,16 @@ implements Serializable, RowDependentSelectionCell.HasOptions, HasMeasurements, 
 	public Type getType() {
 		return TYPE;
 	}
-
+	
 	@Override
-	public void addXref(Xref xref) {
-		xrefs.addXref(xref);
+	public MeasurementSet getMeasurementSet() {
+		return measurementSet;
 	}
 
 	@Override
-	public Set<Xref> getXrefs() {
-		return xrefs.getXrefs();
+	public XrefSet getXrefSet() {
+		return xrefSet;
 	}
 
-	@Override
-	public Xref getXrefForDbName(String dbName) {
-		return xrefs.getXrefForDbName(dbName);
-	}
 
-	@Override
-	public Xref getXrefForDbNames(Collection<String> dbNames) {
-		return xrefs.getXrefForDbNames(dbNames);
-	}
-
-	@Override
-	public void addMeasurement(Measurement measurement) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public Set<Measurement> getMeasurements() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setMeasurements(Set<Measurement> measurements) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	//********************************************************************************
 }

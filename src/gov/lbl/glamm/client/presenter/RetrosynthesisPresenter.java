@@ -255,8 +255,8 @@ public class RetrosynthesisPresenter {
 				if(cpdSrc == null || cpdDst == null || mapData == null)
 					return;
 
-				Xref cpdSrcXref = cpdSrc.getXrefForDbNames(mapData.getCpdDbNames());
-				Xref cpdDstXref = cpdDst.getXrefForDbNames(mapData.getCpdDbNames());
+				Xref cpdSrcXref = cpdSrc.getXrefSet().getXrefForDbNames(mapData.getCpdDbNames());
+				Xref cpdDstXref = cpdDst.getXrefSet().getXrefForDbNames(mapData.getCpdDbNames());
 
 				if(cpdSrcXref == null || cpdDstXref == null)
 					return;

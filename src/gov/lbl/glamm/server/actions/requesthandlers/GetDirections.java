@@ -77,8 +77,8 @@ public class GetDirections implements RequestHandler {
 		if(cpdSrc == null || cpdDst == null)
 			return null;
 
-		Xref cpdSrcXref = cpdSrc.getXrefForDbName("LIGAND-CPD");
-		Xref cpdDstXref = cpdDst.getXrefForDbName("LIGAND-CPD");
+		Xref cpdSrcXref = cpdSrc.getXrefSet().getXrefForDbName("LIGAND-CPD");
+		Xref cpdDstXref = cpdDst.getXrefSet().getXrefForDbName("LIGAND-CPD");
 
 		if(cpdSrcXref == null || cpdDstXref == null)
 			return null;
@@ -220,7 +220,7 @@ public class GetDirections implements RequestHandler {
 		Map<String, Reaction> rxnId2Rxn = new HashMap<String, Reaction>();
 
 		for(Reaction rxn : rxns) {
-			Set<Xref> xrefs = rxn.getXrefs();
+			Set<Xref> xrefs = rxn.getXrefSet().getXrefs();
 			for(Xref xref : xrefs) {
 				rxnId2Rxn.put(xref.getXrefId(), rxn);
 			}

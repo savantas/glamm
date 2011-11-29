@@ -5,6 +5,7 @@ import gov.lbl.glamm.client.events.LoadingEvent;
 import gov.lbl.glamm.client.events.MapElementClickEvent;
 import gov.lbl.glamm.client.events.MapUpdateEvent;
 import gov.lbl.glamm.client.model.AnnotatedMapData;
+import gov.lbl.glamm.client.model.AnnotatedMapData.State;
 import gov.lbl.glamm.client.model.AnnotatedMapDescriptor;
 import gov.lbl.glamm.client.model.Compound;
 import gov.lbl.glamm.client.model.Gene;
@@ -83,7 +84,7 @@ public class AnnotatedMapPresenter {
 		public Panel 					getMapPanel();
 	}
 
-	private enum Mode {
+	private static enum Mode {
 		INITIAL,
 		NONE,
 		PAN,
@@ -135,7 +136,7 @@ public class AnnotatedMapPresenter {
 				if(element != null) {
 					// get the parent group
 					Element parent = element.getParentElement();
-					while(!parent.hasAttribute(AnnotatedMapData.ATTRIBUTE_CLASS) && parent != null)
+					while(!parent.hasAttribute(AnnotatedMapData.Attribute.CLASS) && parent != null)
 						parent = parent.getParentElement();
 
 					if(parent == null)
@@ -144,9 +145,9 @@ public class AnnotatedMapPresenter {
 					NodeList<Element> siblings = parent.getElementsByTagName(tagName);
 					for(int i = 0; i < siblings.getLength(); i++) {
 						final Element sibling = siblings.getItem(i);
-						if(!sibling.hasAttribute(AnnotatedMapData.ATTRIBUTE_STATE) || 
-								!sibling.getAttribute(AnnotatedMapData.ATTRIBUTE_STATE).equals(AnnotatedMapData.STATE_SELECTED))
-							sibling.setAttribute(AnnotatedMapData.ATTRIBUTE_STATE, AnnotatedMapData.STATE_DEFAULT);
+						if(!sibling.hasAttribute(AnnotatedMapData.Attribute.STATE) || 
+								!sibling.getAttribute(AnnotatedMapData.Attribute.STATE).equals(State.SELECTED))
+							sibling.setAttribute(AnnotatedMapData.Attribute.STATE, State.DEFAULT);
 					}
 				}
 			}
@@ -161,7 +162,7 @@ public class AnnotatedMapPresenter {
 
 					// get the parent group
 					Element parent = element.getParentElement();
-					while(!parent.hasAttribute(AnnotatedMapData.ATTRIBUTE_CLASS) && parent != null)
+					while(!parent.hasAttribute(AnnotatedMapData.Attribute.CLASS) && parent != null)
 						parent = parent.getParentElement();
 
 					if(parent == null)
@@ -171,9 +172,9 @@ public class AnnotatedMapPresenter {
 					//NodeList<Element> siblings = element.getParentElement().getElementsByTagName(tagName);
 					for(int i = 0; i < siblings.getLength(); i++) {
 						final Element sibling = siblings.getItem(i);
-						if(!sibling.hasAttribute(AnnotatedMapData.ATTRIBUTE_STATE) || 
-								!sibling.getAttribute(AnnotatedMapData.ATTRIBUTE_STATE).equals(AnnotatedMapData.STATE_SELECTED))
-							sibling.setAttribute(AnnotatedMapData.ATTRIBUTE_STATE, AnnotatedMapData.STATE_MOUSEOVER);
+						if(!sibling.hasAttribute(AnnotatedMapData.Attribute.STATE) || 
+								!sibling.getAttribute(AnnotatedMapData.Attribute.STATE).equals(State.SELECTED))
+							sibling.setAttribute(AnnotatedMapData.Attribute.STATE, State.MOUSEOVER);
 					}
 				}
 			}
@@ -186,24 +187,24 @@ public class AnnotatedMapPresenter {
 			public void onClick(ClickEvent event) {
 				event.preventDefault();
 				Element element = DOM.eventGetTarget(Event.as(event.getNativeEvent()));
-				String cssClass = element.getAttribute(AnnotatedMapData.ATTRIBUTE_CLASS);
+				String cssClass = element.getAttribute(AnnotatedMapData.Attribute.CLASS);
 				int clientX = event.getClientX();
 				int clientY = event.getClientY();
 				String idsString = null;
 
 				Element parentElement = element.getParentElement();
-				while(parentElement != null && !parentElement.hasAttribute(AnnotatedMapData.ATTRIBUTE_CLASS))
+				while(parentElement != null && !parentElement.hasAttribute(AnnotatedMapData.Attribute.CLASS))
 					parentElement = parentElement.getParentElement();
 
 				if(parentElement == null)
 					return; // fail silently
 
 				if(cssClass.equals(AnnotatedMapData.ElementClass.CPD.getCssClass()))
-					idsString = parentElement.getAttribute(AnnotatedMapData.ATTRIBUTE_COMPOUND);
+					idsString = parentElement.getAttribute(AnnotatedMapData.Attribute.COMPOUND);
 				else if(cssClass.equals(AnnotatedMapData.ElementClass.MAP.getCssClass()))
-					idsString = parentElement.getAttribute(AnnotatedMapData.ATTRIBUTE_MAP);
+					idsString = parentElement.getAttribute(AnnotatedMapData.Attribute.MAP);
 				else if(cssClass.equals(AnnotatedMapData.ElementClass.RXN.getCssClass()))
-					idsString = parentElement.getAttribute(AnnotatedMapData.ATTRIBUTE_REACTION);
+					idsString = parentElement.getAttribute(AnnotatedMapData.Attribute.REACTION);
 				else
 					return; // fail silently
 
@@ -220,8 +221,8 @@ public class AnnotatedMapPresenter {
 		// MouseOver and MouseUp events don't appear to bubble up correctly from invalid SVG (like the global map)
 		// Directly add handlers to the elements we care about
 		for(OMElement group : this.mapData.getSvg().getElementsByTagName(SVGConstants.SVG_G_TAG)) {
-			if(group.hasAttribute(AnnotatedMapData.ATTRIBUTE_CLASS)) {
-				String cssClass = group.getAttribute(AnnotatedMapData.ATTRIBUTE_CLASS);
+			if(group.hasAttribute(AnnotatedMapData.Attribute.CLASS)) {
+				String cssClass = group.getAttribute(AnnotatedMapData.Attribute.CLASS);
 				if(cssClass.equals(AnnotatedMapData.ElementClass.CPD.getCssClass()))
 					addMouseHandlersToElement(group, SVGConstants.SVG_ELLIPSE_TAG);
 				else if(cssClass.equals(AnnotatedMapData.ElementClass.RXN.getCssClass()))
@@ -534,6 +535,77 @@ public class AnnotatedMapPresenter {
 		setTransform(mapData.getViewport(), m);
 	}
 
+	private void updateMapForCompounds(final Sample sample, final Set<? extends HasMeasurements> cpds) {
+		Interpolator interpolator = Interpolator.getInterpolatorForSample(sample);
+
+		for(HasMeasurements cpd : cpds) {
+
+			// we only deal with Genes associated with Reactions right now
+			int numMeasurements = 0;
+			float mean = 0.0f;
+
+
+			for(Measurement measurement : cpd.getMeasurementSet().getMeasurements()) {
+				mean += measurement.getValue();
+				numMeasurements++;
+			}
+
+			mean /= (float) numMeasurements;
+
+			// calculate the css color for the mean
+			String cssColor = interpolator.calcCssColor(mean);
+
+			// set the css color on all SVG elements associated with id
+			Set<OMSVGElement> elements = mapData.getSvgElements((HasType) cpd);
+			if(elements == null)
+				continue;
+			for(OMSVGElement element : elements) {
+				if(element.hasAttribute(AnnotatedMapData.Attribute.ABSENT) && 
+						element.getAttribute(AnnotatedMapData.Attribute.ABSENT).equals("true"))
+					continue;
+				element.setAttribute(AnnotatedMapData.Attribute.HAS_DATA, "true");
+				element.setAttribute(SVGConstants.SVG_FILL_ATTRIBUTE, cssColor);
+				element.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, cssColor);
+			}
+		}
+	}
+
+	private void updateMapForGenes(final Sample sample, final Set<? extends HasMeasurements> rxns) {
+
+		Interpolator interpolator = Interpolator.getInterpolatorForSample(sample);
+
+		for(HasMeasurements rxn : rxns) {
+
+			// we only deal with Genes associated with Reactions right now
+			int numMeasurements = 0;
+			float mean = 0.0f;
+
+			for(Gene gene : ((Reaction) rxn).getGenes()) {
+				for(Measurement measurement : gene.getMeasurementSet().getMeasurements()) {
+					mean += measurement.getValue();
+					numMeasurements++;
+				}
+			}
+
+			mean /= (float) numMeasurements;
+
+			// calculate the css color for the mean
+			String cssColor = interpolator.calcCssColor(mean);
+
+			// set the css color on all SVG elements associated with id
+			Set<OMSVGElement> elements = mapData.getSvgElements((HasType) rxn);
+			if(elements == null)
+				continue;
+			for(OMSVGElement element : elements) {
+				if(element.hasAttribute(AnnotatedMapData.Attribute.ABSENT) && 
+						element.getAttribute(AnnotatedMapData.Attribute.ABSENT).equals("true"))
+					continue;
+				element.setAttribute(AnnotatedMapData.Attribute.HAS_DATA, "true");
+				element.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, cssColor);
+			}
+		}
+	}
+
 	public void updateMapForOrganism(final Organism organism) {
 
 		this.organism = organism;
@@ -542,16 +614,16 @@ public class AnnotatedMapPresenter {
 			executeOnMapElements(new MapElementCommand() {
 				@Override
 				public void execute(OMSVGElement element) {
-					String defaultColor = element.getAttribute(AnnotatedMapData.ATTRIBUTE_DEFAULT_COLOR);
-					element.removeAttribute(AnnotatedMapData.ATTRIBUTE_ABSENT);
-					element.removeAttribute(AnnotatedMapData.ATTRIBUTE_HAS_DATA);
-					element.removeAttribute(AnnotatedMapData.ATTRIBUTE_SEARCH_TARGET);
-					element.removeAttribute(AnnotatedMapData.ATTRIBUTE_ROUTE);
+					String defaultColor = element.getAttribute(AnnotatedMapData.Attribute.DEFAULT_COLOR);
+					element.removeAttribute(AnnotatedMapData.Attribute.ABSENT);
+					element.removeAttribute(AnnotatedMapData.Attribute.HAS_DATA);
+					element.removeAttribute(AnnotatedMapData.Attribute.SEARCH_TARGET);
+					element.removeAttribute(AnnotatedMapData.Attribute.ROUTE);
 					element.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, defaultColor);
 					if(element.getTagName().equals(SVGConstants.SVG_ELLIPSE_TAG)) {
 						element.setAttribute(SVGConstants.SVG_FILL_ATTRIBUTE, defaultColor);
-						element.removeAttribute(AnnotatedMapData.ATTRIBUTE_CPD_DST);
-						element.removeAttribute(AnnotatedMapData.ATTRIBUTE_CPD_SRC);
+						element.removeAttribute(AnnotatedMapData.Attribute.CPD_DST);
+						element.removeAttribute(AnnotatedMapData.Attribute.CPD_SRC);
 					}
 				}
 			});
@@ -581,16 +653,16 @@ public class AnnotatedMapPresenter {
 				executeOnMapElements(new MapElementCommand() {
 					@Override
 					public void execute(OMSVGElement element) {
-						String defaultColor = element.getAttribute(AnnotatedMapData.ATTRIBUTE_DEFAULT_COLOR);
-						element.setAttribute(AnnotatedMapData.ATTRIBUTE_ABSENT, "true");
-						element.removeAttribute(AnnotatedMapData.ATTRIBUTE_HAS_DATA);
-						element.removeAttribute(AnnotatedMapData.ATTRIBUTE_SEARCH_TARGET);
-						element.removeAttribute(AnnotatedMapData.ATTRIBUTE_ROUTE);
+						String defaultColor = element.getAttribute(AnnotatedMapData.Attribute.DEFAULT_COLOR);
+						element.setAttribute(AnnotatedMapData.Attribute.ABSENT, "true");
+						element.removeAttribute(AnnotatedMapData.Attribute.HAS_DATA);
+						element.removeAttribute(AnnotatedMapData.Attribute.SEARCH_TARGET);
+						element.removeAttribute(AnnotatedMapData.Attribute.ROUTE);
 						element.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, defaultColor);
 						if(element.getTagName().equals(SVGConstants.SVG_ELLIPSE_TAG)) {
 							element.setAttribute(SVGConstants.SVG_FILL_ATTRIBUTE, defaultColor);
-							element.removeAttribute(AnnotatedMapData.ATTRIBUTE_CPD_DST);
-							element.removeAttribute(AnnotatedMapData.ATTRIBUTE_CPD_SRC);
+							element.removeAttribute(AnnotatedMapData.Attribute.CPD_DST);
+							element.removeAttribute(AnnotatedMapData.Attribute.CPD_SRC);
 						}
 					}
 				});
@@ -600,7 +672,7 @@ public class AnnotatedMapPresenter {
 
 				// get all reactions from the RPC call
 				for(final Reaction rxn : result) {
-					Set<Xref> xrefs = rxn.getXrefs();
+					Set<Xref> xrefs = rxn.getXrefSet().getXrefs();
 
 					for(final Xref xref : xrefs) {
 
@@ -612,7 +684,7 @@ public class AnnotatedMapPresenter {
 							continue;
 
 						for(OMSVGElement element : elements) 
-							element.setAttribute(AnnotatedMapData.ATTRIBUTE_ABSENT, "false");
+							element.setAttribute(AnnotatedMapData.Attribute.ABSENT, "false");
 
 						// get the compound nodes associated with this reaction and set them to present
 						Set<MNNode> mnNodes = mapData.getDescriptor().getMetabolicNetwork().getNodesForRxnId(rxnId);
@@ -627,7 +699,7 @@ public class AnnotatedMapPresenter {
 								Set<OMSVGElement> cpdElements = mapData.getSvgElementsForId(cpdId);
 								if(cpdElements != null) {
 									for(OMSVGElement cpdElement : cpdElements) {
-										cpdElement.setAttribute(AnnotatedMapData.ATTRIBUTE_ABSENT, "false");
+										cpdElement.setAttribute(AnnotatedMapData.Attribute.ABSENT, "false");
 									}
 								}
 							}
@@ -637,7 +709,7 @@ public class AnnotatedMapPresenter {
 								Set<OMSVGElement> cpdElements = mapData.getSvgElementsForId(cpdId);
 								if(cpdElements != null) {
 									for(OMSVGElement cpdElement : cpdElements) {
-										cpdElement.setAttribute(AnnotatedMapData.ATTRIBUTE_ABSENT, "false");
+										cpdElement.setAttribute(AnnotatedMapData.Attribute.ABSENT, "false");
 									}
 								}
 							}
@@ -648,44 +720,78 @@ public class AnnotatedMapPresenter {
 		});
 	}
 
+	private void updateMapForReactions(final Sample sample, final Set<? extends HasMeasurements> rxns) {
+		Interpolator interpolator = Interpolator.getInterpolatorForSample(sample);
+
+		for(HasMeasurements rxn : rxns) {
+
+			// we only deal with Genes associated with Reactions right now
+			int numMeasurements = 0;
+			float mean = 0.0f;
+
+
+			for(Measurement measurement : rxn.getMeasurementSet().getMeasurements()) {
+				mean += measurement.getValue();
+				numMeasurements++;
+			}
+
+			mean /= (float) numMeasurements;
+
+			// calculate the css color for the mean
+			String cssColor = interpolator.calcCssColor(mean);
+
+			// set the css color on all SVG elements associated with id
+			Set<OMSVGElement> elements = mapData.getSvgElements((HasType) rxn);
+			if(elements == null)
+				continue;
+			for(OMSVGElement element : elements) {
+				if(element.hasAttribute(AnnotatedMapData.Attribute.ABSENT) && 
+						element.getAttribute(AnnotatedMapData.Attribute.ABSENT).equals("true"))
+					continue;
+				element.setAttribute(AnnotatedMapData.Attribute.HAS_DATA, "true");
+				element.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, cssColor);
+			}
+		}
+	}
+
 	public void updateMapForRoute(final Compound cpdSrc, final Compound cpdDst, final Pathway route) {
 
 		// almost like resetting the map, but we're also setting the route attribute to none
 		executeOnMapElements(new MapElementCommand() {
 			@Override
 			public void execute(OMSVGElement element) {
-				String defaultColor = element.getAttribute(AnnotatedMapData.ATTRIBUTE_DEFAULT_COLOR);
-				element.removeAttribute(AnnotatedMapData.ATTRIBUTE_HAS_DATA);
-				element.removeAttribute(AnnotatedMapData.ATTRIBUTE_SEARCH_TARGET);
-				element.setAttribute(AnnotatedMapData.ATTRIBUTE_ROUTE, "none");
+				String defaultColor = element.getAttribute(AnnotatedMapData.Attribute.DEFAULT_COLOR);
+				element.removeAttribute(AnnotatedMapData.Attribute.HAS_DATA);
+				element.removeAttribute(AnnotatedMapData.Attribute.SEARCH_TARGET);
+				element.setAttribute(AnnotatedMapData.Attribute.ROUTE, "none");
 				if(organism == null || organism.isGlobalMap())
-					element.setAttribute(AnnotatedMapData.ATTRIBUTE_ABSENT, "false");
+					element.setAttribute(AnnotatedMapData.Attribute.ABSENT, "false");
 				element.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, defaultColor);
 				if(element.getTagName().equals(SVGConstants.SVG_ELLIPSE_TAG)) {
 					element.setAttribute(SVGConstants.SVG_FILL_ATTRIBUTE, defaultColor);
-					element.removeAttribute(AnnotatedMapData.ATTRIBUTE_CPD_DST);
-					element.removeAttribute(AnnotatedMapData.ATTRIBUTE_CPD_SRC);
+					element.removeAttribute(AnnotatedMapData.Attribute.CPD_DST);
+					element.removeAttribute(AnnotatedMapData.Attribute.CPD_SRC);
 				}
 			}
 		});
 
 		// set source compound
 		for(OMSVGElement element : mapData.getSvgElements(cpdSrc)) {
-			element.removeAttribute(AnnotatedMapData.ATTRIBUTE_ROUTE);
-			element.setAttribute(AnnotatedMapData.ATTRIBUTE_CPD_SRC, "true");
+			element.removeAttribute(AnnotatedMapData.Attribute.ROUTE);
+			element.setAttribute(AnnotatedMapData.Attribute.CPD_SRC, "true");
 		}
 
 		// set destination compound
 		for(OMSVGElement element : mapData.getSvgElements(cpdDst)) {
-			element.removeAttribute(AnnotatedMapData.ATTRIBUTE_ROUTE);
-			element.setAttribute(AnnotatedMapData.ATTRIBUTE_CPD_DST, "true");
+			element.removeAttribute(AnnotatedMapData.Attribute.ROUTE);
+			element.setAttribute(AnnotatedMapData.Attribute.CPD_DST, "true");
 		}
 
 
 		// set routes in reaction
 		for(Reaction reaction : route.getReactions()) {
 			for(OMSVGElement element : mapData.getSvgElements(reaction)) 
-				element.setAttribute(AnnotatedMapData.ATTRIBUTE_ROUTE, reaction.getReactionColor().getCssAttributeValue());
+				element.setAttribute(AnnotatedMapData.Attribute.ROUTE, reaction.getReactionColor().getCssAttributeValue());
 		}
 
 		final Set<OMSVGElement> svgElements = mapData.getSvgElements(route.getReactions());
@@ -704,15 +810,15 @@ public class AnnotatedMapPresenter {
 			executeOnMapElements(new MapElementCommand() {
 				@Override
 				public void execute(OMSVGElement element) {
-					String defaultColor = element.getAttribute(AnnotatedMapData.ATTRIBUTE_DEFAULT_COLOR);
-					element.removeAttribute(AnnotatedMapData.ATTRIBUTE_HAS_DATA);
-					element.removeAttribute(AnnotatedMapData.ATTRIBUTE_SEARCH_TARGET);
-					element.removeAttribute(AnnotatedMapData.ATTRIBUTE_ROUTE);
+					String defaultColor = element.getAttribute(AnnotatedMapData.Attribute.DEFAULT_COLOR);
+					element.removeAttribute(AnnotatedMapData.Attribute.HAS_DATA);
+					element.removeAttribute(AnnotatedMapData.Attribute.SEARCH_TARGET);
+					element.removeAttribute(AnnotatedMapData.Attribute.ROUTE);
 					element.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, defaultColor);
 					if(element.getTagName().equals(SVGConstants.SVG_ELLIPSE_TAG)) {
 						element.setAttribute(SVGConstants.SVG_FILL_ATTRIBUTE, defaultColor);
-						element.removeAttribute(AnnotatedMapData.ATTRIBUTE_CPD_DST);
-						element.removeAttribute(AnnotatedMapData.ATTRIBUTE_CPD_SRC);
+						element.removeAttribute(AnnotatedMapData.Attribute.CPD_DST);
+						element.removeAttribute(AnnotatedMapData.Attribute.CPD_SRC);
 					}
 				}
 			});
@@ -745,47 +851,26 @@ public class AnnotatedMapPresenter {
 				executeOnMapElements(new MapElementCommand() {
 					@Override
 					public void execute(OMSVGElement element) {
-						element.removeAttribute(AnnotatedMapData.ATTRIBUTE_ROUTE);
-						element.removeAttribute(AnnotatedMapData.ATTRIBUTE_SEARCH_TARGET);
-						element.setAttribute(AnnotatedMapData.ATTRIBUTE_HAS_DATA, "false");
+						element.removeAttribute(AnnotatedMapData.Attribute.ROUTE);
+						element.removeAttribute(AnnotatedMapData.Attribute.SEARCH_TARGET);
+						element.setAttribute(AnnotatedMapData.Attribute.HAS_DATA, "false");
 						if(element.getTagName().equals(SVGConstants.SVG_ELLIPSE_TAG)) {
-							element.removeAttribute(AnnotatedMapData.ATTRIBUTE_CPD_DST);
-							element.removeAttribute(AnnotatedMapData.ATTRIBUTE_CPD_SRC);
+							element.removeAttribute(AnnotatedMapData.Attribute.CPD_DST);
+							element.removeAttribute(AnnotatedMapData.Attribute.CPD_SRC);
 						}
 					}
 				});
 
-				Interpolator interpolator = Interpolator.getInterpolatorForSample(sample);
-
-				for(HasMeasurements primitive : result) {
-					
-					// we only deal with Genes associated with Reactions right now
-					int numMeasurements = 0;
-					float mean = 0.0f;
-					Reaction reaction = (Reaction) primitive;
-					for(Gene gene : reaction.getGenes()) {
-						for(Measurement measurement : gene.getMeasurements()) {
-							mean += measurement.getValue();
-							numMeasurements++;
-						}
-					}
-					
-					mean /= (float) numMeasurements;
-					
-					// calculate the css color for the mean
-					String cssColor = interpolator.calcCssColor(mean);
-
-					// set the css color on all SVG elements associated with id
-					Set<OMSVGElement> elements = mapData.getSvgElements((HasType) primitive);
-					if(elements == null)
-						continue;
-					for(OMSVGElement element : elements) {
-						if(element.hasAttribute(AnnotatedMapData.ATTRIBUTE_ABSENT) && 
-								element.getAttribute(AnnotatedMapData.ATTRIBUTE_ABSENT).equals("true"))
-							continue;
-						element.setAttribute(AnnotatedMapData.ATTRIBUTE_HAS_DATA, "true");
-						element.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, cssColor);
-					}
+				switch(sample.getTargetType()) {
+				case GENE:
+					updateMapForGenes(sample, result);
+					break;
+				case REACTION:
+					updateMapForReactions(sample, result);
+					break;
+				case COMPOUND:
+					updateMapForCompounds(sample, result);
+					break;
 				}
 
 			}
@@ -798,12 +883,12 @@ public class AnnotatedMapPresenter {
 
 		if(previousSearchTargets != null) {
 			for(OMSVGElement target : previousSearchTargets)
-				target.removeAttribute(AnnotatedMapData.ATTRIBUTE_SEARCH_TARGET);
+				target.removeAttribute(AnnotatedMapData.Attribute.SEARCH_TARGET);
 		}
 
 		if(searchTargets != null) {
 			for(OMSVGElement target : searchTargets)
-				target.setAttribute(AnnotatedMapData.ATTRIBUTE_SEARCH_TARGET, "true");
+				target.setAttribute(AnnotatedMapData.Attribute.SEARCH_TARGET, "true");
 			centerMapAroundElements(searchTargets);
 		}
 

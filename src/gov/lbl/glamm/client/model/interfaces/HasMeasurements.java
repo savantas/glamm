@@ -1,11 +1,7 @@
 package gov.lbl.glamm.client.model.interfaces;
 
-import gov.lbl.glamm.client.model.Measurement;
-
-import java.util.Set;
+import gov.lbl.glamm.client.model.util.MeasurementSet;
 
 public interface HasMeasurements {
-	public void addMeasurement(final Measurement measurement);
-	public Set<Measurement> getMeasurements();
-	public void setMeasurements(final Set<Measurement> measurements);
+	public MeasurementSet getMeasurementSet();
 }

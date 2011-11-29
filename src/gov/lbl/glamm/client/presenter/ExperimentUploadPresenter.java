@@ -2,6 +2,7 @@ package gov.lbl.glamm.client.presenter;
 
 import gov.lbl.glamm.client.events.ExperimentUploadEvent;
 import gov.lbl.glamm.client.model.Organism;
+import gov.lbl.glamm.client.model.Sample;
 import gov.lbl.glamm.client.view.ExperimentUploadView;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -21,16 +22,7 @@ public class ExperimentUploadPresenter {
 
 	public interface View {
 		
-		public static final String FIELD_EXP_UPLOAD_CLAMP_MIN		= "clampMin";
-		public static final String FIELD_EXP_UPLOAD_CLAMP_MID		= "clampMid";
-		public static final String FIELD_EXP_UPLOAD_CLAMP_MAX		= "clampMax";
-		public static final String FIELD_EXP_UPLOAD_STRESS			= "stress";
-		public static final String FIELD_EXP_UPLOAD_TREATMENT		= "treatment";
-		public static final String FIELD_EXP_UPLOAD_CONTROL			= "control";
-		public static final String FIELD_EXP_UPLOAD_FILE			= "file";
-		public static final String FIELD_EXP_UPLOAD_TAXONOMY_ID		= "taxonomyId";
-		public static final String FIELD_EXP_UPLOAD_UNITS			= "units";
-		
+		public HasClickHandlers addTargetTypeChoice(final Sample.TargetType targetType);
 		public HasClickHandlers getCancelButton();
 		public HasText			getClampMaxField();
 		public HasText			getClampMidField();
@@ -39,6 +31,7 @@ public class ExperimentUploadPresenter {
 		public FileUpload		getFileUpload();
 		public FormPanel		getForm();
 		public HasText			getStressField();
+		public Hidden			getTargetTypeField();
 		public Hidden			getTaxonomyIdField();
 		public HasText			getTreatmentField();
 		public HasText			getUnitsField();
@@ -47,25 +40,60 @@ public class ExperimentUploadPresenter {
 		public void				showView();
 	}
 
+	public static enum FormField {
+		
+		CLAMP_MIN("clampMin"),
+		CLAMP_MID("clampMid"),
+		CLAMP_MAX("clampMax"),
+		STRESS("stress"),
+		TREATMENT("treatment"),
+		CONTROL("control"),
+		FILE("file"),
+		TARGET_TYPE("targetType"),
+		TAXONOMY_ID("taxonomyId"),
+		UNITS("units");
+		
+		private String formField;
+		
+		private FormField(final String formField) {
+			this.formField = formField;
+		}
+		
+		@Override
+		public String toString() {
+			return formField;
+		}
+	}
+	
 	private static final String ACTION_UPLOAD_EXPERIMENT = "uploadExperiment";
 
-	private View view = null;
-	private SimpleEventBus eventBus = null;
+	private View view;
+	private SimpleEventBus eventBus;
 
-	private Organism organism = null;
+	private Organism organism;
+	private Sample.TargetType targetType;
 
 	public ExperimentUploadPresenter(final View view, final SimpleEventBus eventBus) {
 		this.view = view;
 		this.eventBus = eventBus;
 		bind();
 	}
-
-	public void setOrganism(final Organism organism) {
-		this.organism = organism;
-		view.getTaxonomyIdField().setValue(this.organism.getTaxonomyId());
+	
+	private void addDataTypeChoices() {
+		for(final Sample.TargetType targetType : Sample.TargetType.values()) {
+			view.addTargetTypeChoice(targetType).addClickHandler(new ClickHandler() {
+				public void onClick(ClickEvent event) {
+					setTargetType(targetType);
+				}
+			});
+		}
 	}
 
+
+
 	private void bind() {
+		
+		addDataTypeChoices();
 
 		view.getCancelButton().addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
@@ -109,6 +137,16 @@ public class ExperimentUploadPresenter {
 
 	}
 
+	public void setOrganism(final Organism organism) {
+		this.organism = organism;
+		view.getTaxonomyIdField().setValue(this.organism.getTaxonomyId());
+	}
+	
+	private void setTargetType(final Sample.TargetType targetType) {
+		this.targetType = targetType;
+		view.getTargetTypeField().setValue(this.targetType.toString());
+	}
+	
 	private boolean validateForm() {
 
 		boolean isValid = true;
@@ -117,44 +155,44 @@ public class ExperimentUploadPresenter {
 		// ensure that the required text boxes contain valid data
 		if(view.getStressField().getText().isEmpty()) {
 			isValid		= 	false;
-			errorMsg 	+= 	"Missing required field " + ExperimentUploadView.STRING_LABEL_STRESS + "\n";
+			errorMsg 	+= 	"Missing required field " + ExperimentUploadView.LABEL_STRESS + "\n";
 		}
 
 		if(view.getTreatmentField().getText().isEmpty()) {
 			isValid		= 	false;
-			errorMsg 	+= 	"Missing required field " + ExperimentUploadView.STRING_LABEL_TREATMENT + "\n";
+			errorMsg 	+= 	"Missing required field " + ExperimentUploadView.LABEL_TREATMENT + "\n";
 		}
 
 		if(view.getControlField().getText().isEmpty()) {
 			isValid		= 	false;
-			errorMsg 	+= 	"Missing required field " + ExperimentUploadView.STRING_LABEL_CONTROL + "\n";
+			errorMsg 	+= 	"Missing required field " + ExperimentUploadView.LABEL_CONTROL + "\n";
 		}
 
 		if(view.getUnitsField().getText().isEmpty()) {
 			isValid		= 	false;
-			errorMsg 	+= 	"Missing required field " + ExperimentUploadView.STRING_LABEL_UNITS + "\n";
+			errorMsg 	+= 	"Missing required field " + ExperimentUploadView.LABEL_UNITS + "\n";
 		}
 
 		// ensure that the file upload points to a valid file
 		String filename = view.getFileUpload().getFilename();
 		if(filename.isEmpty()) {
 			isValid		=	false;
-			errorMsg 	+=	"Missing required field " + ExperimentUploadView.STRING_LABEL_FILE + "\n";
+			errorMsg 	+=	"Missing required field " + ExperimentUploadView.LABEL_FILE + "\n";
 		}
 
 		if(view.getClampMinField().getText().isEmpty()) {
 			isValid		=	false;
-			errorMsg	+=	"Missing required field " + ExperimentUploadView.STRING_LABEL_MIN + "\n";
+			errorMsg	+=	"Missing required field " + ExperimentUploadView.LABEL_MIN + "\n";
 		}
 
 		if(view.getClampMidField().getText().isEmpty()) {
 			isValid		=	false;
-			errorMsg	+=	"Missing required field " + ExperimentUploadView.STRING_LABEL_MID + "\n";
+			errorMsg	+=	"Missing required field " + ExperimentUploadView.LABEL_MID + "\n";
 		}
 		
 		if(view.getClampMaxField().getText().isEmpty()) {
 			isValid		=	false;
-			errorMsg	+=	"Missing required field " + ExperimentUploadView.STRING_LABEL_MAX + "\n";
+			errorMsg	+=	"Missing required field " + ExperimentUploadView.LABEL_MAX + "\n";
 		}
 
 		// if we've made it this far, make sure that the text values actually specify floating point numbers
@@ -166,7 +204,7 @@ public class ExperimentUploadPresenter {
 		}
 		catch(NumberFormatException nfe) {
 			isValid		=	false;
-			errorMsg 	+=	"Clamping value " + ExperimentUploadView.STRING_LABEL_MIN + " is not a valid number\n";
+			errorMsg 	+=	"Clamping value " + ExperimentUploadView.LABEL_MIN + " is not a valid number\n";
 		}
 
 		try {
@@ -176,7 +214,7 @@ public class ExperimentUploadPresenter {
 		}
 		catch(NumberFormatException nfe) {
 			isValid		=	false;
-			errorMsg 	+=	"Clamping value " + ExperimentUploadView.STRING_LABEL_MID + " is not a valid number\n";
+			errorMsg 	+=	"Clamping value " + ExperimentUploadView.LABEL_MID + " is not a valid number\n";
 		}
 
 		try {
@@ -186,7 +224,7 @@ public class ExperimentUploadPresenter {
 		}
 		catch(NumberFormatException nfe) {
 			isValid		=	false;
-			errorMsg 	+=	"Clamping value " + ExperimentUploadView.STRING_LABEL_MAX + " is not a valid number\n";
+			errorMsg 	+=	"Clamping value " + ExperimentUploadView.LABEL_MAX + " is not a valid number\n";
 		}
 
 		// the clamp values all exist, and they're all floating point - make sure they're in strictly increasing order

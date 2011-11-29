@@ -49,7 +49,7 @@ public class GenCpdPopup {
 		
 		for(Compound cpd : cpds) {
 			
-			Xref keggXref = cpd.getXrefForDbNames(keggDbNames);
+			Xref keggXref = cpd.getXrefSet().getXrefForDbNames(keggDbNames);
 			String keggId = keggXref != null ? keggXref.getXrefId() : null;
 			
 			String name = cpd.getName();
