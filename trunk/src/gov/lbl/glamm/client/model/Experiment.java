@@ -1,14 +1,11 @@
 package gov.lbl.glamm.client.model;
 
-
-
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Representation of an Experiment - wraps a collection of Samples with the same experiment id
+ * Representation of an Experiment - wraps a collection of Samples with the same experiment id.
  * @author jtbates
  *
  */
@@ -21,26 +18,22 @@ implements Serializable {
 	private String expId;
 	private List<Sample> samples;
 	
-	//********************************************************************************
 	
 	@SuppressWarnings("unused")
 	private Experiment() {}
 	
 	/**
 	 * Constructor
-	 * @param expId The experiment id
-	 * @param taxonomyId The taxonomy id of the Organism that is the subject of this experiment
-	 * @param source A description of the experiment's source
+	 * @param expId The experiment id.
 	 */
 	public Experiment(final String expId) {
 		this.expId = expId;
 		this.samples = new ArrayList<Sample>();
 	}
 
-	//********************************************************************************
-
 	/**
-	 * @param Adds a Sample to this Experiment
+	 * Adds a sample to this experiment.
+	 * @param sample The sample.
 	 */
 	public void addSample(final Sample sample) {
 
@@ -48,22 +41,18 @@ implements Serializable {
 			samples.add(sample);
 		}
 	}
-		
-	//********************************************************************************
-
+	
 	/**
-	 * Accessor
-	 * @return The experiment id
+	 * Gets the experiment id.
+	 * @return The experimentid.
 	 */
 	public String getExperimentId() {
 		return expId;
 	}
 	
-	//********************************************************************************
-	
 	/**
-	 * Accessor
-	 * @return The list of Samples associated with this Experiment
+	 * Gets the list of samples associated with this experiment.
+	 * @return The list of samples.
 	 */
 	public List<Sample> getSamples() {
 		return samples;

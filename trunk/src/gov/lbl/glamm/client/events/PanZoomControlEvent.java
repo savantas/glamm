@@ -1,9 +1,5 @@
 package gov.lbl.glamm.client.events;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
@@ -13,57 +9,54 @@ import com.google.gwt.event.shared.GwtEvent;
  *
  */
 public class PanZoomControlEvent extends GwtEvent<PanZoomControlEvent.Handler> {
+	
+	/**
+	 * The EventHandler interface for this event.
+	 * @author jtbates
+	 *
+	 */
 	public interface Handler extends EventHandler {
 		public void onPanZoom(PanZoomControlEvent event);
 	}
 	
+	/**
+	 * The Type associated with this event.
+	 */
 	public static final Type<Handler> TYPE = new Type<Handler>();
 		
-	public static final short ACTION_NONE 			= 0;
-	public static final short ACTION_ZOOM_IN 		= 1;
-	public static final short ACTION_ZOOM_OUT 		= 2;
-	public static final short ACTION_PAN_UP 		= 3;
-	public static final short ACTION_PAN_DOWN 		= 4;
-	public static final short ACTION_PAN_LEFT 		= 5;
-	public static final short ACTION_PAN_RIGHT 		= 6;
-	public static final short ACTION_ZOOM_SLIDER	= 7;
-	public static final short ACTION_ZOOM_TO_FIT	= 8;
-	
-	private static final String ACTION_DESC_NONE 		= "none";
-	private static final String ACTION_DESC_ZOOM_IN 	= "zoom in";
-	private static final String ACTION_DESC_ZOOM_OUT 	= "zoom out";
-	private static final String ACTION_DESC_PAN_UP 		= "pan up";
-	private static final String ACTION_DESC_PAN_DOWN 	= "pan down";
-	private static final String ACTION_DESC_PAN_LEFT 	= "pan left";
-	private static final String ACTION_DESC_PAN_RIGHT 	= "pan right";
-	private static final String ACTION_DESC_ZOOM_SLIDER = "zoom slider";
-	private static final String ACTION_DESC_ZOOM_TO_FIT	= "zoom to fit";
-	
-	private static final Map<Short, String> action2Desc;
-	static {
-		Map<Short, String> aMap = new HashMap<Short, String>();
-		aMap.put(ACTION_NONE, ACTION_DESC_NONE);
-		aMap.put(ACTION_ZOOM_IN, ACTION_DESC_ZOOM_IN);
-		aMap.put(ACTION_ZOOM_OUT, ACTION_DESC_ZOOM_OUT);
-		aMap.put(ACTION_PAN_UP, ACTION_DESC_PAN_UP);
-		aMap.put(ACTION_PAN_DOWN, ACTION_DESC_PAN_DOWN);
-		aMap.put(ACTION_PAN_LEFT, ACTION_DESC_PAN_LEFT);
-		aMap.put(ACTION_PAN_RIGHT, ACTION_DESC_PAN_RIGHT);
-		aMap.put(ACTION_ZOOM_SLIDER, ACTION_DESC_ZOOM_SLIDER);
-		aMap.put(ACTION_ZOOM_TO_FIT, ACTION_DESC_ZOOM_TO_FIT);
-		action2Desc = Collections.unmodifiableMap(aMap);
+	/**
+	 * Enum indicating which action is being reported by a PanZoomEvent
+	 * @author jtbates
+	 *
+	 */
+	public static enum Action {
+		NONE,
+		ZOOM_IN,
+		ZOOM_OUT,
+		PAN_UP,
+		PAN_DOWN,
+		PAN_LEFT,
+		PAN_RIGHT,
+		ZOOM_SLIDER,
+		ZOOM_TO_FIT;
 	}
 	
-	
-	private short action = ACTION_NONE;
+	private Action action = Action.NONE;
 	private float zoomNorm = 0.0f;
 	
-	
-	public PanZoomControlEvent(short action, float zoomNorm) {
+	/**
+	 * Constructor
+	 * @param action The action reported by this event.
+	 * @param zoomNorm The normalized zoom factor.
+	 */
+	public PanZoomControlEvent(final Action action, final float zoomNorm) {
 		this.action = action;
 		this.zoomNorm = zoomNorm;
 	}
 	
+	/**
+	 * The Type associated with this event.
+	 */
 	@Override
 	public GwtEvent.Type<Handler> getAssociatedType() {
 		return TYPE;
@@ -74,15 +67,20 @@ public class PanZoomControlEvent extends GwtEvent<PanZoomControlEvent.Handler> {
 		handler.onPanZoom(this);
 	}
 	
-	public short getAction() {
+	/**
+	 * Gets the action reported by this event.
+	 * @return The action reported by this event.
+	 */
+	public Action getAction() {
 		return action;
 	}
 	
+	/**
+	 * Gets the normalized zoom for this event.
+	 * @return The normalized zoom for this event.
+	 */
 	public float getZoomNorm() {
 		return zoomNorm;
 	}
 	
-	public String getDescription() {
-		return "action: " + action2Desc.get(action) + " (" + action + ") zoomNorm: " + zoomNorm;
-	}
 }

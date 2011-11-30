@@ -35,12 +35,18 @@ implements Serializable, HasSynonyms, HasMeasurements, HasType {
 	private MeasurementSet measurementSet;
 	private Set<Synonym> synonyms;
 	
+	/**
+	 * Key provider
+	 */
 	public static final transient ProvidesKey<Gene> KEY_PROVIDER = new ProvidesKey<Gene>() {
 		public Object getKey(Gene item) {
 			return item == null ? null : item.hashCode();
 		}
 	};
 
+	/**
+	 * Constructor
+	 */
 	public Gene() {
 		ecNums = new HashSet<String>();
 		molTaxonomyIds = new HashSet<String>();
@@ -49,16 +55,14 @@ implements Serializable, HasSynonyms, HasMeasurements, HasType {
 		synonyms = new HashSet<Synonym>();
 	}
 
-	//********************************************************************************
-
 	/**
-	 * @return The set of Enzyme Commission (EC) numbers associated with this Gene
+	 * Gets the set of EC (Enzyme Commission) numbers for this gene.
+	 * @return The set of EC numbers.
 	 */
 	public Set<String> getEcNums() {
 		return ecNums;
 	}
 
-	//********************************************************************************
 
 	/**
 	 * Adds an EC number to the set of EC numbers associated with this Gene
@@ -68,20 +72,34 @@ implements Serializable, HasSynonyms, HasMeasurements, HasType {
 		ecNums.add(ecNum);
 	}	
 
-	//********************************************************************************
-	
+	/**
+	 * Gets the MicrobesOnline taxonomy ids for this gene.
+	 * @return The set of taxonomy ids.
+	 */
 	public Set<String> getMolTaxonomyIds() {
 		return molTaxonomyIds;
 	}
 	
+	/**
+	 * Add a taxonomy id to the set of MicrobesOnline taxonomy ids for this gene.
+	 * @param taxonomyId The taxonomy id.
+	 */
 	public void addMolTaxonomyId(String taxonomyId) {
 		molTaxonomyIds.add(taxonomyId);
 	}
 	
+	/**
+	 * Gets the MetaMicrobesOnline taxonomy ids for this gene.
+	 * @return The set of taxonomy ids.
+	 */
 	public Set<String> getMetaMolTaxonomyIds() {
 		return metaMolTaxonomyIds;
 	}
 	
+	/**
+	 * Add a taxonomy id to the set of MetaMicrobesOnline taxonomy ids for this gene.
+	 * @param taxonomyId The taxonomy id.
+	 */
 	public void addMetaMolTaxonomyId(String taxonomyId) {
 		metaMolTaxonomyIds.add(taxonomyId);
 	}
@@ -96,6 +114,11 @@ implements Serializable, HasSynonyms, HasMeasurements, HasType {
 		return synonyms;
 	}
 	
+	/**
+	 * Gets the synonym of a specific type.
+	 * @param type The type.
+	 * @return The synonym.
+	 */
 	public String getSynonymWithType(final String type) {
 		for(Synonym synonym : getSynonyms()) {
 			if(synonym.getType().equals(type))
@@ -104,6 +127,10 @@ implements Serializable, HasSynonyms, HasMeasurements, HasType {
 		return null;
 	}
 	
+	/**
+	 * Gets the VIMSS id (MicrobesOnline locus id) for this gene.
+	 * @return The id.
+	 */
 	public String getVimssId() {
 		for(Synonym synonym : getSynonyms()) {
 			if(synonym.getType().equals(SYNONYM_TYPE_VIMSS))

@@ -24,7 +24,7 @@ import com.google.gwt.user.client.Window;
 
 
 /**
- * Wrapper class for GLAMM annotated svg data.
+ * The annotated SVG map and associated data.
  * @author jtbates
  *
  */
@@ -34,6 +34,11 @@ public class AnnotatedMapData implements Serializable {
 	private static final String PATH_ICON = "/images/";
 	private static final String PATH_SVG = "/svg/";
 
+	/**
+	 * Interface containing GLAMM-specific SVG annotations.
+	 * @author jtbates
+	 *
+	 */
 	public static interface Attribute {
 		String ABSENT			= "absent";
 		String CLASS			= "class";
@@ -53,6 +58,11 @@ public class AnnotatedMapData implements Serializable {
 		String WIDTH			= "width";
 	}
 
+	/**
+	 * Enum enumerating the set of CSS classes associated with interactive map elements.
+	 * @author jtbates
+	 *
+	 */
 	public static enum ElementClass {
 
 		BACKGROUND("background"),
@@ -83,6 +93,11 @@ public class AnnotatedMapData implements Serializable {
 		}
 	}
 
+	/**
+	 * Interface indicating the set of states an interactive map element may have.
+	 * @author jtbates
+	 *
+	 */
 	public interface State {
 		String DEFAULT		= "default";
 		String MOUSEOVER	= "mouseover";
@@ -108,6 +123,10 @@ public class AnnotatedMapData implements Serializable {
 	@SuppressWarnings("unused")
 	private AnnotatedMapData() {}
 
+	/**
+	 * Constructor
+	 * @param descriptor The map descriptor associated with this map.
+	 */
 	public AnnotatedMapData(final AnnotatedMapDescriptor descriptor) {
 		this.setDescriptor(descriptor);
 		this.cpdDbNames = new HashSet<String>();
@@ -120,25 +139,33 @@ public class AnnotatedMapData implements Serializable {
 	}
 
 	/**
-	 * Accessor
-	 * @return The names of the databases of compounds associated with this map.
+	 * Gets the set of names of the compound databases associated with this map.
+	 * @return The set of names.
 	 */
 	public Set<String> getCpdDbNames() {
 		return cpdDbNames;
 	}
 
 	/**
-	 * Accessor
-	 * @return The SVG elements corresponding to compounds on this map.
+	 * Gets the set of SVG elements corresponding with compounds on this map.
+	 * @return The set of SVG elements.
 	 */
 	public Set<OMSVGElement> getCpdSvgElements() {
 		return cpdSvgElements;
 	}
 
+	/**
+	 * Gets the annotated map descriptor for this map.
+	 * @return The descriptor.
+	 */
 	public AnnotatedMapDescriptor getDescriptor() {
 		return descriptor;
 	}
 
+	/**
+	 * Sets the annotated map descriptor.
+	 * @param descriptor The descriptor.
+	 */
 	public void setDescriptor(final AnnotatedMapDescriptor descriptor) {
 		this.descriptor = descriptor;
 		UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
@@ -148,25 +175,33 @@ public class AnnotatedMapData implements Serializable {
 	}
 
 
+	/**
+	 * Gets the URL for the SVG file associated with this map.
+	 * @return The URL.
+	 */
 	public String getSvgUrl() {
 		return svgUrl;
 	}
 
+	/**
+	 * Gets the URL for the icon image file associated with this map, typically PNG format.
+	 * @return The URL.
+	 */
 	public String getIconUrl() {
 		return iconUrl;
 	}
 
 	/**
-	 * Accessor
-	 * @return The names of the databases of reactions associated with this map.
+	 * Gets the set of names of the databases of reactions associated with this map.
+	 * @return The set of names.
 	 */
 	public Set<String> getRxnDbNames() {
 		return rxnDbNames;
 	}
 
 	/**
-	 * Accessor
-	 * @return The SVG elements corresponding to reactions on this map.
+	 * Gets the set of SVG elements corresponding to reactions on this map.
+	 * @return The set of elements.
 	 */
 	public Set<OMSVGElement> getRxnSvgElements() {
 		return rxnSvgElements;
@@ -174,7 +209,7 @@ public class AnnotatedMapData implements Serializable {
 
 	/**
 	 * Gets the root SVG element.
-	 * @return OMSVGSVGElement the root element
+	 * @return The root element.
 	 */
 	public OMSVGSVGElement getSvg() {
 		return svgRoot;
@@ -182,13 +217,18 @@ public class AnnotatedMapData implements Serializable {
 
 	/**
 	 * Gets the set of SVG elements associated with this id
-	 * @param id
-	 * @return HashSet<OMSVGElement> the elements associated with this id, null if none.
+	 * @param id The id.
+	 * @return The elements associated with this id, null if none.
 	 */
 	public Set<OMSVGElement> getSvgElementsForId(final String id) {
 		return id2SvgElements.get(id);
 	}
 
+	/**
+	 * Gets the set of SVG elements associated with a set of Xrefs.
+	 * @param xrefs The xrefs.
+	 * @return The SVG elements, empty set if none.
+	 */
 	public Set<OMSVGElement> getSvgElementsForXrefs(final Collection<Xref> xrefs) {
 		Set<OMSVGElement> svgElements = new HashSet<OMSVGElement>();
 		if(xrefs == null || xrefs.isEmpty())
@@ -204,9 +244,9 @@ public class AnnotatedMapData implements Serializable {
 	}
 
 	/**
-	 * Gets the set of SVG elements associated with this GlammPrimitive
-	 * @param primitive
-	 * @return HashSet<OMSVGElement> the elements associated with this primitive, null if none.
+	 * Gets the set of SVG elements associated with an object that implements the HasType interface
+	 * @param primitive The object implementing HasType.
+	 * @return The elements associated with this primitive, null if none.
 	 */
 	public Set<OMSVGElement> getSvgElements(final HasType primitive) {
 
@@ -240,9 +280,9 @@ public class AnnotatedMapData implements Serializable {
 	}
 
 	/**
-	 * Gets the set of SVG elements associated with this collection of GlammPrimitives
-	 * @param primitive - The collection of GlammPrimitives
-	 * @return HashSet<OMSVGElement> the elements associated with this collection, null if none.
+	 * Gets the set of SVG elements associated with this collection of objects implementing the HasType interface.
+	 * @param primitive The collection of objects implementing HasType.
+	 * @return The SVG elements associated with this collection, null if none.
 	 */
 	public Set<OMSVGElement> getSvgElements(final Collection<? extends HasType> primitives) {
 		HashSet<OMSVGElement> svgElements = null;
@@ -259,7 +299,7 @@ public class AnnotatedMapData implements Serializable {
 
 	/**
 	 * Gets the height attribute of the SVG root element, 0 if unspecified
-	 * @return float the height attribute the SVG root element.
+	 * @return The height attribute the SVG root element.
 	 */
 	public float getSvgHeight() {
 		float result = 0;
@@ -270,7 +310,7 @@ public class AnnotatedMapData implements Serializable {
 
 	/**
 	 * Gets the width attribute of the SVG root element, 0 if unspecified
-	 * @return float the width attribute the SVG root element.
+	 * @return The width attribute the SVG root element.
 	 */
 	public float getSvgWidth() {
 		float result = 0;
@@ -287,11 +327,7 @@ public class AnnotatedMapData implements Serializable {
 		return viewport;
 	}
 
-	/**
-	 * Initializes Compound groups
-	 * @param g The group
-	 */
-	private void initCpdGroup(OMElement g) {
+	void initCpdGroup(OMElement g) {
 
 		if(!g.hasAttribute(Attribute.COMPOUND)) 
 			return;
@@ -313,10 +349,6 @@ public class AnnotatedMapData implements Serializable {
 
 	}
 
-	/**
-	 * Initializes map groups
-	 * @param g The group
-	 */
 	private void initMapGroup(OMElement g) {
 
 		if(!g.hasAttribute(Attribute.MAP))
@@ -335,10 +367,6 @@ public class AnnotatedMapData implements Serializable {
 		}
 	}
 
-	/**
-	 * Initializes Reaction groups
-	 * @param g The group.
-	 */
 	private void initRxnGroup(OMElement g) {
 		OMNodeList<OMSVGElement> elements = g.getElementsByTagName(SVGConstants.SVG_PATH_TAG);
 
@@ -384,6 +412,10 @@ public class AnnotatedMapData implements Serializable {
 		}
 	}
 
+	/**
+	 * Sets the root SVG element.
+	 * @param svgRoot The root element.
+	 */
 	public void setSvgRoot(final OMSVGSVGElement svgRoot) {
 		this.svgRoot = svgRoot;
 

@@ -2,6 +2,7 @@ package gov.lbl.glamm.client.presenter;
 
 import gov.lbl.glamm.client.GlammClientBundle;
 import gov.lbl.glamm.client.events.PanZoomControlEvent;
+import gov.lbl.glamm.client.events.PanZoomControlEvent.Action;
 import gov.lbl.glamm.client.rpc.GlammServiceAsync;
 
 import org.vectomatic.dom.svg.OMElement;
@@ -27,19 +28,22 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Panel;
 
 public class PanZoomControlPresenter {
+	
 	public interface View {
 		public HasAllMouseHandlers getAllMouseHandlers();
 		public Panel getPanZoomControlPanel();
 	}
 
-	private static final String G_ID_ZOOM_SLIDER	= "zoom_slider";
-	private static final String G_ID_ZOOM_PLUS		= "zoom_plus";
-	private static final String G_ID_ZOOM_MINUS		= "zoom_minus";
-	private static final String G_ID_ZOOM_TO_FIT	= "zoom_to_fit";
-	private static final String G_ID_PAN_UP			= "pan_up";
-	private static final String G_ID_PAN_DOWN		= "pan_down";
-	private static final String G_ID_PAN_LEFT		= "pan_left";
-	private static final String G_ID_PAN_RIGHT		= "pan_right";
+	private interface Group {
+		String ZOOM_SLIDER	= "zoom_slider";
+		String ZOOM_PLUS	= "zoom_plus";
+		String ZOOM_MINUS	= "zoom_minus";
+		String ZOOM_TO_FIT	= "zoom_to_fit";
+		String PAN_UP		= "pan_up";
+		String PAN_DOWN		= "pan_down";
+		String PAN_LEFT		= "pan_left";
+		String PAN_RIGHT	= "pan_right";
+	}
 
 	private final float SLIDER_VALUE_MIN 	= 0.0f;
 	private final float SLIDER_VALUE_MAX 	= 1.0f;
@@ -48,7 +52,7 @@ public class PanZoomControlPresenter {
 
 	private float sliderValue = SLIDER_VALUE_MIN;
 	private int sliderYPos = SLIDER_YPOS_BOTTOM;
-	
+
 	private OMSVGPathElement 	slider = null;
 	private boolean				sliderMoving	= false;
 	private int					sliderOrigin	= sliderYPos;
@@ -78,42 +82,42 @@ public class PanZoomControlPresenter {
 
 			final String groupId = group.getAttribute("id");
 
-			if(groupId.equals(G_ID_ZOOM_SLIDER)) { 
+			if(groupId.equals(Group.ZOOM_SLIDER)) { 
 				initZoomSlider(group);
 			}
-			else if(groupId.equals(G_ID_ZOOM_PLUS)) {  
-				initButtonEvents(group, PanZoomControlEvent.ACTION_ZOOM_IN, new Command() {
+			else if(groupId.equals(Group.ZOOM_PLUS)) {  
+				initButtonEvents(group, Action.ZOOM_IN, new Command() {
 					public void execute() {
 						setSliderValue(getSliderValue() * 1.1f);
 					}
 				});
 			}
-			else if(groupId.equals(G_ID_ZOOM_MINUS)) {  
-				initButtonEvents(group, PanZoomControlEvent.ACTION_ZOOM_OUT, new Command() {
+			else if(groupId.equals(Group.ZOOM_MINUS)) {  
+				initButtonEvents(group, Action.ZOOM_OUT, new Command() {
 					public void execute() {
 						setSliderValue(getSliderValue() * 0.9f);
 					}
 				});
 			}
-			else if(groupId.equals(G_ID_ZOOM_TO_FIT)) {
-				initButtonEvents(group, PanZoomControlEvent.ACTION_ZOOM_TO_FIT, null);
+			else if(groupId.equals(Group.ZOOM_TO_FIT)) {
+				initButtonEvents(group, Action.ZOOM_TO_FIT, null);
 			}
-			else if(groupId.equals(G_ID_PAN_UP)) {  
-				initButtonEvents(group, PanZoomControlEvent.ACTION_PAN_UP, null);
+			else if(groupId.equals(Group.PAN_UP)) {  
+				initButtonEvents(group, Action.PAN_UP, null);
 			}
-			else if(groupId.equals(G_ID_PAN_DOWN)) {  
-				initButtonEvents(group, PanZoomControlEvent.ACTION_PAN_DOWN, null);
+			else if(groupId.equals(Group.PAN_DOWN)) {  
+				initButtonEvents(group, Action.PAN_DOWN, null);
 			}
-			else if(groupId.equals(G_ID_PAN_LEFT)) {  
-				initButtonEvents(group, PanZoomControlEvent.ACTION_PAN_LEFT, null);
+			else if(groupId.equals(Group.PAN_LEFT)) {  
+				initButtonEvents(group, Action.PAN_LEFT, null);
 			}
-			else if(groupId.equals(G_ID_PAN_RIGHT)) {  
-				initButtonEvents(group, PanZoomControlEvent.ACTION_PAN_RIGHT, null);
+			else if(groupId.equals(Group.PAN_RIGHT)) {  
+				initButtonEvents(group, Action.PAN_RIGHT, null);
 			}
 		}
 	}
 
-	private void initButtonEvents(final OMNode group, final short action, final Command clickBehavior) {
+	private void initButtonEvents(final OMNode group, final Action action, final Command clickBehavior) {
 
 		final PanZoomControlPresenter thePresenter = this;
 
@@ -170,7 +174,7 @@ public class PanZoomControlPresenter {
 				event.preventDefault();
 				if(sliderMoving) {
 					setSliderPos(sliderOrigin + event.getClientY() - mouseOrigin, true);
-					thePresenter.eventBus.fireEvent(new PanZoomControlEvent(PanZoomControlEvent.ACTION_ZOOM_SLIDER, sliderValue));
+					thePresenter.eventBus.fireEvent(new PanZoomControlEvent(Action.ZOOM_SLIDER, sliderValue));
 				}
 			}
 		});

@@ -13,10 +13,18 @@ import com.google.gwt.event.shared.GwtEvent;
  */
 public class MapUpdateEvent extends GwtEvent<MapUpdateEvent.Handler> {
 	
+	/**
+	 * The EventHandler interface for this event.
+	 * @author jtbates
+	 *
+	 */
 	public interface Handler extends EventHandler {
 		public void onMapUpdate(MapUpdateEvent event);
 	}
 	
+	/**
+	 * The Type associated with this event.
+	 */
 	public static final Type<Handler> TYPE = new Type<Handler>();
 	
 	private OMSVGMatrix ctm = null;
@@ -35,6 +43,10 @@ public class MapUpdateEvent extends GwtEvent<MapUpdateEvent.Handler> {
 		this.zoomNorm = zoomNorm;
 	}
 	
+	/**
+	 * Gets the Type associated with this event.
+	 * @return The Type associated with this event.
+	 */
 	@Override
 	public GwtEvent.Type<Handler> getAssociatedType() {
 		return TYPE;
@@ -46,7 +58,7 @@ public class MapUpdateEvent extends GwtEvent<MapUpdateEvent.Handler> {
 	}
 	
 	/**
-	 * 
+	 * Gets the CTM.
 	 * @return the current transform matrix for the map's designated viewport
 	 */
 	public OMSVGMatrix getCtm() {
@@ -54,7 +66,7 @@ public class MapUpdateEvent extends GwtEvent<MapUpdateEvent.Handler> {
 	}
 	
 	/**
-	 * 
+	 * Gets the normalized view rect.
 	 * @return the normalized view rect
 	 */
 	public OMSVGRect getViewRectNorm() {
@@ -62,7 +74,7 @@ public class MapUpdateEvent extends GwtEvent<MapUpdateEvent.Handler> {
 	}
 	
 	/**
-	 * 
+	 * Gets the normalized zoom factor.
 	 * @return the normalized zoom factor
 	 */
 	public float getZoomNorm() {
