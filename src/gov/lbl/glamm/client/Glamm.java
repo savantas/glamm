@@ -38,6 +38,9 @@ public class Glamm implements EntryPoint {
 		return info;
 	}
 
+	/**
+	 * Overrides onModuleLoad for EntryPoint.
+	 */
 	@Override
 	public void onModuleLoad() {
 

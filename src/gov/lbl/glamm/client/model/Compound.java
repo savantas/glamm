@@ -33,10 +33,15 @@ implements HasMeasurements, HasSynonyms, Serializable, HasXrefs, HasType {
 	private MeasurementSet measurementSet;
 	private XrefSet xrefSet;
 	
+	/**
+	 * The Type associated with this object.
+	 */
 	public static transient final Type TYPE = new Type();
 	
-
 	
+	/**
+	 * Constructor
+	 */
 	public Compound() {
 		this.synonyms = new HashSet<Synonym>();
 		this.measurementSet = new MeasurementSet();
@@ -44,108 +49,97 @@ implements HasMeasurements, HasSynonyms, Serializable, HasXrefs, HasType {
 	}
 
 	/**
-	 * Accessor
-	 * @return The compound's common name.  Considering treating the common name as a synonym and deprecating in future releases
+	 * Gets the common name.
+	 * @return The compound's common name.
 	 */
 	public String getName() {
 		return name;
 	}
 	
-
-
 	/**
-	 * Mutator
-	 * @param The compound's common name.
+	 * Sets the compound's common name
+	 * @param name The common name.
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
-
-
 	/**
-	 * Accessor
-	 * @return The compound's formula - KEGG formulas currently get precedence over formulas from other data sources
+	 * Gets the compound's formula.  KEGG formulas currently take precedence over formulas from other data sources.
+	 * @return The formula.
 	 */
 	public String getFormula() {
 		return formula;
 	}
 
-
-
 	/**
-	 * Mutator
-	 * @param The compound's formula.
+	 * Sets the compound's formula
+	 * @param formula The formula.
 	 */
 	public void setFormula(String formula) {
 		this.formula = formula;
 	}
 
-
-
 	/**
-	 * Accessor - TODO: Treat mass as a floating point value
-	 * @return The compound's mass - KEGG masses currently get precedence over massess from other data sources
+	 * Gets the mass of the compound.  KEGG masses take precedence over masses from other data sources.
+	 * @return The mass - should probably be float.
 	 */
 	public String getMass() {
 		return mass;
 	}
 
-
-
 	/**
-	 * Mutator - TODO: Treat mass as a floating point value
-	 * @param mass The compound's mass
+	 * Sets the mass of the compound.
+	 * @param The mass - should probably be float.
 	 */
 	public void setMass(String mass) {
 		this.mass = mass;
 	}
 
-
-
 	/**
-	 * Accessor
-	 * @return The compound's InChi identifier
+	 * Gets the InChi identifier for the compound.
+	 * @return The InChi id.
 	 */
 	public String getInchi() {
 		return inchi;
 	}
 	
-
-
 	/**
-	 * Mutator
-	 * @param The compound's InChi identifier
+	 * Sets the InChi identifier for the compound.
+	 * @param inchi The InChi id.
 	 */
 	public void setInchi(String inchi) {
 		this.inchi = inchi;
 	}
 	
-	
-
-
 	/**
-	 * Accessor
-	 * @return The compound's SMILES string
+	 * Gets the SMILES string.
+	 * @return The SMILES string.
 	 */
 	public String getSmiles() {
 		return smiles;
 	}
 	
-
-
 	/**
-	 * Mutator
-	 * @param The compound's SMILES string
+	 * Sets the SMILES string.
+	 * @param The SMILES string.
 	 */
 	public void setSmiles(String smiles) {
 		this.smiles = smiles;
 	}
 	
+	/**
+	 * Gets the GLAMM GUID (A unique identifier for the GLAMM database - soon to be deprecated.)
+	 * @return The GUID.
+	 */
 	public String getGuid() {
 		return guid;
 	}
 
+	/**
+	 * Sets the GLAMM GUID.
+	 * @param guid The GUID.
+	 */
 	public void setGuid(String guid) {
 		this.guid = guid;
 	}

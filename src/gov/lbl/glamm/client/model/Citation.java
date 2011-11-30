@@ -32,14 +32,25 @@ implements Serializable {
 		this.text=text;
 	}
 
+	/**
+	 * Gets the database version.
+	 * @return The version string.
+	 */
 	public String getDbVersion() {
 		return dbVersion;
 	}
 
+	/** Gets the description of this citation.
+	 * @return The description of this citation (e.g. "KEGG Reaction Database")
+	 */
 	public String getDescription() {
 		return description;
 	}
 
+	/**
+	 * Gets the full text of this citation.
+	 * @return The full text of the citation.
+	 */
 	public String getText() {
 		return text;
 	}

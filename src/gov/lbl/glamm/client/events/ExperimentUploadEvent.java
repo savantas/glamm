@@ -22,14 +22,22 @@ public class ExperimentUploadEvent extends GwtEvent<ExperimentUploadEvent.Handle
 		SUCCESS;
 	}
 	
+	/**
+	 * The EventHandler interface for this event.
+	 * @author jtbates
+	 *
+	 */
 	public interface Handler extends EventHandler {
 		public void onRequest(ExperimentUploadEvent event);
 		public void onSuccess(ExperimentUploadEvent event);
 	}
 	
+	/**
+	 * The Type associated with this event.
+	 */
 	public static Type<Handler> TYPE = new Type<Handler>();
 
-	private Organism organism = null;
+	private Organism organism;
 	private Action action;
 	
 	/**
@@ -42,6 +50,10 @@ public class ExperimentUploadEvent extends GwtEvent<ExperimentUploadEvent.Handle
 		this.action = action;
 	}
 	
+	/**
+	 * Gets the Type associated with this event.
+	 * @return The Type associated with this event.
+	 */
 	@Override
 	public com.google.gwt.event.shared.GwtEvent.Type<Handler> getAssociatedType() {
 		return TYPE;

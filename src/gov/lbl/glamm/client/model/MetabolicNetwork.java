@@ -10,6 +10,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * The metabolic network graph associated with a GLAMM annotated SVG map.
+ * @author jtbates
+ *
+ */
 @SuppressWarnings("serial")
 public class MetabolicNetwork implements Serializable {
 

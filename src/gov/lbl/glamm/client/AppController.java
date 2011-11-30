@@ -71,12 +71,10 @@ import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 
 /**
- * Top level application controller class.
- * 
+ * Top level application controller class, instantiated by Glamm entry point
  * @author jtbates
- * 
+ * @see Glamm
  */
-
 public class AppController {
 
 	private static AppController instance;
@@ -217,7 +215,8 @@ public class AppController {
 	}
 
 	/**
-	 * @return AppController singleton instance
+	 * Generates or returns the single instance of AppController.
+	 * @return The AppController instance.
 	 */
 	public static AppController instance() {
 		if (instance == null)
@@ -226,10 +225,9 @@ public class AppController {
 	}
 
 	/**
-	 * Called by the entryPoint class Glamm
-	 * 
-	 * @param rlp
-	 *            The RootLayoutPanel
+	 * Initialization code called by the Glamm entry point.
+	 * @param rlp The RootLayoutPanel
+	 * @see Glamm
 	 */
 	public void start(final RootLayoutPanel rlp) {
 		rlp.add(layout);
@@ -268,23 +266,20 @@ public class AppController {
 	}
 
 	/**
-	 * Computes widget positions on window resize
+	 * Computes widget position when the window is resized.
+	 * All resize computations are peformed at the end of the current event loop.
 	 */
 	public void onResize() {
 		// perform resize computations at the end of the current event loop
 		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
 			@Override
 			public void execute() {
-//				{
-//					mainPanel.setWidgetPosition(organismView, 0, 0);
-//					mainPanel.setWidgetPosition(experimentView, 0, organismView.getOffsetHeight() + 5);
-//				}
 				int minWidth = retrosynthesisView.getOffsetWidth() + 
-					organismView.getOffsetWidth() + 
-					experimentView.getOffsetWidth() + 
-					loginView.getOffsetWidth() + 
-					helpView.getOffsetWidth() + 
-					20;
+				organismView.getOffsetWidth() + 
+				experimentView.getOffsetWidth() + 
+				loginView.getOffsetWidth() + 
+				helpView.getOffsetWidth() + 
+				20;
 
 				mainPanel.setWidgetPosition(organismView, retrosynthesisView.getOffsetWidth() + 5, 0);
 				if(Window.getClientWidth() > minWidth) 
@@ -307,9 +302,6 @@ public class AppController {
 		amdPresenter.populate("map01100");
 	}
 
-	/**
-	 * Initializes compound disambiguation panel
-	 */
 	private void loadCpdDisambiguation() {
 
 		eventBus.addHandler(AnnotatedMapDataLoadedEvent.TYPE, new AnnotatedMapDataLoadedEvent.Handler() {
@@ -343,9 +335,6 @@ public class AppController {
 		});
 	}
 
-	/**
-	 * Initializes popup displaying loading message
-	 */
 	private void loadLoadingPanel() {
 		eventBus.addHandler(LoadingEvent.TYPE, new LoadingEvent.Handler() {
 			@Override
@@ -355,10 +344,6 @@ public class AppController {
 		});
 	}
 
-	/**
-	 * Initializes popup displaying information about compounds, reactions, and
-	 * pathways on the map
-	 */
 	private void loadMapElementPopup() {
 
 		eventBus.addHandler(AnnotatedMapDataLoadedEvent.TYPE, new AnnotatedMapDataLoadedEvent.Handler() {
@@ -453,9 +438,6 @@ public class AppController {
 		});
 	}
 
-	/**
-	 * Initializes the map view and presenter
-	 */
 	private void loadMapPanel() {
 
 		mainPanel.add(mapView, 0, 0);
@@ -478,23 +460,34 @@ public class AppController {
 				new PanZoomControlEvent.Handler() {
 			public void onPanZoom(PanZoomControlEvent event) {
 
-				short action = event.getAction();
-				if (action == PanZoomControlEvent.ACTION_PAN_UP)
+				switch(event.getAction()) {
+				case PAN_UP:
 					mapPresenter.translateNorm(0, -0.05f);
-				else if (action == PanZoomControlEvent.ACTION_PAN_DOWN)
+					break;
+				case PAN_DOWN:
 					mapPresenter.translateNorm(0, 0.05f);
-				else if (action == PanZoomControlEvent.ACTION_PAN_LEFT)
+					break;
+				case PAN_LEFT:
 					mapPresenter.translateNorm(0.05f, 0.0f);
-				else if (action == PanZoomControlEvent.ACTION_PAN_RIGHT)
+					break;
+				case PAN_RIGHT:
 					mapPresenter.translateNorm(-0.05f, 0.0f);
-				else if (action == PanZoomControlEvent.ACTION_ZOOM_TO_FIT)
+					break;
+				case ZOOM_TO_FIT:
 					mapPresenter.fitMapToPanel();
-				else
+					break;
+				case ZOOM_IN:
+				case ZOOM_OUT:
+				case ZOOM_SLIDER: 
 					mapPresenter.setZoomNormAboutPoint(
-							event.getZoomNorm(),
-							Window.getClientWidth() >> 1,
+							event.getZoomNorm(), 
+							Window.getClientWidth() >> 1, 
 							Window.getClientHeight() >> 1);
-
+					break;
+				case NONE:
+				default:
+					break;
+				}
 			}
 		});
 
@@ -540,9 +533,6 @@ public class AppController {
 		});
 	}
 
-	/**
-	 * Initializes inset mini map panel
-	 */
 	private void loadMiniMapPanel() {
 		//		miniMapPresenter.setMiniMap(GlammClientBundle.INSTANCE.globalMiniMap().getURL());
 		mainPanel.add(miniMapView, 0, 0);
@@ -563,9 +553,6 @@ public class AppController {
 
 	}
 
-	/**
-	 * Initializes Organism picker widget
-	 */
 	private void loadOrganismPicker() {
 		mainPanel.add(organismView, 0, 0);
 		organismPresenter.populate();
@@ -678,9 +665,6 @@ public class AppController {
 
 	}
 
-	/**
-	 * Initializes experiment upload panel
-	 */
 	private void loadExperimentUpload() {
 		eventBus.addHandler(OrganismPickedEvent.TYPE,
 				new OrganismPickedEvent.Handler() {
@@ -705,9 +689,6 @@ public class AppController {
 		});
 	}
 
-	/**
-	 * Initializes interpolator widget
-	 */
 	private void loadInterpolator() {
 		mainPanel.add(interpolatorView, 0, 0);
 
@@ -756,9 +737,6 @@ public class AppController {
 		mainPanel.add(loginView, 0, 0);
 	}
 
-	/**
-	 * Initializes organism upload panel
-	 */
 	private void loadOrganismUpload() {
 		eventBus.addHandler(OrganismUploadEvent.TYPE,
 				new OrganismUploadEvent.Handler() {
@@ -774,9 +752,6 @@ public class AppController {
 		});
 	}
 
-	/**
-	 * Initializes pan/zoom control cluster
-	 */
 	private void loadPanZoomControl() {
 		mainPanel.add(panZoomView, 0, 0);
 		eventBus.addHandler(MapUpdateEvent.TYPE, new MapUpdateEvent.Handler() {
@@ -786,9 +761,6 @@ public class AppController {
 		});
 	}
 
-	/**
-	 * Initializes citations popup panel
-	 */
 	private void loadCitations() {
 
 		final String ACTION_GEN_CITATIONS = "genCitationsPopup";
@@ -808,9 +780,6 @@ public class AppController {
 		mainPanel.add(citationsView, 0, 0);
 	}
 
-	/**
-	 * Initializes online help/tutorial panel
-	 */
 	private void loadHelp() {
 
 		UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
@@ -826,9 +795,6 @@ public class AppController {
 		mainPanel.add(helpView, 0, 0);
 	}
 
-	/**
-	 * Initializes retrosynthesis search/get directions widget
-	 */
 	private void loadRetrosynthesis() {
 		mainPanel.add(retrosynthesisView, 0, 0);
 

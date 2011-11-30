@@ -13,10 +13,19 @@ import com.google.gwt.event.shared.GwtEvent;
  *
  */
 public class MapElementClickEvent extends GwtEvent<MapElementClickEvent.Handler> {
+	
+	/**
+	 * The EventHandler interface for this event.
+	 * @author jtbates
+	 *
+	 */
 	public interface Handler extends EventHandler {
 		public void onMapElementClick(MapElementClickEvent event);
 	}
 	
+	/**
+	 * The Type associated with this event.
+	 */
 	public static final Type<Handler> TYPE = new Type<Handler>();
 	
 	private AnnotatedMapData.ElementClass elementClass;
@@ -26,9 +35,11 @@ public class MapElementClickEvent extends GwtEvent<MapElementClickEvent.Handler>
 	
 	/**
 	 * Constructor
-	 * @param event The GWT ClickEvent corresponding with this event
+	 * @param elementClass The class of element just clicked
+	 * @param ids The set of ids associated with the element just clicked.
+	 * @param clientX The client X position.
+	 * @param clientY The client Y position.
 	 */
-	
 	public MapElementClickEvent(final AnnotatedMapData.ElementClass elementClass, final Set<String> ids, final int clientX, final int clientY) {
 		this.elementClass = elementClass;
 		this.ids = ids;
@@ -36,6 +47,10 @@ public class MapElementClickEvent extends GwtEvent<MapElementClickEvent.Handler>
 		this.clientY = clientY;
 	}
 	
+	/**
+	 * Gets the Type associated with this event.
+	 * @return The Type associated with this event.
+	 */
 	@Override
 	public GwtEvent.Type<Handler> getAssociatedType() {
 		return TYPE;
@@ -46,18 +61,34 @@ public class MapElementClickEvent extends GwtEvent<MapElementClickEvent.Handler>
 		handler.onMapElementClick(this);
 	}
 
+	/**
+	 * Gets the class of element clicked.
+	 * @return The class of element clicked.
+	 */
 	public AnnotatedMapData.ElementClass getElementClass() {
 		return elementClass;
 	}
 
+	/**
+	 * Gets the set of ids associated with this map element.
+	 * @return The set of ids.
+	 */
 	public Set<String> getIds() {
 		return ids;
 	}
 
+	/**
+	 * Gets the client X position.
+	 * @return The client X position.
+	 */
 	public int getClientX() {
 		return clientX;
 	}
 
+	/**
+	 * Gets the client Y position.
+	 * @return The client Y position.
+	 */
 	public int getClientY() {
 		return clientY;
 	}

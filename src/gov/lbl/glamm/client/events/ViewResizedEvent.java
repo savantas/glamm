@@ -10,12 +10,24 @@ import com.google.gwt.event.shared.GwtEvent;
  */
 public class ViewResizedEvent extends GwtEvent<ViewResizedEvent.Handler> {
 	
+	/**
+	 * The EventHandler interface for this event.
+	 * @author jtbates
+	 *
+	 */
 	public interface Handler extends EventHandler {
 		public void onViewResized(ViewResizedEvent event);
 	}
 	
+	/**
+	 * The Type associated with this event.
+	 */
 	public static final Type<Handler> TYPE = new Type<Handler>();
 
+	/**
+	 * Gets the Type associated with this event.
+	 * @return The Type associated with this event.
+	 */
 	@Override
 	public com.google.gwt.event.shared.GwtEvent.Type<Handler> getAssociatedType() {
 		return TYPE;

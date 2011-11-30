@@ -1,7 +1,6 @@
 package gov.lbl.glamm.client.view;
 
 import gov.lbl.glamm.client.model.Sample;
-import gov.lbl.glamm.client.model.Sample.TargetType;
 import gov.lbl.glamm.client.presenter.ExperimentUploadPresenter;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
