@@ -2,37 +2,45 @@ package gov.lbl.glamm.client.model.util;
 
 import java.io.Serializable;
 
-
+/**
+ * A cross-reference to an external database.
+ * @author jtbates
+ *
+ */
 @SuppressWarnings("serial")
 public class Xref implements Serializable {
-	//********************************************************************************
-
+	
 	private String xrefId		= null;
 	private String xrefDbName 	= null;
-
-	//********************************************************************************
 
 	@SuppressWarnings("unused")
 	private Xref() {}
 
+	/** Constructor
+	 * 
+	 * @param xrefId The id in the external database.
+	 * @param xrefDbName The name of the external database.
+	 */
 	public Xref(final String xrefId, final String xrefDbName) {
 		this.xrefId = xrefId;
 		this.xrefDbName = xrefDbName;
 	}
 
-	//********************************************************************************
-
+	/**
+	 * Gets the external database id.
+	 * @return The external database id.
+	 */
 	public String getXrefId() {
 		return xrefId;
-	}
+	}	
 
-	//********************************************************************************
-
+	/**
+	 * Gets the external database name.
+	 * @return The external database name.
+	 */
 	public String getXrefDbName() {
 		return xrefDbName;
 	}
-
-	//********************************************************************************
 
 	@Override
 	public int hashCode() {
@@ -44,8 +52,6 @@ public class Xref implements Serializable {
 		+ ((xrefId == null) ? 0 : xrefId.hashCode());
 		return result;
 	}
-
-	//********************************************************************************
 
 	@Override
 	public boolean equals(Object obj) {

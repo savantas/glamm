@@ -2,6 +2,11 @@ package gov.lbl.glamm.client.model.util;
 
 import java.io.Serializable;
 
+/**
+ * Model class for Synonyms.  Synonyms have both a name and a type.
+ * @author jtbates
+ *
+ */
 @SuppressWarnings("serial")
 public class Synonym implements Serializable {
 	
@@ -11,15 +16,28 @@ public class Synonym implements Serializable {
 	@SuppressWarnings("unused")
 	private Synonym() {}
 	
+	/**
+	 * Constructor
+	 * @param name The name of the synonym.
+	 * @param type The type of the synonym (e.g. NCBI, VIMSS, etc.)
+	 */
 	public Synonym(final String name, final String type) {
 		this.name = name;
 		this.type = type;
 	}
 	
+	/**
+	 * Gets the name.
+	 * @return The name.
+	 */
 	public String getName() {
 		return name;
 	}
 	
+	/**
+	 * Gets the type.
+	 * @return The type.
+	 */
 	public String getType() {
 		return type;
 	}
