@@ -6,23 +6,43 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Class responsible for managing a set of measurements for an object.
+ * @author jtbates
+ *
+ */
 @SuppressWarnings("serial")
 public class MeasurementSet implements Serializable {
 	
 	Set<Measurement> measurements;
 	
+	/**
+	 * Constructor
+	 */
 	public MeasurementSet() {
 		measurements = new HashSet<Measurement>();
 	}
 	
+	/**
+	 * Adds a measurement to the set.
+	 * @param measurement The measurment.
+	 */
 	public void addMeasurement(final Measurement measurement) {
 		measurements.add(measurement);
 	}
 	
+	/**
+	 * Gets all measurements in the set.
+	 * @return The set of all measurments.
+	 */
 	public Set<Measurement> getMeasurements() {
 		return measurements;
 	}
 	
+	/**
+	 * Sets the contents of this measurement set to those of the parameter.
+	 * @param measurements The set of all measurements.
+	 */
 	public void setMeasurements(final Set<Measurement> measurements) {
 		this.measurements.clear();
 		if(measurements != null && !measurements.isEmpty())

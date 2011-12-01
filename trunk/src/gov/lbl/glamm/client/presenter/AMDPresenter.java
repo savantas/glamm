@@ -15,8 +15,18 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.ListBox;
 
+/**
+ * The presenter for displaying AnnotatedMapDescriptors in a drop-down list box style interface.
+ * @author jtbates
+ *
+ */
 public class AMDPresenter {
 	
+	/**
+	 * The interface to which the AMDPresenter's View must conform.
+	 * @author jtbates
+	 *
+	 */
 	public interface View {
 		public ListBox getListBox();
 	}
@@ -28,6 +38,12 @@ public class AMDPresenter {
 	private Map<String, AnnotatedMapDescriptor> title2AMD;
 	private Map<String, AnnotatedMapDescriptor> id2AMD;
 	
+	/**
+	 * Constructor
+	 * @param rpc The GLAMM RPC service.
+	 * @param view The View object for this presenter.
+	 * @param eventBus The event bus.
+	 */
 	public AMDPresenter(final GlammServiceAsync rpc, final View view, final SimpleEventBus eventBus) {
 		this.rpc = rpc;
 		this.view = view;
@@ -39,7 +55,7 @@ public class AMDPresenter {
 		bindView();
 	}
 	
-	public void bindView() {
+	private void bindView() {
 		view.getListBox().addChangeHandler(new ChangeHandler() {
 			@Override
 			public void onChange(ChangeEvent event) {
@@ -50,6 +66,10 @@ public class AMDPresenter {
 		});
 	}
 	
+	/**
+	 * Selects a map from the set of annotated map descriptors.
+	 * @param mapId The map id.
+	 */
 	public void selectMap(final String mapId) {
 		AnnotatedMapDescriptor amd = id2AMD.get(mapId);
 		if(amd == null)
@@ -65,6 +85,10 @@ public class AMDPresenter {
 		}
 	}
 	
+	/**
+	 * Populates the list of annotated map descriptors
+	 * @param selectMapId The id of the map that will be selected when population is complete.
+	 */
 	public void populate(final String selectMapId) {
 		rpc.getAnnotatedMapDescriptors(new AsyncCallback<List<AnnotatedMapDescriptor>>() {
 

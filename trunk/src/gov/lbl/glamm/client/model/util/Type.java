@@ -2,11 +2,20 @@ package gov.lbl.glamm.client.model.util;
 
 import java.io.Serializable;
 
+/**
+ * Convenience class that assigns a GLAMM-specific type to model classes implementing the HasType interface.
+ * This avoids the use of Java reflection which is not implemented in the GWT.
+ * @author jtbates
+ *
+ */
 @SuppressWarnings("serial")
 public class Type implements Serializable {
 	private static transient int nextHashCode;
 	private final int index;
 
+	/**
+	 * Constructor
+	 */
 	public Type() {
 		index = ++nextHashCode;
 	}
