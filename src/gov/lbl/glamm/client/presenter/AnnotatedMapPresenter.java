@@ -42,7 +42,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.HasAllMouseHandlers;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.HasDoubleClickHandlers;
 import com.google.gwt.event.dom.client.HasMouseOutHandlers;
 import com.google.gwt.event.dom.client.HasMouseOverHandlers;
@@ -70,17 +69,30 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Panel;
 
+/**
+ * Presenter for annotated map data - handles all mouse events associated with the map including pan/zoom and 
+ * clicking of elements.  Also handles all styling of map elements resulting from selecting an organism, overlaying
+ * experimental data, and finding routes between compounds.
+ * 
+ * @author jtbates
+ *
+ */
 public class AnnotatedMapPresenter {
-
 
 	private interface MapElementCommand {
 		public void execute(final OMSVGElement element);
 	}
 
+	/**
+	 * AnnotatedMapViews must conform to this interface.
+	 * @author jtbates
+	 *
+	 */
 	public interface View {
-		public HasAllMouseHandlers		getAllMouseHandlers();
-		public HasClickHandlers 		getClickHandlers();
-		public HasDoubleClickHandlers 	getDoubleClickHandlers();
+		/**
+		 * Gets the panel in which the SVG map is displayed.
+		 * @return The panel.
+		 */
 		public Panel 					getMapPanel();
 	}
 
@@ -109,6 +121,12 @@ public class AnnotatedMapPresenter {
 	private Organism organism = null;
 	private int dyThreshold;
 
+	/**
+	 * Constructor
+	 * @param rpc The GLAMM RPC service.
+	 * @param view The View object for this presenter.
+	 * @param eventBus The event bus.
+	 */
 	public AnnotatedMapPresenter(final GlammServiceAsync rpc, final View view, final SimpleEventBus eventBus) {
 
 		this.rpc = rpc;
@@ -236,8 +254,8 @@ public class AnnotatedMapPresenter {
 	private void bindView() {
 
 		final AnnotatedMapPresenter thePresenter = this;
-		final HasDoubleClickHandlers hasDoubleClickHandlers = view.getDoubleClickHandlers();
-		final HasAllMouseHandlers hasAllMouseHandlers = view.getAllMouseHandlers();
+		final HasDoubleClickHandlers hasDoubleClickHandlers = (HasDoubleClickHandlers) (view.getMapPanel());
+		final HasAllMouseHandlers hasAllMouseHandlers = (HasAllMouseHandlers) (view.getMapPanel());
 
 		hasAllMouseHandlers.addMouseDownHandler(new MouseDownHandler() {
 			public void onMouseDown(MouseDownEvent event) {
@@ -366,8 +384,11 @@ public class AnnotatedMapPresenter {
 	}
 
 
-
-	public void fitMapToPanel() {
+	/**
+	 * Fits the map to the window's client width, preserving the aspect ratio of the SVG file from which
+	 * this map is derived.  Note that the map may be too tall for the window's height as a result.
+	 */
+	public void fitMapToWindow() {
 
 		float sx = ((float) Window.getClientWidth()) / mapData.getSvgWidth();
 		float sy = sx;
@@ -437,12 +458,22 @@ public class AnnotatedMapPresenter {
 		return mapData.getSvg().createSVGRect(rX, rY, rWidth, rHeight);
 	}
 
+	/**
+	 * Gets the normalized zoom factor for this window.  This value is in the range [0,1] where 0 maps to the minimum
+	 * possible zoom factor, and 1 maps to the maximum.
+	 * @return The normalized zoom factor.
+	 */
 	public float getZoomNorm() {
 		if(mapData.getViewport().getCTM() == null)
 			return 0.0f;
 		return (mapData.getViewport().getCTM().getA() - scaleMin) / (scaleMax - scaleMin);
 	}
 
+	/**
+	 * Given an annotated map descriptor, this sends a GET request to retrieve the SVG file and fires
+	 * a AnnotatedMapDataLoadedEvent when the file is received.
+	 * @param descriptor The descriptor.
+	 */
 	public void loadMapDataFromDescriptor(final AnnotatedMapDescriptor descriptor) {
 		final AnnotatedMapData mapData = new AnnotatedMapData(descriptor);
 		try {
@@ -482,12 +513,15 @@ public class AnnotatedMapPresenter {
 		setTransform(mapData.getViewport(), m);
 	}
 
+	/**
+	 * Sets the map data presented.  Binds events to the interactive elements of this map.
+	 * @param mapData The map data.
+	 */
 	public void setMapData(final AnnotatedMapData mapData) {
 
 		if(mapData == null)
 			return;
-
-
+		
 		eventBus.fireEvent(new LoadingEvent(false));
 
 		if(this.mapData != null)
@@ -499,7 +533,7 @@ public class AnnotatedMapPresenter {
 		view.getMapPanel().getElement().appendChild(this.mapData.getSvg().getElement());
 
 		// size the map to fit the panel
-		fitMapToPanel();
+		fitMapToWindow();
 
 		// bind map events
 		bindMapEvents();
@@ -524,11 +558,22 @@ public class AnnotatedMapPresenter {
 			eventBus.fireEvent(new MapUpdateEvent(matrix, viewRectNorm, zoomNorm));
 	}
 
+	/**
+	 * Zooms by a normalized factor about a point in client space.
+	 * @param zoomNorm Normalized zoom factor in the range [0,1]
+	 * @param x Client X.
+	 * @param y Client Y.
+	 */
 	public void setZoomNormAboutPoint(final float zoomNorm, final int x, final int y) {
 		float scale = scaleMin + (zoomNorm * (scaleMax - scaleMin));
 		scaleAboutPoint(scale, x, y);
 	}
 
+	/**
+	 * Translates the map to normalized coordinates.
+	 * @param txNorm Normalized translation parameter in the range [0,1], mapping to [0,Width of SVG map]
+	 * @param tyNorm Normalized translation parameter in the range [0,1], mapping to [0,Height of SVG map]
+	 */
 	public void translateNorm(final float txNorm, final float tyNorm) {
 		float invScale = 1.0f / mapData.getViewport().getCTM().getA();
 		OMSVGMatrix m = mapData.getViewport().getCTM().translate(invScale * (txNorm * mapData.getSvgWidth()), invScale * (tyNorm * mapData.getSvgHeight()));
@@ -539,17 +584,12 @@ public class AnnotatedMapPresenter {
 		Interpolator interpolator = Interpolator.getInterpolatorForSample(sample);
 
 		for(HasMeasurements cpd : cpds) {
-
-			// we only deal with Genes associated with Reactions right now
 			int numMeasurements = 0;
 			float mean = 0.0f;
-
-
 			for(Measurement measurement : cpd.getMeasurementSet().getMeasurements()) {
 				mean += measurement.getValue();
 				numMeasurements++;
 			}
-
 			mean /= (float) numMeasurements;
 
 			// calculate the css color for the mean
@@ -606,6 +646,11 @@ public class AnnotatedMapPresenter {
 		}
 	}
 
+	/**
+	 * Darkens the reactions for which no genes are specified in the target organism.  If a compound
+	 * has no reactions connected to it, it will also be darkened.
+	 * @param organism The organism.
+	 */
 	public void updateMapForOrganism(final Organism organism) {
 
 		this.organism = organism;
@@ -754,6 +799,12 @@ public class AnnotatedMapPresenter {
 		}
 	}
 
+	/**
+	 * Displays route information on the map.
+	 * @param cpdSrc The source compound.
+	 * @param cpdDst The destination compound.
+	 * @param route The route.
+	 */
 	public void updateMapForRoute(final Compound cpdSrc, final Compound cpdDst, final Pathway route) {
 
 		// almost like resetting the map, but we're also setting the route attribute to none
@@ -798,11 +849,20 @@ public class AnnotatedMapPresenter {
 		centerMapAroundElements(svgElements);
 	}
 
+	/**
+	 * Centers a map around a specific reaction in a route.
+	 * @param reaction The reaction.
+	 */
 	public void updateMapForRouteStep(final Reaction reaction) {
 		final Set<OMSVGElement> svgElements = mapData.getSvgElements(reaction);
 		centerMapAroundElements(svgElements);
 	}
 
+	/**
+	 * Paints *omics data onto the map.  The target of the omics data is specified by the target type of the sample.
+	 * Currently, data may be painted onto reactions, compounds, and genes (which map to reactions.)
+	 * @param sample The sample.
+	 */
 	public void updateMapForSample(final Sample sample) {
 
 		// if the sample is null, reset to default state
@@ -878,6 +938,10 @@ public class AnnotatedMapPresenter {
 		});
 	}
 
+	/**
+	 * Centers map around a set of targets.  Paints the targets a contrasting color to make them more visible.
+	 * @param targets The set of targets.
+	 */
 	public void updateMapForSearchTarget(final Set<HasType> targets) {
 		final Set<OMSVGElement> searchTargets = mapData.getSvgElements(targets);
 

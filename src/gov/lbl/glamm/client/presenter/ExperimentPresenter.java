@@ -40,53 +40,159 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 
+/**
+ * Presenter for viewing the set of experiments available to an organism.  Provides a mechanism for designating
+ * a subset of experiments, allowing the user to rapidly cycle through experiments by clicking arrow buttons.
+ * This is ideal for exploring series of experiments.
+ * @author jtbates
+ *
+ */
 public class ExperimentPresenter {
 
+	/**
+	 * View interface.
+	 * @author jtbates
+	 *
+	 */
 	public interface View {
-
-		public static final String STRING_ADD_BUTTON 		= "Add to view subset";
-		public static final String STRING_DISCLOSURE_PANEL	= "Browse";
-		public static final String STRING_DOWNLOAD_BUTTON 	= "Download experiment";
-		public static final String STRING_EXP_LABEL 		= "Experiment: ";
-		public static final String STRING_NEXT_BUTTON		= "<html>&rarr;</html>";
-		public static final String STRING_NO_EXPERIMENTS	= "No experiments for organism";
-		public static final String STRING_NO_EXPERIMENT_SELECTED = "No experiment selected";
-		public static final String STRING_POPULATING		= "Populating...";
-		public static final String STRING_PREV_BUTTON		= "<html>&larr;</html>";
-		public static final String STRING_REMOVE_BUTTON 	= "Remove from view subset";
-		public static final String STRING_RESET_BUTTON 		= "Reset view subset";
-		public static final String STRING_SELECT_ORGANISM	= "Please select an organism.";
-		public static final String STRING_UPLOAD_BUTTON 	= "Upload experiment";
-		public static final String STRING_VIEW_EXPERIMENT	= "View experiment";
-		public static final String STRING_VIEW_LABEL 		= "View subset:";
-
+		/**
+		 * Adds a data type choice to the view.
+		 * @param caption The caption for this data type choice.
+		 * @param isDefault Flag indicating whether or not this is the default choice.
+		 * @return
+		 */
 		public HasClickHandlers		addDataTypeChoice(final String caption, final boolean isDefault);
+		
+		/**
+		 * Clears all data type choices from the view
+		 */
 		public void					clearDataTypeChoices();
+		
+		/**
+		 * Gets the button that, when clicked, adds the selected sample to the view subset.
+		 * @return The interface for the button.
+		 */
 		public HasClickHandlers		getAddToSubsetButton();
+		
+		/**
+		 * Gets the disclosure panel.
+		 * @return The disclosure panel.
+		 */
 		public DisclosurePanel		getDisclosurePanel();
+		
+		/**
+		 * Gets the button that, when clicked, downloads the selected sample.
+		 * @return The interface for the button.
+		 */
 		public HasClickHandlers 	getDownloadButton();
+		
+		/**
+		 * Gets the panel that holds the experiment table and button panel.
+		 * @return The panel.
+		 */
 		public Panel				getExperimentPanel();
+		
+		/**
+		 * Gets the experiment suggest box.
+		 * @return The suggest box.
+		 */
 		public SuggestBox			getExperimentSuggestBox();
+		
+		/**
+		 * Gets the experiment table.
+		 * @return The table.
+		 */
 		public CellTable<Sample>	getExperimentTable();
-		public HasClickHandlers		getNextExperimentButton();
-		public HasClickHandlers		getPrevExperimentButton();
+		
+		/**
+		 * Gets the button that, when clicked, displays the next sample in the view subset.
+		 * @return The interface for the button.
+		 */
+		public HasClickHandlers		getNextSampleButton();
+		
+		/**
+		 * Gets the button that, when clicked, displays the previous sample in the view subset.
+		 * @return The interface for the button.
+		 */
+		public HasClickHandlers		getPrevSampleButton();
+		
+		/**
+		 * Gets the button that, when clicked, removes the selected sample from the view subset.
+		 * @return The interface for that button.
+		 */
 		public HasClickHandlers		getRemoveFromSubsetButton();
+		
+		/**
+		 * Gets the button that, when clicked, removes all of the samples from the view subset.
+		 * @return The interface for that button.
+		 */
 		public HasClickHandlers 	getResetSubsetButton();
+		
+		/**
+		 * Gets the status label.
+		 * @return THe label.
+		 */
 		public Label				getStatusLabel();
+		
+		/**
+		 * Gets the button that, when clicked, allows the user to upload an experiment sample when no other
+		 * experiments are available for the selected organism.
+		 * @return The interface for that button.
+		 */
 		public Button				getStatusUploadButton();
+		
+		/**
+		 * Gets the button that, when clicked, allows the user to upload an experiment sample for the 
+		 * selected organism.
+		 * @return The interface for that button.
+		 */
 		public HasClickHandlers 	getUploadButton();
+		
+		/**
+		 * Gets the button that, when clicked, displays the data for the experiment selected in the view subset.
+		 * @return The interface for that button.
+		 */
 		public HasClickHandlers		getViewExperimentButton();
+		
+		/**
+		 * Gets the panel that holds the view subset table and button panel.
+		 * @return The panel.
+		 */
 		public Panel				getViewSubsetPanel();
+		
+		/**
+		 * Gets the view subset table.
+		 * @return The table.
+		 */
 		public CellTable<Sample>	getViewSubsetTable();
+		
+		/**
+		 * Maximizes the view.
+		 */
 		public void					maximize();
+		
+		/**
+		 * Minimizes the view.
+		 */
 		public void					minimize();
 	}
 
-	public static enum State {
-		NO_ORGANISM_SELECTED,
-		POPULATING,
-		NO_EXPERIMENTS,
-		HAS_EXPERIMENTS;
+	private static enum State {
+		
+		NO_ORGANISM_SELECTED("Please select an organism."),
+		POPULATING("Populating..."),
+		NO_EXPERIMENTS("There are no experiments for the selected organism."),
+		HAS_EXPERIMENTS("");
+		
+		private String statusText;
+		
+		private State(final String statusText) {
+			this.statusText = statusText;
+		}
+		
+		String getStatusText() {
+			return statusText;
+		}
 	}
 
 	// DataType.NONE should be displayed first
@@ -98,6 +204,7 @@ public class ExperimentPresenter {
 		DataType.SESSION
 	};
 	
+	private static final String NO_EXPERIMENT_SELECTED = "No experiment selected";
 	private static final String ACTION_DOWNLOAD_EXPERIMENT	= "downloadExperiment";
 	private static final Map<Sample.DataType, String> dataType2Caption = new HashMap<Sample.DataType, String>();
 	static {
@@ -126,6 +233,12 @@ public class ExperimentPresenter {
 
 	private Map<DataType, List<Sample>> dataType2Samples;
 
+	/**
+	 * Constructor
+	 * @param rpc The GLAMM RPC service.
+	 * @param view The View object for this presenter.
+	 * @param eventBus The event bus.
+	 */
 	public ExperimentPresenter(final GlammServiceAsync rpc, final View view, final SimpleEventBus eventBus) {
 		this.rpc = rpc;
 		this.view = view;
@@ -317,7 +430,7 @@ public class ExperimentPresenter {
 			}
 		});
 
-		view.getNextExperimentButton().addClickHandler(new ClickHandler() {
+		view.getNextSampleButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				List<Sample> dpList = viewSubsetDataProvider.getList();
@@ -338,7 +451,7 @@ public class ExperimentPresenter {
 			}
 		});
 
-		view.getPrevExperimentButton().addClickHandler(new ClickHandler() {
+		view.getPrevSampleButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				List<Sample> dpList = viewSubsetDataProvider.getList();
@@ -365,7 +478,7 @@ public class ExperimentPresenter {
 				List<Sample> dpList = viewSubsetDataProvider.getList();
 				if(viewSubsetTableSelection != null) {
 					dpList.remove(viewSubsetTableSelection);
-					view.getExperimentSuggestBox().setText(View.STRING_NO_EXPERIMENT_SELECTED);
+					view.getExperimentSuggestBox().setText(NO_EXPERIMENT_SELECTED);
 					setViewSubsetVisible(dpList.size() > 0);
 
 					// reset map if there are no experiments in the view subset
@@ -381,7 +494,7 @@ public class ExperimentPresenter {
 			public void onClick(ClickEvent event) {
 				viewSubsetDataProvider.getList().clear();
 				setViewSubsetVisible(false);
-				view.getExperimentSuggestBox().setText(View.STRING_NO_EXPERIMENT_SELECTED);
+				view.getExperimentSuggestBox().setText(NO_EXPERIMENT_SELECTED);
 				view.minimize();
 				eventBus.fireEvent(new SamplePickedEvent(null));
 			}
@@ -443,17 +556,23 @@ public class ExperimentPresenter {
 
 	private void clear() {
 		((MultiWordSuggestOracle) view.getExperimentSuggestBox().getSuggestOracle()).clear();
-		view.getExperimentSuggestBox().setText(View.STRING_NO_EXPERIMENT_SELECTED);
+		view.getExperimentSuggestBox().setText(NO_EXPERIMENT_SELECTED);
 		experimentDataProvider.getList().clear();
 		viewSubsetDataProvider.getList().clear();
 		setViewState(State.NO_ORGANISM_SELECTED);
 		setViewSubsetVisible(false);
 	}
 
+	/**
+	 * Clears the suggest box.
+	 */
 	public void clearSuggestBox() {
 		view.getExperimentSuggestBox().setText("");
 	}
 
+	/**
+	 * Populates the view with experiments for the selected organism.
+	 */
 	public void populate() {
 		clear();
 
@@ -482,31 +601,35 @@ public class ExperimentPresenter {
 		});
 	}
 
+	/**
+	 * Sets the selected organism.
+	 * @param organism The organism.
+	 */
 	public void setOrganism(final Organism organism) {
 		this.organism = organism;
 		populate();
 	}
 
 	private void setViewState(final State state) {
+		
+		view.getStatusLabel().setText(state.getStatusText());
+		
 		switch(state) {
 		default:
 		case NO_ORGANISM_SELECTED:
 			view.getExperimentPanel().setVisible(false);
-			view.getStatusLabel().setText(View.STRING_SELECT_ORGANISM);
 			view.getStatusLabel().setVisible(true);
 			view.getStatusUploadButton().setVisible(false);
-			view.getExperimentSuggestBox().setText(View.STRING_NO_EXPERIMENT_SELECTED);
+			view.getExperimentSuggestBox().setText(NO_EXPERIMENT_SELECTED);
 			break;
 		case POPULATING:
 			view.getExperimentPanel().setVisible(false);
-			view.getStatusLabel().setText(View.STRING_POPULATING);
 			view.getStatusLabel().setVisible(true);
 			view.getStatusUploadButton().setVisible(false);
 			eventBus.fireEvent(new ViewResizedEvent());
 			break;
 		case NO_EXPERIMENTS:
 			view.getExperimentPanel().setVisible(false);
-			view.getStatusLabel().setText(View.STRING_NO_EXPERIMENTS);
 			view.getStatusLabel().setVisible(true);
 			view.getStatusUploadButton().setVisible(true);
 			eventBus.fireEvent(new ViewResizedEvent());
@@ -520,7 +643,7 @@ public class ExperimentPresenter {
 		}
 	}
 
-	public void setViewSubsetVisible(final boolean visible) {
+	private void setViewSubsetVisible(final boolean visible) {
 		view.getViewSubsetPanel().setVisible(visible);
 	}
 

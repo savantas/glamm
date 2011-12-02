@@ -10,36 +10,129 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.http.client.UrlBuilder;
+import com.google.gwt.user.client.TakesValue;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.google.gwt.user.client.ui.HasText;
-import com.google.gwt.user.client.ui.Hidden;
 
+/**
+ * Presenter for the form that enables users to upload experiment data.
+ * @author jtbates
+ *
+ */
 public class ExperimentUploadPresenter {
 
+	/**
+	 * View interface
+	 * @author jtbates
+	 *
+	 */
 	public interface View {
 		
+		/**
+		 * Adds a target type choice to the experiment upload form.
+		 * @param targetType The target type.
+		 * @return The HasClickHandlers interface for selecting a target type.
+		 */
 		public HasClickHandlers addTargetTypeChoice(final Sample.TargetType targetType);
+		
+		/**
+		 * Gets the cancel button.
+		 * @return The interface for that button.
+		 */
 		public HasClickHandlers getCancelButton();
+		
+		/**
+		 * Gets the maximum clamping value form field.
+		 * @return The field.
+		 */
 		public HasText			getClampMaxField();
+		
+		/**
+		 * Gets the mid-range clamping value form field.
+		 * @return The field.
+		 */
 		public HasText			getClampMidField();
+		
+		/**
+		 * Gets the minimum clamping value form field.
+		 * @return The field.
+		 */
 		public HasText			getClampMinField();
+		
+		/**
+		 * Gets the control description form field.
+		 * @return The field.
+		 */
 		public HasText			getControlField();
+		
+		/**
+		 * Gets the file upload widget.
+		 * @return The file upload widget.
+		 */
 		public FileUpload		getFileUpload();
+		
+		/**
+		 * Gets the form widget.
+		 * @return The form.
+		 */
 		public FormPanel		getForm();
+		
+		/**
+		 * Gets the stress description form field.
+		 * @return The field.
+		 */
 		public HasText			getStressField();
-		public Hidden			getTargetTypeField();
-		public Hidden			getTaxonomyIdField();
+		
+		/**
+		 * Gets the hidden target type form field.
+		 * @return The field.
+		 */
+		public TakesValue<String>			getTargetTypeField();
+		
+		/**
+		 * Gets the hidden taxonomy id form field.
+		 * @return The field.
+		 */
+		public TakesValue<String>			getTaxonomyIdField();
+		
+		/**
+		 * Gets the treatment description form field.
+		 * @return The field.
+		 */
 		public HasText			getTreatmentField();
+		
+		/**
+		 * Gets the units field.
+		 * @return The field.
+		 */
 		public HasText			getUnitsField();
+		
+		/**
+		 * Gets the submit form button.
+		 * @return The button.
+		 */
 		public HasClickHandlers getSubmitButton();
+		
+		/**
+		 * Hides the view.
+		 */
 		public void				hideView();
+		
+		/**
+		 * Shows the view.
+		 */
 		public void				showView();
 	}
 
+	/**
+	 * Public enum for experiment upload form field names.
+	 * @author jtbates
+	 *
+	 */
 	public static enum FormField {
 		
 		CLAMP_MIN("clampMin"),
@@ -73,10 +166,16 @@ public class ExperimentUploadPresenter {
 	private Organism organism;
 	private Sample.TargetType targetType;
 
+	/**
+	 * Constructor
+	 * @param rpc The GLAMM RPC service.
+	 * @param view The View object for this presenter.
+	 * @param eventBus The event bus.
+	 */
 	public ExperimentUploadPresenter(final View view, final SimpleEventBus eventBus) {
 		this.view = view;
 		this.eventBus = eventBus;
-		bind();
+		bindView();
 	}
 	
 	private void addDataTypeChoices() {
@@ -91,7 +190,7 @@ public class ExperimentUploadPresenter {
 
 
 
-	private void bind() {
+	private void bindView() {
 		
 		addDataTypeChoices();
 
@@ -137,6 +236,10 @@ public class ExperimentUploadPresenter {
 
 	}
 
+	/**
+	 * Sets the selected organism.
+	 * @param organism The organism.
+	 */
 	public void setOrganism(final Organism organism) {
 		this.organism = organism;
 		view.getTaxonomyIdField().setValue(this.organism.getTaxonomyId());

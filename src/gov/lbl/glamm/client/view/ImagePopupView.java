@@ -3,7 +3,6 @@ package gov.lbl.glamm.client.view;
 import gov.lbl.glamm.client.presenter.ImagePopupPresenter;
 
 import com.google.gwt.event.dom.client.HasAllMouseHandlers;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.Frame;
@@ -28,14 +27,9 @@ public class ImagePopupView extends Composite
 		popup.add(frame);
 		initWidget(image);
 	}
-	
-	@Override
-	public HasClickHandlers getImageHasClickHandlers() {
-		return image;
-	}
 
 	@Override
-	public HasAllMouseHandlers getImageHasMouseHandlers() {
+	public HasAllMouseHandlers getImageMouseHandlers() {
 		return image;
 	}
 	

@@ -14,12 +14,39 @@ import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+/**
+ * Presenter used to disambiguate between two compounds with the same synonym.
+ * @author jtbates
+ *
+ */
 public class CpdDisambiguationPresenter {
 
+	/**
+	 * The interface to which CpdDisambiguationPresenter views must conform.
+	 * @author jtbates
+	 *
+	 */
 	public interface View {
+		/**
+		 * Adds a compound choice to the view.
+		 * @param html The HTML describing the compound choice (usually a name, mass, formula, image.)
+		 * @return The interface to which click handlers may be attached.
+		 */
 		public HasClickHandlers addCpdChoice(final String html);
+		
+		/**
+		 * Clears the compound choices from the view.
+		 */
 		public void clearCpdChoices();
+		
+		/**
+		 * Hides the view.
+		 */
 		public void hideView();
+		
+		/**
+		 * Shows the view.
+		 */
 		public void showView();
 	}
 
@@ -32,7 +59,12 @@ public class CpdDisambiguationPresenter {
 		CPD_DST;
 	}
 
-
+	/**
+	 * Constructor
+	 * @param rpc The GLAMM RPC service.
+	 * @param view The View object for this presenter.
+	 * @param eventBus The event bus.
+	 */
 	public CpdDisambiguationPresenter(final GlammServiceAsync rpc, final View view, final SimpleEventBus eventBus) {
 		this.rpc = rpc;
 		this.view = view;
@@ -68,14 +100,25 @@ public class CpdDisambiguationPresenter {
 		}
 	}
 
+	/**
+	 * Adds source compounds to the view.
+	 * @param compounds The collection of source compounds.
+	 */
 	public void addSrcCompounds(final Collection<Compound> compounds) {
 		addCompounds(compounds, CpdType.CPD_SRC);
 	}
 	
+	/**
+	 * Adds destination compounds to the view.
+	 * @param compounds The collection of destination compounds.
+	 */
 	public void addDstCompounds(final Collection<Compound> compounds) {
 		addCompounds(compounds, CpdType.CPD_DST);
 	}
 
+	/**
+	 * Clears the compounds from the view.
+	 */
 	public void clearCpdChoices() {
 		view.clearCpdChoices();
 	}

@@ -28,6 +28,10 @@ public class AMDPresenter {
 	 *
 	 */
 	public interface View {
+		/**
+		 * Gets the list box containing a list of the available map titles.
+		 * @return The list box.
+		 */
 		public ListBox getListBox();
 	}
 	
