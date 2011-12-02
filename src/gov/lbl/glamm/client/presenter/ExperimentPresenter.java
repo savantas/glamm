@@ -59,7 +59,7 @@ public class ExperimentPresenter {
 		 * Adds a data type choice to the view.
 		 * @param caption The caption for this data type choice.
 		 * @param isDefault Flag indicating whether or not this is the default choice.
-		 * @return
+		 * @return The click event handlers associated with the data type choice.
 		 */
 		public HasClickHandlers		addDataTypeChoice(final String caption, final boolean isDefault);
 		

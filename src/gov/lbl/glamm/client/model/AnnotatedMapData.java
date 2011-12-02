@@ -281,7 +281,7 @@ public class AnnotatedMapData implements Serializable {
 
 	/**
 	 * Gets the set of SVG elements associated with this collection of objects implementing the HasType interface.
-	 * @param primitive The collection of objects implementing HasType.
+	 * @param primitives The collection of objects implementing HasType.
 	 * @return The SVG elements associated with this collection, null if none.
 	 */
 	public Set<OMSVGElement> getSvgElements(final Collection<? extends HasType> primitives) {

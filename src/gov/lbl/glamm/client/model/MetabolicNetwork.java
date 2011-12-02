@@ -213,7 +213,7 @@ public class MetabolicNetwork implements Serializable {
 
 	/**
 	 * Gets the set of nodes adjacent to a compound.
-	 * @param The compound id.
+	 * @param cpdId The compound id.
 	 */
 	public Set<MNNode> getNodesForCpdId(String cpdId) {
 		return cpdId2Nodes.get(cpdId);
@@ -222,10 +222,10 @@ public class MetabolicNetwork implements Serializable {
 
 	/**
 	 * Gets the set of nodes adjacent to a reaction.
-	 * @param The reaction id.
+	 * @param rxnId The reaction id.
 	 */
-	public Set<MNNode> getNodesForRxnId(String cpdId) {
-		return rxnId2Nodes.get(cpdId);
+	public Set<MNNode> getNodesForRxnId(String rxnId) {
+		return rxnId2Nodes.get(rxnId);
 	}
 
 
