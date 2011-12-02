@@ -71,12 +71,6 @@ public class GlammServiceImpl extends RemoteServiceServlet
 		return GenCpdPopup.genCpdPopup(getGlammSession(), compound, taxonomyId);
 	}
 		
-	/**
-	 * Generates the HTML for the compound popups.
-	 * @param query The query string encoded in the map's svg representation
-	 * @param taxonomyId
-	 * @return The compound popup HTML.
-	 */
 	@Override
 	public String genCpdPopup(Set<String> ids, String taxonomyId) {
 		return GenCpdPopup.genCpdPopupForIds(getGlammSession(), ids, taxonomyId);

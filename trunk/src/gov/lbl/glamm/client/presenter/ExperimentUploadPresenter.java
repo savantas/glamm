@@ -168,7 +168,6 @@ public class ExperimentUploadPresenter {
 
 	/**
 	 * Constructor
-	 * @param rpc The GLAMM RPC service.
 	 * @param view The View object for this presenter.
 	 * @param eventBus The event bus.
 	 */

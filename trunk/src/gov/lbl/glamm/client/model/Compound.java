@@ -90,7 +90,7 @@ implements HasMeasurements, HasSynonyms, Serializable, HasXrefs, HasType {
 
 	/**
 	 * Sets the mass of the compound.
-	 * @param The mass - should probably be float.
+	 * @param mass The mass - should probably be float.
 	 */
 	public void setMass(String mass) {
 		this.mass = mass;
@@ -122,7 +122,7 @@ implements HasMeasurements, HasSynonyms, Serializable, HasXrefs, HasType {
 	
 	/**
 	 * Sets the SMILES string.
-	 * @param The SMILES string.
+	 * @param smiles The SMILES string.
 	 */
 	public void setSmiles(String smiles) {
 		this.smiles = smiles;

@@ -225,7 +225,7 @@ implements Serializable {
 
 	/**
 	 * Gets the sample id.
-	 * @return
+	 * @return The sample id.
 	 */
 	public String getSampleId() {
 		return sampleId;
@@ -273,7 +273,7 @@ implements Serializable {
 
 	/**
 	 * Gets the description of the stress.
-	 * @return
+	 * @return The stress description.
 	 */
 	public final String getStress() {
 		return stress;
