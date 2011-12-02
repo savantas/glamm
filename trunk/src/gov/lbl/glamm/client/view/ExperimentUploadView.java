@@ -5,6 +5,7 @@ import gov.lbl.glamm.client.presenter.ExperimentUploadPresenter;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.TakesValue;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.FileUpload;
@@ -213,12 +214,12 @@ implements ExperimentUploadPresenter.View {
 	}
 	
 	@Override
-	public Hidden getTargetTypeField() {
+	public TakesValue<String> getTargetTypeField() {
 		return targetTypeHidden;
 	}
 	
 	@Override
-	public Hidden getTaxonomyIdField() {
+	public TakesValue<String> getTaxonomyIdField() {
 		return taxonomyIdHidden;
 	}
 

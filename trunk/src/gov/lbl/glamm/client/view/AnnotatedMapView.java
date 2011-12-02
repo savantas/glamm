@@ -2,9 +2,6 @@ package gov.lbl.glamm.client.view;
 
 import gov.lbl.glamm.client.presenter.AnnotatedMapPresenter;
 
-import com.google.gwt.event.dom.client.HasAllMouseHandlers;
-import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.dom.client.HasDoubleClickHandlers;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -21,24 +18,8 @@ public class AnnotatedMapView extends Composite implements AnnotatedMapPresenter
 	}
 	
 	@Override
-	public HasAllMouseHandlers getAllMouseHandlers() {
-		return mainPanel;
-	}
-
-	@Override
 	public Panel getMapPanel() {
 		return mainPanel;
 	}
-
-	@Override
-	public HasClickHandlers getClickHandlers() {
-		return mainPanel;
-	}
-	
-	@Override
-	public HasDoubleClickHandlers getDoubleClickHandlers() {
-		return mainPanel;
-	}
-
 
 }

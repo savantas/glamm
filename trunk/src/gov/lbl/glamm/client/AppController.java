@@ -474,7 +474,7 @@ public class AppController {
 					mapPresenter.translateNorm(-0.05f, 0.0f);
 					break;
 				case ZOOM_TO_FIT:
-					mapPresenter.fitMapToPanel();
+					mapPresenter.fitMapToWindow();
 					break;
 				case ZOOM_IN:
 				case ZOOM_OUT:

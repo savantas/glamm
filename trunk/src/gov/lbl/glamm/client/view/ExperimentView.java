@@ -20,6 +20,18 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class ExperimentView extends Composite 
 	implements ExperimentPresenter.View {
 	
+	private static final String TEXT_ADD_BUTTON 		= "Add to view subset";
+	private static final String TEXT_DISCLOSURE_PANEL	= "Browse";
+	private static final String TEXT_DOWNLOAD_BUTTON 	= "Download experiment";
+	private static final String TEXT_EXP_LABEL 			= "Experiment: ";
+	private static final String TEXT_NEXT_BUTTON		= "<html>&rarr;</html>";
+	private static final String TEXT_PREV_BUTTON		= "<html>&larr;</html>";
+	private static final String TEXT_REMOVE_BUTTON 		= "Remove from view subset";
+	private static final String TEXT_RESET_BUTTON 		= "Reset view subset";
+	private static final String TEXT_UPLOAD_BUTTON 		= "Upload experiment";
+	private static final String TEXT_VIEW_EXPERIMENT	= "View experiment";
+	private static final String TEXT_VIEW_LABEL 		= "View subset:";
+	
 	private final String RB_GROUP = "EXPERIMENT_RB_GROUP";
 		
 	// the widget
@@ -69,34 +81,34 @@ public class ExperimentView extends Composite
 		
 		// header
 		headerPanel					= new HorizontalPanel();
-		experimentLabel				= new Label(STRING_EXP_LABEL);
+		experimentLabel				= new Label(TEXT_EXP_LABEL);
 		experimentSuggestBox 		= new SuggestBox();
-		prevButton 					= new Button(STRING_PREV_BUTTON);
-		nextButton					= new Button(STRING_NEXT_BUTTON);
+		prevButton 					= new Button(TEXT_PREV_BUTTON);
+		nextButton					= new Button(TEXT_NEXT_BUTTON);
 		
 		// disclosure panel
-		disclosurePanel				= new DisclosurePanel(STRING_DISCLOSURE_PANEL);
+		disclosurePanel				= new DisclosurePanel(TEXT_DISCLOSURE_PANEL);
 		disclosurePanelContent		= new VerticalPanel();
 		statusLabel					= new Label();
 		statusPanel					= new HorizontalPanel();
-		statusUploadButton			= new Button(STRING_UPLOAD_BUTTON);
+		statusUploadButton			= new Button(TEXT_UPLOAD_BUTTON);
 		experimentPanel				= new VerticalPanel();
 		radioButtonPanel				= new VerticalPanel();
 		experimentTableScrollPanel	= new ScrollPanel();
 		experimentTable				= new CellTable<Sample>();
 		expButtonPanel				= new HorizontalPanel();
-		addButton					= new Button(STRING_ADD_BUTTON);
-		uploadButton				= new Button(STRING_UPLOAD_BUTTON);
-		downloadButton				= new Button(STRING_DOWNLOAD_BUTTON);
+		addButton					= new Button(TEXT_ADD_BUTTON);
+		uploadButton				= new Button(TEXT_UPLOAD_BUTTON);
+		downloadButton				= new Button(TEXT_DOWNLOAD_BUTTON);
 		
 		viewSubsetPanel				= new VerticalPanel();
-		viewSubsetLabel				= new Label(STRING_VIEW_LABEL);
+		viewSubsetLabel				= new Label(TEXT_VIEW_LABEL);
 		viewSubsetTableScrollPanel 	= new ScrollPanel();
 		viewSubsetTable				= new CellTable<Sample>();
 		viewButtonPanel				= new HorizontalPanel();
-		viewExperimentButton		= new Button(STRING_VIEW_EXPERIMENT);
-		removeButton				= new Button(STRING_REMOVE_BUTTON);
-		resetButton					= new Button(STRING_RESET_BUTTON);
+		viewExperimentButton		= new Button(TEXT_VIEW_EXPERIMENT);
+		removeButton				= new Button(TEXT_REMOVE_BUTTON);
+		resetButton					= new Button(TEXT_RESET_BUTTON);
 		
 		init();
 		
@@ -201,12 +213,12 @@ public class ExperimentView extends Composite
 	}
 
 	@Override
-	public HasClickHandlers getNextExperimentButton() {
+	public HasClickHandlers getNextSampleButton() {
 		return nextButton;
 	}
 
 	@Override
-	public HasClickHandlers getPrevExperimentButton() {
+	public HasClickHandlers getPrevSampleButton() {
 		return prevButton;
 	}
 
