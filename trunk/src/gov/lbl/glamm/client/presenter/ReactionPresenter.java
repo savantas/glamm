@@ -24,13 +24,47 @@ import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SingleSelectionModel;
 
+/**
+ * Presenter for displaying reaction data for a map element.  These data typically include: the definition, the Enzyme Commission (EC) numbers,
+ * and a table summarizing the genes and measurements for those genes, if applicable.
+ * 
+ * @author jtbates
+ *
+ */
 public class ReactionPresenter {
 
+	/**
+	 * View interface.
+	 * @author jtbates
+	 *
+	 */
 	public interface View {
+		/**
+		 * Gets the reaction definition html interface.
+		 * @return The html interface.
+		 */
 		public HasHTML getDefinitionHtml();
+		
+		/**
+		 * Gets the ec number html interface.
+		 * @return The html interface.
+		 */
 		public HasHTML getEcNumHtml();
+		
+		/**
+		 * Gets the gene table.
+		 * @return The gene table.
+		 */
 		public CellTable<Gene> getGeneTable();
+		
+		/**
+		 * Hides the gene table.
+		 */
 		public void hideGeneTable();
+		
+		/**
+		 * Shows the gene table.
+		 */
 		public void showGeneTable();
 
 	}
@@ -48,6 +82,12 @@ public class ReactionPresenter {
 	@SuppressWarnings("unused")
 	private SimpleEventBus eventBus;
 
+	/**
+	 * Constructor
+	 * @param rpc The GLAMM RPC service.
+	 * @param view The View object for this presenter.
+	 * @param eventBus The event bus.
+	 */
 	public ReactionPresenter(final GlammServiceAsync rpc, final View view, final SimpleEventBus eventBus) {
 		this.rpc = rpc;
 		this.view = view;
@@ -201,14 +241,26 @@ public class ReactionPresenter {
 	}
 
 
+	/**
+	 * Sets the host to which genes and ec links will be linked.
+	 * @param host The host name.
+	 */
 	public void setHost(final String host) {
 		this.host = host;
 	}
 
+	/**
+	 * Sets the organism.
+	 * @param organism The organism.
+	 */
 	public void setOrganism(final Organism organism) {
 		this.organism = organism;
 	}
 
+	/**
+	 * Sets the reaction.
+	 * @param reaction The reaction.
+	 */
 	public void setReaction(final Reaction reaction) {
 
 		this.reaction = reaction;

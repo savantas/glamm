@@ -63,33 +63,8 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 
 public class RetrosynthesisPresenter {
-
-	public enum State {
-		INITIAL,
-		CALCULATING,
-		HAS_ROUTES,
-		NO_ROUTES;
-	}
-
+	
 	public interface View {
-
-		public static final String ALGORITHM_DFS_TEXT				= "Depth-first Search";
-		public static final String ALGORITHM_DFS_VALUE				= "dfs";
-		public static final String ALGORITHM_TW_DFS_TEXT			= "Taxon-weighted Depth-first Search";
-		public static final String ALGORITHM_TW_DFS_VALUE			= "twdfs";
-
-		public static String STRING_STATUS_CALCULATING		= "Calculating...";
-		public static String STRING_BUTTON_EXPORT_ROUTES	= "Export Routes";
-		public static String STRING_BUTTON_FIND_ROUTES 		= "Find Routes";
-		public static String STRING_BUTTON_NEXT 			= "<html>&rarr;</html>";
-		public static String STRING_BUTTON_PREV 			= "<html>&larr;</html>";
-		public static String STRING_DP_GET_DIRECTIONS		= "Get directions";
-		public static String STRING_LABEL_ALGORITHM			= "Algorithm: ";
-		public static String STRING_LABEL_CPD_DST			= "To: ";
-		public static String STRING_LABEL_CPD_SRC 			= "From: ";
-		public static String STRING_STATUS_NO_ROUTES		= "No routes found";
-		public static String STRING_LABEL_ROUTES 			= "Route: ";
-		public static String STRING_LABEL_SEARCH 			= "Search: ";
 
 		public ListBox 				getAlgorithmsListBox();
 		public SuggestBox 			getCpdDstSuggestBox();
@@ -106,6 +81,52 @@ public class RetrosynthesisPresenter {
 		public SuggestBox 			getSearchSuggestBox();
 		public Label 				getStatusLabel();
 	}
+	
+	public static enum Algorithm {
+		DFS("Depth-first Search", "dfs", false),
+		TW_DFS("Taxon-weighted Depth-first Search", "twdfs", true);
+		
+		private String caption;
+		private String algorithm;
+		private boolean requiresOrganism;
+		
+		private Algorithm(final String caption, final String algorithm, final boolean requiresOrganism) {
+			this.caption = caption;
+			this.algorithm = algorithm;
+			this.requiresOrganism = requiresOrganism;
+		}
+		
+		public String getAlgorithm() {
+			return algorithm;
+		}
+		
+		public String getCaption() {
+			return caption;
+		}
+		
+		public boolean requiresOrganism() {
+			return requiresOrganism;
+		}
+	}
+
+	private static enum State {
+		INITIAL(""),
+		CALCULATING("Calculating..."),
+		HAS_ROUTES(""),
+		NO_ROUTES("No routes found");
+		
+		private String statusText;
+		
+		private State(final String statusText) {
+			this.statusText = statusText;
+		}
+		
+		String getStatusText() {
+			return statusText;
+		}
+	}
+
+	
 
 	private String isolateHost;
 	private String metagenomeHost;
@@ -717,13 +738,11 @@ public class RetrosynthesisPresenter {
 		this.organism = organism;
 
 		view.getAlgorithmsListBox().clear();
-
-		if(this.organism == null || this.organism.isGlobalMap()) {
-			view.getAlgorithmsListBox().addItem(View.ALGORITHM_DFS_TEXT, View.ALGORITHM_DFS_VALUE);
-		}
-		else {
-			view.getAlgorithmsListBox().addItem(View.ALGORITHM_TW_DFS_TEXT, View.ALGORITHM_TW_DFS_VALUE);
-			view.getAlgorithmsListBox().addItem(View.ALGORITHM_DFS_TEXT, View.ALGORITHM_DFS_VALUE);
+		
+		for(Algorithm algorithm : Algorithm.values()) {
+			// if the organism is null or the organism is the global map, only add algorithms that don't require an organism
+			if(!algorithm.requiresOrganism || (organism != null && !organism.isGlobalMap()))
+				view.getAlgorithmsListBox().addItem(algorithm.getCaption(), algorithm.getAlgorithm());
 		}
 	}
 
@@ -747,6 +766,7 @@ public class RetrosynthesisPresenter {
 	private void setViewState(final State state) {
 		this.viewState = state;
 
+		view.getStatusLabel().setText(state.getStatusText());
 		switch(viewState) {
 		default:
 		case INITIAL:
@@ -755,7 +775,6 @@ public class RetrosynthesisPresenter {
 			break;
 		case CALCULATING:
 			view.getRoutesPanel().setVisible(false);
-			view.getStatusLabel().setText(View.STRING_STATUS_CALCULATING);
 			view.getStatusLabel().setVisible(true);
 			eventBus.fireEvent(new ViewResizedEvent());
 			break;
@@ -766,7 +785,6 @@ public class RetrosynthesisPresenter {
 			break;
 		case NO_ROUTES:
 			view.getRoutesPanel().setVisible(false);
-			view.getStatusLabel().setText(View.STRING_STATUS_NO_ROUTES);
 			view.getStatusLabel().setVisible(true);
 			eventBus.fireEvent(new ViewResizedEvent());
 			break;
@@ -796,7 +814,7 @@ public class RetrosynthesisPresenter {
 	}
 
 	private void updateRouteLabel() {
-		String labelText = View.STRING_LABEL_ROUTES + " " + (1 + routeIndex) + " of " + routes.size();
+		String labelText = "Route: " + (1 + routeIndex) + " of " + routes.size();
 		view.getRoutesLabel().setText(labelText);
 	}
 

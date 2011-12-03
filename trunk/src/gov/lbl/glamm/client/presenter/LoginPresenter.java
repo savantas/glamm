@@ -23,24 +23,86 @@ import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 
+/**
+ * Presenter for logging a user in and out, as well as displaying login status.
+ * @author jtbates
+ *
+ */
 public class LoginPresenter {
 
-	private enum State {
+	private static enum State {
 		LOGGED_OUT,
 		LOGGING_IN,
 		LOGGED_IN;
 	}
+	
+	/**
+	 * Public enum for login form field names.
+	 * @author jtbates
+	 *
+	 */
+	public static enum FormField {
+		USERNAME("username"),
+		PASSWORD("pass1");
+		
+		private String formField;
+		
+		private FormField(final String formField) {
+			this.formField = formField;
+		}
+		
+		@Override
+		public String toString() {
+			return formField;
+		}
+	}
+	
+	/**
+	 * View interface
+	 * @author jtbates
+	 *
+	 */
 	public interface View {
-
-		public static final String FIELD_LOGIN_USERNAME = "username";
-		public static final String FIELD_LOGIN_PASSWORD = "pass1";
-
+		/**
+		 * Gets the cancel button.
+		 * @return The interface for the button.
+		 */
 		public HasClickHandlers getCancelButton();
+		
+		/**
+		 * Gets the form panel.
+		 * @return The form panel.
+		 */
 		public FormPanel getForm();
+		
+		/**
+		 * Gets the password text box.
+		 * @return The text box.
+		 */
 		public HasText getPasswordTextBox();
+		
+		/**
+		 * Gets the popup panel containing the login form.
+		 * @return The popup panel.
+		 */
 		public PopupPanel getPopupPanel();
+		
+		/**
+		 * Gets the status label.
+		 * @return The status label.
+		 */
 		public Label getStatusLabel();
+		
+		/**
+		 * Gets the login button.
+		 * @return The interface for the button.
+		 */
 		public HasClickHandlers getLoginButton();
+		
+		/**
+		 * Gets the username text box.
+		 * @return The text box.
+		 */
 		public HasText getUserNameTextBox();
 	}
 
@@ -61,6 +123,12 @@ public class LoginPresenter {
 	private User user;
 	private State state;
 
+	/**
+	 * Constructor
+	 * @param rpc The GLAMM RPC service.
+	 * @param view The View object for this presenter.
+	 * @param eventBus The event bus.
+	 */
 	public LoginPresenter(final GlammServiceAsync rpc, final View view, final SimpleEventBus eventBus) {
 
 		this.rpc = rpc;

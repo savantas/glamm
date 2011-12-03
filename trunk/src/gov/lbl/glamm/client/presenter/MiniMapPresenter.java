@@ -16,11 +16,35 @@ import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Panel;
 
+/**
+ * Presenter for the mini-map (icon currently displayed in the lower left corner of the screen) for this map.
+ * @author jtbates
+ *
+ */
 public class MiniMapPresenter {
 
+	/**
+	 * View interface.
+	 * @author jtbates
+	 *
+	 */
 	public interface View {
+		/**
+		 * Gets the mouse event handlers for the mini map.
+		 * @return The mouse event handler interface.
+		 */
 		public HasAllMouseHandlers getAllMouseHandlers();
+		
+		/**
+		 * Gets the image for the mini map background.
+		 * @return The image.
+		 */
 		public Image getImage();
+		
+		/**
+		 * Gets the panel containing the mini map.
+		 * @return The panel.
+		 */
 		public Panel getMiniMapPanel();
 	}
 
@@ -34,13 +58,18 @@ public class MiniMapPresenter {
 	private int imgWidth = 0;
 	private int imgHeight = 0;
 
+	/**
+	 * Constructor
+	 * @param view The View object for this presenter.
+	 * @param eventBus The event bus.
+	 */
 	public MiniMapPresenter(final View view, final SimpleEventBus eventBus) {
 		this.view = view;
 		this.eventBus = eventBus;
-		bind();
+		bindView();
 	}
 
-	private void bind() {
+	private void bindView() {
 		Event.setEventListener(view.getImage().getElement(), new EventListener() {
 			@Override
 			public void onBrowserEvent(Event event) {
@@ -72,10 +101,18 @@ public class MiniMapPresenter {
 		});
 	}
 
+	/**
+	 * Sets the url for the mini map background image.
+	 * @param url The url.
+	 */
 	public void setMiniMapUrl(final String url) {
 		view.getImage().setUrl(url);
 	}
 
+	/**
+	 * Updates the view reticle for the mini map panel.
+	 * @param viewRectNorm The normalized rectangle (coordinates normalized in the range [0,1] for the reticle.
+	 */
 	public void updateReticle(OMSVGRect viewRectNorm) {
 
 		if(viewRectNorm == null)

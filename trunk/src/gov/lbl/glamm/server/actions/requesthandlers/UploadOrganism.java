@@ -69,7 +69,7 @@ public class UploadOrganism implements RequestHandler {
 		});
 
 		// construct the organism
-		String organismName = fuh.getFormField(OrganismUploadPresenter.View.FIELD_ORGANISM_UPLOAD_NAME);
+		String organismName = fuh.getFormField(OrganismUploadPresenter.FormField.NAME.toString());
 		String taxonomyId	= sm.nextAvailableTaxonomyId();
 
 		if(organismName != null && taxonomyId != null) {

@@ -52,7 +52,7 @@ public class GetDirections implements RequestHandler {
 
 		// in the event of taxon-weighted depth first search, set up the metabolic network
 		// to indicate which reactions are native and which aren't
-		if(taxonomyId != null && algorithm.equals(RetrosynthesisPresenter.View.ALGORITHM_TW_DFS_VALUE)) {
+		if(taxonomyId != null && algorithm.equals(RetrosynthesisPresenter.Algorithm.TW_DFS.getAlgorithm())) {
 
 			geneDao = new GeneDAOImpl(sm);
 			rxnDao = new ReactionGlammDAOImpl(sm);

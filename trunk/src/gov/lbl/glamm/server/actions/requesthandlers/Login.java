@@ -26,8 +26,8 @@ public class Login implements RequestHandler {
 		final GlammSession sm = GlammSession.getGlammSession(request);
 		final FormRequestHandler fh = new FormRequestHandler(request, null);
 
-		final String email = fh.getFormField(LoginPresenter.View.FIELD_LOGIN_USERNAME);
-		final String password = fh.getFormField(LoginPresenter.View.FIELD_LOGIN_PASSWORD);
+		final String email = fh.getFormField(LoginPresenter.FormField.USERNAME.toString());
+		final String password = fh.getFormField(LoginPresenter.FormField.PASSWORD.toString());
 
 		if(email == null || email.isEmpty()) {
 			ResponseHandler.asHtml(response, LOGIN_ERROR_MSG, HttpServletResponse.SC_OK);
