@@ -52,11 +52,11 @@ public abstract class RetrosynthesisAlgorithm {
 	public static RetrosynthesisAlgorithm create(String algorithm, String taxonomyId, MetabolicNetwork network) {
 		RetrosynthesisAlgorithm ra = null;
 		
-		if(algorithm.equals(RetrosynthesisPresenter.View.ALGORITHM_DFS_VALUE)) {
+		if(algorithm.equals(RetrosynthesisPresenter.Algorithm.DFS.getAlgorithm())) {
 			ra = new RADepthFirstSearch(algorithm, taxonomyId, network);
 		}
 		
-		else if(algorithm.equals(RetrosynthesisPresenter.View.ALGORITHM_TW_DFS_VALUE)) {
+		else if(algorithm.equals(RetrosynthesisPresenter.Algorithm.TW_DFS.getAlgorithm())) {
 			ra = new RATaxonWeightedDFS(algorithm, taxonomyId, network);
 		}
 		

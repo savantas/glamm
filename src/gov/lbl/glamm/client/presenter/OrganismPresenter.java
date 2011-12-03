@@ -35,18 +35,77 @@ import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 
+/**
+ * Presenter for viewing the list of organisms available to the user.  The list of organisms may be filtered by available experimental data types.
+ * @author jtbates
+ *
+ */
 public class OrganismPresenter {
 
+	/**
+	 * View interface.
+	 * @author jtbates
+	 *
+	 */
 	public interface View {
+		
+		/**
+		 * Adds a data type choice to the view.
+		 * @param caption The caption for this data type choice.
+		 * @param isDefault Flag indicating whether or not this is the default choice.
+		 * @return The click event handlers associated with the data type choice.
+		 */
 		public HasClickHandlers		addDataTypeChoice(final String caption, final boolean isDefault);
+		
+		/**
+		 * Clears the data type choices from the view.
+		 */
 		public void					clearDataTypeChoices();
+		
+		/**
+		 * Gets the disclosure panel.
+		 * @return The panel.
+		 */
 		public DisclosurePanel		getDisclosurePanel();
+		
+		/**
+		 * Gets the download organism button.
+		 * @return The interface for the button.
+		 */
 		public HasClickHandlers 	getDownloadButton();
+		
+		/**
+		 * Gets the organism list box.
+		 * @return The list box.
+		 */
 		public ListBox 				getOrganismListBox();
+		
+		/**
+		 * Gets the organism suggest box.
+		 * @return The suggest box.
+		 */
 		public SuggestBox			getOrganismSuggestBox();
+		
+		/**
+		 * Gets the reset button used to reset the view to a non-organism-specific global map.
+		 * @return The interface for the button.
+		 */
 		public HasClickHandlers 	getResetButton();
+		
+		/**
+		 * Gets the organism upload button.
+		 * @return The interface for the button.
+		 */
 		public HasClickHandlers 	getUploadButton();
+		
+		/**
+		 * Maximizes the disclosure panel.
+		 */
 		public void					maximize();
+		
+		/**
+		 * Minimizes the disclosure panel.
+		 */
 		public void					minimize();
 	}
 
@@ -70,6 +129,12 @@ public class OrganismPresenter {
 
 	private HashMap<String, Organism> name2Organism = null;
 
+	/**
+	 * Constructor
+	 * @param rpc The GLAMM RPC service.
+	 * @param view The View object for this presenter.
+	 * @param eventBus The event bus.
+	 */
 	public OrganismPresenter(final GlammServiceAsync rpc, final View view, final SimpleEventBus eventBus) {
 
 		this.rpc = rpc;
@@ -89,6 +154,9 @@ public class OrganismPresenter {
 		bindView();
 	}
 
+	/**
+	 * Updates the data type filter options.
+	 */
 	public void updateDataTypeChoices() {
 
 		view.clearDataTypeChoices();
@@ -199,6 +267,9 @@ public class OrganismPresenter {
 		});
 	}
 
+	/**
+	 * Populates the organism list and suggest box.
+	 */
 	public void populate() {
 
 		final MultiWordSuggestOracle suggestOracle = (MultiWordSuggestOracle) view.getOrganismSuggestBox().getSuggestOracle();
@@ -240,6 +311,11 @@ public class OrganismPresenter {
 		});
 	}
 
+	/**
+	 * Sets the organism - fires an OrganismPickedEvent if necessary.
+	 * @param organism The organism.
+	 * @param shouldFireEvent Flag indicating if a OrganismPickedEvent should be fired.
+	 */
 	public void setOrganism(Organism organism, boolean shouldFireEvent) {
 
 		this.organism = organism;

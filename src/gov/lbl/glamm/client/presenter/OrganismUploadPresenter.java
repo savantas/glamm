@@ -15,20 +15,79 @@ import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.google.gwt.user.client.ui.HasText;
 
+/**
+ * Presenter for the form that enables users to upload organism data.
+ * @author jtbates
+ *
+ */
 public class OrganismUploadPresenter {
 
+	/**
+	 * View interface.
+	 * @author jtbates
+	 *
+	 */
 	public interface View {
-		
-		public static final String FIELD_ORGANISM_UPLOAD_NAME		= "name";
-		public static final String FIELD_ORGANISM_UPLOAD_FILE		= "file";
-		
+		/**
+		 * Gets the cancel button.
+		 * @return The interface for the button.
+		 */
 		public HasClickHandlers	getCancelButton();
+		
+		/**
+		 * Gets the file upload widget.
+		 * @return The file upload widget.
+		 */
 		public FileUpload		getFileUpload();
+		
+		/**
+		 * Gets the form panel.
+		 * @return The form panel.
+		 */
 		public FormPanel		getForm();
+		
+		/**
+		 * Gets the organism name field.
+		 * @return The organism name field.
+		 */
 		public HasText			getNameField();
-		public HasClickHandlers getSubmitField();
+		
+		/**
+		 * Gets the submit button.
+		 * @return The interface for the button.
+		 */
+		public HasClickHandlers getSubmitButton();
+		
+		/**
+		 * Hides the view.
+		 */
 		public void				hideView();
+		
+		/**
+		 * Shows the view.
+		 */
 		public void				showView();
+	}
+	
+	/**
+	 * Public enum for organism upload form field names.
+	 * @author jtbates
+	 *
+	 */
+	public static enum FormField {
+		NAME("name"),
+		FILE("file");
+		
+		private String formField;
+		
+		private FormField(final String formField) {
+			this.formField = formField;
+		}
+		
+		@Override
+		public String toString() {
+			return formField;
+		}
 	}
 	
 	private static final String ACTION_UPLOAD_ORGANISM	= "uploadOrganism";
@@ -36,14 +95,19 @@ public class OrganismUploadPresenter {
 	private View view = null;
 	private SimpleEventBus eventBus = null;
 
+	/**
+	 * Constructor
+	 * @param view The View object for this presenter.
+	 * @param eventBus The event bus.
+	 */
 	public OrganismUploadPresenter(final View view, final SimpleEventBus eventBus) {
 		this.view = view;
 		this.eventBus = eventBus;
 
-		bind();
+		bindView();
 	}
 
-	private void bind() {
+	private void bindView() {
 
 		view.getCancelButton().addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
@@ -51,7 +115,7 @@ public class OrganismUploadPresenter {
 			}
 		});
 
-		view.getSubmitField().addClickHandler(new ClickHandler() {
+		view.getSubmitButton().addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				view.getForm().submit();
 			}

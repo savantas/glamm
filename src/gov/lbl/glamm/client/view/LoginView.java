@@ -105,8 +105,8 @@ implements LoginPresenter.View {
 		formPanel.setStylePrimaryName("glamm-picker");
 
 		// set up form field names
-		userNameTextBox.setName(FIELD_LOGIN_USERNAME);
-		passwordTextBox.setName(FIELD_LOGIN_PASSWORD);
+		userNameTextBox.setName(LoginPresenter.FormField.USERNAME.toString());
+		passwordTextBox.setName(LoginPresenter.FormField.PASSWORD.toString());
 		
 		initWidget(decoratorPanel);
 	}

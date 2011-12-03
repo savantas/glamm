@@ -27,10 +27,29 @@ import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Panel;
 
+/**
+ * Presenter for pan/zoom control panel.
+ * @author jtbates
+ *
+ */
 public class PanZoomControlPresenter {
 	
+	/**
+	 * View interface.
+	 * @author jtbates
+	 *
+	 */
 	public interface View {
+		/**
+		 * Gets the mouse handlers for the pan/zoom control panel.
+		 * @return The mouse handlers.
+		 */
 		public HasAllMouseHandlers getAllMouseHandlers();
+		
+		/**
+		 * Gets the panel.
+		 * @return The panel.
+		 */
 		public Panel getPanZoomControlPanel();
 	}
 
@@ -63,6 +82,12 @@ public class PanZoomControlPresenter {
 	private SimpleEventBus 	eventBus 	= null;
 	private View			view		= null;
 
+	/**
+	 * Constructor
+	 * @param rpc The GLAMM RPC service.
+	 * @param view The View object for this presenter.
+	 * @param eventBus The event bus.
+	 */
 	public PanZoomControlPresenter(final GlammServiceAsync rpc, final View view, final SimpleEventBus eventBus) {
 		this.rpc = rpc;
 		this.eventBus = eventBus;
@@ -188,11 +213,9 @@ public class PanZoomControlPresenter {
 		});
 	}
 
-	public float getSliderValue() {
+	private float getSliderValue() {
 		return sliderValue;
 	}
-
-	//********************************************************************************
 
 	private void setSliderPos(int yPos, boolean setSliderValue) {
 
@@ -208,6 +231,10 @@ public class PanZoomControlPresenter {
 		}
 	}
 
+	/**
+	 * Sets the slider value and updates the slider position.
+	 * @param value The value clamped to the range [0,1], inclusive.
+	 */
 	public void setSliderValue(float value) {
 
 		if(value >= SLIDER_VALUE_MAX) sliderValue = SLIDER_VALUE_MAX;

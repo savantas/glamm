@@ -51,10 +51,10 @@ implements OrganismUploadPresenter.View {
 		
 		// set up form elements
 		nameTextBox.setWidth("90%");
-		nameTextBox.setName(FIELD_ORGANISM_UPLOAD_NAME);
+		nameTextBox.setName(OrganismUploadPresenter.FormField.NAME.toString());
 
 		// set up the file upload
-		fileUpload.setName(FIELD_ORGANISM_UPLOAD_FILE);
+		fileUpload.setName(OrganismUploadPresenter.FormField.FILE.toString());
 		
 		// set up grid
 		grid.setWidget(0, 0, new Label(STRING_LABEL_NAME + ":"));
@@ -99,7 +99,7 @@ implements OrganismUploadPresenter.View {
 	}
 
 	@Override
-	public HasClickHandlers getSubmitField() {
+	public HasClickHandlers getSubmitButton() {
 		return submitButton;
 	}
 

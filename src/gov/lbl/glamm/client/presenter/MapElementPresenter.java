@@ -10,11 +10,35 @@ import java.util.Set;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+/**
+ * Presenter for the map element popups.  This will probably be deprecated soon.
+ * @author jtbates
+ *
+ */
 public class MapElementPresenter {
 
+	/**
+	 * View interface.
+	 * @author jtbates
+	 *
+	 */
 	public interface View {
+		/**
+		 * Hides the popup.
+		 */
 		public void hidePopup();
+		
+		/**
+		 * Kills the popup.
+		 */
 		public void killPopup();
+		
+		/**
+		 * Shows the popup at a specific position with content.
+		 * @param content The content.
+		 * @param left The position of the left edge of the popup.
+		 * @param top The position of the top edge of the popup.
+		 */
 		public void showPopup(String content, int left, int top);
 	}
 	
@@ -24,6 +48,11 @@ public class MapElementPresenter {
 	private Organism organism = null;
 	private Sample sample = null;
 	
+	/**
+	 * Constructor
+	 * @param rpc The GLAMM RPC service.
+	 * @param view The View object for this presenter.
+	 */
 	public MapElementPresenter(final GlammServiceAsync rpc, final View view) {
 		this.rpc = rpc;
 		this.view = view;
@@ -31,22 +60,43 @@ public class MapElementPresenter {
 		this.sample = null;
 	}
 	
+	/**
+	 * Hides the popup.
+	 */
 	public void hidePopup() {
 		view.hidePopup();
 	}
 	
+	/**
+	 * Kills the popup.
+	 */
 	public void killPopup() {
 		view.killPopup();
 	}
 	
+	/**
+	 * Sets the organism for this popup.
+	 * @param organism The organism.
+	 */
 	public void setOrganism(Organism organism) {
 		this.organism = organism;
 	}
 	
+	/**
+	 * Sets the sample for this popup.
+	 * @param sample The sample.
+	 */
 	public void setSample(Sample sample) {
 		this.sample = sample;
 	}
 		
+	/**
+	 * Shows the popup.
+	 * @param elementClass The AnnotatedMapData.ElementClass of the target of this popup.
+	 * @param ids The set of ids from which the content of this popup is derived.
+	 * @param clientX The client X position of this popup.
+	 * @param clientY The client Y position of this popup.
+	 */
 	public void showPopup(final AnnotatedMapData.ElementClass elementClass, final Set<String> ids, final int clientX, final int clientY) {
 		AsyncCallback<String> callback = new AsyncCallback<String>() {
 			@Override

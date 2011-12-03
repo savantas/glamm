@@ -21,6 +21,17 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class RetrosynthesisView extends Composite implements
 RetrosynthesisPresenter.View {
+	
+	private static final String TEXT_BUTTON_EXPORT_ROUTES	= "Export Routes";
+	private static final String TEXT_BUTTON_FIND_ROUTES 		= "Find Routes";
+	private static final String TEXT_BUTTON_NEXT 			= "<html>&rarr;</html>";
+	private static final String TEXT_BUTTON_PREV 			= "<html>&larr;</html>";
+	private static final String TEXT_DP_GET_DIRECTIONS		= "Get directions";
+	private static final String TEXT_LABEL_ALGORITHM			= "Algorithm: ";
+	private static final String TEXT_LABEL_CPD_DST			= "To: ";
+	private static final String TEXT_LABEL_CPD_SRC 			= "From: ";
+	private static final String TEXT_LABEL_ROUTES 			= "Route: ";
+	private static final String TEXT_LABEL_SEARCH 			= "Search: ";
 
 	// main panel
 	private DecoratorPanel 	decoratorPanel	= null;
@@ -60,22 +71,22 @@ RetrosynthesisPresenter.View {
 		mainPanel			= new VerticalPanel();
 		headerPanel			= new HorizontalPanel();
 		searchSuggestBox 	= new SuggestBox();
-		disclosurePanel		= new DisclosurePanel(STRING_DP_GET_DIRECTIONS);
+		disclosurePanel		= new DisclosurePanel(TEXT_DP_GET_DIRECTIONS);
 		browsePanel			= new VerticalPanel();
 		grid				= new Grid(4, 2);
 		cpdSrcSuggestBox 	= new SuggestBox();
 		cpdDstSuggestBox	= new SuggestBox();
 		algorithmListBox	= new ListBox();
-		findRoutes			= new Button(STRING_BUTTON_FIND_ROUTES);
+		findRoutes			= new Button(TEXT_BUTTON_FIND_ROUTES);
 		routesPanel			= new VerticalPanel();
 		phyloProfileLink	= new HTML();
 		routesNavigationPanel	= new HorizontalPanel();
-		prevRouteButton			= new Button(STRING_BUTTON_PREV);
-		nextRouteButton			= new Button(STRING_BUTTON_NEXT);
-		routesLabel				= new Label(STRING_LABEL_ROUTES);
+		prevRouteButton			= new Button(TEXT_BUTTON_PREV);
+		nextRouteButton			= new Button(TEXT_BUTTON_NEXT);
+		routesLabel				= new Label(TEXT_LABEL_ROUTES);
 		routesScrollPanel		= new ScrollPanel();    
 		routesTable				= new CellTable<Reaction>();
-		exportRoutes			= new Button(STRING_BUTTON_EXPORT_ROUTES);
+		exportRoutes			= new Button(TEXT_BUTTON_EXPORT_ROUTES);
 		statusLabel			= new Label();
 
 		init();
@@ -85,7 +96,7 @@ RetrosynthesisPresenter.View {
 	private void init() {
 
 		// set up header panel
-		headerPanel.add(new Label(STRING_LABEL_SEARCH));
+		headerPanel.add(new Label(TEXT_LABEL_SEARCH));
 		headerPanel.add(searchSuggestBox);
 
 		cpdSrcSuggestBox.setWidth("15em");
@@ -93,11 +104,11 @@ RetrosynthesisPresenter.View {
 		searchSuggestBox.setWidth("15em");
 		
 		// set up the grid
-		grid.setWidget(0, 0, new Label(STRING_LABEL_CPD_SRC));
+		grid.setWidget(0, 0, new Label(TEXT_LABEL_CPD_SRC));
 		grid.setWidget(0, 1, cpdSrcSuggestBox);
-		grid.setWidget(1, 0, new Label(STRING_LABEL_CPD_DST));
+		grid.setWidget(1, 0, new Label(TEXT_LABEL_CPD_DST));
 		grid.setWidget(1, 1, cpdDstSuggestBox);
-		grid.setWidget(2, 0, new Label(STRING_LABEL_ALGORITHM));
+		grid.setWidget(2, 0, new Label(TEXT_LABEL_ALGORITHM));
 		grid.setWidget(2, 1, algorithmListBox);
 		grid.setWidget(3, 1, findRoutes);
 
