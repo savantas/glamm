@@ -8,6 +8,11 @@ import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+/**
+ * View for displaying the properties of Interpolators.
+ * @author jtbates
+ *
+ */
 public class InterpolatorView extends Composite
 implements InterpolatorPresenter.View {
 
@@ -15,6 +20,9 @@ implements InterpolatorPresenter.View {
 	private Label			unitLabel	= null;
 	private Grid 			scale 		= null;
 	
+	/**
+	 * Constructor
+	 */
 	public InterpolatorView() {
 		mainPanel = new VerticalPanel();
 		unitLabel = new Label();
@@ -40,10 +48,16 @@ implements InterpolatorPresenter.View {
 		return unitLabel;
 	}
 
+	/**
+	 * Hides the view.
+	 */
 	public void hide() {
 		mainPanel.setVisible(false);
 	}
 	
+	/**
+	 * Shows the view.
+	 */
 	public void show() {
 		mainPanel.setVisible(true);
 	}

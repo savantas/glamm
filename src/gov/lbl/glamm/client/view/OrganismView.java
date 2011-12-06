@@ -14,6 +14,11 @@ import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+/**
+ * View for displaying the organism selection and filtering panel.
+ * @author jtbates
+ *
+ */
 public class OrganismView extends Composite implements OrganismPresenter.View {
 	
 	private final String RB_GROUP = "ORGANISM_RB_GROUP";
@@ -36,6 +41,9 @@ public class OrganismView extends Composite implements OrganismPresenter.View {
 	private Button			uploadButton		= null;
 	private Button			downloadButton		= null;
 	
+	/**
+	 * Constructor
+	 */
 	public OrganismView() {
 		
 		// main panel

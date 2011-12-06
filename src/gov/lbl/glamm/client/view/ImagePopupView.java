@@ -8,6 +8,11 @@ import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.Image;
 
+/**
+ * View for images that, when clicked, display popup windows.
+ * @author jtbates
+ *
+ */
 public class ImagePopupView extends Composite 
 	implements ImagePopupPresenter.View {
 	
@@ -18,6 +23,9 @@ public class ImagePopupView extends Composite
 	private DecoratedPopupPanel popup 	= null;
 	private Frame frame = null;
 
+	/**
+	 * Constructor
+	 */
 	public ImagePopupView() {
 		super();
 		image = new Image();

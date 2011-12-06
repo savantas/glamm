@@ -12,8 +12,13 @@ import javax.servlet.http.HttpServletResponse;
  */
 public abstract class ResponseHandler {
 
-	//********************************************************************************
-
+	/**
+	 * Packages content in a response as html text.
+	 * @param response The response.
+	 * @param content The content object - should override toString.
+	 * @param statusCode The status code of the response.
+	 * @throws IOException
+	 */
 	public static void asHtml(HttpServletResponse response, 
 			Object content, 
 			int statusCode) 
@@ -26,8 +31,14 @@ public abstract class ResponseHandler {
 		
 	}
 
-	//********************************************************************************
-
+	/**
+	 * Packages content in a response as plain text for download.
+	 * @param response The response.
+	 * @param content The content object - should override toString.
+	 * @param statusCode The status code of the response.
+	 * @param fileName The name of the file to be downloaded.
+	 * @throws IOException
+	 */
 	public static void asPlainTextAttachment(HttpServletResponse response, 
 			Object content, 
 			int statusCode, 
@@ -38,7 +49,4 @@ public abstract class ResponseHandler {
 		PrintWriter out = response.getWriter();
 		out.println(content);
 	}
-	
-	//********************************************************************************
-
 }

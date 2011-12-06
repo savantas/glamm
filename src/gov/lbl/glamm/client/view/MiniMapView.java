@@ -9,12 +9,20 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Panel;
 
+/**
+ * View for displaying the mini map.
+ * @author jtbates
+ *
+ */
 public class MiniMapView extends Composite implements MiniMapPresenter.View {
 	
 	private DecoratorPanel	decoratorPanel;
 	private Image			image; // do not add to main panel - this is just for access to getWidth and getHeight methods.
 	private FocusPanel		mainPanel;
 	
+	/**
+	 * Constructor
+	 */
 	public MiniMapView() {
 		super();
 		

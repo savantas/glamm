@@ -80,7 +80,7 @@ public class RequestHandlerFactory {
 	
 	/**
 	 * Parses the xml file defining the action-request handler mapping
-	 * @param uri
+	 * @param uri The uri for request_handlers.xml.
 	 */
 	private void parseFile(String requestHandlersUri) {
 		try {

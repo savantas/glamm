@@ -17,6 +17,11 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+/**
+ * View for experiment data filtering and selection.
+ * @author jtbates
+ *
+ */
 public class ExperimentView extends Composite 
 	implements ExperimentPresenter.View {
 	
@@ -73,6 +78,9 @@ public class ExperimentView extends Composite
 	private Button				removeButton;
 	private Button				resetButton;
 	
+	/**
+	 * Constructor
+	 */
 	public ExperimentView() {
 		
 		// the widget
@@ -271,7 +279,4 @@ public class ExperimentView extends Composite
 	public void minimize() {
 		disclosurePanel.setOpen(false);
 	}
-
-	
-
 }

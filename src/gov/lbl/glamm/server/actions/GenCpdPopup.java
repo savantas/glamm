@@ -11,6 +11,11 @@ import gov.lbl.glamm.server.util.GlammUtils;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Service class for generating the HTML content of compound popups.
+ * @author jtbates
+ *
+ */
 public class GenCpdPopup {
 	
 	private static Set<String> keggDbNames = new HashSet<String>();
@@ -19,6 +24,13 @@ public class GenCpdPopup {
 		keggDbNames.add("GLYCAN");
 	}
 
+	/**
+	 * Generates a compound popup's html content for a single compound id.
+	 * @param sm The GLAMM session.
+	 * @param cpdId The compound id.
+	 * @param taxonomyId The taxonomy id for an organism associated with this compound.
+	 * @return The popup html content.
+	 */
 	public static String genCpdPopupForId(final GlammSession sm, final String cpdId, final String taxonomyId) {
 		CompoundDAO cpdDao = new CompoundGlammDAOImpl(sm);
 		Set<String> cpdIds = new HashSet<String>();
@@ -28,18 +40,39 @@ public class GenCpdPopup {
 		return genCpdPopup(sm, cpds, taxonomyId);
 	}
 
+	/**
+	 * Generates a compound popup's html content for a set of compound ids.
+	 * @param sm The GLAMM session.
+	 * @param cpdIds The set of compound ids.
+	 * @param taxonomyId The taxonomy id for an organism associated with these compounds.
+	 * @return The popup html content.
+	 */
 	public static String genCpdPopupForIds(final GlammSession sm, final Set<String> cpdIds, final String taxonomyId) {
 		CompoundDAO cpdDao = new CompoundGlammDAOImpl(sm);
 		Set<Compound> cpds = cpdDao.getCompounds(cpdIds);
 		return genCpdPopup(sm, cpds, taxonomyId);
 	}
 	
+	/**
+	 * Generates a compound popup's html content for a single compound.
+	 * @param sm The GLAMM session.
+	 * @param cpd The compound.
+	 * @param taxonomyId The taxonomy id for an organism associated with this compound.
+	 * @return The popup html content.
+	 */
 	public static String genCpdPopup(final GlammSession sm, final Compound cpd, final String taxonomyId) {
 		Set<Compound> cpds = new HashSet<Compound>();
 		cpds.add(cpd);
 		return genCpdPopup(sm, cpds, taxonomyId);
 	}
 	
+	/**
+	 * Generates a compound popup's html content for a set of compounds.
+	 * @param sm The GLAMM session.
+	 * @param cpds The set of compounds.
+	 * @param taxonomyId The taxonomy id for an organism associated with this compound.
+	 * @return The popup html content.
+	 */
 	public static String genCpdPopup(final GlammSession sm, final Set<Compound> cpds, final String taxonomyId) {
 
 		if(cpds == null || cpds.isEmpty())
@@ -72,7 +105,7 @@ public class GenCpdPopup {
 	}
 
 
-	//********************************************************************************
+	
 
 	private static String genCpdImgLink(final GlammSession sm, final String keggId) {
 		if(keggId == null)
@@ -82,7 +115,7 @@ public class GenCpdPopup {
 		return GlammUtils.genConstrainedImageLink(imgUrlString, MAX_DIM);
 	}
 
-	//********************************************************************************
+	
 
 	private static String genCpdLink(final GlammSession sm, final String keggId, final String linkText, final String taxonomyId) {
 		

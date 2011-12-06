@@ -8,11 +8,19 @@ import com.google.gwt.user.client.ui.DecoratorPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Panel;
 
+/**
+ * View for displaying the pan/zoom control panel.
+ * @author jtbates
+ *
+ */
 public class PanZoomControlView extends Composite implements PanZoomControlPresenter.View {
 
 	private DecoratorPanel	decoratorPanel	= null;
 	private FocusPanel		focusPanel		= null;
 	
+	/**
+	 * Constructor
+	 */
 	public PanZoomControlView() {
 		decoratorPanel = new DecoratorPanel();
 		focusPanel = new FocusPanel();

@@ -14,6 +14,11 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+/**
+ * View for displaying the organism upload form.
+ * @author jtbates
+ *
+ */
 public class OrganismUploadView extends DecoratedPopupPanel 
 implements OrganismUploadPresenter.View {
 	
@@ -34,6 +39,9 @@ implements OrganismUploadPresenter.View {
 	private Button			submitButton	= null;
 	private Button			cancelButton	= null;
 	
+	/**
+	 * Constructor
+	 */
 	public OrganismUploadView() {
 		
 		form			= new FormPanel();

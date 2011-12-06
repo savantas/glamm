@@ -6,9 +6,21 @@ import gov.lbl.glamm.server.dao.UserDAO;
 import gov.lbl.glamm.server.dao.impl.UserDAOImpl;
 import gov.lbl.glamm.server.util.GlammUtils;
 
-
+/**
+ * Service class for authenticating a user.
+ * @author jtbates
+ *
+ */
 public class AuthenticateUser {
 
+	/**
+	 * Authenticates a user
+	 * @param sm The GLAMM session into which this user is logged in.
+	 * @param userId The user id for this user.
+	 * @param auth The contents of the auth cookie.
+	 * @param remoteAddr The address from which the user is connecting.
+	 * @return The logged in user, or the guest user if authentication fails.
+	 */
 	public static User authenticateUser(final GlammSession sm, 
 			final String userId, 
 			final String auth, 

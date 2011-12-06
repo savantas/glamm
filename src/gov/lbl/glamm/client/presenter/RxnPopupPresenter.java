@@ -15,6 +15,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 
+/**
+ * Presenter for reaction popups.
+ * @author jtbates
+ *
+ */
 public class RxnPopupPresenter {
 
 	private static enum State {
@@ -23,11 +28,40 @@ public class RxnPopupPresenter {
 		HAS_REACTIONS;
 	}
 
+	/**
+	 * View interface.
+	 * @author jtbates
+	 *
+	 */
 	public interface View {
+		
+		/**
+		 * Gets the reaction popup panel.
+		 * @return The panel.
+		 */
 		public Panel getPanel();
+		
+		/**
+		 * Gets the status label.
+		 * @return The label.
+		 */
 		public Label getStatusLabel();
+		
+		/**
+		 * Hides the popup.
+		 */
 		public void hidePopup();
+		
+		/**
+		 * Kills the popup.
+		 */
 		public void killPopup();
+		
+		/**
+		 * Shows the popup at a position in client space.
+		 * @param left The client space x position.
+		 * @param top The client space y position.
+		 */
 		public void showPopup(int left, int top);
 	}
 
@@ -43,6 +77,12 @@ public class RxnPopupPresenter {
 	private String metagenomeHost;
 	private String host;
 
+	/**
+	 * Constructor
+	 * @param rpc The GLAMM RPC service.
+	 * @param view The View object for this presenter.
+	 * @param eventBus The event bus.
+	 */
 	public RxnPopupPresenter(final GlammServiceAsync rpc, final View view, final SimpleEventBus eventBus) {
 		this.rpc = rpc;
 		this.view = view;
@@ -81,6 +121,9 @@ public class RxnPopupPresenter {
 		view.getPanel().clear();
 	}
 
+	/**
+	 * Kills the popup.
+	 */
 	public void killPopup() {
 		view.killPopup();
 	}
@@ -113,6 +156,12 @@ public class RxnPopupPresenter {
 		});
 	}
 	
+	/**
+	 * Sets the host for MicrobesOnline links.
+	 * If the current organism is null, the global map, or a user-uploaded session organism, the host is null.
+	 * If the current organism is a metagenome, the host is the metagenome host (typically MetaMicrobesOnline.)
+	 * If the current organism is an isolate (i.e. non-metagnome) the host is MicrobesOnline.
+	 */
 	public void setHost() {
 		if(organism == null || organism.isGlobalMap() || organism.isSessionOrganism())
 			host = null;
@@ -122,21 +171,35 @@ public class RxnPopupPresenter {
 			host = isolateHost;
 	}
 
+	/**
+	 * Sets the current organism.
+	 * @param organism The organism.
+	 */
 	public void setOrganism(final Organism organism) {
 		this.organism = organism;
 		setHost();
 	}
 
-	public void setReactions(final Set<Reaction> reactions) {
+	private void setReactions(final Set<Reaction> reactions) {
 		this.reactions.clear();
 		if(reactions != null && !reactions.isEmpty())
 			this.reactions.addAll(reactions);
 	}
 
+	/**
+	 * Sets the current sample.
+	 * @param sample The sample.
+	 */
 	public void setSample(final Sample sample) {
 		this.sample = sample;
 	}
 
+	/**
+	 * Shows the popup.
+	 * @param ids The set of reaction ids to display.
+	 * @param left The client space X coordinate.
+	 * @param top The client space Y coordinate.
+	 */
 	public void showPopup(final Set<String> ids, final int left, final int top) {
 
 		setViewState(State.LOADING);

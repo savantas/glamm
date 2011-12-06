@@ -19,6 +19,11 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+/**
+ * View for displaying the retrosynthesis panel.
+ * @author jtbates
+ *
+ */
 public class RetrosynthesisView extends Composite implements
 RetrosynthesisPresenter.View {
 	
@@ -64,7 +69,9 @@ RetrosynthesisPresenter.View {
 	// status label
 	private Label				statusLabel		= null;
 
-
+	/**
+	 * Constructor
+	 */
 	public RetrosynthesisView() {
 
 		decoratorPanel		= new DecoratorPanel();

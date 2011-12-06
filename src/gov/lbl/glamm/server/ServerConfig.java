@@ -5,12 +5,27 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+/**
+ * Describes the configuration of a GLAMM server.
+ * @author jtbates
+ *
+ */
 @SuppressWarnings("serial")
 public class ServerConfig implements Serializable {
 	
+	/**
+	 * Describes the configuration of the underlying database associated with a GLAMM server.
+	 * @author jtbates
+	 *
+	 */
 	public static class DbConfig {
-		
-		public enum Attribute {
+	
+		/**
+		 * DbConfig attributes and their XML tags.
+		 * @author jtbates
+		 *
+		 */
+		public static enum Attribute {
 			NAME("name"),
 			URI("uri"),
 			DRIVER("driver"),
@@ -36,6 +51,11 @@ public class ServerConfig implements Serializable {
 			map = new HashMap<Attribute, String>();
 		};
 		
+		/**
+		 * Creates a DbConfig from a attribute to string value map.
+		 * @param map The attribute map.
+		 * @return A DBConfig.
+		 */
 		public static final DbConfig create(final Map<Attribute, String> map) {
 			
 			DbConfig dbConfig = new DbConfig();
@@ -43,22 +63,42 @@ public class ServerConfig implements Serializable {
 			return dbConfig;
 		}
 
+		/**
+		 * Gets the database name.
+		 * @return The database name.
+		 */
 		public final String getName() {
 			return map.get(Attribute.NAME);
 		}
 
+		/**
+		 * Gets the database JDBC uri.
+		 * @return The uri.
+		 */
 		public final String getUri() {
 			return map.get(Attribute.URI);
 		}
 
+		/**
+		 * Gets the database driver class name.
+		 * @return The driver class name.
+		 */
 		public final String getDriver() {
 			return map.get(Attribute.DRIVER);
 		}
 
+		/**
+		 * Gets the user name used for this database configuration.
+		 * @return The user name.
+		 */
 		public final String getUser() {
 			return map.get(Attribute.USER);
 		}
 
+		/**
+		 * Gets the password used for this database configuration and user.
+		 * @return The password.
+		 */
 		public final String getPasswd() {
 			return map.get(Attribute.PASSWD);
 		}
@@ -98,6 +138,11 @@ public class ServerConfig implements Serializable {
 		}
 	}
 	
+	/**
+	 * ServerConfig attributes and their XML tags.
+	 * @author jtbates
+	 *
+	 */
 	public enum Attribute {
 		
 		SERVER_DOMAIN("serverdomain", true),
@@ -115,6 +160,10 @@ public class ServerConfig implements Serializable {
 			this.isRequired = isRequired;
 		}
 		
+		/**
+		 * Indicates whether or not this attribute is required.
+		 * @return Flag indicating whether or not this attribute is required.
+		 */
 		public boolean isRequired() {
 			return isRequired;
 		}
@@ -139,30 +188,58 @@ public class ServerConfig implements Serializable {
 		return serverConfig;
 	}
 
+	/**
+	 * Gets the domain for this server config.
+	 * @return The domain.
+	 */
 	public final String getServerDomain() {
 		return (String) map.get(Attribute.SERVER_DOMAIN);
 	}
 	
+	/**
+	 * Gets the name of the Hibernate configuration file to be used with this server.
+	 * @return The Hibernate configuration file name.
+	 */
 	public final String getHibernateCfg() {
 		return (String) map.get(Attribute.HIBERNATE_CFG);
 	}
 
+	/** 
+	 * Gets the name of the isolate host.
+	 * @return The name of the isolate host.
+	 */
 	public final String getIsolateHost() {
 		return (String) map.get(Attribute.ISOLATE_HOST);
 	}
 
+	/**
+	 * Gets the login URL.
+	 * @return The login URL.
+	 */
 	public final String getLoginUrl() {
 		return (String) map.get(Attribute.LOGIN_URL);
 	}
 	
+	/**
+	 * Gets the name of the metagenome host.
+	 * @return The metagenome host name.
+	 */
 	public final String getMetagenomeHost() {
 		return (String) map.get(Attribute.METAGENOME_HOST);
 	}
 
+	/**
+	 * Gets the DbConfig associated with this ServerConfig.
+	 * @return The DbConfig.
+	 */
 	public final DbConfig getDbConfig() {
 		return (DbConfig) map.get(Attribute.DB);
 	}
 	
+	/**
+	 * Indicates whether or not this configuration has a metagenome host.
+	 * @return Flag indicating the presence of a metagenome host.
+	 */
 	public final boolean hasMetagenomeHost() {
 		String metagenomeHost = getMetagenomeHost();
 		return (metagenomeHost != null && !metagenomeHost.isEmpty());

@@ -16,6 +16,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+/**
+ * Manages GLAMM server configurations as defined in the server_config.xml file.
+ * @author jtbates
+ *
+ */
 public class ConfigurationManager {
 
 	public static final String DEFAULT_DOMAIN = "default";
@@ -63,7 +68,13 @@ public class ConfigurationManager {
 	}
 	
 	
-	
+	/**
+	 * Initializes server-to-configuration mapping - should be called during servlet initialization.
+	 * @param uri The uri of the server_config.xml file.
+	 * @throws ParserConfigurationException
+	 * @throws IOException
+	 * @throws SAXException
+	 */
 	public static void init(final String uri) 
 	throws ParserConfigurationException, IOException, SAXException {
 		
@@ -96,6 +107,11 @@ public class ConfigurationManager {
 		}	
 	}
 	
+	/**
+	 * Gets the server configuration for a given server host name.
+	 * @param serverName The server host name.
+	 * @return The configuration for the server host name.
+	 */
 	public static ServerConfig getServerConfigForServerName(final String serverName) {
 		
 		// can't do a direct lookup, as we're trying to do a fuzzy match 

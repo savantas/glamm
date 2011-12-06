@@ -36,6 +36,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 // TODO: this entire action is very KEGG-centric
+
+/**
+ * Service class and Non-RPC request handler for finding routes (retrosynthetic pathways) between source and destination compounds
+ * for a given organism and map.
+ */
 public class GetDirections implements RequestHandler {
 
 	private static GeneDAO 				geneDao 	= null;
@@ -72,6 +77,16 @@ public class GetDirections implements RequestHandler {
 		return routes;
 	}
 
+	/**
+	 * Gets the list of pathways between the source and destination compound for a given organism on a given map.
+	 * @param sm The GLAMM session.
+	 * @param taxonomyId The optional taxonomy id of the organism.
+	 * @param cpdSrc The source compound.
+	 * @param cpdDst The destination compound.
+	 * @param mapTitle The map title.
+	 * @param algorithm The algorithm used to find these pathways.
+	 * @return The list of pathways.
+	 */
 	public static List<Pathway> getDirections(GlammSession sm, String taxonomyId, Compound cpdSrc, Compound cpdDst, String mapTitle, String algorithm) {
 
 		if(cpdSrc == null || cpdDst == null)

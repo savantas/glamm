@@ -18,8 +18,21 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Service class for getting sets of reactions.
+ * @author jtbates
+ *
+ */
 public class GetReactions {
 
+	/**
+	 * Gets a set of reactions.
+	 * @param sm The GLAMM session.
+	 * @param ids The list of reaction ids.
+	 * @param organism The optional organism for which these reactions belong - adds genes to the reactions, if specified.
+	 * @param sample The optional sample - adds measurements to the genes, if specified.
+	 * @return The set of reactions.
+	 */
 	public static Set<Reaction> getReactions(final GlammSession sm, 
 			final Set<String> ids, 
 			final Organism organism, 

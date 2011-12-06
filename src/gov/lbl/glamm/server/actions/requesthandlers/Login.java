@@ -15,6 +15,11 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Non-RPC request handler for logging in a user.
+ * @author jtbates
+ *
+ */
 public class Login implements RequestHandler {
 
 	private static final String LOGIN_ERROR_MSG = "Login incorrect - please try again.";
