@@ -2,7 +2,6 @@ package gov.lbl.glamm.client.rpc;
 
 import gov.lbl.glamm.client.model.AnnotatedMapDescriptor;
 import gov.lbl.glamm.client.model.Compound;
-import gov.lbl.glamm.client.model.Experiment;
 import gov.lbl.glamm.client.model.Gene;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Pathway;
@@ -16,6 +15,12 @@ import java.util.Set;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+/**
+ * Asynchronous interface for GlammService.
+ * @author jtbates
+ * @see GlammService
+ *
+ */
 public interface GlammServiceAsync {
 	public void authenticateUser(final String userId, final String auth, AsyncCallback<User> callback);
 	public void genCpdPopup(Compound compound, String taxonomyId, AsyncCallback<String> callback);
@@ -32,7 +37,6 @@ public interface GlammServiceAsync {
 	public void getRxnsForOrganism(String taxonomyId, AsyncCallback<Set<Reaction>> callback);
 	public void logOutUser(AsyncCallback<Void> callback);
 	public void populateCompoundSearch(String mapId, AsyncCallback<Set<Compound>> callback);
-	public void populateExperiments(String taxonomyId, AsyncCallback<List<Experiment>> callback);
 	public void populateLocusSearch(String taxonomyId, AsyncCallback<Set<Gene>> callback);
 	public void populateOrganisms(Sample.DataType dataType, AsyncCallback<List<Organism>> callback);
 	public void populateReactionSearch(String mapId, AsyncCallback<Set<Reaction>> callback);

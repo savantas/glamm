@@ -15,6 +15,11 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Non-RPC request handler for downloading experiments as tab-delimited files.
+ * @author jtbates
+ *
+ */
 public class DownloadExperiment implements RequestHandler {
 	
 	private final String DEFAULT_FILE_NAME = "experiment.tab";

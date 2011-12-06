@@ -7,12 +7,20 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+/**
+ * View for displaying reaction popups.
+ * @author jtbates
+ *
+ */
 public class RxnPopupView extends PopupPanel implements RxnPopupPresenter.View {
 
 	private VerticalPanel 		mainPanel;
 	private Label				statusLabel;
 	private VerticalPanel		reactionsPanel;
 
+	/**
+	 * Constructor
+	 */
 	public RxnPopupView() {
 		
 		super();
@@ -54,7 +62,4 @@ public class RxnPopupView extends PopupPanel implements RxnPopupPresenter.View {
 		super.setPopupPosition(left, top);
 		super.show();
 	}
-
-	
-
 }

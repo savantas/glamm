@@ -20,6 +20,11 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Non-RPC request handler for uploading an organism.  Processes form data and uploaded file.
+ * @author jtbates
+ *
+ */
 public class UploadOrganism implements RequestHandler {
 
 	private static final String FILE_PARSE_WARNING_MALFORMED_LINE 		= "Malformed line";

@@ -160,23 +160,23 @@ public class Interpolator {
 	}
 	
 	/**
-	 * Accessor
-	 * @return The minimum clamping value
+	 * Gets the minimum clamping value.
+	 * @return The minimum clamping value.
 	 */
 	public final float getClampMin() {
 		return clampMin;
 	}
 
 	/**
-	 * Accessor
-	 * @return The clamping value midpoint
+	 * Gets the clamping value midpoint.
+	 * @return The clamping value midpoint.
 	 */
 	public final float getClampMid() {
 		return clampMid;
 	}
 
 	/**
-	 * Accessor
+	 * Gets the maximum clamping value.
 	 * @return The maximum clamping value.
 	 */
 	public final float getClampMax() {
@@ -184,7 +184,7 @@ public class Interpolator {
 	}
 
 	/**
-	 * Accessor
+	 * Gets the units for the interpolator.
 	 * @return The units for this interpolator.
 	 */
 	public final String getUnits() {

@@ -10,6 +10,11 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+/**
+ * View to allow the disambiguation between compounds with the same synonym.
+ * @author jtbates
+ *
+ */
 public class CpdDisambiguationView extends DecoratedPopupPanel implements CpdDisambiguationPresenter.View {
 	
 	private VerticalPanel			mainPanel					= null;
@@ -17,7 +22,9 @@ public class CpdDisambiguationView extends DecoratedPopupPanel implements CpdDis
 	private ScrollPanel 			scrollPanel 				= null;
 	private VerticalPanel 			scrollPanelInterior 		= null;
 	
-	
+	/**
+	 * Constructor
+	 */
 	public CpdDisambiguationView() {
 		super();
 		

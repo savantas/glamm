@@ -16,9 +16,14 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Non-RPC request handler for generating the HTML content of the citations popup.
+ * @author jtbates
+ *
+ */
 public class GenCitationsPopup implements RequestHandler {
 	
-	//********************************************************************************
+	
 
 	private final String PREAMBLE = "GLAMM: The Genome-Linked Application for Metabolic Maps";
 
@@ -31,13 +36,13 @@ public class GenCitationsPopup implements RequestHandler {
 	"and Environmental Research, through contract DE-AC02-05CH11231 between Lawrence Berkeley National " +
 	"Laboratory and the U. S. Department of Energy.";
 
-	//********************************************************************************
+	
 	
 	private Map<String, List<Integer>> description2CitationsTextIndices = new HashMap<String, List<Integer>>();
 	private List<String> descriptions = new ArrayList<String>();
 	private List<String> citationsText = new ArrayList<String>();
 	
-	//********************************************************************************
+	
 
 
 	@Override
@@ -78,7 +83,7 @@ public class GenCitationsPopup implements RequestHandler {
 		ResponseHandler.asHtml(response, html, HttpServletResponse.SC_OK);
 	}
 	
-	//********************************************************************************
+	
 	
 	private void processCitations(List<Citation> citations) {
 		if(citations != null) {
@@ -106,7 +111,7 @@ public class GenCitationsPopup implements RequestHandler {
 		}
 	}
 	
-	//********************************************************************************
+	
 
 	private String descriptionToString(final String description, final List<Integer> citationIndices) {
 		String result = "";
@@ -122,7 +127,7 @@ public class GenCitationsPopup implements RequestHandler {
 		return result;
 	}
 
-	//********************************************************************************
+	
 
 	private String descriptionsToString() {
 		String result = "";
@@ -135,7 +140,7 @@ public class GenCitationsPopup implements RequestHandler {
 		return result;
 	}
 
-	//********************************************************************************
+	
 
 	private String citationsToString() {
 		String result = "";
@@ -149,7 +154,7 @@ public class GenCitationsPopup implements RequestHandler {
 		return result;
 	}
 
-	//********************************************************************************
+	
 
 
 }

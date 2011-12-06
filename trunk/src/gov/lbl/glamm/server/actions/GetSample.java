@@ -24,8 +24,19 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Service class for getting the primitives (genes, reactions, or compounds) along with their measurements for a given sample.
+ * @author jtbates
+ *
+ */
 public class GetSample  {
 	
+	/**
+	 * Gets the set of primitives and measurements for a given sample.
+	 * @param sm The GLAMM session.
+	 * @param sample The sample.
+	 * @return The set of primitives and measurements for the sample.
+	 */
 	public static Set<? extends HasMeasurements> getMeasurementsForSample(final GlammSession sm, final Sample sample) {
 		
 		if(sample == null)

@@ -11,8 +11,22 @@ import gov.lbl.glamm.server.util.GlammUtils;
 
 import java.util.Set;
 
+/**
+ * Service class for generating the HTML content of pathway popups.
+ * @author jtbates
+ *
+ */
 public class GenPwyPopup {
 
+	/**
+	 * Generates the HTML content of pathway popups.
+	 * @param sm The GLAMM session.
+	 * @param mapIds The set of map ids for which content is to be generated.
+	 * @param taxonomyId The optional organism associated with the map ids.
+	 * @param experimentId The optional experiment id.
+	 * @param sampleId The optional sample id.
+	 * @return The popup's html content.
+	 */
 	public static String genPwyPopup(final GlammSession sm, 
 			final Set<String> mapIds, 
 			final String taxonomyId, 
@@ -37,7 +51,7 @@ public class GenPwyPopup {
 		return builder.append("</html>").toString();
 	}
 
-	//********************************************************************************
+	
 
 	private static String genKeggMapLink(final GlammSession sm, 
 			final Pathway pwy, 
@@ -56,7 +70,7 @@ public class GenPwyPopup {
 		return link;
 	}
 
-	//********************************************************************************
+	
 
 	private static String genKeggMapUrl(final GlammSession sm, 
 			final Pathway pwy, 
@@ -89,7 +103,7 @@ public class GenPwyPopup {
 		return url;
 	}
 
-	//********************************************************************************
+	
 
 	private static String genImgLink(final GlammSession sm, final Pathway pwy) {
 		final int MAX_DIM = 250;
@@ -97,6 +111,6 @@ public class GenPwyPopup {
 		return GlammUtils.genConstrainedImageLink(imgUrlString, MAX_DIM);
 	}
 
-	//********************************************************************************
+	
 
 }

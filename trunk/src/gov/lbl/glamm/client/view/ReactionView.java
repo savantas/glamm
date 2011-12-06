@@ -10,6 +10,11 @@ import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+/**
+ * View for displaying reactions, typically in the context of RxnPopupViews.
+ * @author jtbates
+ *
+ */
 public class ReactionView extends Composite
 implements ReactionPresenter.View {
 	
@@ -19,6 +24,9 @@ implements ReactionPresenter.View {
 	private CellTable<Gene> geneTable;
 	private ScrollPanel geneTableScrollPanel;
 
+	/**
+	 * Constructor
+	 */
 	public ReactionView() {
 		mainPanel = new VerticalPanel();
 		definitionHtml = new HTML();

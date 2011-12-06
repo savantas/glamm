@@ -15,6 +15,11 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Non-RPC request handler for downloading an organism as a tab-delimited file of the format [Gene]tab[EC number].
+ * @author jtbates
+ *
+ */
 public class DownloadOrganism implements RequestHandler {
 
 	private final String DEFAULT_FILE_NAME = "organism.tab";

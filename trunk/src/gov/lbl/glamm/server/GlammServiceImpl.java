@@ -2,7 +2,6 @@ package gov.lbl.glamm.server;
 
 import gov.lbl.glamm.client.model.AnnotatedMapDescriptor;
 import gov.lbl.glamm.client.model.Compound;
-import gov.lbl.glamm.client.model.Experiment;
 import gov.lbl.glamm.client.model.Gene;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Pathway;
@@ -16,11 +15,10 @@ import gov.lbl.glamm.server.actions.GenCpdPopup;
 import gov.lbl.glamm.server.actions.GenPwyPopup;
 import gov.lbl.glamm.server.actions.GetAnnotatedMapDescriptors;
 import gov.lbl.glamm.server.actions.GetAvailableExperimentTypes;
-import gov.lbl.glamm.server.actions.GetSample;
 import gov.lbl.glamm.server.actions.GetReactions;
 import gov.lbl.glamm.server.actions.GetRxnsForOrganism;
+import gov.lbl.glamm.server.actions.GetSample;
 import gov.lbl.glamm.server.actions.PopulateCompoundSearch;
-import gov.lbl.glamm.server.actions.PopulateExperiments;
 import gov.lbl.glamm.server.actions.PopulateLocusSearch;
 import gov.lbl.glamm.server.actions.PopulateOrganisms;
 import gov.lbl.glamm.server.actions.PopulateReactionSearch;
@@ -135,11 +133,6 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	@Override
 	public Set<Compound> populateCompoundSearch(String mapId) {
 		return PopulateCompoundSearch.populateCompoundSearch(getGlammSession(), mapId);
-	}
-	
-	@Override
-	public List<Experiment> populateExperiments(String taxonomyId) {
-		return PopulateExperiments.populateExperiments(getGlammSession(), taxonomyId);
 	}
 	
 	@Override

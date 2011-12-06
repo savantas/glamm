@@ -20,6 +20,11 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+/** 
+ * View for displaying login status and the login form.
+ * @author jtbates
+ *
+ */
 public class LoginView extends Composite
 implements LoginPresenter.View {
 	
@@ -54,11 +59,13 @@ implements LoginPresenter.View {
 	private Button loginButton;
 	private Button cancelButton;
 	
-	
+	/**
+	 * Constructor
+	 */
 	public LoginView() {
 		decoratorPanel = new DecoratorPanel();
 		mainPanel = new VerticalPanel();
-		statusLabel = new Label("THIS IS A TEST");
+		statusLabel = new Label();
 		
 		popup = new DecoratedPopupPanel(false);
 		formPanel = new FormPanel();

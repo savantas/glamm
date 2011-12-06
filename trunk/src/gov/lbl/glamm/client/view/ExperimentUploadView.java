@@ -19,6 +19,11 @@ import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+/**
+ * View for the experiment data upload form.
+ * @author jtbates
+ *
+ */
 public class ExperimentUploadView extends DecoratedPopupPanel 
 implements ExperimentUploadPresenter.View {
 
@@ -36,8 +41,6 @@ implements ExperimentUploadPresenter.View {
 	public static final String LABEL_MIN 			= "min";
 	public static final String LABEL_MID 			= "mid";
 	public static final String LABEL_MAX 			= "max";
-
-	//********************************************************************************
 
 	private FormPanel		form;
 	private VerticalPanel	wrapperPanel;
@@ -68,6 +71,9 @@ implements ExperimentUploadPresenter.View {
 	private Button			submitButton;
 	private Button			cancelButton;
 	
+	/**
+	 * Constructor
+	 */
 	public ExperimentUploadView() {
 		
 		form				= new FormPanel();

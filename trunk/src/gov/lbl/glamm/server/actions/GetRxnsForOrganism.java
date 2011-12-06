@@ -11,8 +11,19 @@ import gov.lbl.glamm.server.dao.impl.ReactionGlammDAOImpl;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Service class for getting all the reactions available to an organism.
+ * @author jtbates
+ *
+ */
 public class GetRxnsForOrganism {
 	
+	/**
+	 * Gets the set of all reactions available to an organism.
+	 * @param sm The GLAMM session.
+	 * @param taxonomyId The taxonomy id of the organism.
+	 * @return The set of all reactions available to an organism.
+	 */
 	public static Set<Reaction> getRxnsForOrganism(final GlammSession sm, final String taxonomyId) {
 		
 		GeneDAO geneDao = new GeneDAOImpl(sm);

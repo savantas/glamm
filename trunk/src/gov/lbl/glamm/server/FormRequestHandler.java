@@ -16,15 +16,23 @@ import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
+/**
+ * Handles parsing of uploaded tab-delimited files.
+ * @author jtbates
+ *
+ */
 public class FormRequestHandler {
 
-	//********************************************************************************
-
+	/**
+	 * Interface for parsing of tab-delimited lines in files.
+	 * @author jtbates
+	 *
+	 */
 	public interface LineParser {
 		public String parseLine(String line);
 	}
 
-	//********************************************************************************
+	
 
 	private static final int MAX_MSGS = 10;
 
@@ -32,19 +40,26 @@ public class FormRequestHandler {
 	protected static final String FILE_PARSE_WARNING_COULD_NOT_OPEN			= "Could not open file - please resubmit.";
 	protected static final String FILE_PARSE_WARNING_NO_PARSER				= "No line parser specified.";
 
-	//********************************************************************************
+	
 
 	private Map<String, String> 	formFields 			= null;
 	private List<String>			errorMsgs			= null;
 
-	//********************************************************************************
-
+	
+	/**
+	 * Constructor
+	 * @param request The request containing file data.
+	 * @param lineParser The parser that handles file data lines specific to the request.
+	 */
 	public FormRequestHandler(HttpServletRequest request, LineParser lineParser) {
 		processRequest(request, lineParser);
 	}
 
-	//********************************************************************************
-
+	
+	/**
+	 * Gets a string containing all error message encountered during file parsing.
+	 * @return The error message string.
+	 */
 	public String getErrorMessages() {
 		String result = "";
 
@@ -64,8 +79,12 @@ public class FormRequestHandler {
 		return result;
 	}
 
-	//********************************************************************************
-
+	
+	/**
+	 * Gets the value of a form field with a particular name.
+	 * @param name The name of the form field.
+	 * @return The value of that form field, null if not found.
+	 */
 	public String getFormField(String name) {
 		String value = null;
 
@@ -75,7 +94,6 @@ public class FormRequestHandler {
 		return value;
 	}
 
-	//********************************************************************************
 
 	private void logError(String msg) {
 		if(errorMsgs == null)
@@ -83,13 +101,13 @@ public class FormRequestHandler {
 		errorMsgs.add(msg);
 	}
 
-	//********************************************************************************
+	
 
 	private void logError(int lineNumber, String msg) {
 		logError(lineNumber + ": " + msg);
 	}
 
-	//********************************************************************************
+	
 
 	private void processRequest(HttpServletRequest request, LineParser lineParser) {
 		try {
@@ -120,7 +138,7 @@ public class FormRequestHandler {
 		}
 	}
 
-	//********************************************************************************
+	
 
 	private void processFormField(FileItem item) {
 		String name = item.getFieldName();
@@ -132,7 +150,7 @@ public class FormRequestHandler {
 		formFields.put(name, value);
 	}
 
-	//********************************************************************************
+	
 
 	private void processUploadedFile(FileItem item, LineParser lineParser) {
 		if(item != null) {
@@ -171,7 +189,5 @@ public class FormRequestHandler {
 			logError(FILE_PARSE_WARNING_COULD_NOT_OPEN);
 		}
 	}
-
-	//********************************************************************************
 
 }

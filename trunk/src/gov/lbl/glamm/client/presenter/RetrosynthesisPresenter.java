@@ -62,26 +62,110 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 
+/**
+ * Presenter for compound, reaction, and gene search, as well as discovery of retrosynthetic pathways via a variety of algorithms.
+ * @author jtbates
+ *
+ */
 public class RetrosynthesisPresenter {
 	
+	/**
+	 * View interface.
+	 * @author jtbates
+	 *
+	 */
 	public interface View {
 
+		/**
+		 * Gets the algorithms list box.
+		 * @return The list box.
+		 */
 		public ListBox 				getAlgorithmsListBox();
+		
+		/**
+		 * Gets the destination compound suggest box.
+		 * @return The suggest box.
+		 */
 		public SuggestBox 			getCpdDstSuggestBox();
+		
+		/**
+		 * Gets the source compound suggest box.
+		 * @return The suggest box.
+		 */
 		public SuggestBox 			getCpdSrcSuggestBox();
+		
+		/**
+		 * Gets the disclosure panel.
+		 * @return The disclosure panel.
+		 */
 		public DisclosurePanel		getDisclosurePanel();
+		
+		/**
+		 * Gets the export routes button.
+		 * @return The button.
+		 */
 		public HasClickHandlers 	getExportRoutes();
+		
+		/**
+		 * Gets the find routes button.
+		 * @return The button.
+		 */
 		public HasClickHandlers 	getFindRoutes();
+		
+		/**
+		 * Gets the next route button.
+		 * @return The button.
+		 */
 		public HasClickHandlers 	getNextRouteButton();
+		
+		/**
+		 * Gets the HTML for the link to the phylogenetic profile page on MicrobesOnline for the genes associated with the reactions in the active route.
+		 * @return The HTML for the link.
+		 */
 		public HTML					getPhyloProfileLink();
+		
+		/**
+		 * Gets the previous route button.
+		 * @return The button.
+		 */
 		public HasClickHandlers 	getPrevRouteButton();
+		
+		/**
+		 * Gets the route label.
+		 * @return The label.
+		 */
 		public Label				getRoutesLabel();
+		
+		/**
+		 * Gets the route panel.
+		 * @return The panel.
+		 */
 		public Panel 				getRoutesPanel();
+		
+		/**
+		 * Gets the routes table - the table of ordered reactions for a given route.
+		 * @return The table.
+		 */
 		public CellTable<Reaction> 	getRoutesTable();
+		
+		/**
+		 * Gets the search suggest box.
+		 * @return The suggest box.
+		 */
 		public SuggestBox 			getSearchSuggestBox();
+		
+		/**
+		 * Gets the status label.
+		 * @return The label.
+		 */
 		public Label 				getStatusLabel();
 	}
 	
+	/**
+	 * Enumerated type for available retrosynthesis algorithms.
+	 * @author jtbates
+	 *
+	 */
 	public static enum Algorithm {
 		DFS("Depth-first Search", "dfs", false),
 		TW_DFS("Taxon-weighted Depth-first Search", "twdfs", true);
@@ -207,6 +291,12 @@ public class RetrosynthesisPresenter {
 	private boolean genesPopulated = false;
 	private boolean reactionsPopulated = false;
 
+	/**
+	 * Constructor
+	 * @param rpc The GLAMM RPC service.
+	 * @param view The View object for this presenter.
+	 * @param eventBus The event bus.
+	 */
 	public RetrosynthesisPresenter(final GlammServiceAsync rpc, final View view, final SimpleEventBus eventBus) {
 		this.rpc = rpc;
 		this.view = view;
@@ -567,6 +657,9 @@ public class RetrosynthesisPresenter {
 		});
 	}
 
+	/**
+	 * Populates the search and compound suggest boxes with the genes, EC numbers, and compounds for the current organism.
+	 */
 	public void populate() {
 
 		MultiWordSuggestOracle searchOracle = (MultiWordSuggestOracle) view.getSearchSuggestBox().getSuggestOracle();
@@ -711,6 +804,9 @@ public class RetrosynthesisPresenter {
 		updatePopulatingStatus();
 	}
 
+	/**
+	 * Resets all suggest box text and sets the view state to initial.
+	 */
 	public void reset() {
 		view.getCpdDstSuggestBox().setText("");
 		view.getCpdSrcSuggestBox().setText("");
@@ -722,18 +818,34 @@ public class RetrosynthesisPresenter {
 		setViewState(State.INITIAL);
 	}
 
+	/**
+	 * Sets the destination compound.
+	 * @param cpdDst The destination compound.
+	 */
 	public void setCpdDst(final Compound cpdDst) {
 		this.cpdDst = cpdDst;
 	}
 
+	/**
+	 * Sets the source compound.
+	 * @param cpdSrc The source compound.
+	 */
 	public void setCpdSrc(final Compound cpdSrc) {
 		this.cpdSrc = cpdSrc;
 	}
 
+	/**
+	 * Sets the map data.
+	 * @param mapData The map data.
+	 */
 	public void setMapData(final AnnotatedMapData mapData) {
 		this.mapData = mapData;
 	}
 
+	/**
+	 * Sets the organism.
+	 * @param organism The organism.
+	 */
 	public void setOrganism(final Organism organism) {
 		this.organism = organism;
 

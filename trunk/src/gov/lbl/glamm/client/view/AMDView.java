@@ -8,12 +8,20 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 
+/**
+ * Annotated Map Descriptor view.
+ * @author jtbates
+ *
+ */
 public class AMDView extends Composite implements AMDPresenter.View {
 
 	private DecoratorPanel 	decoratorPanel;
 	private HorizontalPanel mainPanel;
 	private ListBox	listBox;
 	
+	/**
+	 * Constructor
+	 */
 	public AMDView() {
 		decoratorPanel = new DecoratorPanel();
 		mainPanel = new HorizontalPanel();
