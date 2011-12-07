@@ -18,10 +18,19 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Implementation of the Gene DAO interface allowing access to genes stored in MetaMicrobesOnline.
+ * @author jtbates
+ *
+ */
 public class GeneMetaMolDAOImpl implements GeneDAO {
 
 	private GlammSession sm;
 
+	/**
+	 * Constructor
+	 * @param sm The GLAMM session.
+	 */
 	public GeneMetaMolDAOImpl(final GlammSession sm) {
 		this.sm = sm;
 	}
@@ -268,43 +277,11 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 		return genes;
 	}
 
-	public Map<String, String> getVimssId2TaxonomyIdMapping(Collection<String> vimssIds) {
-		if(vimssIds == null || vimssIds.isEmpty())
-			return null;
-
-		Map<String, String> mapping = null;
-
-		if(!sm.getServerConfig().hasMetagenomeHost())
-			return mapping;
-
-		String sql = "select L.locusId, L.taxonomyId " +
-		"from meta2010jul.Locus L " +
-		"where L.locusId in ("+ GlammUtils.joinCollection(vimssIds) + ") " +
-		"and L.isActive=1;";
-
-		try {
-			Connection connection = GlammDbConnectionPool.getConnection(sm);
-			Statement statement = connection.createStatement();
-
-			ResultSet rs = statement.executeQuery(sql);
-
-			while(rs.next()) {
-				String locusId = rs.getString("locusId");
-				String taxonomyId = rs.getString("taxonomyId");
-
-				if(mapping == null)
-					mapping = new HashMap<String, String>();
-
-				mapping.put(locusId, taxonomyId);
-			}
-
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-
-		return mapping;
-	}
-
+	/**
+	 * Gets the set of taxonomy ids for a collection of VIMSS ids (MicrobesOnline locus ids.)
+	 * @param vimssIds The collection of VIMSS ids.
+	 * @return The set of taxonomy ids.
+	 */
 	public Set<String> getTaxonomyIdsForVimssIds(Collection<String> vimssIds) {
 		if(vimssIds == null || vimssIds.isEmpty())
 			return null;

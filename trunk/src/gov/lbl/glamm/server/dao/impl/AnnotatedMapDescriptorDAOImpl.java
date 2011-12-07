@@ -14,10 +14,19 @@ import org.hibernate.FetchMode;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
+/**
+ * Implementation of AnnotatedMapDescriptorDAO interface.  Wraps Hibernate calls.
+ * @author jtbates
+ *
+ */
 public class AnnotatedMapDescriptorDAOImpl implements AnnotatedMapDescriptorDAO {
 	
 	private GlammSession sm;
 	
+	/**
+	 * Constructor
+	 * @param sm The GLAMM session.
+	 */
 	public AnnotatedMapDescriptorDAOImpl(final GlammSession sm) {
 		this.sm = sm;
 	}

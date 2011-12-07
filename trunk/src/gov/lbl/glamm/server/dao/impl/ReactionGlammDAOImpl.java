@@ -25,11 +25,20 @@ import java.util.Set;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
+/**
+ * Implementation of the Reaction DAO interface granting access to reactions stored in the GLAMM database.
+ * @author jtbates
+ *
+ */
 public class ReactionGlammDAOImpl implements ReactionDAO {
 
 
 	private GlammSession sm;
 
+	/**
+	 * Constructor.
+	 * @param sm The GLAMM Session.
+	 */
 	public ReactionGlammDAOImpl(final GlammSession sm) {
 		this.sm = sm;
 	}

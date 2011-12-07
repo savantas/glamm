@@ -9,17 +9,22 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Implementation of the Gene DAO for accessing user-uploaded gene data.
+ * @author jtbates
+ *
+ */
 public class GeneSessionDAOImpl implements GeneDAO {
 
 	GlammSession sm = null;
 
-	//********************************************************************************
-
+	/**
+	 * Constructor.
+	 * @param sm The GLAMM session.
+	 */
 	public GeneSessionDAOImpl(GlammSession sm) {
 		this.sm = sm;
 	}
-
-	//********************************************************************************
 
 	@Override
 	public Set<String> getEcNumsForOrganism(String taxonomyId) {
@@ -42,8 +47,6 @@ public class GeneSessionDAOImpl implements GeneDAO {
 
 		return ecNums;
 	}
-
-	//********************************************************************************
 
 	@Override
 	public Set<Gene> getGenesForEcNums(String taxonomyId,
@@ -72,8 +75,6 @@ public class GeneSessionDAOImpl implements GeneDAO {
 		return genes;
 	}
 
-	//********************************************************************************
-
 	@Override
 	public Set<Gene> getGenesForOrganism(String taxonomyId) {
 		
@@ -82,16 +83,11 @@ public class GeneSessionDAOImpl implements GeneDAO {
 		return sm.getGenesForTaxonomyId(taxonomyId);
 	}
 
-	//********************************************************************************
-
 	@Override
 	public Set<Gene> getGenesForRxnIds(String taxonomyId, String[] rxnIds) {
 		// Session-defined networks do not yet know what a reaction id is.  This may/will change.
 		return new HashSet<Gene>();
 	}
-
-	//********************************************************************************
-
 
 	@Override
 	public Set<Gene> getGenesForSynonyms(String taxonomyId, Collection<String> synonyms) {
@@ -112,16 +108,9 @@ public class GeneSessionDAOImpl implements GeneDAO {
 		return genes;
 	}
 
-	//********************************************************************************
-
 	@Override
 	public Set<Gene> getGenesForVimssIds(String taxonomyId, Collection<String> extIds) {
 		return getGenesForSynonyms(taxonomyId, extIds);
 	}
-
-
-	//********************************************************************************
-
-
 
 }
