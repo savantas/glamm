@@ -14,16 +14,25 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+/**
+ * Implementatin of the Experiment DAO interface allowing access to user-uploaded experiments.
+ * @author jtbates
+ *
+ */
 public class ExperimentSessionDAOImpl implements ExperimentDAO {
 
 	private GlammSession sm = null;
 	
+	/**
+	 * Constructor
+	 * @param sm The GLAMM session.
+	 */
 	public ExperimentSessionDAOImpl(GlammSession sm) {
 		this.sm = sm;
 	}
 	
 	@Override
-	public List<Sample.DataType> getAvailableExperimentTypes() {
+	public List<Sample.DataType> getAvailableSampleDataTypes() {
 		if(sm != null && sm.hasExperiments()) {
 			List<Sample.DataType> types = new ArrayList<Sample.DataType>();
 			types.add(Sample.DataType.SESSION);

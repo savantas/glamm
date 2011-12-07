@@ -21,6 +21,6 @@ public class GetAvailableExperimentTypes {
 	 */
 	public static List<Sample.DataType> getAvailableExperimentTypes(GlammSession sm) {
 		ExperimentDAO expDao = new ExperimentDAOImpl(sm);
-		return expDao.getAvailableExperimentTypes();
+		return expDao.getAvailableSampleDataTypes();
 	}
 }

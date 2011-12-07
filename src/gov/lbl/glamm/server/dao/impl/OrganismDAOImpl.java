@@ -13,12 +13,22 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+/**
+ * Implementation of the Organism DAO aggregating access to organisms stored in MetaMicrobesOnline, MicrobesOnline, as well as user-uploaded organisms 
+ * stored per-session.
+ * @author jtbates
+ *
+ */
 public class OrganismDAOImpl implements OrganismDAO {
 	
 	private OrganismMetaMolDAOImpl	metaMolDao	= null;
 	private OrganismMolDAOImpl 		molDao 		= null;
 	private OrganismSessionDAOImpl 	sessionDao 	= null;
 	
+	/**
+	 * Constructor.
+	 * @param sm The GLAMM session.
+	 */
 	public OrganismDAOImpl(GlammSession sm) {
 		metaMolDao 	= new OrganismMetaMolDAOImpl(sm);
 		molDao 		= new OrganismMolDAOImpl(sm);

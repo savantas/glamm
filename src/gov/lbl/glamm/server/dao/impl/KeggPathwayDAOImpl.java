@@ -9,10 +9,19 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+/**
+ * Implementation of the Pathway DAO allowing access to KEGG pathways stored in the GLAMM database.
+ * @author jtbates
+ *
+ */
 public class KeggPathwayDAOImpl implements PathwayDAO {
 	
 	private GlammSession sm;
 	
+	/**
+	 * Constructor.
+	 * @param sm The GLAMM Session.
+	 */
 	public KeggPathwayDAOImpl(final GlammSession sm) {
 		this.sm = sm;
 	}

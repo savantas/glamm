@@ -21,10 +21,19 @@ import java.util.Set;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
+/**
+ * Implementation of the Compound DAO interface.
+ * @author jtbates
+ *
+ */
 public class CompoundGlammDAOImpl implements CompoundDAO {
 
 	private GlammSession sm;
 	
+	/**
+	 * Constructor
+	 * @param sm The GLAMM session.
+	 */
 	public CompoundGlammDAOImpl(final GlammSession sm) {
 		this.sm = sm;
 	}

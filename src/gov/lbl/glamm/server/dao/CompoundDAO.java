@@ -17,6 +17,18 @@ public interface CompoundDAO {
 	 * @return The compound.
 	 */
 	public Compound getCompound(String id, String dbName);
+	
+	/**
+	 * Gets the set of compounds corresponding to a set of ids.
+	 * @param ids The set of ids.
+	 * @return The set of compounds.
+	 */
 	public Set<Compound> getCompounds(Set<String> ids);
+	
+	/**
+	 * Gets the set of compounds for a given map id.
+	 * @param mapId The map id.
+	 * @return The set of compounds.
+	 */
 	public Set<Compound> getCompoundsForSearch(String mapId);
 }

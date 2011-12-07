@@ -12,12 +12,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Implementation of the Experiment DAO interface.  This implementation allows aggregate access to the Microarray DAO implementation
+ * (for accessing microarray data from MicrobesOnline) and the session DAO implementation (for accessing objects uploaded by the user during a session.)
+ * @author jtbates
+ *
+ */
 public class ExperimentDAOImpl implements ExperimentDAO {
 
 	private GlammSession 				sm 				= null;
 	private ExperimentMicroarrayDAOImpl	expUArrayDao 	= null;
 	private ExperimentSessionDAOImpl 	expSessionDao 	= null;
 	
+	/**
+	 * Constructor
+	 * @param sm The GLAMM session.
+	 */
 	public ExperimentDAOImpl(GlammSession sm) {
 		this.sm = sm;
 		expUArrayDao = new ExperimentMicroarrayDAOImpl(sm);
@@ -26,16 +36,16 @@ public class ExperimentDAOImpl implements ExperimentDAO {
 	}
 	
 	@Override
-	public List<Sample.DataType> getAvailableExperimentTypes() {
+	public List<Sample.DataType> getAvailableSampleDataTypes() {
 		List<Sample.DataType> types = null;
 		
 		if(sm != null)
-			types = expSessionDao.getAvailableExperimentTypes();
+			types = expSessionDao.getAvailableSampleDataTypes();
 		
 		if(types == null)
-			types = expUArrayDao.getAvailableExperimentTypes();
+			types = expUArrayDao.getAvailableSampleDataTypes();
 		else
-			types.addAll(expUArrayDao.getAvailableExperimentTypes());
+			types.addAll(expUArrayDao.getAvailableSampleDataTypes());
 		
 		return types;
 	}

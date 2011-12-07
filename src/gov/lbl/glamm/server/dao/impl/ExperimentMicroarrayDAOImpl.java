@@ -21,6 +21,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Implementation of the Experiment DAO interface allowing access to the microarray data on MicrobesOnline.
+ * @author jtbates
+ *
+ */
 public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 
 	private final float UARRAY_CLAMP_MIN 	= -2.0f;
@@ -33,14 +38,18 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 	private GlammSession sm = null;
 
 
+	/**
+	 * Constructor
+	 * @param sm The GLAMM session.
+	 */
 	public ExperimentMicroarrayDAOImpl(GlammSession sm) {
 		this.sm = sm;
 	}
 
-	//********************************************************************************
+	
 
 	@Override
-	public List<Sample.DataType> getAvailableExperimentTypes() {
+	public List<Sample.DataType> getAvailableSampleDataTypes() {
 
 		List<Sample.DataType> types = null;
 		String sql = "select distinct(e.expType) " +
@@ -131,7 +140,7 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 		return experiment;
 	}
 
-	//********************************************************************************
+	
 
 	@Override
 	public List<Experiment> getAllExperimentsForTaxonomyId(String taxonomyId) {
@@ -358,7 +367,7 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 		return id2Measurement;
 	}
 
-	//********************************************************************************
+	
 
 
 

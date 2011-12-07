@@ -18,12 +18,19 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Implementation of the Gene DAO interface allowing access to genes in MicrobesOnline
+ * @author jtbates
+ *
+ */
 public class GeneMolDAOImpl implements GeneDAO {
 
-	//********************************************************************************
-	
 	private GlammSession sm;
-	
+
+	/**
+	 * Constructor.
+	 * @param sm The GLAMM Session.
+	 */
 	public GeneMolDAOImpl(GlammSession sm) {
 		this.sm = sm;
 	}
@@ -72,7 +79,7 @@ public class GeneMolDAOImpl implements GeneDAO {
 		return ecNums;
 	}
 	
-	//********************************************************************************
+	
 
 	@Override
 	public Set<Gene> getGenesForEcNums(String taxonomyId, Collection<String> ecNums) {
@@ -112,7 +119,7 @@ public class GeneMolDAOImpl implements GeneDAO {
 		return genes;
 	}
 	
-	//********************************************************************************
+	
 
 	@Override
 	public Set<Gene> getGenesForOrganism(String taxonomyId) {
@@ -150,7 +157,7 @@ public class GeneMolDAOImpl implements GeneDAO {
 		return genes;
 	}
 
-	//********************************************************************************
+	
 
 	@Override
 	public Set<Gene> getGenesForRxnIds(String taxonomyId, String[] rxnIds) {
@@ -191,7 +198,7 @@ public class GeneMolDAOImpl implements GeneDAO {
 		return genes;
 	}
 
-	//********************************************************************************
+	
 
 	private Set<Gene> processResultSet(ResultSet rs) 
 	throws SQLException {
@@ -225,7 +232,7 @@ public class GeneMolDAOImpl implements GeneDAO {
 		return genes;
 	}
 
-	//********************************************************************************
+	
 
 	@Override
 	public Set<Gene> getGenesForSynonyms(String taxonomyId,
@@ -234,7 +241,7 @@ public class GeneMolDAOImpl implements GeneDAO {
 		return getGenesForVimssIds(taxonomyId, synonyms);
 	}
 	
-	//********************************************************************************
+	
 	
 	@Override
 	public Set<Gene> getGenesForVimssIds(String taxonomyId, Collection<String> extIds) {
@@ -271,43 +278,6 @@ public class GeneMolDAOImpl implements GeneDAO {
 		}
 
 		return genes;
-	}
-
-
-	//********************************************************************************
-	
-	public Map<String, String> getVimssId2TaxonomyIdMapping(Collection<String> vimssIds) {
-		if(vimssIds == null || vimssIds.isEmpty())
-			return null;
-		
-		Map<String, String> mapping = null;
-		String sql = "select L.locusId, S.taxonomyId " +
-				"from Locus L " +
-				"join Scaffold S on (L.scaffoldId=S.scaffoldId) " +
-				"where L.locusId in ("+ GlammUtils.joinCollection(vimssIds) + ") " +
-				"and S.isActive=1;";
-		
-		try {
-			Connection connection = GlammDbConnectionPool.getConnection(sm);
-			Statement statement = connection.createStatement();
-			
-			ResultSet rs = statement.executeQuery(sql);
-			
-			while(rs.next()) {
-				String locusId = rs.getString("locusId");
-				String taxonomyId = rs.getString("taxonomyId");
-				
-				if(mapping == null)
-					mapping = new HashMap<String, String>();
-				
-				mapping.put(locusId, taxonomyId);
-			}
-			
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-		
-		return mapping;
 	}
 	
 }

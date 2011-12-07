@@ -11,10 +11,20 @@ import java.sql.ResultSet;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Implementation of the User DAO interface granting access to users stored in MicrobesOnline.  All GLAMM login credentials are 
+ * supplied by MicrobesOnline.
+ * @author jtbates
+ *
+ */
 public class UserDAOImpl implements UserDAO {
 
 	private GlammSession sm;
 
+	/**
+	 * Constructor.
+	 * @param sm The GLAMM Session.
+	 */
 	public UserDAOImpl(final GlammSession sm) {
 		this.sm = sm;
 	}

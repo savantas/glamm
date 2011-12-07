@@ -8,26 +8,33 @@ import gov.lbl.glamm.server.retrosynthesis.Route.Step;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Depth first search for retrosynthesis.
+ * @author jtbates
+ *
+ */
 public class RADepthFirstSearch extends RetrosynthesisAlgorithm {
-
-	//********************************************************************************
 
 	private final int MAX_DEPTH = 10;
 
-	//********************************************************************************
-
+	/**
+	 * Constructor.
+	 * @param algorithm Algorithm used for this search.
+	 * @param taxonomyId The taxonomy id of the organism for which the metabolic network is being searched.
+	 * @param network The metabolic network.
+	 */
 	protected RADepthFirstSearch(String algorithm, String taxonomyId, MetabolicNetwork network) {
 		super(algorithm, taxonomyId, network);
 	}
 
-	//********************************************************************************
+	
 
 	@Override
 	public int costForStep(MNNode node) {
 		return 1;	// steps have unit cost
 	}
 
-	//********************************************************************************
+	
 
 	@Override
 	public List<Route> calculateRoutes(String cpdSrcExtId, String cpdDstExtId) {
@@ -35,7 +42,7 @@ public class RADepthFirstSearch extends RetrosynthesisAlgorithm {
 		return routes;
 	}
 
-	//********************************************************************************
+	
 
 	protected void _calculateSubRoute(Route subRoute, String cpdSrcExtId, String cpdDstExtId, int depth) {
 
@@ -78,6 +85,6 @@ public class RADepthFirstSearch extends RetrosynthesisAlgorithm {
 
 	}
 
-	//********************************************************************************
+	
 
 }

@@ -18,10 +18,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Implementation of the Organism DAO interface granting access to organisms stored in MetaMicrobesOnline.
+ * @author jtbates
+ *
+ */
 public class OrganismMetaMolDAOImpl implements OrganismDAO {
 
 	private GlammSession sm = null;
 
+	/**
+	 * Constructor.
+	 * @param sm The GLAMM Session.
+	 */
 	public OrganismMetaMolDAOImpl(GlammSession sm) {
 		this.sm = sm;
 	}

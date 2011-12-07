@@ -11,10 +11,19 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implementations of the CitationsDAO interface.
+ * @author jtbates
+ *
+ */
 public class CitationsGlammDAOImpl implements CitationsDAO {
 
 	private GlammSession sm;
 	
+	/**
+	 * Constructor
+	 * @param sm The GLAMM session.
+	 */
 	public CitationsGlammDAOImpl(final GlammSession sm) {
 		this.sm = sm;
 	}

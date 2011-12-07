@@ -8,15 +8,23 @@ import gov.lbl.glamm.server.dao.GeneDAO;
 import java.util.Collection;
 import java.util.Set;
 
+/**
+ * Implementation of the Gene DAO interface aggregating access to genes stored in MicrobesOnline, MetaMicrobesOnline, and user-uploaded genes stored
+ * per-session.
+ * @author jtbates
+ *
+ */
 public class GeneDAOImpl implements GeneDAO {
-	
-	
 	
 	private GlammSession 		sm			= null;
 	private GeneMetaMolDAOImpl	metaMolDao	= null;
 	private GeneMolDAOImpl 		molDao 		= null;
 	private GeneSessionDAOImpl 	sessionDao 	= null;
 
+	/**
+	 * Constructor
+	 * @param sm The GLAMM session.
+	 */
 	public GeneDAOImpl(GlammSession sm) {
 		this.sm = sm;
 		metaMolDao = new GeneMetaMolDAOImpl(sm);
