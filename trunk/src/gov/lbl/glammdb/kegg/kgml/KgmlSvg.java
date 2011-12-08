@@ -5,124 +5,83 @@ import java.util.List;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-public class KgmlSvg {
-	private enum Attribute {
-		CLASS("class"),
-		COMPOUND("compound"),
-		ENZYME("enzyme"),
-		FILL("fill"),
-		ID("id"),
-		KEGGID("keggid"),
-		MAP("map"),
-		REACTION("reaction"),
-		STATE("state"),
-		TYPE("type");
-
-		private String value;
-
-		private Attribute(final String value) {
-			this.value = value;
-		}
-
-		@Override
-		public String toString() {
-			return value;
-		}
+/**
+ * Class for processing the KGML+ SVG node, annotating it in a format acceptable by GLAMM.
+ * @author jtbates
+ *
+ */
+class KgmlSvg {
+	
+	@SuppressWarnings("unused")
+	private static interface Attribute {
+		final static String CLASS		= "class";
+		final static String COMPOUND	= "compound";
+		final static String ENZYME		= "enzyme";
+		final static String FILL		= "fill";
+		final static String ID			= "id";
+		final static String KEGGID		= "keggid";
+		final static String MAP			= "map";
+		final static String REACTION	= "reaction";
+		final static String STATE		= "state";
+		final static String TYPE		= "type";
 	}
 
-	private enum CssClass {
-		CPD("cpd"),
-		MAP("map"),
-		RXN("rxn");
-		private String value;
-
-		private CssClass(final String value) {
-			this.value = value;
-		}
-
-		@Override
-		public String toString() {
-			return value;
-		}	
-	}
-
-	private enum Tag {
-		DESC("desc"),
-		ELLIPSE("ellipse"),
-		ENTRY("entry"),
-		G("g"),
-		MAP("map"),
-		PATH("path"),
-		RECT("rect"),
-		SVG("svg"),
-		TEST("foobar"),
-		TITLE("title"),
-		TSPAN("tspan");
-
-		private String value;
-
-		private Tag(final String value) {
-			this.value = value;
-		}
-
-		@Override
-		public String toString() {
-			return value;
-		}
-	}
-
-	private enum Text {
-		BACKGROUND("__background__"),
-		BASE("Base");
-
-		private String value;
-
-		private Text(final String value) {
-			this.value = value;
-		}
-
-		@Override
-		public String toString() {
-			return value;
-		}
-	}
-
-	private enum Type {
-		COMPOUND("compound"),
-		ENZYME("enzyme"),
-		GENE("gene"),
-		MAP("map"),
-		ORTHOLOG("ortholog"),
-		OTHER("other");
-
-		private String value;
-
-		private Type(final String value) {
-			this.value = value;
-		}
-
-		@Override
-		public String toString() {
-			return value;
-		}
+	private static interface CssClass {
+		final static String CPD ="cpd";
+		final static String MAP ="map";
+		final static String RXN ="rxn";
 	}
 	
-	private KgmlDocument document;
+	@SuppressWarnings("unused")
+	private static interface Tag {
+		final static String DESC 	= "desc";
+		final static String ELLIPSE = "ellipse";
+		final static String ENTRY 	= "entry";
+		final static String G 		= "g";
+		final static String MAP 	= "map";
+		final static String PATH 	= "path";
+		final static String RECT 	= "rect";
+		final static String SVG 	= "svg";
+		final static String TITLE 	= "title";
+		final static String TSPAN 	= "tspan";
+	}
+
+	private static interface Text {
+		final static String BACKGROUND	= "__background__";
+		final static String BASE 		= "Base";
+	}
+	
+	@SuppressWarnings("unused")
+	private static interface Type {
+		final static String COMPOUND	= "compound";
+		final static String ENZYME 		= "enzyme";
+		final static String GENE 		= "gene";
+		final static String MAP 		= "map";
+		final static String ORTHOLOG 	= "ortholog";
+		final static String OTHER 		= "other";
+	}
+	
+	private KgmlPlusDocument document;
 	
 	private KgmlSvg() {}
 	
-	public static KgmlSvg create(final KgmlDocument document) {
+	/**
+	 * Creates a KgmlSvg instance from a KGML+ document.
+	 * @param document The document.
+	 * @return The instance.
+	 */
+	public static KgmlSvg create(final KgmlPlusDocument document) {
 		KgmlSvg svg = new KgmlSvg();
 		svg.document = document;
 		return svg;
 	}
 
-	private void flattenGroup(final Element group, final Tag tag) {
-		List<Node> subgroups = KgmlDocument.getElementsWithTag(group, Tag.G.toString());
+	private void flattenGroup(final Element group, final String tag) {
+		List<Node> subgroups = KgmlPlusDocument.getElementsWithTag(group, Tag.G);
 		if(subgroups.size() < 2)
 			return;
 
-		for(Node node : KgmlDocument.getElementsWithTag(group, tag.toString()))
+		for(Node node : KgmlPlusDocument.getElementsWithTag(group, tag))
 			group.appendChild(node);
 
 		for(Node subgroup: subgroups) {
@@ -134,16 +93,16 @@ public class KgmlSvg {
 	}
 
 	private void processAnnotatedMapElementGroup(final Element groupElement) {
-		List<Node> entryNodes = KgmlDocument.getElementsWithTag(groupElement, Tag.ENTRY.toString());
+		List<Node> entryNodes = KgmlPlusDocument.getElementsWithTag(groupElement, Tag.ENTRY);
 		if(entryNodes.isEmpty())
 			processEntrylessGroup(groupElement);
 		else {
 			Element entry = (Element) entryNodes.get(0);
-			String type = entry.getAttribute(Attribute.TYPE.toString());
+			String type = entry.getAttribute(Attribute.TYPE);
 
-			if(type.equals(Type.COMPOUND.toString()))
+			if(type.equals(Type.COMPOUND))
 				processCompoundGroup(groupElement, entry);
-			else if(type.equals(Type.MAP.toString()))
+			else if(type.equals(Type.MAP))
 				processMapGroup(groupElement, entry);
 			else {
 				processReactionGroup(groupElement, entry);
@@ -153,14 +112,14 @@ public class KgmlSvg {
 			groupElement.removeChild(entry.getNextSibling());
 			groupElement.removeChild(entry);
 		}
-		groupElement.removeAttribute(Attribute.ID.toString());
+		groupElement.removeAttribute(Attribute.ID);
 	}
 
 	private void processAnnotatedMapElements() {
-		List<Node> titleElements = KgmlDocument.getElementsWithTag(document.getSvgNode(), Tag.TITLE.toString());
+		List<Node> titleElements = KgmlPlusDocument.getElementsWithTag(document.getSvgNode(), Tag.TITLE);
 		Node baseParentNode = null;
 		for(Node node : titleElements) {
-			if(node.getFirstChild().getTextContent().equals(Text.BASE.toString())){
+			if(node.getFirstChild().getTextContent().equals(Text.BASE)){
 				baseParentNode = node.getParentNode();
 				break;
 			}
@@ -170,17 +129,17 @@ public class KgmlSvg {
 			throw new RuntimeException("Could not find " + Tag.TITLE + " element with text " + Text.BASE);
 
 		for(Node node = baseParentNode.getFirstChild(); node != null; node = node.getNextSibling()) {
-			if(node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName().equals(Tag.G.toString())) 
+			if(node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName().equals(Tag.G)) 
 				processAnnotatedMapElementGroup((Element) node);
 		}
 	}
 
 	private void processBackgroundRect() {
 
-		List<Node> descElements = KgmlDocument.getElementsWithTag(document.getSvgNode(), Tag.DESC.toString());
+		List<Node> descElements = KgmlPlusDocument.getElementsWithTag(document.getSvgNode(), Tag.DESC);
 		Node descParent = null;
 		for(Node node : descElements) {
-			if(node.getFirstChild().getTextContent().equals(Text.BACKGROUND.toString())) {
+			if(node.getFirstChild().getTextContent().equals(Text.BACKGROUND)) {
 				descParent = node.getParentNode();
 				break;
 			}
@@ -189,59 +148,62 @@ public class KgmlSvg {
 		if(descParent == null)
 			throw new RuntimeException("Could not find " + Tag.DESC + " element with text " + Text.BACKGROUND);
 
-		List<Node> rectElements = KgmlDocument.getElementsWithTag(descParent, Tag.RECT.toString());
+		List<Node> rectElements = KgmlPlusDocument.getElementsWithTag(descParent, Tag.RECT);
 		if(rectElements.isEmpty())
 			throw new RuntimeException("Could not find background rect.");
 		else {
 			Element rect = (Element) rectElements.get(0);
-			rect.setAttribute(Attribute.FILL.toString(), "#000000");
+			rect.setAttribute(Attribute.FILL, "#000000");
 		}
 	}
 
 	private void processCompoundGroup(final Element group, final Element entry) {
-		for(Node node : KgmlDocument.getElementsWithTag(group, Tag.ELLIPSE.toString())) {
+		for(Node node : KgmlPlusDocument.getElementsWithTag(group, Tag.ELLIPSE)) {
 			Element element = (Element) node;
-			element.setAttribute(Attribute.CLASS.toString(), CssClass.CPD.toString());
-			element.setAttribute(Attribute.STATE.toString(), "default");
+			element.setAttribute(Attribute.CLASS, CssClass.CPD);
+			element.setAttribute(Attribute.STATE, "default");
 		}
 
-		group.setAttribute(Attribute.CLASS.toString(), CssClass.CPD.toString());
+		group.setAttribute(Attribute.CLASS, CssClass.CPD);
 	}
 
 	private void processEntrylessGroup(final Element group) {
-		List<Node> pathNodes = KgmlDocument.getElementsWithTag(group, Tag.PATH.toString());
+		List<Node> pathNodes = KgmlPlusDocument.getElementsWithTag(group, Tag.PATH);
 		for(Node node : pathNodes) {
 			Element element = (Element) node;
-			element.setAttribute(Attribute.CLASS.toString(), CssClass.RXN.toString());
-			element.setAttribute(Attribute.STATE.toString(), "default");
+			element.setAttribute(Attribute.CLASS, CssClass.RXN);
+			element.setAttribute(Attribute.STATE, "default");
 		}
-		group.setAttribute(Attribute.CLASS.toString(), CssClass.RXN.toString());
+		group.setAttribute(Attribute.CLASS, CssClass.RXN);
 	}
 
 	private void processMapGroup(final Element group, final Element entry) {
-		for(Node node : KgmlDocument.getElementsWithTag(group, Tag.RECT.toString()))
-			((Element) node).setAttribute(Attribute.FILL.toString(), "none");
+		for(Node node : KgmlPlusDocument.getElementsWithTag(group, Tag.RECT))
+			((Element) node).setAttribute(Attribute.FILL, "none");
 
-		for(Node node : KgmlDocument.getElementsWithTag(group, Tag.TSPAN.toString())) {
+		for(Node node : KgmlPlusDocument.getElementsWithTag(group, Tag.TSPAN)) {
 			Element element = (Element) node;
-			element.setAttribute(Attribute.CLASS.toString(), CssClass.MAP.toString());
-			element.setAttribute(Attribute.STATE.toString(), "default");
-			element.setAttribute(Attribute.FILL.toString(), "#FFFFFF");
+			element.setAttribute(Attribute.CLASS, CssClass.MAP);
+			element.setAttribute(Attribute.STATE, "default");
+			element.setAttribute(Attribute.FILL, "#FFFFFF");
 		}
 
-		group.setAttribute(Attribute.CLASS.toString(), CssClass.MAP.toString());
+		group.setAttribute(Attribute.CLASS, CssClass.MAP);
 	}
 
 	private void processReactionGroup(final Element group, final Element entry) {
-		for(Node node : KgmlDocument.getElementsWithTag(group, Tag.PATH.toString())) {
+		for(Node node : KgmlPlusDocument.getElementsWithTag(group, Tag.PATH)) {
 			Element element = (Element) node;
-			element.setAttribute(Attribute.CLASS.toString(), CssClass.RXN.toString());
-			element.setAttribute(Attribute.STATE.toString(), "default");
+			element.setAttribute(Attribute.CLASS, CssClass.RXN);
+			element.setAttribute(Attribute.STATE, "default");
 		}
 
-		group.setAttribute(Attribute.CLASS.toString(), CssClass.RXN.toString());
+		group.setAttribute(Attribute.CLASS, CssClass.RXN);
 	}
 
+	/**
+	 * Processes and annotates the KgmlSvg instance.
+	 */
 	public void process() {
 		processBackgroundRect();
 		processAnnotatedMapElements();
@@ -250,7 +212,7 @@ public class KgmlSvg {
 	}
 
 	private void removeTitleElements() {
-		List<Node> nodes = KgmlDocument.getElementsWithTag(document.getSvgNode(), Tag.TITLE.toString());
+		List<Node> nodes = KgmlPlusDocument.getElementsWithTag(document.getSvgNode(), Tag.TITLE);
 		for(Node node : nodes) {
 			node.getParentNode().removeChild(node.getNextSibling());
 			node.getParentNode().removeChild(node);
@@ -260,8 +222,8 @@ public class KgmlSvg {
 	private void wrapSvgChildrenInViewport() {
 		// create the viewport element
 		Node svgNode = document.getSvgNode();
-		Element viewport = svgNode.getOwnerDocument().createElement(Tag.G.toString());
-		viewport.setAttribute(Attribute.ID.toString(), "viewport");
+		Element viewport = svgNode.getOwnerDocument().createElement(Tag.G);
+		viewport.setAttribute(Attribute.ID, "viewport");
 
 		// add child nodes to the viewport element, while removing them from the svgNode
 		for(Node node = svgNode.getFirstChild(); node != null; ) {

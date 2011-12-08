@@ -14,13 +14,22 @@ import javax.imageio.ImageIO;
 import sun.misc.BASE64Encoder;
 
 
-
+/**
+ * Utility class for methods useful to the GLAMM server.
+ * @author jtbates
+ *
+ */
 public abstract class GlammUtils {
 
 	private GlammUtils() {}
 
-	//********************************************************************************
-
+	
+	/**
+	 * Generates a link to an image constrained such that the longest dimension is no bigger than a user-specified maximum value.
+	 * @param imgUrlString The image url.
+	 * @param maxDim The maximum dimension.
+	 * @return The constrained image link.
+	 */
 	public static String genConstrainedImageLink(final String imgUrlString, final int maxDim) {
 
 		String html = "";
@@ -80,14 +89,24 @@ public abstract class GlammUtils {
 		return html;
 	}
 
-	//********************************************************************************
-
+	
+	/**
+	 * Generates a comma-separated string consisting of quoted string representations of an array of objects.
+	 * @param a The array of objects.
+	 * @return The comma-separated string.
+	 */
 	public static String joinArray ( Object[] a ) {
 		return joinArray( a, ",", true );
 	}
 
-	//********************************************************************************
-
+	
+	/**
+	 * Generates a string consisting of the string representations of an array of objects.
+	 * @param a The array of objects.
+	 * @param separator The separator.
+	 * @param shouldQuote Flag indicating whether or not the string representations should be quoted.
+	 * @return The string.
+	 */
 	public static String joinArray ( Object[] a, String separator, boolean shouldQuote ) {
 
 		String	result 	= "";
@@ -105,14 +124,24 @@ public abstract class GlammUtils {
 		return result;
 	}
 
-	//********************************************************************************
-
+	
+	/**
+	 * Generates a comma-separated string consisting of quoted string representations of a collection of objects.
+	 * @param a The collection of objects.
+	 * @return The comma-separated string.
+	 */
 	public static String joinCollection(Collection<String> a) {
 		return joinCollection(a, ",", true);
 	}
 
-	//********************************************************************************
-
+	
+	/**
+	 * Generates a string consisting of the string representations of a collection of objects.
+	 * @param a The array of objects.
+	 * @param separator The separator.
+	 * @param shouldQuote Flag indicating whether or not the string representations should be quoted.
+	 * @return The string.
+	 */
 	public static String joinCollection(Collection<String> a, String separator, boolean shouldQuote) {
 		String result = "";
 		String quote = shouldQuote ? "\"" : "";
@@ -131,8 +160,12 @@ public abstract class GlammUtils {
 		return result;
 	}
 
-	//********************************************************************************
-
+	
+	/**
+	 * Generates a Base64 MD5 hash of a string.
+	 * @param in The input string.
+	 * @return The string representation of the Base64 MD5 hash.
+	 */
 	public static String genBase64MD5String(final String in) {
 
 		if(in == null || in.isEmpty())
