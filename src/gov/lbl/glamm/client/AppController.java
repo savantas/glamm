@@ -436,6 +436,14 @@ public class AppController {
 				rxnElementPresenter.killPopup();
 			}
 		});
+		
+		eventBus.addHandler(RoutePickedEvent.TYPE,
+				new RoutePickedEvent.Handler() {
+			@Override
+			public void onPicked(RoutePickedEvent event) {
+				rxnElementPresenter.setSample(null);
+			}
+		});
 	}
 
 	private void loadMapPanel() {

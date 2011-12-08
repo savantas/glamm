@@ -19,6 +19,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
+/**
+ * Persistent class for storing annotated maps.  Contains paths to the map SVG file and the mini-map icon image file (typically PNG format.)
+ * Also contains the metabolic network graph.
+ * @author jtbates
+ *
+ */
 @SuppressWarnings("serial")
 @Entity
 @Table(name="AnnotatedMap")
@@ -46,50 +52,98 @@ public class PersistentAnnotatedMap implements Serializable {
 	@OrderBy("id")
 	private Set<PersistentAMRxn> network = new LinkedHashSet<PersistentAMRxn>();
 
+	/**
+	 * Gets the id.
+	 * @return The id.
+	 */
 	public Long getId() {
 		return id;
 	}
 
+	/**
+	 * Sets the id.
+	 * @param id The id.
+	 */
 	public void setId(Long id) {
 		this.id = id;
 	}
 
+	/**
+	 * Gets the map id - typically a KEGG map id.
+	 * @return The map id.
+	 */
 	public String getMapId() {
 		return mapId;
 	}
 
+	/**
+	 * Sets the map id - typically a KEGG map id.
+	 * @param mapId The map id.
+	 */
 	public void setMapId(String mapId) {
 		this.mapId = mapId;
 	}
 
+	/**
+	 * Gets the path to the SVG file.
+	 * @return The SVG file path.
+	 */
 	public String getSvg() {
 		return svg;
 	}
 
+	/**
+	 * Sets the SVG file path.
+	 * @param svg The SVG file path.
+	 */
 	public void setSvg(String svg) {
 		this.svg = svg;
 	}
 
+	/**
+	 * Gets the icon file path.
+	 * @return The icon file path.
+	 */
 	public String getIcon() {
 		return icon;
 	}
 
+	/**
+	 * Sets the icon file path.
+	 * @param icon The icon file path.
+	 */
 	public void setIcon(String icon) {
 		this.icon = icon;
 	}
 
+	/**
+	 * Gets the map title.
+	 * @return The map title.
+	 */
 	public String getTitle() {
 		return title;
 	}
 
+	/**
+	 * Sets the map title.
+	 * @param title The map title.
+	 */
 	public void setTitle(String title) {
 		this.title = title;
 	}
 
+	/**
+	 * Gets the set of persistent annotated map reactions that forms the metabolic network.
+	 * @return The set of reactions.
+	 */
 	public Set<PersistentAMRxn> getNetwork() {
 		return network;
 	}
 
+	/**
+	 * Sets the set of persistent annotated map reactions that forms the metabolic network.
+	 * @param network The set of reactions.
+	 */
 	public void setNetwork(Set<PersistentAMRxn> network) {
 		if(this.network != network)
 			this.network.clear();
@@ -97,11 +151,19 @@ public class PersistentAnnotatedMap implements Serializable {
 			this.network.addAll(network);
 	}
 
+	/**
+	 * Adds a persistent annotated map reaction to the network.
+	 * @param rxn The reaction.
+	 */
 	public void addRxnToNetwork(PersistentAMRxn rxn) {
 		rxn.setAnnotatedMap(this);
 		network.add(rxn);
 	}
 	
+	/**
+	 * Converts the persistent annotated map to an AnnotatedMapDescriptor - the GLAMM model object.
+	 * @return The annotated map descriptor.
+	 */
 	public AnnotatedMapDescriptor toAnnotatedMapDescriptor() {
 		return new AnnotatedMapDescriptor(this.getMapId(),
 				this.getSvg(),

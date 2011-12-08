@@ -1,5 +1,10 @@
 package gov.lbl.glamm.shared;
 
+/**
+ * Enumeration of parameters for non-RPC requests.
+ * @author jtbates
+ *
+ */
 public enum RequestParameters {
 	
 	ACTION("action"),

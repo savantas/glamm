@@ -2,12 +2,18 @@ package gov.lbl.glammdb;
 
 import org.apache.log4j.Logger;
 
-import gov.lbl.glammdb.kegg.kgml.KgmlDocument;
+import gov.lbl.glammdb.kegg.kgml.KgmlPlusDocument;
 import gov.lbl.glammdb.kegg.pathway.KeggPathwayHandler;
 
+/**
+ * Directly imports KEGG pathway information into the GLAMM database via Hibernate ORM.
+ * @author jtbates
+ *
+ */
 public class KeggImporter {
 
 	/**
+	 * Main method.
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -26,13 +32,13 @@ public class KeggImporter {
 			String kgmlPathAbs = kgmlPath + mapId + ".xml";
 			String svgPathAbs = svgPath + mapId + ".svg";
 			
-			KgmlDocument kgmlDocument = KgmlDocument.create(mapId, mapTitle, kgmlPathAbs, svgPathAbs);
+			KgmlPlusDocument kgmlDocument = KgmlPlusDocument.create(mapId, mapTitle, kgmlPathAbs, svgPathAbs);
 			logger.info("Processing " + mapId + "...");
 			kgmlDocument.process();
 			logger.info("Done");
 			
 			logger.info("Committing " + mapId + " to database...");
-			kgmlDocument.store();
+			kgmlDocument.storeAnnotatedMap();
 			logger.info("Done");
 		}
 		

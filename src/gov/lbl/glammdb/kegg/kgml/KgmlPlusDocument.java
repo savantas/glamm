@@ -20,46 +20,47 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public final class KgmlDocument {
+/**
+ * KGML+ document handler - extracts svg and reaction network information and stores GLAMM annotated maps in the GLAMM database
+ * via the KgmlReactions and KgmlSvg handlers.
+ * @author jtbates
+ *
+ */
+public final class KgmlPlusDocument {
 	
-	private enum Tag {
-		REACTIONS("reactions"),
-		SVG("svg");
-		
-		private String value;
-
-		private Tag(final String value) {
-			this.value = value;
-		}
-
-		@Override
-		public String toString() {
-			return value;
-		}
+	private static interface Tag {
+		final static String REACTIONS	= "reactions";
+		final static String SVG 		= "svg";
 	}
-
-	public static KgmlDocument create(final String mapId, final String mapTitle, final String kgmlPath, final String svgPath) {
-		try {
-			File file = new File(kgmlPath);
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			DocumentBuilder db = dbf.newDocumentBuilder();
-			return new KgmlDocument(mapId, mapTitle, kgmlPath, svgPath, db.parse(file));
-		} catch(Exception e) {
-			System.out.println(e.getMessage());
-		}
-		return null;
-	}
+	
 	private Document document;
-	private Node svgNode;
-	private Node reactionsNode;
-	
 	private PersistentAnnotatedMap annotatedMap;
 	
 	@SuppressWarnings("unused")
 	private String kgmlPath;
 	private String svgPath;
 
-	private KgmlDocument(final String mapId, final String mapTitle, final String kgmlPath, final String svgPath, final Document document) {
+	/**
+	 * Creates a KgmlPlusDocument instance.
+	 * @param mapId The KEGG map id.
+	 * @param mapTitle The map title.
+	 * @param kgmlPath The path to the KGML+ document file.
+	 * @param svgPath The path to the resulting GLAMM-annotated SVG file.
+	 * @return The document instance.
+	 */
+	public static KgmlPlusDocument create(final String mapId, final String mapTitle, final String kgmlPath, final String svgPath) {
+		try {
+			File file = new File(kgmlPath);
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			return new KgmlPlusDocument(mapId, mapTitle, kgmlPath, svgPath, db.parse(file));
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return null;
+	}
+	
+	private KgmlPlusDocument(final String mapId, final String mapTitle, final String kgmlPath, final String svgPath, final Document document) {
 		this.kgmlPath = kgmlPath;
 		this.svgPath = svgPath;
 		this.document = document;
@@ -78,7 +79,7 @@ public final class KgmlDocument {
 		return nodeList.item(0);
 	}
 	
-	private static void _getElementsWithTag(final List<Node> list, final Node node, final String tag) {
+	private static void getElementsWithTag(final List<Node> list, final Node node, final String tag) {
 
 		if(node == null)
 			return;
@@ -87,15 +88,26 @@ public final class KgmlDocument {
 			list.add(node);
 
 		for(Node child = node.getFirstChild(); child != null; child = child.getNextSibling())
-			_getElementsWithTag(list, child, tag);
+			getElementsWithTag(list, child, tag);
 	}
 
+	/**
+	 * Gets a list of elements with the given tag rooted at the given node.
+	 * @param node The root node.
+	 * @param tag The tag.
+	 * @return The list of elements (as Nodes.)
+	 */
 	public static List<Node> getElementsWithTag(final Node node, final String tag) {
 		List<Node> list = new ArrayList<Node>();
-		_getElementsWithTag(list, node, tag);
+		getElementsWithTag(list, node, tag);
 		return list;
 	}
 	
+	/**
+	 * Extracts a list of ids from an attribute value string.
+	 * @param attributeValue The attribute value string.
+	 * @return The list of ids.
+	 */
 	public static List<String> extractIdsFromAttributeValue(final String attributeValue) {
 		List<String> ids = new ArrayList<String>();
 		for(String value : attributeValue.split("\\+")) {
@@ -104,6 +116,11 @@ public final class KgmlDocument {
 		return ids;
 	}
 
+	/**
+	 * Takes a KGML+ style attribute value and normalizes it to a GLAMM style attribute value.
+	 * @param attributeValue The KGML+ style attribute value.
+	 * @return The GLAMM style attribute value.
+	 */
 	public static String normalizeAttributeValue(final String attributeValue) {
 		String normalized = "";
 		for(String id : extractIdsFromAttributeValue(attributeValue))
@@ -111,24 +128,35 @@ public final class KgmlDocument {
 		return normalized.substring(0, normalized.length() - 1);
 	}
 	
+	/**
+	 * Gets the persistent annotated map.
+	 * @return The persistent annotated map.
+	 */
 	public PersistentAnnotatedMap getAnnotatedMap() {
 		return annotatedMap;
 	}
-	
+
+	/**
+	 * Gets the reactions node.
+	 * @return The reactions node.
+	 */
 	public Node getReactionsNode() {
-		if(reactionsNode == null) {
-			reactionsNode = getFirstNodeWithTag(Tag.REACTIONS.toString());
-		}
-		return reactionsNode;
+		return getFirstNodeWithTag(Tag.REACTIONS);
 	}
 
+	/**
+	 * Gets the svg node.
+	 * @return The svg node.
+	 */
 	public Node getSvgNode() {
-		if(svgNode == null) {
-			svgNode = getFirstNodeWithTag(Tag.SVG.toString());
-		}
-		return svgNode;
+		return getFirstNodeWithTag(Tag.SVG);
 	}
 	
+	/**
+	 * Outputs the contents of a node to a file.
+	 * @param node The node.
+	 * @param path The path to the file.
+	 */
 	public static void outputNodeToPath(final Node node, final String path) {
 		try {
 			// create an empty document
@@ -153,6 +181,9 @@ public final class KgmlDocument {
 		}
 	}
 	
+	/**
+	 * Processes a KGML+ document.
+	 */
 	public void process() {
 		KgmlSvg svg = KgmlSvg.create(this);
 		KgmlReactions reactions = KgmlReactions.create(this);
@@ -161,7 +192,11 @@ public final class KgmlDocument {
 		outputNodeToPath(getSvgNode(), svgPath);
 	}
 	
-	private Long storeAnnotatedMap() {
+	/**
+	 * Stores the persistent annotated map in the GLAMM database.
+	 * @return The id of the map.
+	 */
+	public Long storeAnnotatedMap() {
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 
@@ -169,11 +204,6 @@ public final class KgmlDocument {
 
 		session.getTransaction().commit();
 		return amId;
-	}
-	
-	
-	public void store() {
-		storeAnnotatedMap();
 	}
 	
 }

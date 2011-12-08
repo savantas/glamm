@@ -11,7 +11,13 @@ import java.util.Scanner;
 
 import org.hibernate.Session;
 
+/**
+ * Class for extracting pathway map information from the KEGG map_title.tab and map.list files.
+ * @author jtbates
+ *
+ */
 public class KeggPathwayHandler {
+	
 	private Map<String, PersistentPathway> id2Maps;
 	private File mapTitleFile;
 	private File mapListFile;
@@ -21,7 +27,13 @@ public class KeggPathwayHandler {
 		this.mapListFile = mapListFile;
 		id2Maps = new LinkedHashMap<String, PersistentPathway>();
 	}
-
+	
+	/**
+	 * Creates a KeggPathwayHandler instance.
+	 * @param mapTitlePath The path to the map_title.tab file.
+	 * @param mapListPath The path to the map.list file.
+	 * @return The instance.
+	 */
 	public static KeggPathwayHandler create(final String mapTitlePath, final String mapListPath) {
 		try {
 			File mapTitleFile = new File(mapTitlePath);
@@ -34,6 +46,9 @@ public class KeggPathwayHandler {
 		return null;
 	}
 
+	/**
+	 * Processes the map_title.tab and map.list files.
+	 */
 	public void process() {
 		processMapTitleFile();
 		processMapListFile();
@@ -110,6 +125,9 @@ public class KeggPathwayHandler {
 		return pmId;
 	}
 	
+	/**
+	 * Stores the persistent pathways in the GLAMM database.
+	 */
 	public void store() {
 		for(PersistentPathway pm : this.id2Maps.values()) {
 			storeMap(pm);
