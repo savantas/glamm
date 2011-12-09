@@ -1,0 +1,15 @@
+#summary GLAMM Release Notes
+
+= Introduction =
+
+Better late than never, the official GLAMM release notes wiki.
+
+
+= Releases =
+
+Current: v2.2.0
+
+*GLAMM v2.2.0 - 12/08/2011*
+  * User may now upload experiment data in tab-delimited files targeting genes, compounds, and reactions.
+  * Project now has complete javadoc documentation.
+  * Minor refactoring and bug fixing.
