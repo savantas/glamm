@@ -6,7 +6,6 @@ import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Pathway;
 import gov.lbl.glamm.client.model.Reaction;
 import gov.lbl.glamm.client.model.util.Xref;
-import gov.lbl.glamm.client.presenter.RetrosynthesisPresenter;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.RequestHandler;
 import gov.lbl.glamm.server.ResponseHandler;
@@ -54,15 +53,16 @@ public class GetDirections implements RequestHandler {
 
 		AnnotatedMapDescriptorDAO amdDao = new AnnotatedMapDescriptorDAOImpl(sm);
 		MetabolicNetwork network = amdDao.getAnnotatedMapDescriptor(mapId).getMetabolicNetwork();
+		
+		organismDao = new OrganismDAOImpl(sm);
 
-		// in the event of taxon-weighted depth first search, set up the metabolic network
-		// to indicate which reactions are native and which aren't
-		if(taxonomyId != null && algorithm.equals(RetrosynthesisPresenter.Algorithm.TW_DFS.getAlgorithm())) {
-
+		// If the taxonomy id is not null and we are not using the global map, make sure to indicate which
+		// network reactions are native.
+		if(taxonomyId != null && !taxonomyId.equals(Organism.GLOBAL_MAP_TAXONOMY_ID)) {
+			
 			geneDao = new GeneDAOImpl(sm);
 			rxnDao = new ReactionGlammDAOImpl(sm);
-			organismDao = new OrganismDAOImpl(sm);
-
+			
 			Set<String> ecNums = geneDao.getEcNumsForOrganism(taxonomyId);
 			Set<String> rxnIds = rxnDao.getRxnIdsForEcNums(ecNums);
 
