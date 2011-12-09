@@ -7,7 +7,11 @@ Better late than never, the official GLAMM release notes wiki.
 
 = Releases =
 
-Current: v2.2.0
+Current: v2.2.1
+
+*GLAMM v2.2.1 - 12/09/2011*
+  * Ensured that TW-DFS is first in list of algorithm choices when an organism is selected.
+  * Fixed bug where non-native reactions were not being specified as such for DFS.
 
 *GLAMM v2.2.0 - 12/08/2011*
   * User may now upload experiment data in tab-delimited files targeting genes, compounds, and reactions.
