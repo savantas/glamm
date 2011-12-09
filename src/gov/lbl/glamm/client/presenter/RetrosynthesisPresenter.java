@@ -167,8 +167,9 @@ public class RetrosynthesisPresenter {
 	 *
 	 */
 	public static enum Algorithm {
-		DFS("Depth-first Search", "dfs", false),
-		TW_DFS("Taxon-weighted Depth-first Search", "twdfs", true);
+		
+		TW_DFS("Taxon-weighted Depth-first Search", "twdfs", true),
+		DFS("Depth-first Search", "dfs", false);
 		
 		private String caption;
 		private String algorithm;
