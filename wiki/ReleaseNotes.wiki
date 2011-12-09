@@ -7,7 +7,7 @@ Better late than never, the official GLAMM release notes wiki.
 
 = Releases =
 
-Current: v2.2.1
+*Current: v2.2.1*
 
 *GLAMM v2.2.1 - 12/09/2011*
   * Ensured that TW-DFS is first in list of algorithm choices when an organism is selected.
