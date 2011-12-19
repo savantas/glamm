@@ -28,8 +28,8 @@ public class DownloadExperiment implements RequestHandler {
 	public void handleRequest(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 
-		String experimentId = request.getParameter(RequestParameters.EXPERIMENT.toString());
-		String sampleId		= request.getParameter(RequestParameters.SAMPLE.toString());
+		String experimentId = request.getParameter(RequestParameters.EXPERIMENT);
+		String sampleId		= request.getParameter(RequestParameters.SAMPLE);
 
 		if(experimentId != null && !experimentId.isEmpty() &&
 				sampleId != null && !sampleId.isEmpty()) {

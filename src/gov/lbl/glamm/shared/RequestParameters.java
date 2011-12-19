@@ -1,31 +1,19 @@
 package gov.lbl.glamm.shared;
 
 /**
- * Enumeration of parameters for non-RPC requests.
+ * Parameters for non-RPC requests.
  * @author jtbates
  *
  */
-public enum RequestParameters {
-	
-	ACTION("action"),
-	ALGORITHM("algorithm"),
-	AS_TEXT("asText"),
-	CPD_SRC("cpdSrc"),
-	CPD_DST("cpdDst"),
-	DBNAME("dbName"),
-	EXPERIMENT("experiment"),
-	MAPID("mapId"),
-	SAMPLE("sample"),
-	TAXONOMY_ID("taxonomyId");
-	
-	private String name;
-	
-	private RequestParameters(final String name) {
-		this.name = name;
-	}
-	
-	@Override
-	public String toString() {
-		return name;
-	}
+public interface RequestParameters {
+	final static String ACTION = "action";
+	final static String ALGORITHM = "algorithm";
+	final static String AS_TEXT = "asText";
+	final static String CPD_SRC = "cpdSrc";
+	final static String CPD_DST = "cpdDst";
+	final static String DBNAME = "dbName";
+	final static String EXPERIMENT = "experiment";
+	final static String MAPID = "mapId";
+	final static String SAMPLE = "sample";
+	final static String TAXONOMY_ID = "taxonomyId";
 }

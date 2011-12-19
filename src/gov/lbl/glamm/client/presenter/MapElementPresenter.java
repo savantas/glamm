@@ -114,16 +114,12 @@ public class MapElementPresenter {
 		final String loadingMsg = "<html>Loading...</html>";
 		
 		if(elementClass.equals(AnnotatedMapData.ElementClass.CPD)) {
-			String taxonomyId = (organism == null ? null : organism.getTaxonomyId());
 			view.showPopup(loadingMsg, clientX, clientY);
-			rpc.genCpdPopup(ids, taxonomyId, callback);
+			rpc.genCpdPopup(ids, organism, callback);
 		}
 		else if(elementClass.equals(AnnotatedMapData.ElementClass.MAP)) {
-			String taxonomyId = (organism == null ? null : organism.getTaxonomyId());
-			String experimentId = (sample == null ? null : sample.getExperimentId());
-			String sampleId = (sample == null ? null : sample.getSampleId());
 			view.showPopup(loadingMsg, clientX, clientY);
-			rpc.genPwyPopup(ids, taxonomyId, experimentId, sampleId, callback);
+			rpc.genPwyPopup(ids, organism, sample, callback);
 		}
 		
 	}

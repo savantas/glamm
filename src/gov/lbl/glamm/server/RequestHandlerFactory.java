@@ -61,7 +61,7 @@ public class RequestHandlerFactory {
 		
 		RequestHandler rh 			= null;
 		RequestHandlerElement rhp 	= null;
-		String action 				= request.getParameter(RequestParameters.ACTION.toString());
+		String action 				= request.getParameter(RequestParameters.ACTION);
 		
 		if(action != null)
 			rhp = action2RequestHandlerElements.get(action);

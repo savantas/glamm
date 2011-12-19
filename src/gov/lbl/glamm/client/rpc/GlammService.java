@@ -1,5 +1,6 @@
 package gov.lbl.glamm.client.rpc;
 
+import gov.lbl.glamm.client.model.Algorithm;
 import gov.lbl.glamm.client.model.AnnotatedMapDescriptor;
 import gov.lbl.glamm.client.model.Compound;
 import gov.lbl.glamm.client.model.Gene;
@@ -35,29 +36,28 @@ public interface GlammService extends RemoteService {
 	/**
 	 * Generates the HTML for a compound popup.
 	 * @param compound The compound.
-	 * @param taxonomyId The taxonomy id for the organism associated with this popup.
+	 * @param organism The organism associated with this popup.
 	 * @return The popup HTML.
 	 */
-	public String genCpdPopup(Compound compound, String taxonomyId);
+	public String genCpdPopup(final Compound compound, final Organism organism);
 	
 	/**
 	 * Generates the HTML for a compound popup.
 	 * @param ids The set of ids for the compounds in this popup.
-	 * @param taxonomyId The taxonomy id for the organism associated with this popup.
+	 * @param organism The organism associated with this popup.
 	 * @return The popup HTML.
 	 */
-	public String genCpdPopup(Set<String> ids, String taxonomyId);
+	public String genCpdPopup(final Set<String> ids, final Organism organism);
 	
 	/**
 	 * Generates the HTML for a pathway popup - the popup will contain a link back to the MicrobesOnline pathway page,
 	 * which will include the microarray data overlay for the specified experiment and sample.
 	 * @param ids The set of ids for the pathways in this popup.
-	 * @param taxonomyId The taxonomy id for the organism associated with this popup.
-	 * @param experimentId The experiment id.
-	 * @param sampleId The sample id.
+	 * @param organism The organism associated with this popup.
+	 * @param sample The sample associated with this popup.
 	 * @return The popup HTML.
 	 */
-	public String genPwyPopup(Set<String> ids, String taxonomyId, String experimentId, String sampleId);
+	public String genPwyPopup(final Set<String> ids, final Organism organism, final Sample sample);
 	
 	/**
 	 * Gets the list of available annotated map descriptors.
@@ -73,14 +73,14 @@ public interface GlammService extends RemoteService {
 	
 	/**
 	 * Gets directions (i.e. retrosynthetic pathway routes) between the source and destination compounds.
-	 * @param taxonomyId The taxonomy id for the organism.
+	 * @param organism The organism associated with this popup.
 	 * @param cpdSrc The source compound.
 	 * @param cpdDst The destination compound.
 	 * @param mapTitle The title of the map.
 	 * @param algorithm The algorithm used to find these routes.
 	 * @return A list of pathways.
 	 */
-	public List<Pathway> getDirections(String taxonomyId, Compound cpdSrc, Compound cpdDst, String mapTitle, String algorithm);
+	public List<Pathway> getDirections(final Organism organism, final Compound cpdSrc, final Compound cpdDst, final String mapTitle, final Algorithm algorithm);
 	
 	/**
 	 * Gets the host name for isolate organism links.  (Typically MicrobesOnline.)
@@ -111,11 +111,11 @@ public interface GlammService extends RemoteService {
 	public Set<Reaction> getReactions(final Set<String> ids, final Organism organism, final Sample sample);
 	
 	/**
-	 * Gets the set of reactions possible for an organism with the given taxonomy id.
-	 * @param taxonomyId The taxonomy id.
+	 * Gets the set of reactions possible for an organism.
+	 * @param organism The organism.
 	 * @return The set of reactions.
 	 */
-	public Set<Reaction> getRxnsForOrganism(String taxonomyId);
+	public Set<Reaction> getRxnsForOrganism(final Organism organism);
 	
 	/**
 	 * Gets the user logged in for the current session.
@@ -133,33 +133,33 @@ public interface GlammService extends RemoteService {
 	 * @param mapId The map id.
 	 * @return The set of compounds.
 	 */
-	public Set<Compound> populateCompoundSearch(String mapId);
+	public Set<Compound> populateCompoundSearch(final String mapId);
 		
 	/**
-	 * Gets the set of genes available for an organism with a given taxonomy id.
-	 * @param taxonomyId The taxonomy id.
+	 * Gets the set of genes available for an organism.
+	 * @param organism The organism.
 	 * @return The set of genes.
 	 */
-	public Set<Gene> populateLocusSearch(String taxonomyId);
+	public Set<Gene> populateLocusSearch(final Organism organism);
 	
 	/**
 	 * Gets the set of reactions visible on a map with a given map Id, used to populate the search box.
 	 * @param mapId The map id.
 	 * @return The set of reactions.
 	 */
-	public Set<Reaction> populateReactionSearch(String mapId);
+	public Set<Reaction> populateReactionSearch(final String mapId);
 	
 	/**
 	 * Gets the list of available organisms with samples available for a given data type.  The content of list is dependent on the access level of the user.
 	 * @param dataType The data type.
 	 * @return The list of organisms, in alphabetical order by species name, with user-uploaded (session) organisms listed first.
 	 */
-	public List<Organism> populateOrganisms(Sample.DataType dataType);
+	public List<Organism> populateOrganisms(final Sample.DataType dataType);
 	
 	/**
 	 * Gets the list of available samples for a given organism.  The content of list is dependent on the access level of the user.
-	 * @param taxonomyId The taxonomy id of the organism.
+	 * @param organism The organism.
 	 * @return The list of samples.
 	 */
-	public List<Sample> populateSamples(String taxonomyId);
+	public List<Sample> populateSamples(final Organism organism);
 }

@@ -1,10 +1,12 @@
 package gov.lbl.glamm.server.actions;
 
+import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Sample;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.ExperimentDAO;
 import gov.lbl.glamm.server.dao.impl.ExperimentDAOImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,17 +19,17 @@ public class PopulateSamples {
 	/**
 	 * Gets the list of samples available for an organism.  The content of the list is dependent on the access level of the user.
 	 * @param sm The GLAMM session.
-	 * @param taxonomyId The taxonomy id of the organism.
+	 * @param organism The organism.
 	 * @return The list of available samples.
 	 */
-	public static List<Sample> populateSamples(GlammSession sm, String taxonomyId) {
+	public static List<Sample> populateSamples(GlammSession sm, Organism organism) {
 		
-		if(taxonomyId != null && !taxonomyId.isEmpty()) {
+		if(organism != null) {
 			ExperimentDAO expDao = new ExperimentDAOImpl(sm);
-			return expDao.getAllSamplesForTaxonomyId(taxonomyId);
+			return expDao.getAllSamplesForTaxonomyId(organism.getTaxonomyId());
 		}
 	
-		return null;
+		return new ArrayList<Sample>();
 	}
 
 }

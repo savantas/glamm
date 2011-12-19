@@ -1,5 +1,6 @@
 package gov.lbl.glamm.server;
 
+import gov.lbl.glamm.client.model.Algorithm;
 import gov.lbl.glamm.client.model.AnnotatedMapDescriptor;
 import gov.lbl.glamm.client.model.Compound;
 import gov.lbl.glamm.client.model.Gene;
@@ -65,18 +66,18 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	}
 	
 	@Override
-	public String genCpdPopup(Compound compound, String taxonomyId) {
-		return GenCpdPopup.genCpdPopup(getGlammSession(), compound, taxonomyId);
+	public String genCpdPopup(final Compound compound, final Organism organism) {
+		return GenCpdPopup.genCpdPopup(getGlammSession(), compound, organism);
 	}
 		
 	@Override
-	public String genCpdPopup(Set<String> ids, String taxonomyId) {
-		return GenCpdPopup.genCpdPopupForIds(getGlammSession(), ids, taxonomyId);
+	public String genCpdPopup(Set<String> ids, final Organism organism) {
+		return GenCpdPopup.genCpdPopupForIds(getGlammSession(), ids, organism);
 	}
 	
 	@Override
-	public String genPwyPopup(Set<String> ids, String taxonomyId, String experimentId, String sampleId) {
-		return GenPwyPopup.genPwyPopup(getGlammSession(), ids, taxonomyId, experimentId, sampleId);
+	public String genPwyPopup(Set<String> ids, final Organism organism, final Sample sample) {
+		return GenPwyPopup.genPwyPopup(getGlammSession(), ids, organism, sample);
 	}
 	
 	@Override
@@ -90,8 +91,8 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	}
 	
 	@Override
-	public List<Pathway> getDirections(String taxonomyId, Compound cpdSrc, Compound cpdDst, String mapTitle, String algorithm) {
-		return GetDirections.getDirections(getGlammSession(), taxonomyId, cpdSrc, cpdDst, mapTitle, algorithm);
+	public List<Pathway> getDirections(final Organism organism, final Compound cpdSrc, final Compound cpdDst, final String mapTitle, final Algorithm algorithm) {
+		return GetDirections.getDirections(getGlammSession(), organism, cpdSrc, cpdDst, mapTitle, algorithm);
 	}
 	
 	@Override
@@ -116,8 +117,8 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	}
 	
 	@Override
-	public Set<Reaction> getRxnsForOrganism(String taxonomyId) {
-		return GetRxnsForOrganism.getRxnsForOrganism(getGlammSession(), taxonomyId);
+	public Set<Reaction> getRxnsForOrganism(final Organism organism) {
+		return GetRxnsForOrganism.getRxnsForOrganism(getGlammSession(), organism);
 	}
 	
 	@Override
@@ -136,23 +137,23 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	}
 	
 	@Override
-	public Set<Gene> populateLocusSearch(String taxonomyId) {
-		return PopulateLocusSearch.populateLocusSearch(getGlammSession(), taxonomyId);
+	public Set<Gene> populateLocusSearch(final Organism organism) {
+		return PopulateLocusSearch.populateLocusSearch(getGlammSession(), organism);
 	}
 
 	@Override
-	public List<Organism> populateOrganisms(Sample.DataType dataType) {
+	public List<Organism> populateOrganisms(final Sample.DataType dataType) {
 		return PopulateOrganisms.populateOrganisms(getGlammSession(), dataType);
 	}
 	
 	@Override
-	public Set<Reaction> populateReactionSearch(String mapId) {
+	public Set<Reaction> populateReactionSearch(final String mapId) {
 		return PopulateReactionSearch.populateReactionSearch(getGlammSession(), mapId);
 	}
 	
 	@Override
-	public List<Sample> populateSamples(String taxonomyId) {
-		return PopulateSamples.populateSamples(getGlammSession(), taxonomyId);
+	public List<Sample> populateSamples(final Organism organism) {
+		return PopulateSamples.populateSamples(getGlammSession(), organism);
 	}
 	
 	/**
