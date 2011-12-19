@@ -27,9 +27,9 @@ implements Serializable {
 	public enum DataType {
 
 		NONE("None"),
+		RNA("RNA"),
 		FITNESS("Fitness"),
 		PROTEIN("Protein"),
-		RNA("RNA"),
 		RNASEQ("RNASeq"),
 		SESSION("Session");
 

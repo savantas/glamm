@@ -28,52 +28,52 @@ public class GenCpdPopup {
 	 * Generates a compound popup's html content for a single compound id.
 	 * @param sm The GLAMM session.
 	 * @param cpdId The compound id.
-	 * @param taxonomyId The taxonomy id for an organism associated with this compound.
+	 * @param organism The optional organism.
 	 * @return The popup html content.
 	 */
-	public static String genCpdPopupForId(final GlammSession sm, final String cpdId, final String taxonomyId) {
+	public static String genCpdPopupForId(final GlammSession sm, final String cpdId, final Organism organism) {
 		CompoundDAO cpdDao = new CompoundGlammDAOImpl(sm);
 		Set<String> cpdIds = new HashSet<String>();
 		cpdIds.add(cpdId);
 		Set<Compound> cpds = cpdDao.getCompounds(cpdIds);
 
-		return genCpdPopup(sm, cpds, taxonomyId);
+		return genCpdPopup(sm, cpds, organism);
 	}
 
 	/**
 	 * Generates a compound popup's html content for a set of compound ids.
 	 * @param sm The GLAMM session.
 	 * @param cpdIds The set of compound ids.
-	 * @param taxonomyId The taxonomy id for an organism associated with these compounds.
+	 * @param organism The optional organism.
 	 * @return The popup html content.
 	 */
-	public static String genCpdPopupForIds(final GlammSession sm, final Set<String> cpdIds, final String taxonomyId) {
+	public static String genCpdPopupForIds(final GlammSession sm, final Set<String> cpdIds, final Organism organism) {
 		CompoundDAO cpdDao = new CompoundGlammDAOImpl(sm);
 		Set<Compound> cpds = cpdDao.getCompounds(cpdIds);
-		return genCpdPopup(sm, cpds, taxonomyId);
+		return genCpdPopup(sm, cpds, organism);
 	}
 	
 	/**
 	 * Generates a compound popup's html content for a single compound.
 	 * @param sm The GLAMM session.
 	 * @param cpd The compound.
-	 * @param taxonomyId The taxonomy id for an organism associated with this compound.
+	 * @param organism The optional organism.
 	 * @return The popup html content.
 	 */
-	public static String genCpdPopup(final GlammSession sm, final Compound cpd, final String taxonomyId) {
+	public static String genCpdPopup(final GlammSession sm, final Compound cpd, final Organism organism) {
 		Set<Compound> cpds = new HashSet<Compound>();
 		cpds.add(cpd);
-		return genCpdPopup(sm, cpds, taxonomyId);
+		return genCpdPopup(sm, cpds, organism);
 	}
 	
 	/**
 	 * Generates a compound popup's html content for a set of compounds.
 	 * @param sm The GLAMM session.
 	 * @param cpds The set of compounds.
-	 * @param taxonomyId The taxonomy id for an organism associated with this compound.
+	 * @param organism The optional organism.
 	 * @return The popup html content.
 	 */
-	public static String genCpdPopup(final GlammSession sm, final Set<Compound> cpds, final String taxonomyId) {
+	public static String genCpdPopup(final GlammSession sm, final Set<Compound> cpds, final Organism organism) {
 
 		if(cpds == null || cpds.isEmpty())
 			return "<html>No results found for compound.</html>";
@@ -90,7 +90,7 @@ public class GenCpdPopup {
 			String mass = cpd.getMass();
 			
 			if(name != null && !name.isEmpty())
-				builder.append(genCpdLink(sm, keggId, "<b>" + name + "</b>", taxonomyId)).append("<br>");
+				builder.append(genCpdLink(sm, keggId, "<b>" + name + "</b>", organism.getTaxonomyId())).append("<br>");
 			
 			if(formula != null && !formula.isEmpty())
 				builder.append(formula).append("<br>");

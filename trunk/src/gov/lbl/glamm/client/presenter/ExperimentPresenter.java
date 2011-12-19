@@ -195,14 +195,7 @@ public class ExperimentPresenter {
 		}
 	}
 
-	// DataType.NONE should be displayed first
-	private static final DataType[] dataTypeDisplayOrder = new DataType[]{ 
-		DataType.RNA, 
-		DataType.FITNESS, 
-		DataType.PROTEIN, 
-		DataType.RNASEQ, 
-		DataType.SESSION
-	};
+	private static final DataType defaultDataType = DataType.NONE;
 	
 	private static final String NO_EXPERIMENT_SELECTED = "No experiment selected";
 	private static final String ACTION_DOWNLOAD_EXPERIMENT	= "downloadExperiment";
@@ -290,13 +283,11 @@ public class ExperimentPresenter {
 		
 		// add data type choices to view
 		view.clearDataTypeChoices();
-		addDataTypeChoice(DataType.NONE, true);
-		for(DataType dataType : dataTypeDisplayOrder) {
+		for(DataType dataType : DataType.values()) {
 			if(dataType2Samples.get(dataType) != null)
-				addDataTypeChoice(dataType, false);
+				addDataTypeChoice(dataType, (dataType == defaultDataType));
 		}
-		
-		filterSamples(DataType.NONE);
+		filterSamples(defaultDataType);
 	}
 
 	private void filterSamples(final DataType dataType) {
@@ -409,8 +400,8 @@ public class ExperimentPresenter {
 					UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
 					urlBuilder.setParameter("action", ACTION_DOWNLOAD_EXPERIMENT);
 					urlBuilder.setPath("glammServlet");
-					urlBuilder.setParameter(RequestParameters.EXPERIMENT.toString(), experimentTableSelection.getExperimentId());
-					urlBuilder.setParameter(RequestParameters.SAMPLE.toString(), experimentTableSelection.getSampleId());
+					urlBuilder.setParameter(RequestParameters.EXPERIMENT, experimentTableSelection.getExperimentId());
+					urlBuilder.setParameter(RequestParameters.SAMPLE, experimentTableSelection.getSampleId());
 					Window.open(urlBuilder.buildString(), "", "menubar=no,location=no,resizable=no,scrollbars=no,status=no,toolbar=false,width=0,height=0");
 				}
 			}
@@ -581,7 +572,7 @@ public class ExperimentPresenter {
 
 		setViewState(State.POPULATING);
 
-		rpc.populateSamples(organism.getTaxonomyId(), new AsyncCallback<List<Sample>>() {
+		rpc.populateSamples(organism, new AsyncCallback<List<Sample>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				// Show the RPC error message to the user

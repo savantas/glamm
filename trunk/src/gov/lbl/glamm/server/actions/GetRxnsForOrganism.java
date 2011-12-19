@@ -1,6 +1,7 @@
 package gov.lbl.glamm.server.actions;
 
 import gov.lbl.glamm.client.model.Gene;
+import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Reaction;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.GeneDAO;
@@ -21,16 +22,16 @@ public class GetRxnsForOrganism {
 	/**
 	 * Gets the set of all reactions available to an organism.
 	 * @param sm The GLAMM session.
-	 * @param taxonomyId The taxonomy id of the organism.
+	 * @param organism The organism.
 	 * @return The set of all reactions available to an organism.
 	 */
-	public static Set<Reaction> getRxnsForOrganism(final GlammSession sm, final String taxonomyId) {
+	public static Set<Reaction> getRxnsForOrganism(final GlammSession sm, final Organism organism) {
 		
 		GeneDAO geneDao = new GeneDAOImpl(sm);
 		ReactionDAO rxnDao = new ReactionGlammDAOImpl(sm);
-		Set<Reaction> rxns = null;
+		Set<Reaction> rxns = new HashSet<Reaction>();
 		
-		Set<Gene> genes = geneDao.getGenesForOrganism(taxonomyId);
+		Set<Gene> genes = geneDao.getGenesForOrganism(organism.getTaxonomyId());
 	
 		if(genes != null && !genes.isEmpty()) {
 			Set<String> ecNums = new HashSet<String>();
@@ -39,7 +40,7 @@ public class GetRxnsForOrganism {
 				if(ecNumsForGene != null)
 					ecNums.addAll(ecNumsForGene);
 			}
-			rxns = rxnDao.getReactionsForEcNums(ecNums);
+			rxns.addAll(rxnDao.getReactionsForEcNums(ecNums));
 		}
 		
 		return rxns;

@@ -676,7 +676,7 @@ public class AnnotatedMapPresenter {
 		}
 
 		eventBus.fireEvent(new LoadingEvent(false));
-		rpc.getRxnsForOrganism(organism.getTaxonomyId(), new AsyncCallback<Set<Reaction>>() {
+		rpc.getRxnsForOrganism(organism, new AsyncCallback<Set<Reaction>>() {
 
 			@Override
 			public void onFailure(Throwable caught) {

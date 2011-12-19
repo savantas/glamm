@@ -1,5 +1,6 @@
 package gov.lbl.glamm.client.rpc;
 
+import gov.lbl.glamm.client.model.Algorithm;
 import gov.lbl.glamm.client.model.AnnotatedMapDescriptor;
 import gov.lbl.glamm.client.model.Compound;
 import gov.lbl.glamm.client.model.Gene;
@@ -23,22 +24,22 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public interface GlammServiceAsync {
 	public void authenticateUser(final String userId, final String auth, AsyncCallback<User> callback);
-	public void genCpdPopup(Compound compound, String taxonomyId, AsyncCallback<String> callback);
-	public void genCpdPopup(Set<String> ids, String taxonomyId, AsyncCallback<String> callback);
-	public void genPwyPopup(Set<String> ids, String taxonomyId, String experimentId, String sampleId, AsyncCallback<String> callback);
+	public void genCpdPopup(final Compound compound, final Organism organism, AsyncCallback<String> callback);
+	public void genCpdPopup(final Set<String> ids, final Organism organism, AsyncCallback<String> callback);
+	public void genPwyPopup(final Set<String> ids, final Organism organism, final Sample sample, AsyncCallback<String> callback);
 	public void getAnnotatedMapDescriptors(AsyncCallback<List<AnnotatedMapDescriptor>> callback);
 	public void getAvailableSampleTypes(AsyncCallback<List<Sample.DataType>> callback);
-	public void getDirections(String taxonomyId, Compound cpdSrc, Compound cpdDst, String mapTitle, String algorithm, AsyncCallback<List<Pathway>> callback);
+	public void getDirections(final Organism organism, final Compound cpdSrc, final Compound cpdDst, final String mapTitle, final Algorithm algorithm, AsyncCallback<List<Pathway>> callback);
 	public void getIsolateHost(AsyncCallback<String> callback);
 	public void getSample(final Sample sample, AsyncCallback<Set<? extends HasMeasurements>> callback);
 	public void getMetagenomeHost(AsyncCallback<String> callback);
 	public void getLoggedInUser(AsyncCallback<User> user);
 	public void getReactions(final Set<String> ids, final Organism organism, final Sample sample, AsyncCallback<Set<Reaction>> callback);
-	public void getRxnsForOrganism(String taxonomyId, AsyncCallback<Set<Reaction>> callback);
+	public void getRxnsForOrganism(final Organism organism, AsyncCallback<Set<Reaction>> callback);
 	public void logOutUser(AsyncCallback<Void> callback);
 	public void populateCompoundSearch(String mapId, AsyncCallback<Set<Compound>> callback);
-	public void populateLocusSearch(String taxonomyId, AsyncCallback<Set<Gene>> callback);
-	public void populateOrganisms(Sample.DataType dataType, AsyncCallback<List<Organism>> callback);
-	public void populateReactionSearch(String mapId, AsyncCallback<Set<Reaction>> callback);
-	public void populateSamples(String taxonomyId, AsyncCallback<List<Sample>> callback);
+	public void populateLocusSearch(final Organism organism, AsyncCallback<Set<Gene>> callback);
+	public void populateOrganisms(final Sample.DataType dataType, AsyncCallback<List<Organism>> callback);
+	public void populateReactionSearch(final String mapId, AsyncCallback<Set<Reaction>> callback);
+	public void populateSamples(final Organism organism, AsyncCallback<List<Sample>> callback);
 }

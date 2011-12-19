@@ -1,5 +1,6 @@
 package gov.lbl.glamm.server.actions.requesthandlers;
 
+import gov.lbl.glamm.client.model.Algorithm;
 import gov.lbl.glamm.client.model.Compound;
 import gov.lbl.glamm.client.model.MetabolicNetwork;
 import gov.lbl.glamm.client.model.Organism;
@@ -80,14 +81,14 @@ public class GetDirections implements RequestHandler {
 	/**
 	 * Gets the list of pathways between the source and destination compound for a given organism on a given map.
 	 * @param sm The GLAMM session.
-	 * @param taxonomyId The optional taxonomy id of the organism.
+	 * @param organism The optional organism
 	 * @param cpdSrc The source compound.
 	 * @param cpdDst The destination compound.
 	 * @param mapTitle The map title.
 	 * @param algorithm The algorithm used to find these pathways.
 	 * @return The list of pathways.
 	 */
-	public static List<Pathway> getDirections(GlammSession sm, String taxonomyId, Compound cpdSrc, Compound cpdDst, String mapTitle, String algorithm) {
+	public static List<Pathway> getDirections(GlammSession sm, Organism organism, Compound cpdSrc, Compound cpdDst, String mapTitle, Algorithm algorithm) {
 
 		if(cpdSrc == null || cpdDst == null)
 			return null;
@@ -98,7 +99,7 @@ public class GetDirections implements RequestHandler {
 		if(cpdSrcXref == null || cpdDstXref == null)
 			return null;
 
-		List<Route> routes = getRoutes(sm, taxonomyId, cpdSrcXref.getXrefId(), cpdDstXref.getXrefId(), mapTitle, algorithm);
+		List<Route> routes = getRoutes(sm, organism.getTaxonomyId(), cpdSrcXref.getXrefId(), cpdDstXref.getXrefId(), mapTitle, algorithm.getShortName());
 		
 		// convert routes to pathways and add them to content
 		if(routes != null && !routes.isEmpty())
@@ -110,12 +111,12 @@ public class GetDirections implements RequestHandler {
 	public void handleRequest(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 
-		String taxonomyId 	= request.getParameter(RequestParameters.TAXONOMY_ID.toString());
-		String cpdSrcExtId	= request.getParameter(RequestParameters.CPD_SRC.toString());
-		String cpdDstExtId	= request.getParameter(RequestParameters.CPD_DST.toString());
-		String mapTitle		= request.getParameter(RequestParameters.MAPID.toString());
-		String algorithm	= request.getParameter(RequestParameters.ALGORITHM.toString());
-		String asText		= request.getParameter(RequestParameters.AS_TEXT.toString());
+		String taxonomyId 	= request.getParameter(RequestParameters.TAXONOMY_ID);
+		String cpdSrcExtId	= request.getParameter(RequestParameters.CPD_SRC);
+		String cpdDstExtId	= request.getParameter(RequestParameters.CPD_DST);
+		String mapTitle		= request.getParameter(RequestParameters.MAPID);
+		String algorithm	= request.getParameter(RequestParameters.ALGORITHM);
+		String asText		= request.getParameter(RequestParameters.AS_TEXT);
 		
 		if(cpdSrcExtId == null || cpdDstExtId == null || mapTitle == null || algorithm == null || asText == null) {
 			return;

@@ -41,7 +41,7 @@ public class Login implements RequestHandler {
 
 		final UserDAO userDao = new UserDAOImpl(sm); 
 		final String pwHash = userDao.getPasswordHashForEmail(email);
-		
+				
 		if(pwHash == null || pwHash.isEmpty() || !pwHash.equals(GlammUtils.genBase64MD5String(password))) {
 			ResponseHandler.asHtml(response, LOGIN_ERROR_MSG, HttpServletResponse.SC_OK);
 			return;

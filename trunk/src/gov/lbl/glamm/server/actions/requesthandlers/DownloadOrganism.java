@@ -39,7 +39,7 @@ public class DownloadOrganism implements RequestHandler {
 			HttpServletResponse response) throws IOException {
 
 		String content		= "";
-		String taxonomyId	= request.getParameter(RequestParameters.TAXONOMY_ID.toString());
+		String taxonomyId	= request.getParameter(RequestParameters.TAXONOMY_ID);
 
 		GeneDAO geneDao = new GeneDAOImpl(GlammSession.getGlammSession(request));
 

@@ -6,6 +6,7 @@ import gov.lbl.glamm.client.events.RoutePickedEvent;
 import gov.lbl.glamm.client.events.RouteStepPickedEvent;
 import gov.lbl.glamm.client.events.SearchTargetEvent;
 import gov.lbl.glamm.client.events.ViewResizedEvent;
+import gov.lbl.glamm.client.model.Algorithm;
 import gov.lbl.glamm.client.model.AnnotatedMapData;
 import gov.lbl.glamm.client.model.Compound;
 import gov.lbl.glamm.client.model.Gene;
@@ -161,39 +162,6 @@ public class RetrosynthesisPresenter {
 		public Label 				getStatusLabel();
 	}
 	
-	/**
-	 * Enumerated type for available retrosynthesis algorithms.
-	 * @author jtbates
-	 *
-	 */
-	public static enum Algorithm {
-		
-		TW_DFS("Taxon-weighted Depth-first Search", "twdfs", true),
-		DFS("Depth-first Search", "dfs", false);
-		
-		private String caption;
-		private String algorithm;
-		private boolean requiresOrganism;
-		
-		private Algorithm(final String caption, final String algorithm, final boolean requiresOrganism) {
-			this.caption = caption;
-			this.algorithm = algorithm;
-			this.requiresOrganism = requiresOrganism;
-		}
-		
-		public String getAlgorithm() {
-			return algorithm;
-		}
-		
-		public String getCaption() {
-			return caption;
-		}
-		
-		public boolean requiresOrganism() {
-			return requiresOrganism;
-		}
-	}
-
 	private static enum State {
 		INITIAL(""),
 		CALCULATING("Calculating..."),
@@ -379,15 +347,15 @@ public class RetrosynthesisPresenter {
 				UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
 				urlBuilder.setParameter("action", ACTION_GET_DIRECTIONS);
 				urlBuilder.setPath("glammServlet");
-				urlBuilder.setParameter(RequestParameters.CPD_SRC.toString(), cpdSrcXref.getXrefId());
-				urlBuilder.setParameter(RequestParameters.CPD_DST.toString(), cpdDstXref.getXrefId());
+				urlBuilder.setParameter(RequestParameters.CPD_SRC, cpdSrcXref.getXrefId());
+				urlBuilder.setParameter(RequestParameters.CPD_DST, cpdDstXref.getXrefId());
 				for(String dbName : mapData.getCpdDbNames()) 
-					urlBuilder.setParameter(RequestParameters.DBNAME.toString(), dbName);
-				urlBuilder.setParameter(RequestParameters.MAPID.toString(), mapData.getDescriptor().getMapId());
-				urlBuilder.setParameter(RequestParameters.ALGORITHM.toString(), algorithm);
-				urlBuilder.setParameter(RequestParameters.AS_TEXT.toString(), "true");
+					urlBuilder.setParameter(RequestParameters.DBNAME, dbName);
+				urlBuilder.setParameter(RequestParameters.MAPID, mapData.getDescriptor().getMapId());
+				urlBuilder.setParameter(RequestParameters.ALGORITHM, algorithm);
+				urlBuilder.setParameter(RequestParameters.AS_TEXT, "true");
 				if(organism != null && !organism.isGlobalMap())
-					urlBuilder.setParameter(RequestParameters.TAXONOMY_ID.toString(), organism.getTaxonomyId());
+					urlBuilder.setParameter(RequestParameters.TAXONOMY_ID, organism.getTaxonomyId());
 				Window.open(urlBuilder.buildString(), "", "menubar=no,location=no,resizable=no,scrollbars=no,status=no,toolbar=false,width=0,height=0");
 			}
 		});
@@ -398,11 +366,11 @@ public class RetrosynthesisPresenter {
 				if(cpdSrc != null && cpdDst != null) {
 					setViewState(State.CALCULATING);
 					int index = view.getAlgorithmsListBox().getSelectedIndex();
-					String algorithm = view.getAlgorithmsListBox().getValue(index);
-					rpc.getDirections(organism.getTaxonomyId(), 
+					String algorithmShortName = view.getAlgorithmsListBox().getValue(index);
+					rpc.getDirections(organism, 
 							cpdSrc, cpdDst, 
 							mapData.getDescriptor().getMapId(), 
-							algorithm,
+							Algorithm.getAlgorithmForShortName(algorithmShortName),
 							new AsyncCallback<List<Pathway>>() {
 						@Override
 						public void onFailure(Throwable caught) {
@@ -710,7 +678,7 @@ public class RetrosynthesisPresenter {
 	}
 
 	private void populateLocusSearch() {
-		rpc.populateLocusSearch(organism.getTaxonomyId(), new AsyncCallback<Set<Gene>>() {
+		rpc.populateLocusSearch(organism, new AsyncCallback<Set<Gene>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				// Show the RPC error message to the user
@@ -854,8 +822,8 @@ public class RetrosynthesisPresenter {
 		
 		for(Algorithm algorithm : Algorithm.values()) {
 			// if the organism is null or the organism is the global map, only add algorithms that don't require an organism
-			if(!algorithm.requiresOrganism || (organism != null && !organism.isGlobalMap()))
-				view.getAlgorithmsListBox().addItem(algorithm.getCaption(), algorithm.getAlgorithm());
+			if(!algorithm.requiresOrganism() || (organism != null && !organism.isGlobalMap()))
+				view.getAlgorithmsListBox().addItem(algorithm.getFullName(), algorithm.getShortName());
 		}
 	}
 
