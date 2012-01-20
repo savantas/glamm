@@ -45,15 +45,31 @@ gov.lbl.glamm.client.AppController
 }}}
 The application controller class provides the glue that allows models, views, and presenters to communicate with each other.  It is a single instance object with no public constructor, and this instance is never accessed directly, except by the entry point class.  It serves the following purposes:
 
-  * Creation of the root layout panel (the panel into which all other views will be drawn.)
+  * Creation of the main panel (the panel into which all other views will be drawn.)
   * Creation of the RPC service interface.
   * Creation of the event bus that allows presenters to communicate with each other.
   * Instantiation of all presenters and views.
   * Attachment of event handlers to the presenters.
 
+You will notice the {{{start}}} method calls a number of {{{load}}} methods.  Most of these add views to the main panel, but all of them add handlers to the event bus whose callbacks implement presenter-specific behaviors.  
+
 ==Events==
+
+As mentioned previously, presenters communicate with each other via events dispatched to an EventBus object instantiated by the ApplicationController.  GLAMM's custom events are defined in
+
+{{{
+gov.lbl.glamm.client.events
+}}}
+
+Event classes extend {{{com.google.gwt.event.shared.GwtEvent}}}, a generic class that takes an extension of the {{{com.google.gwt.event.shared.EventHandler}}} interface as its parameter.  GLAMM typically defines this interface inside the event class.  GLAMM's custom events typically provide model objects as payloads, accessible through the callbacks specified by the EventHandler.
+
 ==Models==
+
+In GLAMM, models are often little more than Data Transfer Objects (DTOs.)  They provide a means of describing domain-specific data and getting it between the client and the server.  For the most part, they consist of a set of fields, along with "getter" and "setter" methods for accessing those fields.  Interfaces provided in {{{gov.lbl.glamm.client.model.interfaces}}} are contracts, provided to ensure the availability of synonyms, xrefs, measurements, etc for models which are expected to have them.
+
 ==Views==
+
+
 ==Presenters==
 
 = Server =
