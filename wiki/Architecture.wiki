@@ -2,18 +2,38 @@
 
 = Introduction =
 
-This document outlines how best to configure your environment for GLAMM development, GLAMM's external library dependencies, and the relationship between GLAMM's architecture and its source code at the package level.
+This document outlines the relationship between GLAMM's architecture and its source code at the package level.
 
 At its core, GLAMM is a fairly conventional [http://code.google.com/webtoolkit/ Google Web Toolkit] (GWT) application.  That is, it adheres to the [http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93presenter Model-View-Presenter] design pattern on the client side, and communicates with a server via GWT's asynchronous [http://en.wikipedia.org/wiki/Remote_procedure_call RPC] service.
 
-= Configuration = 
+= GWT RPC =
 
+To get a feel for how GWT's RPC mechanism works, take a look at [http://code.google.com/webtoolkit/doc/latest/DevGuideServerCommunication.html#DevGuideRemoteProcedureCalls this document].  The most important thing to remember is that these calls are non-blocking.  That is, when a call to an RPC service is made, the request is sent to the server and the client side code continues to execute.  When a response is received, it is handled by callback methods specified by the client.
 
+In GLAMM, the RPC interface is defined here:
+{{{
+gov.lbl.glamm.client.rpc.GlammService.java
+gov.lbl.glamm.client.rpc.GlammServiceAsync.java
+}}}
 
+and implemented here:
+{{{
+gov.lbl.glamm.server.GlammServiceImpl.java
+}}}
 
-= Details =
+= Client =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+==Entry Point==
+==Application Controller==
+==Models==
+==Views==
+==Presenters==
+==Events==
+
+= Server =
+
+==RPC Servlet==
+==Service Classes==
+==Data Access Objects==
+==Persistence==
+==HTTP Servlet==
