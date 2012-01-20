@@ -21,14 +21,40 @@ and implemented here:
 gov.lbl.glamm.server.GlammServiceImpl.java
 }}}
 
+When extending GLAMM's RPC capabilities, make sure to include method definitions in all three places!
+
 = Client =
 
-==Entry Point==
+==Module Information==
+
+GLAMM is written as a single GWT module, with the module XML definition located here:
+{{{
+gov.lbl.glamm.Glamm.gwt.xml
+}}}
+
+Its entry point class is 
+{{{
+gov.lbl.glamm.client.Glamm
+}}}
+
+This class is invoked when the module is loaded and, after displaying a splash screen, hands control over to the application controller class.
+
 ==Application Controller==
+{{{
+gov.lbl.glamm.client.AppController
+}}}
+The application controller class provides the glue that allows models, views, and presenters to communicate with each other.  It is a single instance object with no public constructor, and this instance is never accessed directly, except by the entry point class.  It serves the following purposes:
+
+  * Creation of the root layout panel (the panel into which all other views will be drawn.)
+  * Creation of the RPC service interface.
+  * Creation of the event bus that allows presenters to communicate with each other.
+  * Instantiation of all presenters and views.
+  * Attachment of event handlers to the presenters.
+
+==Events==
 ==Models==
 ==Views==
 ==Presenters==
-==Events==
 
 = Server =
 
