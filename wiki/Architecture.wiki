@@ -1,0 +1,19 @@
+#summary Summary of GLAMM's architecture and how it relates to the source.
+
+= Introduction =
+
+This document outlines how best to configure your environment for GLAMM development, GLAMM's external library dependencies, and the relationship between GLAMM's architecture and its source code at the package level.
+
+At its core, GLAMM is a fairly conventional Google Web Toolkit (GWT) application.  That is, it adheres to the [http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93presenter Model-View-Presenter] design pattern on the client side, and communicates with a server via GWT's asynchronous [http://en.wikipedia.org/wiki/Remote_procedure_call RPC] service.
+
+= Configuration = 
+
+
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
