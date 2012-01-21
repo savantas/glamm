@@ -97,6 +97,8 @@ Views also implement the {{{View}}} interface defined in the presenter.  This in
 
 =Server=
 
+==Configuration==
+==Session Management==
 ==RPC Servlet==
 ==Service Classes==
 ==Data Access Objects==
