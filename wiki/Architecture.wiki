@@ -207,4 +207,6 @@ The GLAMM application does its best to abstract away the details of working with
 
 ==Hibernate==
 
-A better approach has been adopted for recent additions to the database in the form of the [http://www.hibernate.org/ Hibernate] Object-Relational Mapper (ORM.)  If you are unfamiliar with Hibernate, there may be a bit of a learning curve, but it has excellent documentation and many, many users.  The attempt to replace the previous "parse-with-perl, manually import, access with JDBC" methodology with Hibernate have been quite successful so far with new additions to the database.  You can find this code in {{{gov.lbl.glammdb}}}.  Using Hibernate meshes well with the DAO interface strategy.
+A better approach has been adopted for recent additions to the database in the form of the [http://www.hibernate.org/ Hibernate] Object-Relational Mapper (ORM.)  If you are unfamiliar with Hibernate, there may be a bit of a learning curve, but it has excellent documentation and a very active community.  
+
+The attempt to replace the previous "parse-with-perl, manually import, access with JDBC" methodology with Hibernate have been quite successful so far with new additions to the database.  You can find this code in {{{gov.lbl.glammdb}}}.  Using Hibernate meshes well with the DAO interface strategy.
