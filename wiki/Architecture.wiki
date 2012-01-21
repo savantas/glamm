@@ -116,6 +116,41 @@ gov.lbl.glamm.server.GlammServiceImpl.java
 
 As described above, {{{GlammServiceImpl}}} defines the server side of the GWT RPC interface.  Instead of handling the application logic directly in the servlet implementation, it retrieves session configuration information and routes the request to the appropriate service class.
 
+Configuration data for the server lives in {{{war/config/server_config.xml}}}.  Here is an example of an abbreviated {{{server_config.xml}}} file:
+
+{{{
+config>
+	<server 
+		serverdomain="127.0.0.1" 
+		hibernatecfg="hibernate-debug.cfg.xml"
+		isolatehost="microbesonline.org" 
+		loginurl="http://microbesonline.org/cgi-bin/login"
+		metagenomehost="meta.microbesonline.org" 
+		db="debug"/>
+	<db 
+		name="debug" 
+		uri="jdbc:mysql://127.0.0.1:3307/genomics_test" 
+		driver="org.gjt.mm.mysql.Driver" 
+		user="test" 
+		passwd="test"/>
+</config>
+}}}
+
+In order to fully specify server behavior, one needs both the {{{server}}} element and one ore more {{{db}}} elements.  The attributes are defined as follows:
+
+|| Tag || Attribute || Value ||
+|| {{{server}}} || {{{serverdomain}}} || The request domain name for which this server configuration applies. ||
+|| {{{server}}} || {{{hibernatecfg}}} || The hibernate configuration file name. ||
+|| {{{server}}} || {{{isolatehost}}} || The isolate genome host name. ||
+|| {{{server}}} || {{{loginurl}}} || The MicrobesOnline login URL. ||
+|| {{{server}}} || {{{metagenomehost}}} || The metagenome host name. ||
+|| {{{server}}} || {{{db}}} The JDBC configuration name, specified by the {{{db}}} element's {{{name}}} attribute. ||
+|| {{{db}}} || {{{name}}} || Name identifying this JDBC configuration. ||
+|| {{{db}}} || {{{uri}}} The JDBC URI. ||
+|| {{{db}}} || {{{driver}}} || The JDBC driver. ||
+|| {{{db}}} || {{{user}}} || The user name. ||
+|| {{{db}}} || {{{passwd}}} || The password. ||
+
 ==Service Classes==
 
 {{{
