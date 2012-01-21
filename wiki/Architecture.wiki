@@ -93,11 +93,11 @@ Views are collections of widgets that define a user interface.  To GLAMM, Views 
 
 GLAMM views typically follow Google's recommendation that they extend {{{com.google.gwt.user.client.ui.Composite}}}.  This class effectively hides the implementation details of the underlying widgets.  The one exception is in the case of popup windows, in which case the view extends {{{com.google.gwt.user.client.ui.PopupPanel}}} or one of its derived classes.  
 
-Views also implement the {{{View}}} interface defined in the presenter.  This interface should be used to expose components within the view to the presenter for the purpose of setting state, adding event handlers, etc.  This logic should be handled by the presenter - the view should not contain any state management beyond layout and (CSS) style.
+Views also implement the {{{View}}} interface defined in the presenter.  This interface should be used to expose widget interfaces within the view to the presenter for the purpose of setting state, adding event handlers, etc.  This logic should be handled by the presenter - the view should not contain any state management beyond layout and (CSS) style.
 
 =Server=
 
-==Configuration and Session Management==
+==Configuration==
 
 {{{
 gov.lbl.glamm.server
@@ -106,15 +106,6 @@ gov.lbl.glamm.server
 In order to serve different projects and connect them with the datasets they expect, the GLAMM server was designed to respond to requests from certain domains with data from different sources.  To accommodate this, GLAMM has a fairly involved server configuration and session management scheme.
 
 The {{{ServerConfig}}} class is designed to make this sort of routing as painless as possible.  By providing a persistent way to store these data through the duration of a session, the configuration for a specific domain need only happen once.
-
-
-==RPC Servlet==
-
-{{{
-gov.lbl.glamm.server.GlammServiceImpl.java
-}}}
-
-As described above, {{{GlammServiceImpl}}} defines the server side of the GWT RPC interface.  Instead of handling the application logic directly in the servlet implementation, it retrieves session configuration information and routes the request to the appropriate service class.
 
 Configuration data for the server lives in {{{war/config/server_config.xml}}}.  Here is an example of an abbreviated {{{server_config.xml}}} file:
 
@@ -151,6 +142,22 @@ In order to fully specify server behavior, one needs both the {{{server}}} eleme
 || {{{db}}} || {{{user}}} || The user name. ||
 || {{{db}}} || {{{passwd}}} || The password. ||
 
+==Session Management==
+
+{{{
+gov.lbl.glamm.server.GlammSession.java
+}}}
+
+{{{GlammSession.java}}} provides a mechanism for managing session-specific state on the server side.  This is especially important when dealing with user-uploaded data, as there is currently no way to save this information in the database, nor are there policies in place for dealing with _any_ persistent client state.  As such, {{{GlammSession}}} instances are often required by Data Access Objects.  Fortunately, the creation and retrieval of {{{GlammSession}}} objects is trivial: use the static method {{{GlammSession.getGlammSession(HttpServletRequest request)}}}.   
+
+==RPC Servlet==
+
+{{{
+gov.lbl.glamm.server.GlammServiceImpl.java
+}}}
+
+As described above, {{{GlammServiceImpl}}} defines the server side of the GWT RPC interface.  Instead of handling the application logic directly in the servlet implementation, it retrieves session configuration information and routes the request to the appropriate service class.
+
 ==Service Classes==
 
 {{{
@@ -180,8 +187,24 @@ In addition to the RPC service implementation as described above, GLAMM includes
 
 =Database=
 
-==Construction==
+The GLAMM database is one of the highlights and glaring weaknesses of the project.  Some of the biggest gains in application flexibility will come from addressing its shortcomings. 
+ 
+==Design==
+
+The GLAMM database was designed with the goal of unifying any suitably annotated compound, reaction, and pathway databases.  Specifically, it was designed to accommodate KEGG, MetaCyc, and BiGG.  The approach the author (johntbates) chose, at least in the case of compounds, merged relevant data from all of the sources into single compound entries where possible.  A more practical and flexible approach would have been to import these entries separately and reconciling them via a cross-reference table, while maintaining the database-specific id information in the entries.  
+
+Similarly, the database tags most of its entries with a {{{guid}}} field, making it distinct from all other entries in the database, _regardless of table_.  In hindsight, this approach is obviously wrong. as it makes modification of the database, once imported, nearly impossible.
+
+What should be clear, by this point, is that the database was designed and implemented prior to the GLAMM application itself.  A complete overhaul might be worth considering. 
+      
+==Assembly==
+
+The GLAMM database is currently built by a perl program: {{{glamm/db/bin/genGlammDb.pl}}}.  It parses the flat-file representations of the KEGG, MetaCyc, and BiGG databases and outputs them in SQL tables, ready for import by the SQL scripts found in {{{db/sql}}}.
 
 ==JDBC==
 
+The GLAMM application does its best to abstract away the details of working with the GLAMM and MicrobesOnline databases by wrapping the JDBC interfaces to this data in Data Access Objects (DAOs.)  Connections to these databases are managed by the {{{GlammDbConnectionPool}}}, a wrapper for [http://www.mchange.com/projects/c3p0/index.html c3p0].
+
 ==Hibernate==
+
+A better approach has been adopted for recent additions to the database in the form of the [http://www.hibernate.org/ Hibernate] Object-Relational Mapper (ORM.)  If you are unfamiliar with Hibernate, there may be a bit of a learning curve, but it has excellent documentation and many, many users.  The attempt to replace the previous "parse-with-perl, manually import, access with JDBC" methodology with Hibernate have been quite successful so far with new additions to the database.  You can find this code in {{{gov.lbl.glammdb}}}.  Using Hibernate meshes well with the DAO interface strategy.
