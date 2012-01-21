@@ -1,12 +1,12 @@
 #summary Summary of GLAMM's architecture and how it relates to the source.
 
-= Introduction =
+=Introduction=
 
 This document outlines the relationship between GLAMM's architecture and its source code at the package level.
 
 At its core, GLAMM is a fairly conventional [http://code.google.com/webtoolkit/ Google Web Toolkit] (GWT) application.  That is, it adheres to the [http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93presenter Model-View-Presenter] design pattern on the client side, and communicates with a server via GWT's asynchronous [http://en.wikipedia.org/wiki/Remote_procedure_call RPC] service.
 
-= GWT RPC =
+=GWT RPC=
 
 To get a feel for how GWT's RPC mechanism works, take a look at [http://code.google.com/webtoolkit/doc/latest/DevGuideServerCommunication.html#DevGuideRemoteProcedureCalls this document].  The most important thing to remember is that these calls are non-blocking.  That is, when a call to an RPC service is made, the request is sent to the server and the client side code continues to execute.  When a response is received, it is handled by callback methods specified by the client.
 
@@ -40,9 +40,11 @@ gov.lbl.glamm.client.Glamm
 This class is invoked when the module is loaded and, after displaying a splash screen, hands control over to the application controller class.
 
 ==Application Controller==
+
 {{{
 gov.lbl.glamm.client.AppController
 }}}
+
 The application controller class provides the glue that allows models, views, and presenters to communicate with each other.  It is a single instance object with no public constructor, and this instance is never accessed directly, except by the entry point class.  It serves the following purposes:
 
   * Creation of the main panel (the panel into which all other views will be drawn.)
@@ -55,17 +57,15 @@ You will notice the {{{start}}} method calls a number of {{{load}}} methods.  Mo
 
 ==Events==
 
-As mentioned previously, presenters communicate with each other via events dispatched to an EventBus object instantiated by the ApplicationController.  GLAMM's custom events are defined in
-
 {{{
 gov.lbl.glamm.client.events
 }}}
 
+As mentioned previously, presenters communicate with each other via events dispatched to an EventBus object instantiated by the ApplicationController.
+
 Event classes extend {{{com.google.gwt.event.shared.GwtEvent}}}, a generic class that takes an extension of the {{{com.google.gwt.event.shared.EventHandler}}} interface as its parameter.  GLAMM typically defines this interface inside the event class.  GLAMM's custom events typically provide model objects as payloads, accessible through the callbacks specified by the EventHandler.
 
-==Presenters==
-
-Presenters are defined in 
+==Presenters== 
 
 {{{
 gov.lbl.glamm.client.presenter
@@ -76,8 +76,7 @@ Presenters bind model data to views and communicate with each other via the even
 With few exceptions, presenters should not directly instantiate or contain references to each other - communication should only occur via events dispatched by the event bus.  
 
 ==Models==
-
-Models are defined in 
+ 
 {{{
 gov.lbl.glamm.client.model
 }}}
@@ -86,7 +85,6 @@ In GLAMM, models are often little more than Data Transfer Objects (DTOs.)  They 
 
 ==Views==
 
-Views are defined in 
 {{{
 gov.lbl.glamm.client.view
 }}}
@@ -97,10 +95,12 @@ GLAMM views typically follow Google's recommendation that they extend the {{{Com
 
 Views also implement the {{{View}}} interface defined in the presenter.  This interface should be used to expose components within the view to the presenter for the purpose of setting state, adding event handlers, etc.  This logic should be handled by the presenter - the view should not contain any state management beyond layout and (CSS) style.
 
-= Server =
+=Server=
 
 ==RPC Servlet==
 ==Service Classes==
 ==Data Access Objects==
 ==Persistence==
 ==HTTP Servlet==
+
+=Database=
