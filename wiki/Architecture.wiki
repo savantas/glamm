@@ -63,14 +63,39 @@ gov.lbl.glamm.client.events
 
 Event classes extend {{{com.google.gwt.event.shared.GwtEvent}}}, a generic class that takes an extension of the {{{com.google.gwt.event.shared.EventHandler}}} interface as its parameter.  GLAMM typically defines this interface inside the event class.  GLAMM's custom events typically provide model objects as payloads, accessible through the callbacks specified by the EventHandler.
 
+==Presenters==
+
+Presenters are defined in 
+
+{{{
+gov.lbl.glamm.client.presenter
+}}}
+
+Presenters bind model data to views and communicate with each other via the event bus.  GLAMM presenters define an interface for their view (typically called {{{View}}}) which provides read-only access to the various GWT widgets contained in the view.  The event handlers for these widgets are bound by the presenters in a method called {{{bindView}}}.  Presenters also communicate directly with the server via the RPC interface passed in with the constructor.  
+
+With few exceptions, presenters should not directly instantiate or contain references to each other - communication should only occur via events dispatched by the event bus.  
+
 ==Models==
 
-In GLAMM, models are often little more than Data Transfer Objects (DTOs.)  They provide a means of describing domain-specific data and getting it between the client and the server.  For the most part, they consist of a set of fields, along with "getter" and "setter" methods for accessing those fields.  Interfaces provided in {{{gov.lbl.glamm.client.model.interfaces}}} are contracts, provided to ensure the availability of synonyms, xrefs, measurements, etc for models which are expected to have them.
+Models are defined in 
+{{{
+gov.lbl.glamm.client.model
+}}}
+
+In GLAMM, models are often little more than Data Transfer Objects (DTOs.)  They provide a means of describing domain-specific data and getting it between the client and the server.  For the most part, they consist of a set of fields, along with "getter" and "setter" methods for accessing those fields.  Interfaces provided in {{{gov.lbl.glamm.client.model.interfaces}}} are contracts, provided to ensure the availability of synonyms, xrefs, measurements, etc for models which are expected to have them (e.g. {{{Compound}}}, {{{Reaction}}}, {{{Gene}}})
 
 ==Views==
 
+Views are defined in 
+{{{
+gov.lbl.glamm.client.view
+}}}
 
-==Presenters==
+Views are collections of widgets that define a user interface.  To GLAMM, Views are effectively "dumb" collections of user interface widgets.
+
+GLAMM views typically follow Google's recommendation that they extend the {{{Composite}}} class.  This class effectively hides the implementation details of the underlying widgets.  The one exception is in the case of popup windows, in which case the view extends the {{{PopupPanel}}} or one of its derived classes.  
+
+Views also implement the {{{View}}} interface defined in the presenter.  This interface should be used to expose components within the view to the presenter for the purpose of setting state, adding event handlers, etc.  This logic should be handled by the presenter - the view should not contain any state management beyond layout and (CSS) style.
 
 = Server =
 
