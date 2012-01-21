@@ -146,7 +146,7 @@ In order to fully specify server behavior, one needs both the {{{server}}} eleme
 || {{{server}}} || {{{metagenomehost}}} || The metagenome host name. ||
 || {{{server}}} || {{{db}}} || The JDBC configuration name, specified by the {{{db}}} element's {{{name}}} attribute. ||
 || {{{db}}} || {{{name}}} || Name identifying this JDBC configuration. ||
-|| {{{db}}} || {{{uri}}} The JDBC URI. ||
+|| {{{db}}} || {{{uri}}} || The JDBC URI. ||
 || {{{db}}} || {{{driver}}} || The JDBC driver. ||
 || {{{db}}} || {{{user}}} || The user name. ||
 || {{{db}}} || {{{passwd}}} || The password. ||
