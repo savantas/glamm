@@ -91,7 +91,7 @@ gov.lbl.glamm.client.view
 
 Views are collections of widgets that define a user interface.  To GLAMM, Views are effectively "dumb" collections of user interface widgets.
 
-GLAMM views typically follow Google's recommendation that they extend the {{{Composite}}} class.  This class effectively hides the implementation details of the underlying widgets.  The one exception is in the case of popup windows, in which case the view extends the {{{PopupPanel}}} or one of its derived classes.  
+GLAMM views typically follow Google's recommendation that they extend {{{com.google.gwt.user.client.ui.Composite}}}.  This class effectively hides the implementation details of the underlying widgets.  The one exception is in the case of popup windows, in which case the view extends {{{com.google.gwt.user.client.ui.PopupPanel}}} or one of its derived classes.  
 
 Views also implement the {{{View}}} interface defined in the presenter.  This interface should be used to expose components within the view to the presenter for the purpose of setting state, adding event handlers, etc.  This logic should be handled by the presenter - the view should not contain any state management beyond layout and (CSS) style.
 
