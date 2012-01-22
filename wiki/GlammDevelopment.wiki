@@ -1,0 +1,31 @@
+#summary GLAMM development in GWT development mode.
+
+= Introduction =
+
+GWT already has a great [http://code.google.com/webtoolkit/doc/latest/DevGuideCompilingAndDebugging.html#launching_in_dev_mode introduction] for developing apps in development mode, but there are a few details one needs to manage when developing for GLAMM.
+
+= GLAMM in GWT Development Mode =
+
+Here's how to get GLAMM up and running in development mode:
+
+# Open up the SSH tunnel to a MicrobesOnline server.
+
+# Make sure the topmost glamm directory is selected in Eclipse's Package Explorer.
+
+# Click on "Debug As..." in the Eclipse toolbar.
+
+# Copy the URL from the "Development Mode" tab at the bottom of the screen into Firefox's URL bar - hit enter.
+
+# Install the developer plugin, if necessary (this wil only happen the first time Firefox is started.)
+
+# Wait... and I do mean wait... development mode is _slow_.
+
+# Voila - GLAMM is (eventually) running!
+
+= Stopping a development mode instance =
+
+Click the red square icon in the development mode tab toolbar at the bottom of the screen.
+
+= Committing code to SVN =
+
+After you've made some changes and are reasonably satisfied they work, it makes sense to put them into the repository.  Simply right-click on the topmost directory containing all your changes in the Package Explorer, and select Team->Commit... and follow the directions in the dialog box.
