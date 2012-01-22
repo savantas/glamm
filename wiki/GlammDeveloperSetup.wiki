@@ -6,7 +6,7 @@ GLAMM's development environment doesn't involve much in the way of setup.  Follo
 
 = Join the GLAMM project! =
 
-Talk to one of the owners of the [code.google.com/p/glamm GLAMM project on Google Code] and ask to be added as a committer.  It's quick and painless.
+Talk to one of the owners of the [http://code.google.com/p/glamm GLAMM project on Google Code] and ask to be added as a committer.  It's quick and painless.
 
 = Install Eclipse =
 
@@ -29,5 +29,3 @@ Repeat the above steps, this time without installing Subclipse.
 When prompted to select the folder to be checked out from SVN, choose "trunk."
 
 At this point, if you click the "Finish" button, glamm will be installed into your default workspace in the directory {{{glamm}}}.  This will take some time - why not grab a coffee?
-
-
