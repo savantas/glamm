@@ -21,6 +21,7 @@ import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitHandler;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
@@ -63,6 +64,13 @@ public class LoginPresenter {
 	 *
 	 */
 	public interface View {
+		
+		/**
+		 * Gets the panel containing the log out and view cart buttons.
+		 * @return The panel.
+		 */
+		public Panel getButtonPanel();
+		
 		/**
 		 * Gets the cancel button.
 		 * @return The interface for the button.
@@ -94,16 +102,30 @@ public class LoginPresenter {
 		public Label getStatusLabel();
 		
 		/**
-		 * Gets the login button.
+		 * Gets the log in button.
 		 * @return The interface for the button.
 		 */
-		public HasClickHandlers getLoginButton();
+		public HasClickHandlers getLogInButton();
+		
+		/**
+		 * Gets the log out button.
+		 * @return The interface for the button.
+		 */
+		public HasClickHandlers getLogOutButton();
 		
 		/**
 		 * Gets the username text box.
 		 * @return The text box.
 		 */
 		public HasText getUserNameTextBox();
+		
+		/**
+		 * Gets the view cart button.
+		 * @return The interface for the button.
+		 */
+		public HasClickHandlers getViewCartButton();
+		
+		
 	}
 
 	private static final String ACTION_LOGIN = "login";
@@ -114,7 +136,6 @@ public class LoginPresenter {
 	private static final String MSG_LOGGED_OUT = "Log in/Register";
 	private static final String MSG_LOGGING_IN = "Logging in...";
 	private static final String MSG_LOGGED_IN_PREFIX = "Logged in as ";
-	private static final String MSG_LOGGED_IN_SUFFIX = "Log out";
 
 	private GlammServiceAsync rpc;
 	private View view;
@@ -172,10 +193,16 @@ public class LoginPresenter {
 				case LOGGED_OUT:
 					showLoginForm();
 					break;
-				case LOGGED_IN:
-					logOut();
+				default:
 					break;
 				}
+			}
+		});
+		
+		view.getLogOutButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent evnet) {
+				logOut();
 			}
 		});
 
@@ -187,7 +214,7 @@ public class LoginPresenter {
 			}
 		});
 
-		view.getLoginButton().addClickHandler(new ClickHandler() {
+		view.getLogInButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				view.getForm().submit();
@@ -287,12 +314,15 @@ public class LoginPresenter {
 		default:
 		case LOGGED_OUT:
 			view.getStatusLabel().setText(MSG_LOGGED_OUT);
+			view.getButtonPanel().setVisible(false);
 			break;
 		case LOGGING_IN:
 			view.getStatusLabel().setText(MSG_LOGGING_IN);
+			view.getButtonPanel().setVisible(false);
 			break;
 		case LOGGED_IN:
-			view.getStatusLabel().setText(MSG_LOGGED_IN_PREFIX + user.getEmail() + "\n" + MSG_LOGGED_IN_SUFFIX);
+			view.getStatusLabel().setText(MSG_LOGGED_IN_PREFIX + user.getEmail());
+			view.getButtonPanel().setVisible(true);
 			break;
 		}
 

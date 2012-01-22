@@ -4,6 +4,7 @@ import gov.lbl.glamm.client.model.Gene;
 import gov.lbl.glamm.client.model.Measurement;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Reaction;
+import gov.lbl.glamm.client.model.User;
 import gov.lbl.glamm.client.rpc.GlammServiceAsync;
 
 import java.util.HashMap;
@@ -20,6 +21,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SingleSelectionModel;
@@ -39,6 +41,13 @@ public class ReactionPresenter {
 	 *
 	 */
 	public interface View {
+		
+		/**
+		 * Gets the add to cart button.
+		 * @return The button.
+		 */
+		public Button getAddToCartButton();
+		
 		/**
 		 * Gets the reaction definition html interface.
 		 * @return The html interface.
@@ -81,6 +90,8 @@ public class ReactionPresenter {
 	private View view;
 	@SuppressWarnings("unused")
 	private SimpleEventBus eventBus;
+	
+	private User user;
 
 	/**
 	 * Constructor
@@ -308,5 +319,13 @@ public class ReactionPresenter {
 			}
 			view.getEcNumHtml().setHTML(builder.toString());
 		}
+	}
+	
+	public void setUser(final User user) {
+		this.user = user;
+		if(this.user == null || this.user.isGuestUser())
+			view.getAddToCartButton().setVisible(false);
+		else
+			view.getAddToCartButton().setVisible(true);
 	}
 }
