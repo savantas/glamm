@@ -15,6 +15,7 @@ import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -30,8 +31,10 @@ implements LoginPresenter.View {
 	
 	private static final String LABEL_USERNAME = "Username: ";
 	private static final String LABEL_PASSWORD = "Password: ";
-	private static final String BUTTON_LOGIN = "Login";
+	private static final String BUTTON_LOG_IN = "Log In";
+	private static final String BUTTON_LOG_OUT = "Log Out";
 	private static final String BUTTON_CANCEL = "Cancel";
+	private static final String BUTTON_VIEW_CART = "View Cart";
 	
 	
 	
@@ -47,6 +50,10 @@ implements LoginPresenter.View {
 	private DecoratorPanel decoratorPanel;
 	private VerticalPanel mainPanel;
 	private Label statusLabel;
+	private HorizontalPanel buttonPanel;
+	private Button viewCartButton;
+	private Button logOutButton;
+	
 	
 	// the form popup
 	private DecoratedPopupPanel popup;
@@ -55,9 +62,10 @@ implements LoginPresenter.View {
 	private Grid grid;
 	private TextBox userNameTextBox;
 	private PasswordTextBox passwordTextBox;
-	private HorizontalPanel buttonPanel;
-	private Button loginButton;
+	private HorizontalPanel formButtonPanel;
+	private Button logInButton;
 	private Button cancelButton;
+	
 	
 	/**
 	 * Constructor
@@ -66,6 +74,9 @@ implements LoginPresenter.View {
 		decoratorPanel = new DecoratorPanel();
 		mainPanel = new VerticalPanel();
 		statusLabel = new Label();
+		buttonPanel = new HorizontalPanel();
+		logOutButton = new Button(BUTTON_LOG_OUT);
+		viewCartButton = new Button(BUTTON_VIEW_CART);
 		
 		popup = new DecoratedPopupPanel(false);
 		formPanel = new FormPanel();
@@ -73,8 +84,8 @@ implements LoginPresenter.View {
 		grid = new Grid(3, 2);
 		userNameTextBox = new TextBox();
 		passwordTextBox = new PasswordTextBox();
-		buttonPanel = new HorizontalPanel();
-		loginButton = new Button(BUTTON_LOGIN);
+		formButtonPanel = new HorizontalPanel();
+		logInButton = new Button(BUTTON_LOG_IN);
 		cancelButton = new Button(BUTTON_CANCEL);
 		
 		init();
@@ -83,12 +94,16 @@ implements LoginPresenter.View {
 	private void init() {
 		
 		// set up status window
+		buttonPanel.setSpacing(5);
+		buttonPanel.add(viewCartButton);
+		buttonPanel.add(logOutButton);
+		
 		mainPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 		mainPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		mainPanel.add(statusLabel);
-		mainPanel.setWidth("7em");
+		mainPanel.add(buttonPanel);
+		mainPanel.setWidth("12em");
 		decoratorPanel.add(mainPanel);
-		
 		mainPanel.setStylePrimaryName("glamm-picker");
 
 		// set up form popup
@@ -98,13 +113,13 @@ implements LoginPresenter.View {
 		grid.setWidget(1, 1, passwordTextBox);
 		grid.setWidget(2, 1, new HTML(HTML_RESET_LINK));
 		
-		buttonPanel.setSpacing(5);
-		buttonPanel.add(loginButton);
-		buttonPanel.add(cancelButton);
+		formButtonPanel.setSpacing(5);
+		formButtonPanel.add(logInButton);
+		formButtonPanel.add(cancelButton);
 		
 		wrapperPanel.add(new HTML(HTML_REGISTER_LINK));
 		wrapperPanel.add(grid);
-		wrapperPanel.add(buttonPanel);
+		wrapperPanel.add(formButtonPanel);
 		
 		formPanel.add(wrapperPanel);
 		popup.add(formPanel);
@@ -116,6 +131,11 @@ implements LoginPresenter.View {
 		passwordTextBox.setName(LoginPresenter.FormField.PASSWORD.toString());
 		
 		initWidget(decoratorPanel);
+	}
+	
+	@Override
+	public Panel getButtonPanel() {
+		return buttonPanel;
 	}
 
 	@Override
@@ -144,13 +164,23 @@ implements LoginPresenter.View {
 	}
 
 	@Override
-	public HasClickHandlers getLoginButton() {
-		return loginButton;
+	public HasClickHandlers getLogInButton() {
+		return logInButton;
+	}
+	
+	@Override
+	public HasClickHandlers getLogOutButton() {
+		return logOutButton;
 	}
 
 	@Override
 	public HasText getUserNameTextBox() {
 		return userNameTextBox;
+	}
+	
+	@Override
+	public Button getViewCartButton() {
+		return viewCartButton;
 	}
 }
 

@@ -6,6 +6,7 @@ import gov.lbl.glamm.client.events.ViewResizedEvent;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Sample;
 import gov.lbl.glamm.client.model.Sample.DataType;
+import gov.lbl.glamm.client.model.User;
 import gov.lbl.glamm.client.rpc.GlammServiceAsync;
 import gov.lbl.glamm.shared.RequestParameters;
 
@@ -73,6 +74,12 @@ public class ExperimentPresenter {
 		 * @return The interface for the button.
 		 */
 		public HasClickHandlers		getAddToSubsetButton();
+		
+		/**
+		 * Gets the button that adds the selected sample to the cart.
+		 * @return The button.
+		 */
+		public Button				getAddToCartButton();
 		
 		/**
 		 * Gets the disclosure panel.
@@ -223,6 +230,7 @@ public class ExperimentPresenter {
 	private Sample viewSubsetTableSelection = null;
 
 	private Organism organism = null;
+	private User user;
 
 	private Map<DataType, List<Sample>> dataType2Samples;
 
@@ -244,6 +252,7 @@ public class ExperimentPresenter {
 		summary2Sample = new HashMap<String, Sample>();
 		
 		dataType2Samples = new HashMap<DataType, List<Sample>>();
+		setUser(User.guestUser());
 
 		initTable(view.getExperimentTable(), experimentDataProvider);
 		initTable(view.getViewSubsetTable(), viewSubsetDataProvider);
@@ -599,6 +608,18 @@ public class ExperimentPresenter {
 	public void setOrganism(final Organism organism) {
 		this.organism = organism;
 		populate();
+	}
+	
+	/**
+	 * Sets the user.  If the user is not a guest user, enable the "add to cart" button.
+	 * @param user The user.
+	 */
+	public void setUser(final User user) {
+		this.user = user;
+		if(this.user != null && this.user != User.guestUser())
+			view.getAddToCartButton().setVisible(true);
+		else
+			view.getAddToCartButton().setVisible(false);
 	}
 
 	private void setViewState(final State state) {

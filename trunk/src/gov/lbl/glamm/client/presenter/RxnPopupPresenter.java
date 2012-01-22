@@ -3,6 +3,7 @@ package gov.lbl.glamm.client.presenter;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Reaction;
 import gov.lbl.glamm.client.model.Sample;
+import gov.lbl.glamm.client.model.User;
 import gov.lbl.glamm.client.rpc.GlammServiceAsync;
 import gov.lbl.glamm.client.view.ReactionView;
 
@@ -76,6 +77,8 @@ public class RxnPopupPresenter {
 	private String isolateHost;
 	private String metagenomeHost;
 	private String host;
+	
+	private User user;
 
 	/**
 	 * Constructor
@@ -89,7 +92,8 @@ public class RxnPopupPresenter {
 		this.eventBus = eventBus;
 
 		this.reactions = new HashSet<Reaction>();
-
+		this.user = User.guestUser();
+		
 		loadIsolateHost();
 		loadMetagenomeHost();
 		
@@ -107,6 +111,7 @@ public class RxnPopupPresenter {
 			rp.setOrganism(organism);
 			rp.setHost(host);
 			rp.setReaction(reaction);
+			rp.setUser(user);
 			
 			view.getPanel().add(rv);
 		}
@@ -224,6 +229,14 @@ public class RxnPopupPresenter {
 				}
 			}
 		});
+	}
+	
+	/**
+	 * Sets the user.
+	 * @param user The user.
+	 */
+	public void setUser(final User user) {
+		this.user = user;
 	}
 
 	private void setViewState(final State state) {

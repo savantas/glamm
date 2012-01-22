@@ -23,6 +23,7 @@ import gov.lbl.glamm.client.events.ViewResizedEvent;
 import gov.lbl.glamm.client.model.AnnotatedMapData;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Sample;
+import gov.lbl.glamm.client.model.User;
 import gov.lbl.glamm.client.presenter.AMDPresenter;
 import gov.lbl.glamm.client.presenter.AnnotatedMapPresenter;
 import gov.lbl.glamm.client.presenter.CpdDisambiguationPresenter;
@@ -400,6 +401,20 @@ public class AppController {
 				rxnElementPresenter.setSample(null);
 			}
 		});
+		
+		eventBus.addHandler(LogInEvent.TYPE, new LogInEvent.Handler() {
+			@Override
+			public void onLogIn(LogInEvent event) {
+				rxnElementPresenter.setUser(event.getUser());
+			}
+		});
+		
+		eventBus.addHandler(LogOutEvent.TYPE, new LogOutEvent.Handler() {
+			@Override
+			public void onLogOut(LogOutEvent event) {
+				rxnElementPresenter.setUser(User.guestUser());
+			}
+		});
 
 		eventBus.addHandler(MapElementClickEvent.TYPE,
 				new MapElementClickEvent.Handler() {
@@ -660,6 +675,7 @@ public class AppController {
 		eventBus.addHandler(LogInEvent.TYPE, new LogInEvent.Handler() {
 			@Override
 			public void onLogIn(LogInEvent event) {
+				experimentPresenter.setUser(event.getUser());
 				experimentPresenter.populate();
 			}
 		});
@@ -667,6 +683,7 @@ public class AppController {
 		eventBus.addHandler(LogOutEvent.TYPE, new LogOutEvent.Handler() {
 			@Override
 			public void onLogOut(LogOutEvent event) {
+				experimentPresenter.setUser(User.guestUser());
 				experimentPresenter.populate();
 			}
 		});

@@ -26,6 +26,7 @@ public class ExperimentView extends Composite
 	implements ExperimentPresenter.View {
 	
 	private static final String TEXT_ADD_BUTTON 		= "Add to view subset";
+	private static final String TEXT_ADD_TO_CART_BUTTON	= "Add to cart";
 	private static final String TEXT_DISCLOSURE_PANEL	= "Browse";
 	private static final String TEXT_DOWNLOAD_BUTTON 	= "Download experiment";
 	private static final String TEXT_EXP_LABEL 			= "Experiment: ";
@@ -68,6 +69,7 @@ public class ExperimentView extends Composite
 	private Button				addButton;
 	private Button				uploadButton;
 	private Button				downloadButton;
+	private Button				addToCartButton;
 	
 	private VerticalPanel		viewSubsetPanel;
 	private Label				viewSubsetLabel;
@@ -108,6 +110,7 @@ public class ExperimentView extends Composite
 		addButton					= new Button(TEXT_ADD_BUTTON);
 		uploadButton				= new Button(TEXT_UPLOAD_BUTTON);
 		downloadButton				= new Button(TEXT_DOWNLOAD_BUTTON);
+		addToCartButton				= new Button(TEXT_ADD_TO_CART_BUTTON);
 		
 		viewSubsetPanel				= new VerticalPanel();
 		viewSubsetLabel				= new Label(TEXT_VIEW_LABEL);
@@ -136,6 +139,7 @@ public class ExperimentView extends Composite
 		expButtonPanel.add(addButton);
 		expButtonPanel.add(uploadButton);
 		expButtonPanel.add(downloadButton);
+		expButtonPanel.add(addToCartButton);
 		
 		viewSubsetPanel.add(viewSubsetLabel);
 		viewSubsetPanel.add(viewSubsetTableScrollPanel);
@@ -190,6 +194,11 @@ public class ExperimentView extends Composite
 			radioButtonPanel.remove(0);
 	}
 
+	@Override
+	public Button getAddToCartButton() {
+		return addToCartButton;
+	}
+	
 	@Override
 	public HasClickHandlers getAddToSubsetButton() {
 		return addButton;

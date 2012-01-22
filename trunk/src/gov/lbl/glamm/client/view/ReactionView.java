@@ -4,6 +4,7 @@ import gov.lbl.glamm.client.model.Gene;
 import gov.lbl.glamm.client.presenter.ReactionPresenter;
 
 import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHTML;
@@ -18,9 +19,11 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class ReactionView extends Composite
 implements ReactionPresenter.View {
 	
+	private final String ADD_TO_CART = "Add to cart";
 	private VerticalPanel mainPanel;
 	private HTML definitionHtml;
 	private HTML ecNumHtml;
+	private Button addToCart;
 	private CellTable<Gene> geneTable;
 	private ScrollPanel geneTableScrollPanel;
 
@@ -31,11 +34,13 @@ implements ReactionPresenter.View {
 		mainPanel = new VerticalPanel();
 		definitionHtml = new HTML();
 		ecNumHtml = new HTML();
+		addToCart = new Button(ADD_TO_CART);
 		geneTable = new CellTable<Gene>();
 		geneTableScrollPanel = new ScrollPanel();
 		
 		mainPanel.add(definitionHtml);
 		mainPanel.add(ecNumHtml);
+		mainPanel.add(addToCart);
 		mainPanel.add(geneTableScrollPanel);
 		geneTableScrollPanel.add(geneTable);
 		
@@ -46,6 +51,11 @@ implements ReactionPresenter.View {
 		initWidget(mainPanel);
 	}
 
+	@Override
+	public Button getAddToCartButton() {
+		return addToCart;
+	}
+	
 	@Override
 	public HasHTML getDefinitionHtml() {
 		return definitionHtml;
