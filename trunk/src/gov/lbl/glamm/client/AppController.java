@@ -794,9 +794,9 @@ public class AppController {
 		urlBuilder.setParameter("action", ACTION_GEN_CITATIONS);
 
 		citationsPresenter.setDefaultImageUrl(GlammClientBundle.INSTANCE
-				.glammLogoDefault().getURL());
+				.glammLogoDefault().getSafeUri().asString());
 		citationsPresenter.setMouseOverImageUrl(GlammClientBundle.INSTANCE
-				.glammLogoMouseOver().getURL());
+				.glammLogoMouseOver().getSafeUri().asString());
 		citationsPresenter.setPopupContentUrl(urlBuilder.buildString());
 
 		citationsView.setImageSize("208px", "40px");
@@ -811,7 +811,7 @@ public class AppController {
 		urlBuilder.setPath("tutorial/index.html");
 
 		helpPresenter.setDefaultImageUrl(GlammClientBundle.INSTANCE
-				.helpIconDefault().getURL());
+				.helpIconDefault().getSafeUri().asString());
 		helpPresenter.setPopupContentUrl(urlBuilder.buildString());
 
 		helpView.setImageSize("32px", "32px");
