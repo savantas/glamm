@@ -24,20 +24,22 @@ Please note that KGML+ and GLAMM format files are NOT mutually interoperable.
 
 ===File Format Overview===
 
-The GLAMM file format is an XML format consisting of a specially annotated SVG document and a description of the reaction graph wrapped as follows:
+The KGML+ file format is an XML format consisting of a specially annotated SVG document and a description of the reaction graph wrapped as follows:
 
 {{{
-<glamm>
+<kgml>
 	<svg>
 		…
 	</svg>
 	<reactions>
 		…
 	</reactions>
-</glamm>
+</kgml>
 }}}
 
 It may seem redundant to have a separate reaction graph description on top of the SVG document, but SVG only describes the geometry and formatting of the displayed pathway and not its connectivity.
+
+GLAMM extracts the svg element from the KGML+ document and annotates such that the relationship between compounds, reactions, and pathway ids and svg elements is made explicit.
 
 ==SVG Annotations==
 
