@@ -111,6 +111,13 @@ public interface GlammService extends RemoteService {
 	public Set<Reaction> getReactions(final Set<String> ids, final Organism organism, final Sample sample);
 	
 	/**
+	 * Gets a pathway for a particular organism. 
+	 * //TODO what if there's a sample to associate with it? Modify the map images somehow?
+	 *        Pass that data to MicrobesOnline onClick?
+	 */
+	public Set<Pathway> getPathways(final Set<String> ids, final Organism organism, final Sample sample);
+	
+	/**
 	 * Gets the set of reactions possible for an organism.
 	 * @param organism The organism.
 	 * @return The set of reactions.

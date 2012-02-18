@@ -38,6 +38,7 @@ import gov.lbl.glamm.client.presenter.MiniMapPresenter;
 import gov.lbl.glamm.client.presenter.OrganismPresenter;
 import gov.lbl.glamm.client.presenter.OrganismUploadPresenter;
 import gov.lbl.glamm.client.presenter.PanZoomControlPresenter;
+import gov.lbl.glamm.client.presenter.PwyPopupPresenter;
 import gov.lbl.glamm.client.presenter.RetrosynthesisPresenter;
 import gov.lbl.glamm.client.presenter.RxnPopupPresenter;
 import gov.lbl.glamm.client.rpc.GlammService;
@@ -57,6 +58,7 @@ import gov.lbl.glamm.client.view.MiniMapView;
 import gov.lbl.glamm.client.view.OrganismUploadView;
 import gov.lbl.glamm.client.view.OrganismView;
 import gov.lbl.glamm.client.view.PanZoomControlView;
+import gov.lbl.glamm.client.view.PwyPopupView;
 import gov.lbl.glamm.client.view.RetrosynthesisView;
 import gov.lbl.glamm.client.view.RxnPopupView;
 
@@ -115,6 +117,9 @@ public class AppController {
 	private RxnPopupPresenter rxnElementPresenter;
 	private RxnPopupView rxnElementView;
 
+	private PwyPopupPresenter pwyElementPresenter;
+	private PwyPopupView pwyElementView;
+	
 	private MapElementPresenter mapElementPresenter;
 	private MapElementView mapElementView;
 
@@ -178,6 +183,9 @@ public class AppController {
 
 		rxnElementView = new RxnPopupView();
 		rxnElementPresenter = new RxnPopupPresenter(rpc, rxnElementView, eventBus);
+		
+		pwyElementView = new PwyPopupView();
+		pwyElementPresenter = new PwyPopupPresenter(rpc, pwyElementView, eventBus);
 
 		mapView = new AnnotatedMapView();
 		mapPresenter = new AnnotatedMapPresenter(rpc, mapView, eventBus);
@@ -244,6 +252,7 @@ public class AppController {
 		loadLoadingPanel();
 		loadMapElementPopup();
 		loadRxnElementPopup();
+		loadPwyElementPopup();
 		loadMiniMapPanel();
 		loadPanZoomControl();
 		loadOrganismPicker();
@@ -268,7 +277,7 @@ public class AppController {
 
 	/**
 	 * Computes widget position when the window is resized.
-	 * All resize computations are peformed at the end of the current event loop.
+	 * All resize computations are performed at the end of the current event loop.
 	 */
 	public void onResize() {
 		// perform resize computations at the end of the current event loop
@@ -361,7 +370,8 @@ public class AppController {
 			public void onMapElementClick(
 					final MapElementClickEvent event) {
 				mapElementPresenter.killPopup();
-				if(!event.getElementClass().equals(AnnotatedMapData.ElementClass.RXN))
+				if(!event.getElementClass().equals(AnnotatedMapData.ElementClass.RXN) &&
+				   !event.getElementClass().equals(AnnotatedMapData.ElementClass.MAP))
 					mapElementPresenter.showPopup(event.getElementClass(), event.getIds(), 
 							event.getClientX(), event.getClientY());
 			}
@@ -461,6 +471,74 @@ public class AppController {
 		});
 	}
 
+	private void loadPwyElementPopup() {
+
+		eventBus.addHandler(AnnotatedMapDataLoadedEvent.TYPE, new AnnotatedMapDataLoadedEvent.Handler() {
+			@Override
+			public void onLoaded(AnnotatedMapDataLoadedEvent event) {
+				pwyElementPresenter.setOrganism(Organism.globalMap());
+				pwyElementPresenter.setSample(null);
+			}
+		});
+		
+		eventBus.addHandler(LogInEvent.TYPE, new LogInEvent.Handler() {
+			@Override
+			public void onLogIn(LogInEvent event) {
+				pwyElementPresenter.setUser(event.getUser());
+			}
+		});
+		
+		eventBus.addHandler(LogOutEvent.TYPE, new LogOutEvent.Handler() {
+			@Override
+			public void onLogOut(LogOutEvent event) {
+				pwyElementPresenter.setUser(User.guestUser());
+			}
+		});
+
+		eventBus.addHandler(MapElementClickEvent.TYPE,
+				new MapElementClickEvent.Handler() {
+			@Override
+			public void onMapElementClick(
+					final MapElementClickEvent event) {
+				pwyElementPresenter.killPopup();
+				if(event.getElementClass().equals(AnnotatedMapData.ElementClass.MAP))
+					pwyElementPresenter.showPopup(event.getIds(), event.getClientX(), event.getClientY());
+			}
+		});
+
+		eventBus.addHandler(OrganismPickedEvent.TYPE,
+				new OrganismPickedEvent.Handler() {
+			@Override
+			public void onOrganismPicked(final OrganismPickedEvent event) {
+				pwyElementPresenter.setOrganism(event.getOrganism());
+				pwyElementPresenter.setSample(null);
+			}
+		});
+
+		eventBus.addHandler(SamplePickedEvent.TYPE,
+				new SamplePickedEvent.Handler() {
+			@Override
+			public void onSamplePicked(final SamplePickedEvent event) {
+				pwyElementPresenter.setSample(event.getSample());
+			}
+		});
+
+		eventBus.addHandler(MapUpdateEvent.TYPE, new MapUpdateEvent.Handler() {
+			@Override
+			public void onMapUpdate(MapUpdateEvent event) {
+				pwyElementPresenter.killPopup();
+			}
+		});
+		
+//		eventBus.addHandler(RoutePickedEvent.TYPE,
+//				new RoutePickedEvent.Handler() {
+//			@Override
+//			public void onPicked(RoutePickedEvent event) {
+//				pwyElementPresenter.setSample(null);
+//			}
+//		});
+	}
+	
 	private void loadMapPanel() {
 
 		mainPanel.add(mapView, 0, 0);

@@ -35,6 +35,7 @@ public interface GlammServiceAsync {
 	public void getMetagenomeHost(AsyncCallback<String> callback);
 	public void getLoggedInUser(AsyncCallback<User> user);
 	public void getReactions(final Set<String> ids, final Organism organism, final Sample sample, AsyncCallback<Set<Reaction>> callback);
+	public void getPathways(final Set<String> ids, final Organism organism, final Sample sample, AsyncCallback<Set<Pathway>> callback);
 	public void getRxnsForOrganism(final Organism organism, AsyncCallback<Set<Reaction>> callback);
 	public void logOutUser(AsyncCallback<Void> callback);
 	public void populateCompoundSearch(String mapId, AsyncCallback<Set<Compound>> callback);
