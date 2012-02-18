@@ -16,6 +16,7 @@ import gov.lbl.glamm.server.actions.GenCpdPopup;
 import gov.lbl.glamm.server.actions.GenPwyPopup;
 import gov.lbl.glamm.server.actions.GetAnnotatedMapDescriptors;
 import gov.lbl.glamm.server.actions.GetAvailableExperimentTypes;
+import gov.lbl.glamm.server.actions.GetPathways;
 import gov.lbl.glamm.server.actions.GetReactions;
 import gov.lbl.glamm.server.actions.GetRxnsForOrganism;
 import gov.lbl.glamm.server.actions.GetSample;
@@ -109,6 +110,11 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	@Override
 	public String getMetagenomeHost() {
 		return getGlammSession().getServerConfig().getMetagenomeHost();
+	}
+	
+	@Override
+	public Set<Pathway> getPathways(final Set<String> ids, final Organism organism, final Sample sample) {
+		return GetPathways.getPathways(getGlammSession(), ids, organism, sample);
 	}
 	
 	@Override

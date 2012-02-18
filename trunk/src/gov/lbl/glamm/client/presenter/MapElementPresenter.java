@@ -117,10 +117,11 @@ public class MapElementPresenter {
 			view.showPopup(loadingMsg, clientX, clientY);
 			rpc.genCpdPopup(ids, organism, callback);
 		}
-		else if(elementClass.equals(AnnotatedMapData.ElementClass.MAP)) {
-			view.showPopup(loadingMsg, clientX, clientY);
-			rpc.genPwyPopup(ids, organism, sample, callback);
-		}
+/* Now done through PwyPopupPresenter --Bill */
+//		else if(elementClass.equals(AnnotatedMapData.ElementClass.MAP)) {
+//			view.showPopup(loadingMsg, clientX, clientY);
+//			rpc.genPwyPopup(ids, organism, sample, callback);
+//		}
 		
 	}
 }
