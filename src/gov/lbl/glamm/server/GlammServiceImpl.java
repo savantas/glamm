@@ -162,6 +162,10 @@ public class GlammServiceImpl extends RemoteServiceServlet
 		return PopulateSamples.populateSamples(getGlammSession(), organism);
 	}
 	
+	public String nonDBTest() {
+		return "RPC didn't touch the database!";
+	}
+	
 	/**
 	 * Sets up database connection pool and request handler factory classes
 	 */

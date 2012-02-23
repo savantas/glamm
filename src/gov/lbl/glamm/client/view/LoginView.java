@@ -88,6 +88,8 @@ implements LoginPresenter.View {
 		logInButton = new Button(BUTTON_LOG_IN);
 		cancelButton = new Button(BUTTON_CANCEL);
 		
+		viewCartButton.setVisible(false);
+		
 		init();
 	}
 	

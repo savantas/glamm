@@ -616,9 +616,9 @@ public class ExperimentPresenter {
 	 */
 	public void setUser(final User user) {
 		this.user = user;
-		if(this.user != null && this.user != User.guestUser())
-			view.getAddToCartButton().setVisible(true);
-		else
+//		if(this.user != null && this.user != User.guestUser())
+//			view.getAddToCartButton().setVisible(true);
+//		else
 			view.getAddToCartButton().setVisible(false);
 	}
 

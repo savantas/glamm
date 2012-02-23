@@ -169,4 +169,6 @@ public interface GlammService extends RemoteService {
 	 * @return The list of samples.
 	 */
 	public List<Sample> populateSamples(final Organism organism);
+	
+	public String nonDBTest();
 }

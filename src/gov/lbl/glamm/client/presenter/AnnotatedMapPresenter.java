@@ -3,6 +3,8 @@ package gov.lbl.glamm.client.presenter;
 import gov.lbl.glamm.client.events.AnnotatedMapDataLoadedEvent;
 import gov.lbl.glamm.client.events.LoadingEvent;
 import gov.lbl.glamm.client.events.MapElementClickEvent;
+import gov.lbl.glamm.client.events.MapElementMouseOutEvent;
+import gov.lbl.glamm.client.events.MapElementMouseOverEvent;
 import gov.lbl.glamm.client.events.MapUpdateEvent;
 import gov.lbl.glamm.client.model.AnnotatedMapData;
 import gov.lbl.glamm.client.model.AnnotatedMapData.State;
@@ -140,10 +142,82 @@ public class AnnotatedMapPresenter {
 		bindView();
 	}
 
+	/**
+	 * Adds MouseOverHandlers and MouseOutHandlers to every SVG element of note - those with CPD, RXN, and MAP
+	 * classes. These each trigger (or turn off) their attribute states to toggle between DEFAULT and SELECTED.
+	 * 
+	 * Additionally, these fire MapElementMouseOver MapElementMouseOut events, fetching the appropriate data.
+	 * @param group the group of DOM elements to trigger events
+	 * @param tagName the name of the tag of the appropriate elements in the group
+	 */
 	private void addMouseHandlersToElement(final OMElement group, final String tagName) {
+		final String cssClass = group.getAttribute(AnnotatedMapData.Attribute.CLASS);
 		for(final OMElement child : group.getElementsByTagName(tagName)) {
 			addMouseOverHandlerToElement((HasMouseOverHandlers) child, tagName);
 			addMouseOutHandlerToElement((HasMouseOutHandlers) child, tagName);
+			
+			((HasMouseOverHandlers) child).addMouseOverHandler(new MouseOverHandler() {
+				public void onMouseOver(MouseOverEvent event) {
+					Element element = DOM.eventGetTarget(Event.as(event.getNativeEvent()));
+					int clientX = event.getClientX();
+					int clientY = event.getClientY();
+					String idsString = null;
+
+					Element parentElement = element.getParentElement();
+					while(parentElement != null && !parentElement.hasAttribute(AnnotatedMapData.Attribute.CLASS))
+						parentElement = parentElement.getParentElement();
+
+					if(parentElement == null)
+						return; // fail silently
+
+					if(cssClass.equals(AnnotatedMapData.ElementClass.CPD.getCssClass()))
+						idsString = parentElement.getAttribute(AnnotatedMapData.Attribute.COMPOUND);
+					else if(cssClass.equals(AnnotatedMapData.ElementClass.MAP.getCssClass()))
+						idsString = parentElement.getAttribute(AnnotatedMapData.Attribute.MAP);
+					else if(cssClass.equals(AnnotatedMapData.ElementClass.RXN.getCssClass()))
+						idsString = parentElement.getAttribute(AnnotatedMapData.Attribute.REACTION);
+					else
+						return; // fail silently
+
+					String[] idsArray = idsString.split("\\+");
+					Set<String> ids = new HashSet<String>();
+					for(String id : idsArray)
+						ids.add(id);
+
+					eventBus.fireEvent(new MapElementMouseOverEvent(AnnotatedMapData.ElementClass.fromCssClass(cssClass), ids, clientX, clientY));
+				}
+			});
+			((HasMouseOutHandlers) child).addMouseOutHandler(new MouseOutHandler() {
+				public void onMouseOut(MouseOutEvent event) {
+					Element element = DOM.eventGetTarget(Event.as(event.getNativeEvent()));
+					int clientX = event.getClientX();
+					int clientY = event.getClientY();
+					String idsString = null;
+
+					Element parentElement = element.getParentElement();
+					while(parentElement != null && !parentElement.hasAttribute(AnnotatedMapData.Attribute.CLASS))
+						parentElement = parentElement.getParentElement();
+
+					if(parentElement == null)
+						return; // fail silently
+
+					if(cssClass.equals(AnnotatedMapData.ElementClass.CPD.getCssClass()))
+						idsString = parentElement.getAttribute(AnnotatedMapData.Attribute.COMPOUND);
+					else if(cssClass.equals(AnnotatedMapData.ElementClass.MAP.getCssClass()))
+						idsString = parentElement.getAttribute(AnnotatedMapData.Attribute.MAP);
+					else if(cssClass.equals(AnnotatedMapData.ElementClass.RXN.getCssClass()))
+						idsString = parentElement.getAttribute(AnnotatedMapData.Attribute.REACTION);
+					else
+						return; // fail silently
+
+					String[] idsArray = idsString.split("\\+");
+					Set<String> ids = new HashSet<String>();
+					for(String id : idsArray)
+						ids.add(id);
+
+					eventBus.fireEvent(new MapElementMouseOutEvent(AnnotatedMapData.ElementClass.fromCssClass(cssClass), ids, clientX, clientY));
+				}
+			});
 		}
 	}
 
@@ -763,6 +837,30 @@ public class AnnotatedMapPresenter {
 				}
 			}
 		});
+	}
+	
+	/**
+	 * Highlights the given pathways in the main map window. If an organism is selected, only those map elements
+	 * that are part of the organism are highlighted.
+	 * 
+	 * @param organism
+	 * @param pathways
+	 */
+	public void updateMapForPathway(final Organism organism, final Pathway pathways) {
+		// Stub for now.
+		
+//		rpc.nonDBTest( new AsyncCallback<String>() {
+//
+//			@Override
+//			public void onFailure(Throwable caught) {
+//				Window.alert("Remote procedure call failure: nonDBTest");
+//			}
+//
+//			@Override
+//			public void onSuccess(String result) {
+//				Window.alert(result);
+//			}
+//		});
 	}
 
 	private void updateMapForReactions(final Sample sample, final Set<? extends HasMeasurements> rxns) {
