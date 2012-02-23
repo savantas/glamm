@@ -43,4 +43,6 @@ public interface GlammServiceAsync {
 	public void populateOrganisms(final Sample.DataType dataType, AsyncCallback<List<Organism>> callback);
 	public void populateReactionSearch(final String mapId, AsyncCallback<Set<Reaction>> callback);
 	public void populateSamples(final Organism organism, AsyncCallback<List<Sample>> callback);
+	
+	public void nonDBTest(AsyncCallback<String> callback);
 }

@@ -152,10 +152,10 @@ public class PwyPopupPresenter {
 	 */
 	public void setUser(final User user) {
 		this.user = user;
-		if (this.user == null || this.user.isGuestUser())
+//		if (this.user == null || this.user.isGuestUser())
 			view.getAddToCartButton().setVisible(false);
-		else
-			view.getAddToCartButton().setVisible(true);
+//		else
+//			view.getAddToCartButton().setVisible(true);
 	}
 	
 	/**

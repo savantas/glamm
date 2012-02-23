@@ -11,6 +11,8 @@ import gov.lbl.glamm.client.events.LoadingEvent;
 import gov.lbl.glamm.client.events.LogInEvent;
 import gov.lbl.glamm.client.events.LogOutEvent;
 import gov.lbl.glamm.client.events.MapElementClickEvent;
+import gov.lbl.glamm.client.events.MapElementMouseOutEvent;
+import gov.lbl.glamm.client.events.MapElementMouseOverEvent;
 import gov.lbl.glamm.client.events.MapUpdateEvent;
 import gov.lbl.glamm.client.events.OrganismPickedEvent;
 import gov.lbl.glamm.client.events.OrganismUploadEvent;
@@ -273,6 +275,8 @@ public class AppController {
 				onResize();
 			}
 		});
+
+		
 	}
 
 	/**
@@ -313,7 +317,7 @@ public class AppController {
 	}
 
 	private void loadCpdDisambiguation() {
-
+		
 		eventBus.addHandler(AnnotatedMapDataLoadedEvent.TYPE, new AnnotatedMapDataLoadedEvent.Handler() {
 			@Override
 			public void onLoaded(AnnotatedMapDataLoadedEvent event) {
@@ -632,6 +636,23 @@ public class AppController {
 				mapPresenter.updateMapForSearchTarget(event.getTargets());
 			}
 		});
+
+		/** Not quite ready for this version... **/
+//		eventBus.addHandler(MapElementMouseOverEvent.TYPE, new MapElementMouseOverEvent.Handler() {
+//			public void onMapElementMouseOver(final MapElementMouseOverEvent event) {
+//				if (event.getElementClass().equals(AnnotatedMapData.ElementClass.MAP)) {
+//					mapPresenter.updateMapForPathway(null, null);
+//				}
+//			}
+//		});
+//
+//		eventBus.addHandler(MapElementMouseOutEvent.TYPE, new MapElementMouseOutEvent.Handler() {
+//			public void onMapElementMouseOut(final MapElementMouseOutEvent event) {
+//				if (event.getElementClass().equals(AnnotatedMapData.ElementClass.MAP))
+//					System.out.println("moused out of map element!");
+//			}
+//		});
+
 	}
 
 	private void loadMiniMapPanel() {

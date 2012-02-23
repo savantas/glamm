@@ -35,6 +35,8 @@ public class GlammDbConnectionPool {
 				dataSource.setJdbcUrl(dbConfig.getUri());
 				dataSource.setUser(dbConfig.getUser());
 				dataSource.setPassword(dbConfig.getPasswd());
+				// Max database handle idle time is 10 hours (DB server is set to 20 or 24)
+				dataSource.setMaxIdleTime(6000);
 				
 				map.put(dbConfig, dataSource);
 			} catch(Exception e) {
