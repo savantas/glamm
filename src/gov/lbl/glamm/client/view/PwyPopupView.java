@@ -2,16 +2,21 @@ package gov.lbl.glamm.client.view;
 
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
+import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.DataGrid;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.ResizeLayoutPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+import gov.lbl.glamm.client.model.Reaction;
 import gov.lbl.glamm.client.presenter.PwyPopupPresenter;
 
 /**
@@ -24,16 +29,34 @@ import gov.lbl.glamm.client.presenter.PwyPopupPresenter;
 
 public class PwyPopupView extends PopupPanel implements PwyPopupPresenter.View {
 
-	private final String 		ADD_TO_CART = "Add to cart";
-	private VerticalPanel		mainPanel;
-	private VerticalPanel		pwyPanel;
-	private Label				statusLabel;
-	private HTML				pwyLinkHtml;
-	private Button				addToCart;
-	private Image				pwyImage;
-	private final ScrollPanel	imgScrollPanel;
-	private static final int 	SCROLL_WIDTH = 500;   //px
-	private static final int 	SCROLL_HEIGHT = 500;  //px
+	private final String 				ADD_ALL_TO_CART = "Add all reactions to cart";
+	private final String				ADD_NATIVE_TO_CART = "Add reactions with genes to cart";
+	private final String				KEGG_MAP_STYLE = "Show reaction table";		// these are opposite of what you might think. When the button
+	private final String				REACTION_TABLE_STYLE = "Show KEGG map";		// is set to one style, it gives the option to jump to the other
+	private final String				EMPTY_REACTION_TABLE = "No reactions available";
+
+	private VerticalPanel				mainPanel;					// holds the status label and pwy panel
+	private VerticalPanel				pwyPanel;					// holds the HTMl header label, pwy layout panel, and button panel
+
+	private Label						statusLabel;
+	private Label						emptyTableLabel;
+	private HTML						pwyLinkHtml;
+
+	private Button						addAllToCart;
+	private Button						addNativeToCart;
+	private Button						pwyViewStyle;
+
+	private Image						pwyImage;
+	private final ScrollPanel			imgScrollPanel;
+	private final ResizeLayoutPanel 	tableLayoutPanel;
+
+	private static final int 			PANEL_WIDTH = 500;   //px
+	private static final int 			PANEL_HEIGHT = 500;  //px
+
+	private HorizontalPanel				headerPanel;
+	private HorizontalPanel				buttonPanel;
+	
+	private DataGrid<Reaction>			pwyTable = null;
 	
 	private int left, top;
 	
@@ -41,40 +64,114 @@ public class PwyPopupView extends PopupPanel implements PwyPopupPresenter.View {
 		
 		super();
 		
-		addToCart = new Button(ADD_TO_CART);
+		addAllToCart = new Button(ADD_ALL_TO_CART);
+		addNativeToCart = new Button(ADD_NATIVE_TO_CART);
+		pwyViewStyle = new Button(REACTION_TABLE_STYLE);
+
+		headerPanel = new HorizontalPanel();
+		buttonPanel = new HorizontalPanel();
+		
 		pwyImage = new Image();
 		imgScrollPanel = new ScrollPanel(pwyImage);
-		imgScrollPanel.setSize(SCROLL_WIDTH + "px", SCROLL_HEIGHT + "px");
+
+		pwyLinkHtml = new HTML();
+
+		pwyTable = new DataGrid<Reaction>();
+		tableLayoutPanel = new ResizeLayoutPanel();
+
+		mainPanel = new VerticalPanel();
+		pwyPanel = new VerticalPanel();
 		
+		statusLabel = new Label();
+		emptyTableLabel = new Label(EMPTY_REACTION_TABLE);
+		init();
+		
+	}
+	
+	public void init() {
+		imgScrollPanel.setSize(PANEL_WIDTH + "px", PANEL_HEIGHT + "px");
+
 		pwyImage.addLoadHandler(new LoadHandler() {
 			public void onLoad(LoadEvent event)
 			{
-				imgScrollPanel.setWidth(Math.min(SCROLL_WIDTH, pwyImage.getWidth() + 20) + "px");
-				imgScrollPanel.setHeight(Math.min(SCROLL_HEIGHT, pwyImage.getHeight() + 20) + "px");
+				imgScrollPanel.setWidth(Math.min(PANEL_WIDTH, pwyImage.getWidth() + 20) + "px");
+				imgScrollPanel.setHeight(Math.min(PANEL_HEIGHT, pwyImage.getHeight() + 20) + "px");
 			}
 		});
-		
-		pwyLinkHtml = new HTML();
 
-		mainPanel = new VerticalPanel();
-		statusLabel = new Label();
-		pwyPanel = new VerticalPanel();
+		// Contains panel header info - the MO link and a button to toggle between KEGG and table views
+		headerPanel.setSpacing(5);
+		headerPanel.add(pwyLinkHtml);
+		headerPanel.add(pwyViewStyle);
+
+		tableLayoutPanel.add(pwyTable);
+		tableLayoutPanel.setSize(PANEL_WIDTH + "px", PANEL_HEIGHT + "px");
+		
+		buttonPanel.setSpacing(5);
+		buttonPanel.add(addAllToCart);
+		buttonPanel.add(addNativeToCart);
+
+		// Contains the bulk of the viewer - a reaction table and KEGG map view (toggle-able)
+		// as well as buttons to add to cart (if the user is logged in)
 		pwyPanel.setSpacing(5);
-		pwyPanel.add(pwyLinkHtml);
+		pwyPanel.add(headerPanel);
+		pwyPanel.add(tableLayoutPanel);
 		pwyPanel.add(imgScrollPanel);
-		
-		
+		pwyPanel.add(emptyTableLabel);
+		emptyTableLabel.setVisible(false);
+		imgScrollPanel.setVisible(false);
+//		pwyPanel.add(buttonPanel);
+
 		this.setWidget(mainPanel);
 		this.setAutoHideEnabled(true);
 		mainPanel.add(statusLabel);
 		mainPanel.add(pwyPanel);
-		mainPanel.add(addToCart);
 		mainPanel.setStylePrimaryName("glamm-picker");
 	}
 	
+	public Panel getButtonPanel() {
+		return buttonPanel;
+	}
+	
+	public void toggleViewStyle() {
+		boolean showKegg = pwyViewStyle.getText().equals(REACTION_TABLE_STYLE);
+		pwyViewStyle.setText(showKegg ? KEGG_MAP_STYLE : REACTION_TABLE_STYLE);
+		if (showKegg) {
+			emptyTableLabel.setVisible(false);
+			tableLayoutPanel.setVisible(false);
+			imgScrollPanel.setVisible(true);
+		}
+		else {
+			imgScrollPanel.setVisible(false);
+			showTableIfNotEmpty();
+			this.resetPopupPosition();
+		}
+	}
+	
+	public void showTableIfNotEmpty() {
+		if (pwyTable.getVisibleItemCount() == 0) {
+			emptyTableLabel.setVisible(true);
+			tableLayoutPanel.setVisible(false);
+		}
+		else {
+			tableLayoutPanel.setVisible(true);
+			emptyTableLabel.setVisible(false);
+			pwyTable.redraw();
+		}		
+	}
+	
+	public Button getViewStyleButton() {
+		return pwyViewStyle;
+	}
+	
 	@Override
-	public Button getAddToCartButton() {
-		return addToCart;
+	public Button getAddAllToCartButton() {
+		return addAllToCart;
+	}
+	
+	@Override
+	public Button getAddNativeToCartButton() {
+		return addNativeToCart;
 	}
 
 	@Override
@@ -98,13 +195,22 @@ public class PwyPopupView extends PopupPanel implements PwyPopupPresenter.View {
 	}
 
 	@Override
+	public DataGrid<Reaction> getPwyTable() {
+		return pwyTable;
+	}
+	
+	@Override
 	public void hidePopup() {
 		super.hide();
+		tableLayoutPanel.setVisible(false);
+		emptyTableLabel.setVisible(false);
+		imgScrollPanel.setVisible(true);
+		pwyViewStyle.setText(KEGG_MAP_STYLE);
 	}
 
 	@Override
 	public void killPopup() {
-		super.hide();
+		hidePopup();
 	}
 
 	/**
@@ -152,7 +258,7 @@ public class PwyPopupView extends PopupPanel implements PwyPopupPresenter.View {
 	public void showPopup(int left, int top) {
 		this.left = left;
 		this.top = top;
-
+		
 		super.setPopupPosition(left, top);
 		super.show();
 		
@@ -166,3 +272,4 @@ public class PwyPopupView extends PopupPanel implements PwyPopupPresenter.View {
 	}
 
 }
+

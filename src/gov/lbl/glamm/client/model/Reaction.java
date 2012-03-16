@@ -2,9 +2,11 @@ package gov.lbl.glamm.client.model;
 
 
 import gov.lbl.glamm.client.model.interfaces.HasMeasurements;
+import gov.lbl.glamm.client.model.interfaces.HasSynonyms;
 import gov.lbl.glamm.client.model.interfaces.HasType;
 import gov.lbl.glamm.client.model.interfaces.HasXrefs;
 import gov.lbl.glamm.client.model.util.MeasurementSet;
+import gov.lbl.glamm.client.model.util.Synonym;
 import gov.lbl.glamm.client.model.util.Type;
 import gov.lbl.glamm.client.model.util.XrefSet;
 import gov.lbl.glamm.client.util.ReactionColor;
@@ -28,7 +30,7 @@ import com.google.gwt.view.client.ProvidesKey;
  */
 @SuppressWarnings("serial")
 public class Reaction
-implements Serializable, RowDependentSelectionCell.HasOptions, HasMeasurements, HasType, HasXrefs {
+implements Serializable, RowDependentSelectionCell.HasOptions, HasMeasurements, HasType, HasXrefs, HasSynonyms {
 	
 	/**
 	 * Enum specifying reaction direction.
@@ -169,6 +171,7 @@ implements Serializable, RowDependentSelectionCell.HasOptions, HasMeasurements, 
 	private transient ReactionColor color; // ReactionColor depends on resources from the client bundle - don't instantiate or try to set server-side.
 	private MeasurementSet measurementSet;
 	private XrefSet xrefSet;
+	private Set<Synonym> synonyms;
 
 	/**
 	 * Key provider for Reactions.
@@ -194,6 +197,7 @@ implements Serializable, RowDependentSelectionCell.HasOptions, HasMeasurements, 
 		transgenicCandidate2EcNums = new HashMap<Organism, Set<String>>();
 		measurementSet = new MeasurementSet();
 		xrefSet = new XrefSet();
+		synonyms = new HashSet<Synonym>();
 	}
 
 	/**
@@ -507,6 +511,24 @@ implements Serializable, RowDependentSelectionCell.HasOptions, HasMeasurements, 
 	@Override
 	public XrefSet getXrefSet() {
 		return xrefSet;
+	}
+
+	public void addSynonym(String synonym) {
+		addSynonym(new Synonym(synonym, "RXN-NAME"));
+	}
+	
+	@Override
+	public void addSynonym(Synonym synonym) {
+		this.synonyms.add(synonym);
+	}
+
+	@Override
+	public void setSynonyms(Set<Synonym> synonyms) {
+		this.synonyms.addAll(synonyms);
+	}
+	
+	public Set<Synonym> getSynonyms() {
+		return synonyms;
 	}
 
 }

@@ -1,24 +1,44 @@
 package gov.lbl.glamm.client.presenter;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import gov.lbl.glamm.client.model.Experiment;
+import gov.lbl.glamm.client.model.Gene;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Pathway;
+import gov.lbl.glamm.client.model.Reaction;
 import gov.lbl.glamm.client.model.Sample;
 import gov.lbl.glamm.client.model.User;
+import gov.lbl.glamm.client.model.util.Synonym;
 import gov.lbl.glamm.client.rpc.GlammServiceAsync;
 
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.DataGrid;
+import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+import com.google.gwt.cell.client.ImageCell;
+import com.google.gwt.cell.client.SafeHtmlCell;
+import com.google.gwt.cell.client.TextCell;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.view.client.ListDataProvider;
 
 /* TODO - This is a stub.  The goal is to generate pathway popups client-side, so we'll have access to the Pathway object,
  * so that we can manipulate it directly from the popup (e.g. add it to the Cart, etc.)  See the RxnPopupPresenter for an analogous approach.
@@ -40,11 +60,28 @@ public class PwyPopupPresenter {
 	public interface View {
 		
 		/**
-		 * Gets the add to cart button.
+		 * 
+		 */
+		public DataGrid<Reaction> getPwyTable();
+		
+		/**
+		 * Gets the add all to cart button.
 		 * @return The button.
 		 */
-		public Button getAddToCartButton();
+		public Button getAddAllToCartButton();
 	
+		/**
+		 * Gets the add native species reactions/compounds in the pathway to cart button.
+		 * @return The button.
+		 */
+		public Button getAddNativeToCartButton();
+		
+		public Button getViewStyleButton();
+		
+		public void toggleViewStyle();
+		
+		public Panel getButtonPanel();
+		
 		/**
 		 * Gets the pathway image, if available.
 		 * @return The image.
@@ -96,8 +133,9 @@ public class PwyPopupPresenter {
 	private Organism organism;
 	private Sample sample;
 	private User user;
-	
+	private ListDataProvider<Reaction> pwyDataProvider = null;
 	private String host;
+	private Column<Reaction, SafeHtml> geneColumn;
 	
 	/**
 	 * Initializes the PwyPopupPresenter.
@@ -114,9 +152,202 @@ public class PwyPopupPresenter {
 		this.pathways = new HashSet<Pathway>();
 		this.organism = Organism.globalMap();
 		this.sample = null;
+		this.pwyDataProvider = new ListDataProvider<Reaction>(); 
 		setUser(User.guestUser());
 		
 		loadHost();
+		initTable(view.getPwyTable(), pwyDataProvider);
+		bindView();
+	}
+	
+	private void bindView() {
+		view.getAddAllToCartButton().addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				// add all reactions in this path to the cart.
+			}
+		});
+		
+		view.getAddNativeToCartButton().setVisible(false);
+		
+		view.getAddNativeToCartButton().addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				// add only species native reactions to the cart
+			}
+		});
+		
+		view.getViewStyleButton().addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				view.toggleViewStyle();
+			}
+		});
+	}
+	
+	private String genEcNumLink(final String ecNum, final int numGenes) {
+
+		StringBuilder builder = new StringBuilder();
+
+		builder.append("<a href=\"");
+		builder.append(genEcNumUrl(ecNum));
+		builder.append("\" target=\"_new\">");
+		builder.append("<b>" + ecNum + "</b></a>");
+
+		return builder.toString();
+	}
+
+	private String genEcNumUrl(final String ecNum) {
+
+		UrlBuilder urlBuilder = new UrlBuilder();
+
+		urlBuilder.setProtocol("http");
+		urlBuilder.setHost(host);
+		urlBuilder.setPath("/cgi-bin/fetchEC2.cgi");
+		urlBuilder.setParameter("ec", ecNum);
+		
+		if (organism != null && !organism.isGlobalMap())
+			urlBuilder.setParameter("taxId", organism.getTaxonomyId());
+
+		return urlBuilder.buildString();
+	}
+
+	private String genGeneLink(final Gene gene) {
+		if (gene == null)
+			return "";
+
+		String name = gene.getSynonymWithType(Gene.SYNONYM_TYPE_NAME);
+		String ncbi = gene.getSynonymWithType(Gene.SYNONYM_TYPE_NCBI);
+		String session = gene.getSynonymWithType(Gene.SYNONYM_TYPE_SESSION);
+
+		StringBuilder textLinkBuilder = new StringBuilder();
+		
+		textLinkBuilder.append(name == null ? "" : name + " ");
+		textLinkBuilder.append(ncbi == null ? "" : ncbi + " ");
+		textLinkBuilder.append(session == null ? "" : session + " ");
+
+		String textLink = textLinkBuilder.toString();
+		if (gene.getVimssId().isEmpty() || host == null)
+			return textLink;
+		
+		StringBuilder builder = new StringBuilder();
+		
+		builder.append("<a href=\"");
+		builder.append(genLocusUrl(gene.getVimssId()));
+		builder.append("\" target=\"_new\">");
+		builder.append("<b>" + textLink + "</b></a>");
+		
+		return builder.toString();
+	}
+	
+	private String genLocusUrl(final String vimssId) {
+
+		UrlBuilder urlBuilder = new UrlBuilder();
+
+		urlBuilder.setProtocol("http");
+		urlBuilder.setHost(host);
+		urlBuilder.setPath("/cgi-bin/fetchLocus.cgi");
+		urlBuilder.setParameter("locus", vimssId);
+		urlBuilder.setParameter("disp", "0");
+
+		return urlBuilder.buildString();
+	}
+
+	private void initTable(final DataGrid<Reaction> table, ListDataProvider<Reaction> dataProvider) {
+		/* Columns:
+		 * 1. EC number
+		 * 2. Reaction name(s)
+		 * 3. Reaction definition (e.g. A + B <=> C + D)
+		 * 4. Is native? (checkbox? color block?)
+		 */
+		
+		
+		/* This isn't going to be an Image... or likely a Table column. Just a placeholder for now */
+		Column<Reaction, SafeHtml> linPwyColumn = new Column<Reaction, SafeHtml>(new SafeHtmlCell()) {
+			public SafeHtml getValue(Reaction r) {
+				return null;
+			}
+		};
+		
+		Column<Reaction, SafeHtml> ecColumn = new Column<Reaction, SafeHtml>(new SafeHtmlCell()) {
+			public SafeHtml getValue(Reaction r) {
+				
+				String[] ecSet = r.getEcNums().toArray(new String[0]);
+				
+				SafeHtmlBuilder builder = new SafeHtmlBuilder();
+				if (ecSet == null || ecSet.length == 0) {
+					builder.appendHtmlConstant("No EC");
+				}
+				else {
+					Arrays.sort(ecSet);
+					for (String ecNum : ecSet) {
+						if (ecNum != null && ecNum.length() > 0) {
+							builder.appendHtmlConstant(genEcNumLink(ecNum, r.getGenes().size()));
+						}
+						builder.appendHtmlConstant("<br>");
+					}
+				}
+				return builder.toSafeHtml();
+			}
+		};
+		
+		TextColumn<Reaction> nameColumn = new TextColumn<Reaction>() {
+			public String getValue(Reaction r) {
+				StringBuilder nameBuilder = new StringBuilder();
+				
+				for (Synonym s : r.getSynonyms()) {
+					if (s.getName() != null)
+						nameBuilder.append(s.getName() + "\n");
+				}
+				return nameBuilder.toString();
+			}
+		};
+		
+		TextColumn<Reaction> defColumn = new TextColumn<Reaction>() {
+			public String getValue(Reaction r) {
+				return r.getDefinition();
+			}
+		};
+		
+		geneColumn = new Column<Reaction, SafeHtml>(new SafeHtmlCell()) {
+			public SafeHtml getValue(Reaction r) {
+				if (organism == null || organism == Organism.globalMap())
+					return null;
+
+				/* Cases:
+				 * 1. organism = global or null
+				 *   - hide column
+				 * 2. organism selected, no gene present.
+				 *   - "No genes"
+				 */
+
+				SafeHtmlBuilder geneBuilder = new SafeHtmlBuilder();
+				
+				Set<Gene> genes = r.getGenes();
+				if (genes.size() == 0)
+					geneBuilder.appendHtmlConstant("No genes available");
+
+				else {
+					for (Gene gene : genes) {
+						geneBuilder.appendHtmlConstant(genGeneLink(gene) + "<br>");
+					}
+				}
+
+				return geneBuilder.toSafeHtml();
+			}
+		};
+		
+		//table.addColumn(linPwyColumn, "");
+		table.addColumn(ecColumn, "EC");
+		table.addColumn(nameColumn, "Reaction Name(s)");
+		table.addColumn(defColumn, "Definition");
+		table.addColumn(geneColumn, "Gene Name(s)");
+	
+		//table.setColumnWidth(linPwyColumn, "10em");
+		table.setColumnWidth(ecColumn, "8em");
+		table.setColumnWidth(nameColumn, "25em");
+		table.setColumnWidth(defColumn, "25em");
+		table.setColumnWidth(geneColumn, "10em");
+		
+		table.setMinimumTableWidth(68, Unit.EM);
+		dataProvider.addDataDisplay(table);
 	}
 	
 	/**
@@ -125,6 +356,15 @@ public class PwyPopupPresenter {
 	 */
 	public void setOrganism(final Organism organism) {
 		this.organism = organism;
+		if (organism != null && !organism.isGlobalMap()) {
+			view.getPwyTable().setColumnWidth(geneColumn, "10em");
+			view.getPwyTable().setMinimumTableWidth(75, Unit.EM);
+			view.getAddNativeToCartButton().setVisible(true);
+		}
+		else {
+			view.getPwyTable().setColumnWidth(geneColumn, "0em");
+			view.getPwyTable().setMinimumTableWidth(65, Unit.EM);
+		}
 	}
 	
 	/**
@@ -135,6 +375,16 @@ public class PwyPopupPresenter {
 		if(!this.pathways.isEmpty())
 			this.pathways.clear();
 		this.pathways.addAll(pathways);
+		List<Reaction> dpList = pwyDataProvider.getList();
+		dpList.clear();
+		
+		//TODO: This should be sorted by some metric (eventually...) to allow interaction with the linear pathway presenter
+		for (Pathway p : pathways) {
+			for (Reaction r : p.getReactions()) {
+				dpList.add(r);
+			}
+		}
+		view.getPwyTable().setVisibleRange(0, dpList.size());
 	}
 	
 	/**
@@ -152,10 +402,10 @@ public class PwyPopupPresenter {
 	 */
 	public void setUser(final User user) {
 		this.user = user;
-//		if (this.user == null || this.user.isGuestUser())
-			view.getAddToCartButton().setVisible(false);
-//		else
-//			view.getAddToCartButton().setVisible(true);
+		if (this.user == null || this.user.isGuestUser())
+			view.getButtonPanel().setVisible(false);
+		else
+			view.getButtonPanel().setVisible(true);
 	}
 	
 	/**
@@ -211,7 +461,7 @@ public class PwyPopupPresenter {
 			
 			public void onSuccess(Set<Pathway> result) {
 				setPathways(result);
-				if(result == null)
+				if(result == null || result.size() == 0)
 					setViewState(State.NO_PATHWAY);
 				else
 				{
@@ -260,20 +510,20 @@ public class PwyPopupPresenter {
 	 * @param sampleId
 	 * @return
 	 */
-	private String genKeggMapLink(
-			final Pathway pwy, 
-			final String taxonomyId, 
-			final String experimentId, 
-			final String sampleId) { 
+	private String genKeggMapLink(final Pathway pwy, 
+								  final String taxonomyId, 
+								  final String experimentId, 
+								  final String sampleId) { 
 		String link = "";
 		String mapTitle = pwy.getName();
 
-		if(mapTitle != null && !mapTitle.isEmpty())
+		if(mapTitle != null && !mapTitle.isEmpty()) {
 			link = "<a href=\"" + 
 			genKeggMapUrl(pwy, taxonomyId, experimentId, sampleId) + 
 			"\" target = \"_new\">" + 
 			mapTitle + 
 			"</a>";
+		}
 		return link;
 	}
 
@@ -285,11 +535,10 @@ public class PwyPopupPresenter {
 	 * @param sampleId
 	 * @return
 	 */
-	private String genKeggMapUrl(
-			final Pathway pwy, 
-			final String taxonomyId, 
-			final String experimentId, 
-			final String sampleId) { 
+	private String genKeggMapUrl(final Pathway pwy, 
+								 final String taxonomyId, 
+								 final String experimentId, 
+								 final String sampleId) { 
 
 		String url = "";
 		String mapId = pwy.getMapId();
@@ -309,7 +558,7 @@ public class PwyPopupPresenter {
 		else {
 
 			url = "http://" +  host + "/cgi-bin/browseKegg?";
-			url += "mapId=map" + mapId;
+			url += "mapId=" + mapId;
 			url += taxonomyId != null && !taxonomyId.equals(Organism.GLOBAL_MAP_TAXONOMY_ID) ? "&taxId=" + taxonomyId : "";
 
 		}
@@ -322,7 +571,7 @@ public class PwyPopupPresenter {
 	 * @return
 	 */
 	private String genImgLink(final Pathway pwy) {
-		String imgUrlString = "http://" + host + "/kegg/map" + pwy.getMapId() + ".png";
+		String imgUrlString = "http://" + host + "/kegg/" + pwy.getMapId() + ".png";
 		return imgUrlString;
 	}
 

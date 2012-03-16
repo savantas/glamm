@@ -40,7 +40,7 @@ implements ReactionPresenter.View {
 		
 		mainPanel.add(definitionHtml);
 		mainPanel.add(ecNumHtml);
-		mainPanel.add(addToCart);
+//		mainPanel.add(addToCart);
 		mainPanel.add(geneTableScrollPanel);
 		geneTableScrollPanel.add(geneTable);
 		

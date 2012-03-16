@@ -10,6 +10,7 @@ import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -22,6 +23,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class OrganismView extends Composite implements OrganismPresenter.View {
 	
 	private final String RB_GROUP = "ORGANISM_RB_GROUP";
+	private static final String DELIMITERS					= "./\\-+[]()";
 	
 	// main panel
 	private DecoratorPanel 	decoratorPanel	= null;
@@ -52,7 +54,7 @@ public class OrganismView extends Composite implements OrganismPresenter.View {
 
 		// header
 		headerPanel	= new HorizontalPanel();
-		suggestBox 	= new SuggestBox();
+		suggestBox 	= new SuggestBox(new MultiWordSuggestOracle(DELIMITERS));
 
 		// disclosure panel
 		disclosurePanel		= new DisclosurePanel("Browse");

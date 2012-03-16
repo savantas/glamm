@@ -220,6 +220,12 @@ public class LoginPresenter {
 				view.getForm().submit();
 			}
 		});
+		
+		view.getViewCartButton().addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				viewCart();
+			}
+		});
 
 		UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
 		urlBuilder.setPath("glammServlet");
@@ -266,6 +272,10 @@ public class LoginPresenter {
 
 	}
 
+	private void viewCart() {
+		
+	}
+	
 	private void showLoginForm() {
 		setState(State.LOGGING_IN);
 		view.getPopupPanel().center();

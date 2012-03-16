@@ -139,7 +139,7 @@ public class ExperimentView extends Composite
 		expButtonPanel.add(addButton);
 		expButtonPanel.add(uploadButton);
 		expButtonPanel.add(downloadButton);
-		expButtonPanel.add(addToCartButton);
+//		expButtonPanel.add(addToCartButton);
 		
 		viewSubsetPanel.add(viewSubsetLabel);
 		viewSubsetPanel.add(viewSubsetTableScrollPanel);

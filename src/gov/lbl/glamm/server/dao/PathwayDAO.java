@@ -1,5 +1,6 @@
 package gov.lbl.glamm.server.dao;
 
+import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Pathway;
 
 /**
@@ -14,4 +15,6 @@ public interface PathwayDAO {
 	 * @return The pathway.
 	 */
 	public Pathway getPathway(String mapId);
+
+	public Pathway getPathway(String mapId, Organism organism);
 }

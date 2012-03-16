@@ -5,7 +5,8 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * A cart for holding ordered sets of compounds, genes, pathways, reactions, and samples, as selected by the user.
+ * A cart for holding ordered sets of compounds, genes, pathways, reactions, and samples, as 
+ * selected by the user.
  * @author jtbates
  *
  */

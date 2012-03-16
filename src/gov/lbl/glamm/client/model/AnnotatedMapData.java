@@ -51,6 +51,7 @@ public class AnnotatedMapData implements Serializable {
 		String HEIGHT			= "height";
 		String ID				= "id";
 		String MAP				= "map";
+		String PATHWAY			= "pathway";
 		String REACTION			= "reaction";
 		String ROUTE			= "route";
 		String SEARCH_TARGET	= "searchtarget";
@@ -129,8 +130,29 @@ public class AnnotatedMapData implements Serializable {
 	 */
 	public AnnotatedMapData(final AnnotatedMapDescriptor descriptor) {
 		this.setDescriptor(descriptor);
-		this.cpdDbNames = new HashSet<String>();
+		this.cpdDbNames = new HashSet<String>();		
 		this.rxnDbNames = new HashSet<String>();
+		
+		/* crude and ugly hack to fix a bug where an empty set is returned.
+		 * eventually, the cpdDbNames and rxnDbNames should be fetched directly
+		 * from the database, ideally using Hibernate. I'm not sure of the best way
+		 * to do that yet, though...
+		 * 
+		 * It may just invoke this query (or a variation for only reactions / compounds):
+		 *     SELECT DISTINCT xrefDbName FROM GlammXref X, 
+		 *   	 							   AMRxn R, 
+		 *   								   AnnotatedMap M, 
+		 *   							       AMRxnElement E 
+		 *     WHERE R.am_id=M.id AND 
+		 *   	     E.amRxn_id = R.id AND 
+		 *   	     X.toXrefId = E.xrefId AND
+		 *    		 M.mapId = "map01100" AND		// or whatever map we're on
+		 *   	     E.type = "REACTION";           // or != REACTION to get the compound db set.
+		 */
+
+		cpdDbNames.add("LIGAND");
+		cpdDbNames.add("LIGAND-CPD");
+		rxnDbNames.add("LIGAND-RXN");
 
 		// allocate space for id2SvgElements
 		id2SvgElements = new HashMap<String, Set<OMSVGElement>>();
@@ -327,7 +349,7 @@ public class AnnotatedMapData implements Serializable {
 		return viewport;
 	}
 
-	void initCpdGroup(OMElement g) {
+	private void initCpdGroup(OMElement g) {
 
 		if(!g.hasAttribute(Attribute.COMPOUND)) 
 			return;

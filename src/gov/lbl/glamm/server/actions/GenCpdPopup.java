@@ -77,6 +77,8 @@ public class GenCpdPopup {
 
 		if(cpds == null || cpds.isEmpty())
 			return "<html>No results found for compound.</html>";
+		
+		String taxId = organism != null ? organism.getTaxonomyId() : null;
 
 		StringBuilder builder = new StringBuilder().append("<html>");
 		
@@ -90,7 +92,7 @@ public class GenCpdPopup {
 			String mass = cpd.getMass();
 			
 			if(name != null && !name.isEmpty())
-				builder.append(genCpdLink(sm, keggId, "<b>" + name + "</b>", organism.getTaxonomyId())).append("<br>");
+				builder.append(genCpdLink(sm, keggId, "<b>" + name + "</b>", taxId)).append("<br>");
 			
 			if(formula != null && !formula.isEmpty())
 				builder.append(formula).append("<br>");
