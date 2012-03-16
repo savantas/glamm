@@ -88,8 +88,6 @@ implements LoginPresenter.View {
 		logInButton = new Button(BUTTON_LOG_IN);
 		cancelButton = new Button(BUTTON_CANCEL);
 		
-		viewCartButton.setVisible(false);
-		
 		init();
 	}
 	
@@ -97,7 +95,7 @@ implements LoginPresenter.View {
 		
 		// set up status window
 		buttonPanel.setSpacing(5);
-		buttonPanel.add(viewCartButton);
+//		buttonPanel.add(viewCartButton);
 		buttonPanel.add(logOutButton);
 		
 		mainPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);

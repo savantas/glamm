@@ -20,6 +20,14 @@ import java.util.Set;
 public class GetPathways {
 
 	public static Set<Pathway> getPathways(final GlammSession sm,
+										   final Set<String> ids) {
+		if (ids == null || ids.isEmpty())
+			return new HashSet<Pathway>();
+		
+		return getPathways(sm, ids, null, null);
+	}
+	
+	public static Set<Pathway> getPathways(final GlammSession sm,
 										   final Set<String> ids,
 										   final Organism organism,
 										   final Sample sample) {
@@ -30,7 +38,7 @@ public class GetPathways {
 		Set<Pathway> pwySet = new HashSet<Pathway>();
 
 		for(String mapId : ids) {
-			Pathway pwy = pwyDao.getPathway(mapId);
+			Pathway pwy = pwyDao.getPathway(mapId, organism);
 			if(pwy != null)
 				pwySet.add(pwy);
 		}

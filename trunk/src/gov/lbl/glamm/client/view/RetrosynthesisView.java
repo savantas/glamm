@@ -14,6 +14,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SuggestBox;
@@ -27,16 +28,18 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class RetrosynthesisView extends Composite implements
 RetrosynthesisPresenter.View {
 	
+	private static final String TEXT_BUTTON_CLEAR_ROUTES	= "Clear Routes";
 	private static final String TEXT_BUTTON_EXPORT_ROUTES	= "Export Routes";
-	private static final String TEXT_BUTTON_FIND_ROUTES 		= "Find Routes";
+	private static final String TEXT_BUTTON_FIND_ROUTES 	= "Find Routes";
 	private static final String TEXT_BUTTON_NEXT 			= "<html>&rarr;</html>";
 	private static final String TEXT_BUTTON_PREV 			= "<html>&larr;</html>";
 	private static final String TEXT_DP_GET_DIRECTIONS		= "Get directions";
-	private static final String TEXT_LABEL_ALGORITHM			= "Algorithm: ";
+	private static final String TEXT_LABEL_ALGORITHM		= "Algorithm: ";
 	private static final String TEXT_LABEL_CPD_DST			= "To: ";
 	private static final String TEXT_LABEL_CPD_SRC 			= "From: ";
 	private static final String TEXT_LABEL_ROUTES 			= "Route: ";
 	private static final String TEXT_LABEL_SEARCH 			= "Search: ";
+	private static final String DELIMITERS					= "./\\-+[]()";
 
 	// main panel
 	private DecoratorPanel 	decoratorPanel	= null;
@@ -64,7 +67,11 @@ RetrosynthesisPresenter.View {
 	private Label				routesLabel				= null;
 	private ScrollPanel			routesScrollPanel		= null;
 	private CellTable<Reaction>	routesTable				= null;
+	
+	// export and clear buttons
+	private HorizontalPanel		exportButtonPanel		= null;
 	private Button				exportRoutes			= null;
+	private Button				clearRoutes				= null;
 
 	// status label
 	private Label				statusLabel		= null;
@@ -77,12 +84,12 @@ RetrosynthesisPresenter.View {
 		decoratorPanel		= new DecoratorPanel();
 		mainPanel			= new VerticalPanel();
 		headerPanel			= new HorizontalPanel();
-		searchSuggestBox 	= new SuggestBox();
+		searchSuggestBox 	= new SuggestBox(new MultiWordSuggestOracle(DELIMITERS));
 		disclosurePanel		= new DisclosurePanel(TEXT_DP_GET_DIRECTIONS);
 		browsePanel			= new VerticalPanel();
 		grid				= new Grid(4, 2);
-		cpdSrcSuggestBox 	= new SuggestBox();
-		cpdDstSuggestBox	= new SuggestBox();
+		cpdSrcSuggestBox 	= new SuggestBox(new MultiWordSuggestOracle(DELIMITERS));
+		cpdDstSuggestBox	= new SuggestBox(new MultiWordSuggestOracle(DELIMITERS));
 		algorithmListBox	= new ListBox();
 		findRoutes			= new Button(TEXT_BUTTON_FIND_ROUTES);
 		routesPanel			= new VerticalPanel();
@@ -93,7 +100,9 @@ RetrosynthesisPresenter.View {
 		routesLabel				= new Label(TEXT_LABEL_ROUTES);
 		routesScrollPanel		= new ScrollPanel();    
 		routesTable				= new CellTable<Reaction>();
+		exportButtonPanel		= new HorizontalPanel();
 		exportRoutes			= new Button(TEXT_BUTTON_EXPORT_ROUTES);
+		clearRoutes				= new Button(TEXT_BUTTON_CLEAR_ROUTES);
 		statusLabel			= new Label();
 
 		init();
@@ -133,7 +142,12 @@ RetrosynthesisPresenter.View {
 		routesPanel.add(routesNavigationPanel);
 		routesScrollPanel.add(routesTable);
 		routesPanel.add(routesScrollPanel);
-		routesPanel.add(exportRoutes);
+		
+		// set up bottom-most export button panel
+		exportButtonPanel.setSpacing(5);
+		exportButtonPanel.add(exportRoutes);
+		exportButtonPanel.add(clearRoutes);
+		routesPanel.add(exportButtonPanel);
 
 		// set up disclosure panel and the browse panel within it
 		browsePanel.add(grid);
@@ -172,6 +186,11 @@ RetrosynthesisPresenter.View {
 	@Override
 	public DisclosurePanel getDisclosurePanel() {
 		return disclosurePanel;
+	}
+	
+	@Override
+	public HasClickHandlers getClearRoutes() {
+		return clearRoutes;
 	}
 	
 	@Override

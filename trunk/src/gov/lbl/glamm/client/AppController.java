@@ -1,5 +1,7 @@
 package gov.lbl.glamm.client;
 
+import java.util.Set;
+
 import gov.lbl.glamm.client.events.AMDPickedEvent;
 import gov.lbl.glamm.client.events.AnnotatedMapDataLoadedEvent;
 import gov.lbl.glamm.client.events.CpdDstDisambiguatedEvent;
@@ -119,8 +121,8 @@ public class AppController {
 	private RxnPopupPresenter rxnElementPresenter;
 	private RxnPopupView rxnElementView;
 
-	private PwyPopupPresenter pwyElementPresenter;
-	private PwyPopupView pwyElementView;
+	private PwyPopupPresenter pwyPresenter;
+	private PwyPopupView pwyView;
 	
 	private MapElementPresenter mapElementPresenter;
 	private MapElementView mapElementView;
@@ -186,8 +188,8 @@ public class AppController {
 		rxnElementView = new RxnPopupView();
 		rxnElementPresenter = new RxnPopupPresenter(rpc, rxnElementView, eventBus);
 		
-		pwyElementView = new PwyPopupView();
-		pwyElementPresenter = new PwyPopupPresenter(rpc, pwyElementView, eventBus);
+		pwyView = new PwyPopupView();
+		pwyPresenter = new PwyPopupPresenter(rpc, pwyView, eventBus);
 
 		mapView = new AnnotatedMapView();
 		mapPresenter = new AnnotatedMapPresenter(rpc, mapView, eventBus);
@@ -480,22 +482,22 @@ public class AppController {
 		eventBus.addHandler(AnnotatedMapDataLoadedEvent.TYPE, new AnnotatedMapDataLoadedEvent.Handler() {
 			@Override
 			public void onLoaded(AnnotatedMapDataLoadedEvent event) {
-				pwyElementPresenter.setOrganism(Organism.globalMap());
-				pwyElementPresenter.setSample(null);
+				pwyPresenter.setOrganism(Organism.globalMap());
+				pwyPresenter.setSample(null);
 			}
 		});
 		
 		eventBus.addHandler(LogInEvent.TYPE, new LogInEvent.Handler() {
 			@Override
 			public void onLogIn(LogInEvent event) {
-				pwyElementPresenter.setUser(event.getUser());
+				pwyPresenter.setUser(event.getUser());
 			}
 		});
 		
 		eventBus.addHandler(LogOutEvent.TYPE, new LogOutEvent.Handler() {
 			@Override
 			public void onLogOut(LogOutEvent event) {
-				pwyElementPresenter.setUser(User.guestUser());
+				pwyPresenter.setUser(User.guestUser());
 			}
 		});
 
@@ -504,9 +506,10 @@ public class AppController {
 			@Override
 			public void onMapElementClick(
 					final MapElementClickEvent event) {
-				pwyElementPresenter.killPopup();
-				if(event.getElementClass().equals(AnnotatedMapData.ElementClass.MAP))
-					pwyElementPresenter.showPopup(event.getIds(), event.getClientX(), event.getClientY());
+				pwyPresenter.killPopup();
+				if(event.getElementClass().equals(AnnotatedMapData.ElementClass.MAP) &&
+				   !event.isControlKeyDown())
+					pwyPresenter.showPopup(event.getIds(), event.getClientX(), event.getClientY());
 			}
 		});
 
@@ -514,8 +517,8 @@ public class AppController {
 				new OrganismPickedEvent.Handler() {
 			@Override
 			public void onOrganismPicked(final OrganismPickedEvent event) {
-				pwyElementPresenter.setOrganism(event.getOrganism());
-				pwyElementPresenter.setSample(null);
+				pwyPresenter.setOrganism(event.getOrganism());
+				pwyPresenter.setSample(null);
 			}
 		});
 
@@ -523,24 +526,24 @@ public class AppController {
 				new SamplePickedEvent.Handler() {
 			@Override
 			public void onSamplePicked(final SamplePickedEvent event) {
-				pwyElementPresenter.setSample(event.getSample());
+				pwyPresenter.setSample(event.getSample());
 			}
 		});
 
 		eventBus.addHandler(MapUpdateEvent.TYPE, new MapUpdateEvent.Handler() {
 			@Override
 			public void onMapUpdate(MapUpdateEvent event) {
-				pwyElementPresenter.killPopup();
+				pwyPresenter.killPopup();
 			}
 		});
 		
-//		eventBus.addHandler(RoutePickedEvent.TYPE,
-//				new RoutePickedEvent.Handler() {
-//			@Override
-//			public void onPicked(RoutePickedEvent event) {
-//				pwyElementPresenter.setSample(null);
-//			}
-//		});
+		eventBus.addHandler(RoutePickedEvent.TYPE,
+				new RoutePickedEvent.Handler() {
+			@Override
+			public void onPicked(RoutePickedEvent event) {
+				pwyPresenter.setSample(null);
+			}
+		});
 	}
 	
 	private void loadMapPanel() {
@@ -637,22 +640,16 @@ public class AppController {
 			}
 		});
 
-		/** Not quite ready for this version... **/
-//		eventBus.addHandler(MapElementMouseOverEvent.TYPE, new MapElementMouseOverEvent.Handler() {
-//			public void onMapElementMouseOver(final MapElementMouseOverEvent event) {
-//				if (event.getElementClass().equals(AnnotatedMapData.ElementClass.MAP)) {
-//					mapPresenter.updateMapForPathway(null, null);
-//				}
-//			}
-//		});
-//
-//		eventBus.addHandler(MapElementMouseOutEvent.TYPE, new MapElementMouseOutEvent.Handler() {
-//			public void onMapElementMouseOut(final MapElementMouseOutEvent event) {
-//				if (event.getElementClass().equals(AnnotatedMapData.ElementClass.MAP))
-//					System.out.println("moused out of map element!");
-//			}
-//		});
-
+		eventBus.addHandler(MapElementClickEvent.TYPE, new MapElementClickEvent.Handler() {
+			public void onMapElementClick(final MapElementClickEvent event) {
+				if (event.isControlKeyDown()) {
+					if (event.getElementClass().equals(AnnotatedMapData.ElementClass.MAP))
+						mapPresenter.updateMapForPathway(event.getIds());
+					else
+						mapPresenter.updateMapForPathway(null);
+				}
+			}
+		});
 	}
 
 	private void loadMiniMapPanel() {

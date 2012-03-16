@@ -22,6 +22,7 @@ import gov.lbl.glamm.client.model.interfaces.HasType;
 import gov.lbl.glamm.client.model.util.Xref;
 import gov.lbl.glamm.client.rpc.GlammServiceAsync;
 import gov.lbl.glamm.client.util.Interpolator;
+import gov.lbl.glamm.client.util.ReactionColor;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -134,6 +135,7 @@ public class AnnotatedMapPresenter {
 		this.rpc = rpc;
 		this.view = view;
 		this.eventBus = eventBus;
+		organism = Organism.globalMap();
 
 		dyThreshold = 3;
 		if(Window.Navigator.getUserAgent().contains("Chrome") || Window.Navigator.getUserAgent().contains("Safari"))
@@ -305,7 +307,7 @@ public class AnnotatedMapPresenter {
 				for(String id : idsArray)
 					ids.add(id);
 
-				eventBus.fireEvent(new MapElementClickEvent(AnnotatedMapData.ElementClass.fromCssClass(cssClass), ids, clientX, clientY));
+				eventBus.fireEvent(new MapElementClickEvent(AnnotatedMapData.ElementClass.fromCssClass(cssClass), ids, clientX, clientY, (event.isControlKeyDown() || event.isMetaKeyDown())));
 
 			}
 		});
@@ -738,6 +740,7 @@ public class AnnotatedMapPresenter {
 					element.removeAttribute(AnnotatedMapData.Attribute.HAS_DATA);
 					element.removeAttribute(AnnotatedMapData.Attribute.SEARCH_TARGET);
 					element.removeAttribute(AnnotatedMapData.Attribute.ROUTE);
+					element.removeAttribute(AnnotatedMapData.Attribute.PATHWAY);
 					element.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, defaultColor);
 					if(element.getTagName().equals(SVGConstants.SVG_ELLIPSE_TAG)) {
 						element.setAttribute(SVGConstants.SVG_FILL_ATTRIBUTE, defaultColor);
@@ -777,6 +780,7 @@ public class AnnotatedMapPresenter {
 						element.removeAttribute(AnnotatedMapData.Attribute.HAS_DATA);
 						element.removeAttribute(AnnotatedMapData.Attribute.SEARCH_TARGET);
 						element.removeAttribute(AnnotatedMapData.Attribute.ROUTE);
+						element.removeAttribute(AnnotatedMapData.Attribute.PATHWAY);
 						element.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, defaultColor);
 						if(element.getTagName().equals(SVGConstants.SVG_ELLIPSE_TAG)) {
 							element.setAttribute(SVGConstants.SVG_FILL_ATTRIBUTE, defaultColor);
@@ -846,21 +850,81 @@ public class AnnotatedMapPresenter {
 	 * @param organism
 	 * @param pathways
 	 */
-	public void updateMapForPathway(final Organism organism, final Pathway pathways) {
-		// Stub for now.
+	public void updateMapForPathway(final Set<String> ids) {
+		/* Reset the map to the default colors if there are no map ids to highlight
+		 */
+		if (ids == null || ids.size() == 0) {
+			executeOnMapElements(new MapElementCommand() {
+				@Override
+				public void execute(OMSVGElement element) {
+					String defaultColor = element.getAttribute(AnnotatedMapData.Attribute.DEFAULT_COLOR);
+					element.removeAttribute(AnnotatedMapData.Attribute.HAS_DATA);
+					element.removeAttribute(AnnotatedMapData.Attribute.SEARCH_TARGET);
+					element.removeAttribute(AnnotatedMapData.Attribute.ROUTE);
+					element.removeAttribute(AnnotatedMapData.Attribute.PATHWAY);
+					element.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, defaultColor);
+					if(element.getTagName().equals(SVGConstants.SVG_ELLIPSE_TAG)) {
+						element.setAttribute(SVGConstants.SVG_FILL_ATTRIBUTE, defaultColor);
+						element.removeAttribute(AnnotatedMapData.Attribute.CPD_DST);
+						element.removeAttribute(AnnotatedMapData.Attribute.CPD_SRC);
+					}
+				}
+			});
+			return;
+		}
 		
-//		rpc.nonDBTest( new AsyncCallback<String>() {
-//
-//			@Override
-//			public void onFailure(Throwable caught) {
-//				Window.alert("Remote procedure call failure: nonDBTest");
-//			}
-//
-//			@Override
-//			public void onSuccess(String result) {
-//				Window.alert(result);
-//			}
-//		});
+		else {
+			eventBus.fireEvent(new LoadingEvent(false));
+
+
+
+			rpc.getPathways(ids, organism, null, new AsyncCallback<Set<Pathway>>() {
+				public void onFailure(Throwable caught) {
+					Window.alert("Remote procedure call failure: getPathways");
+				}
+				
+				public void onSuccess(Set<Pathway> result) {
+					executeOnMapElements(new MapElementCommand() {
+						@Override
+						public void execute(OMSVGElement element) {
+							String defaultColor = element.getAttribute(AnnotatedMapData.Attribute.DEFAULT_COLOR);
+							element.removeAttribute(AnnotatedMapData.Attribute.PATHWAY);
+							element.removeAttribute(AnnotatedMapData.Attribute.HAS_DATA);
+							element.removeAttribute(AnnotatedMapData.Attribute.SEARCH_TARGET);
+							element.removeAttribute(AnnotatedMapData.Attribute.ROUTE);
+							element.setAttribute(AnnotatedMapData.Attribute.PATHWAY, "false");
+							if(organism == null || organism.isGlobalMap())
+								element.setAttribute(AnnotatedMapData.Attribute.ABSENT, "false");
+							element.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, defaultColor);
+							if(element.getTagName().equals(SVGConstants.SVG_ELLIPSE_TAG)) {
+								element.setAttribute(SVGConstants.SVG_FILL_ATTRIBUTE, defaultColor);
+								element.removeAttribute(AnnotatedMapData.Attribute.CPD_DST);
+								element.removeAttribute(AnnotatedMapData.Attribute.CPD_SRC);
+							}
+						}
+					});
+					
+					/**
+					 * 1. get pathway associated with the mapId
+					 * 2. forall reactions in that pathway:
+					 *    a. find the corresponding SVG element
+					 *    b. highlight it.
+					 * 3. done!
+					 */
+					for (Pathway p : result) {
+						// set routes in reaction
+						for(Reaction reaction : p.getReactions()) {
+							for(OMSVGElement element : mapData.getSvgElements(reaction)) {
+								// If there are no genes, then this reaction is either not a part of
+								// the 
+								element.setAttribute(AnnotatedMapData.Attribute.PATHWAY, "true");
+							}
+						}
+					}
+				}
+			});
+			eventBus.fireEvent(new LoadingEvent(true));
+		}
 	}
 
 	private void updateMapForReactions(final Sample sample, final Set<? extends HasMeasurements> rxns) {
@@ -905,6 +969,25 @@ public class AnnotatedMapPresenter {
 	 */
 	public void updateMapForRoute(final Compound cpdSrc, final Compound cpdDst, final Pathway route) {
 
+		if (cpdSrc == null && cpdDst == null && route == null) {
+			executeOnMapElements(new MapElementCommand() {
+				@Override
+				public void execute(OMSVGElement element) {
+					String defaultColor = element.getAttribute(AnnotatedMapData.Attribute.DEFAULT_COLOR);
+					element.removeAttribute(AnnotatedMapData.Attribute.HAS_DATA);
+					element.removeAttribute(AnnotatedMapData.Attribute.SEARCH_TARGET);
+					element.removeAttribute(AnnotatedMapData.Attribute.ROUTE);
+					element.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, defaultColor);
+					if(element.getTagName().equals(SVGConstants.SVG_ELLIPSE_TAG)) {
+						element.setAttribute(SVGConstants.SVG_FILL_ATTRIBUTE, defaultColor);
+						element.removeAttribute(AnnotatedMapData.Attribute.CPD_DST);
+						element.removeAttribute(AnnotatedMapData.Attribute.CPD_SRC);
+					}
+				}
+			});
+			return;
+		}
+		
 		// almost like resetting the map, but we're also setting the route attribute to none
 		executeOnMapElements(new MapElementCommand() {
 			@Override
@@ -925,26 +1008,31 @@ public class AnnotatedMapPresenter {
 		});
 
 		// set source compound
-		for(OMSVGElement element : mapData.getSvgElements(cpdSrc)) {
-			element.removeAttribute(AnnotatedMapData.Attribute.ROUTE);
-			element.setAttribute(AnnotatedMapData.Attribute.CPD_SRC, "true");
+		if (cpdSrc != null) {
+			for(OMSVGElement element : mapData.getSvgElements(cpdSrc)) {
+				element.removeAttribute(AnnotatedMapData.Attribute.ROUTE);
+				element.setAttribute(AnnotatedMapData.Attribute.CPD_SRC, "true");
+			}
 		}
 
 		// set destination compound
-		for(OMSVGElement element : mapData.getSvgElements(cpdDst)) {
-			element.removeAttribute(AnnotatedMapData.Attribute.ROUTE);
-			element.setAttribute(AnnotatedMapData.Attribute.CPD_DST, "true");
+		if (cpdDst != null) {
+			for(OMSVGElement element : mapData.getSvgElements(cpdDst)) {
+				element.removeAttribute(AnnotatedMapData.Attribute.ROUTE);
+				element.setAttribute(AnnotatedMapData.Attribute.CPD_DST, "true");
+			}
 		}
-
 
 		// set routes in reaction
-		for(Reaction reaction : route.getReactions()) {
-			for(OMSVGElement element : mapData.getSvgElements(reaction)) 
-				element.setAttribute(AnnotatedMapData.Attribute.ROUTE, reaction.getReactionColor().getCssAttributeValue());
+		if (route != null) {
+			for(Reaction reaction : route.getReactions()) {
+				for(OMSVGElement element : mapData.getSvgElements(reaction)) 
+					element.setAttribute(AnnotatedMapData.Attribute.ROUTE, reaction.getReactionColor().getCssAttributeValue());
+			}
+			final Set<OMSVGElement> svgElements = mapData.getSvgElements(route.getReactions());
+			centerMapAroundElements(svgElements);
 		}
 
-		final Set<OMSVGElement> svgElements = mapData.getSvgElements(route.getReactions());
-		centerMapAroundElements(svgElements);
 	}
 
 	/**
@@ -972,6 +1060,7 @@ public class AnnotatedMapPresenter {
 					element.removeAttribute(AnnotatedMapData.Attribute.HAS_DATA);
 					element.removeAttribute(AnnotatedMapData.Attribute.SEARCH_TARGET);
 					element.removeAttribute(AnnotatedMapData.Attribute.ROUTE);
+					element.removeAttribute(AnnotatedMapData.Attribute.PATHWAY);
 					element.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, defaultColor);
 					if(element.getTagName().equals(SVGConstants.SVG_ELLIPSE_TAG)) {
 						element.setAttribute(SVGConstants.SVG_FILL_ATTRIBUTE, defaultColor);
@@ -1011,6 +1100,7 @@ public class AnnotatedMapPresenter {
 					public void execute(OMSVGElement element) {
 						element.removeAttribute(AnnotatedMapData.Attribute.ROUTE);
 						element.removeAttribute(AnnotatedMapData.Attribute.SEARCH_TARGET);
+						element.removeAttribute(AnnotatedMapData.Attribute.PATHWAY);
 						element.setAttribute(AnnotatedMapData.Attribute.HAS_DATA, "false");
 						if(element.getTagName().equals(SVGConstants.SVG_ELLIPSE_TAG)) {
 							element.removeAttribute(AnnotatedMapData.Attribute.CPD_DST);

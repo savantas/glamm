@@ -163,7 +163,9 @@
 }
 	
 .gwt-SuggestBoxPopup {
-  z-index: 200;
+/*  z-index: 200; */
+  height: 200px;
+  overflow: scroll;
 }
 
 /** GLAMM SVG style names */
@@ -179,6 +181,8 @@
 .cpd[searchtarget=true][route][absent]		{ stroke: #FF00FF; stroke-width: 32; fill: #FF00FF; }
 .cpd[cpdsrc=true]			{ stroke: #00FF00; stroke-width: 32; fill: #00FF00; }
 .cpd[cpddst=true]			{ stroke: #FF0000; stroke-width: 32; fill: #FF0000; }
+.cpd[pathway=false][absent=true]  { stroke: #444444; fill: #444444; stroke-width: 0; }
+.cpd[pathway=false][absent=false] { stroke: #444444; fill: #444444 }
 
 .map[state=default] 	{ fill: #FFFFFF; }
 .map[state=mouseover] 	{ fill: #FF0000; }
@@ -207,3 +211,7 @@
 .rxn[route=none]	{ stroke: #888888; }
 .rxn[route=none][absent=true]   { stroke: #222222; stroke-width: 4.5 }
 .rxn[route=none][absent=false] { stroke: #888888; }
+
+.rxn[pathway=true]					{ stroke: #FFFFFF; stroke-width: 12; }
+.rxn[pathway=false]					{ stroke: #222222; stroke-width: 4.5; }
+.rxn[pathway=true][absent=true] 	{ stroke: #888888; stroke-width: 8.5; }

@@ -1,13 +1,25 @@
 package gov.lbl.glamm.server.dao.impl;
 
+import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Pathway;
+import gov.lbl.glamm.client.model.Reaction;
 import gov.lbl.glamm.server.GlammDbConnectionPool;
 import gov.lbl.glamm.server.GlammSession;
+import gov.lbl.glamm.server.actions.GetReactions;
 import gov.lbl.glamm.server.dao.PathwayDAO;
+import gov.lbl.glamm.server.dao.ReactionDAO;
+import gov.lbl.glammdb.domain.PersistentPathway;
+import gov.lbl.glammdb.domain.PersistentPwyElement;
+import gov.lbl.glammdb.util.HibernateUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 
 /**
  * Implementation of the Pathway DAO allowing access to KEGG pathways stored in the GLAMM database.
@@ -28,30 +40,41 @@ public class KeggPathwayDAOImpl implements PathwayDAO {
 
 	@Override
 	public Pathway getPathway(String mapId) {
+		return getPathway(mapId, null);
+
+	}
+	
+	@Override
+	public Pathway getPathway(String mapId, final Organism organism) {
 		Pathway pathway = null;
 		
-		String sql 	=	"select distinct mapId, title from glamm.GlammKeggMap where mapId=?;";
-
 		try {
+			Session session = HibernateUtil.getSessionFactory(sm).getCurrentSession();
+			session.beginTransaction();
+			PersistentPathway result = (PersistentPathway) session.createCriteria(PersistentPathway.class)
+																  .add(Restrictions.eq("mapId", mapId))
+																  .uniqueResult();
+			session.getTransaction().commit();
 
-			Connection connection = GlammDbConnectionPool.getConnection(sm);
-			PreparedStatement ps = connection.prepareStatement(sql);
-			
-			if(mapId.startsWith("map"))
-				mapId = mapId.substring(3);
-			ps.setString(1, mapId);
-
-			ResultSet rs = ps.executeQuery();
-
-			if(rs.next()) {
+			if(result != null)
+			{
 				pathway = new Pathway();
 
-				pathway.setName(rs.getString("title"));
-				pathway.setMapId(rs.getString("mapId"));
+				pathway.setName(result.getTitle());
+				pathway.setMapId(mapId);
+				
+				Set<String> rxnIds = new HashSet<String>();
+				for(PersistentPwyElement element : result.getElements()) {
+					if(element.getType() == PersistentPwyElement.Type.RXN)
+						rxnIds.add(element.getXrefId());
+				}
+				
+				Set<Reaction> mapReactions = GetReactions.getReactions(sm, rxnIds, organism, null);
+
+				for (Reaction r : mapReactions) {
+					pathway.addReaction(r);
+				}
 			}
-			
-			rs.close();
-			connection.close();
 
 		} catch(Exception e) {
 			e.printStackTrace();

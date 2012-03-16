@@ -136,10 +136,17 @@ public class ReactionGlammDAOImpl implements ReactionDAO {
 
 		Map<String, Reaction> def2Rxn = new HashMap<String, Reaction>();
 
-		String sql = "select R.guid, E.ecNum, R.definition, X.toXrefId, X.xrefDbName " +
+//		String sql = "select R.guid, E.ecNum, R.definition, X.toXrefId, X.xrefDbName " +
+//		"from glamm.GlammEnzyme E " +
+//		"right outer join glamm.GlammReaction R on (E.reactionGuid=R.guid) " +
+//		"join glamm.GlammXref X on (X.fromGuid=R.guid) " +
+//		"where X.toXrefId in (" + GlammUtils.joinCollection(rxnIds) + ");"; 
+
+		String sql = "select R.guid, E.ecNum, R.definition, X.toXrefId, X.xrefDbName, S.synonym " +
 		"from glamm.GlammEnzyme E " +
 		"right outer join glamm.GlammReaction R on (E.reactionGuid=R.guid) " +
 		"join glamm.GlammXref X on (X.fromGuid=R.guid) " +
+		"left outer join glamm.GlammSynonym S on (S.forGuid=R.guid) " +
 		"where X.toXrefId in (" + GlammUtils.joinCollection(rxnIds) + ");"; 
 
 		try {
@@ -156,6 +163,7 @@ public class ReactionGlammDAOImpl implements ReactionDAO {
 				String definition 	= rs.getString("definition");
 				String xrefId		= rs.getString("toXrefId");
 				String xrefDbName	= rs.getString("xrefDbName");
+				String synonym		= rs.getString("synonym");
 
 				// TODO: Awful hack here - in the future, make sure to specify the external id from the database from which this reaction was
 				// TODO: originally sourced.  This will probably require a re-import (ugh.)
@@ -171,7 +179,10 @@ public class ReactionGlammDAOImpl implements ReactionDAO {
 					def2Rxn.put(definition, reaction);
 				}
 				reaction.addEcNum(ecNum);
-
+//				if (synonym == null || synonym.equalsIgnoreCase("null")) {
+//					synonym = "No reaction synonym";
+//				}
+				reaction.addSynonym(synonym);
 			}
 
 			rxns.addAll(def2Rxn.values());

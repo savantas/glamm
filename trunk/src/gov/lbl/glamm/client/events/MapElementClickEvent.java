@@ -33,6 +33,8 @@ public class MapElementClickEvent extends GwtEvent<MapElementClickEvent.Handler>
 	private int clientX;
 	private int clientY;
 	
+	private boolean clickMod;
+	
 	/**
 	 * Constructor
 	 * @param elementClass The class of element just clicked
@@ -40,11 +42,16 @@ public class MapElementClickEvent extends GwtEvent<MapElementClickEvent.Handler>
 	 * @param clientX The client X position.
 	 * @param clientY The client Y position.
 	 */
-	public MapElementClickEvent(final AnnotatedMapData.ElementClass elementClass, final Set<String> ids, final int clientX, final int clientY) {
+	public MapElementClickEvent(final AnnotatedMapData.ElementClass elementClass, final Set<String> ids, final int clientX, final int clientY, final boolean clickMod) {
 		this.elementClass = elementClass;
 		this.ids = ids;
 		this.clientX = clientX;
 		this.clientY = clientY;
+		this.clickMod = clickMod;
+	}
+	
+	public boolean isControlKeyDown() {
+		return clickMod;
 	}
 	
 	/**

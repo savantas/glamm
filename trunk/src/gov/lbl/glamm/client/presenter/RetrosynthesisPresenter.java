@@ -106,6 +106,12 @@ public class RetrosynthesisPresenter {
 		 * @return The button.
 		 */
 		public HasClickHandlers 	getExportRoutes();
+
+		/**
+		 * Gets the clear routes button.
+		 * @return The button.
+		 */
+		public HasClickHandlers		getClearRoutes();
 		
 		/**
 		 * Gets the find routes button.
@@ -282,7 +288,7 @@ public class RetrosynthesisPresenter {
 
 		initTable(view.getRoutesTable(), routeDataProvider);
 		setViewState(State.INITIAL);
-
+		
 		bindView();
 
 	}
@@ -357,6 +363,15 @@ public class RetrosynthesisPresenter {
 				if(organism != null && !organism.isGlobalMap())
 					urlBuilder.setParameter(RequestParameters.TAXONOMY_ID, organism.getTaxonomyId());
 				Window.open(urlBuilder.buildString(), "", "menubar=no,location=no,resizable=no,scrollbars=no,status=no,toolbar=false,width=0,height=0");
+			}
+		});
+		
+		view.getClearRoutes().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				routes = null;
+				setViewState(State.INITIAL);
+				eventBus.fireEvent(new RoutePickedEvent(null, null, null));
 			}
 		});
 
@@ -857,19 +872,17 @@ public class RetrosynthesisPresenter {
 		case CALCULATING:
 			view.getRoutesPanel().setVisible(false);
 			view.getStatusLabel().setVisible(true);
-			eventBus.fireEvent(new ViewResizedEvent());
 			break;
 		case HAS_ROUTES:
 			view.getRoutesPanel().setVisible(true);
 			view.getStatusLabel().setVisible(false);
-			eventBus.fireEvent(new ViewResizedEvent());
 			break;
 		case NO_ROUTES:
 			view.getRoutesPanel().setVisible(false);
 			view.getStatusLabel().setVisible(true);
-			eventBus.fireEvent(new ViewResizedEvent());
 			break;
 		}
+		eventBus.fireEvent(new ViewResizedEvent());
 	}
 
 	private void updatePopulatingStatus() {
