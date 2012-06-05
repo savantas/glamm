@@ -3,8 +3,11 @@ package gov.lbl.glamm.client.rpc;
 import gov.lbl.glamm.client.model.Algorithm;
 import gov.lbl.glamm.client.model.AnnotatedMapDescriptor;
 import gov.lbl.glamm.client.model.Compound;
+import gov.lbl.glamm.client.model.FluxExperiment;
 import gov.lbl.glamm.client.model.Gene;
+import gov.lbl.glamm.client.model.MetabolicModel;
 import gov.lbl.glamm.client.model.Organism;
+import gov.lbl.glamm.client.model.OverlayDataGroup;
 import gov.lbl.glamm.client.model.Pathway;
 import gov.lbl.glamm.client.model.Reaction;
 import gov.lbl.glamm.client.model.Sample;
@@ -12,6 +15,7 @@ import gov.lbl.glamm.client.model.User;
 import gov.lbl.glamm.client.model.interfaces.HasMeasurements;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -170,5 +174,49 @@ public interface GlammService extends RemoteService {
 	 */
 	public List<Sample> populateSamples(final Organism organism);
 	
+	/**
+	 * Gets a Metabolic model with a given id.
+	 * @param modelId The model id
+	 * @return The metabolic model
+	 */
+	public MetabolicModel getMetabolicModel(String modelId);
+	
+	/**
+	 * Gets a set of Reactions with associated Samples representing flux data, corresponding to the given FluxExperiment.
+	 * @param exp
+	 * @return a Set of Reactions with data.
+	 */
+	public Set<Reaction> getFluxes(FluxExperiment exp);
+	
+	/**
+	 * //TODO
+	 * This is kind of a dummy rpc call for now that will return an OverlayData based on the given String.
+	 * In reality, this will (eventually) encompass some kind of web service call that will fetch data to be overlayed on the map and
+	 * presented to the user. Whether or not this makes sense to store as an Experiment or Sample or whatever (instead of the
+	 * haphazard OverlayData model) will be explored in more detail later.
+	 * @param text
+	 * @return The OverlayData
+	 */
+	public Set<OverlayDataGroup> getOverlayData(String text);
+	
+	/**
+	 * Retrieves a set of OverlayDataGroups from the named service, with the given parameters. If there is a failure somewhere, then it
+	 * returns an empty set.
+	 * @param serviceName the name of the service to invoke.
+	 * @param parameters the Map of parameters (key = parameter name, value = parameter value)
+	 * @return a Set of OverlayDataGroup, which might be empty if no data is found.
+	 */
+	public Set<OverlayDataGroup> getOverlayDataFromService(String serviceName, Map<String, String> parameters);
+	
+	/**
+	 * Gets a Map containing information about available data services.
+	 * @return a Map of data service information. Keys are the service name, and values are a list of parameter names for that service.
+	 */
+	public Map<String, List<String>> populateDataServices();
+	
+	/**
+	 * A debug rpc call that contacts the server without invoking the database.
+	 * @return a success or fail String.
+	 */
 	public String nonDBTest();
 }

@@ -20,7 +20,6 @@ public class GlammServlet extends HttpServlet {
 	private static final String REQUEST_HANDLERS_XML_FILE_NAME	= "/config/request_handlers.xml";
 	private static final String SERVER_CONFIG_XML_FILE_NAME		= "/config/server_config.xml";
 
-
 	private RequestHandlerFactory rhFactory = null;
 
 	/**

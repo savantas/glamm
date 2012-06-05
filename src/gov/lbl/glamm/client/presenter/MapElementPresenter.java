@@ -46,6 +46,7 @@ public class MapElementPresenter {
 	private View view = null;
 	
 	private Organism organism = null;
+	@SuppressWarnings("unused")
 	private Sample sample = null;
 	
 	/**

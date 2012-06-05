@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<DataServices>
+	<Service name="RegPrecise Regulons" url="http://regprecise.lbl.gov/Services/rest/glammElements">
+		<Parameter name="MO taxonomy id" extName="taxonomyId" />
+	</Service>
+</DataServices>

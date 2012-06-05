@@ -9,9 +9,9 @@
 
         <!-- Database connection settings -->
         <property name="connection.driver_class">org.gjt.mm.mysql.Driver</property>
-        <property name="connection.url">jdbc:mysql://gtldb2.qb3.berkeley.edu/glamm</property>
-        <property name="connection.username">test</property>
-        <property name="connection.password">test</property>
+        <property name="connection.url">jdbc:mysql://db2.chicago.kbase.us/glamm</property>
+        <property name="connection.username">guest</property>
+        <property name="connection.password">guest</property>
         <property name="hibernate.c3p0.min_size">3</property>
         <property name="hibernate.c3p0.max_size">15</property>
         <property name="hibernate.c3p0.timeout">20</property>

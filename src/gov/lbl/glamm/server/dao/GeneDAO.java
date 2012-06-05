@@ -34,7 +34,7 @@ public interface GeneDAO {
 	 * @return The set of genes.
 	 */
 	public Set<Gene> getGenesForVimssIds(String taxonomyId, Collection<String> vimssIds);
-	
+
 	/**
 	 * Gets the set of all genes for a given taxonomy id.
 	 * @param taxonomyId The taxonomy id.
@@ -57,4 +57,5 @@ public interface GeneDAO {
 	 * @return The set of genes.
 	 */
 	public Set<Gene> getGenesForSynonyms(String taxonomyId, Collection<String> synonyms);
+
 }

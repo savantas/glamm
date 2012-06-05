@@ -247,17 +247,19 @@ public class GeneMolDAOImpl implements GeneDAO {
 	public Set<Gene> getGenesForVimssIds(String taxonomyId, Collection<String> extIds) {
 		Set<Gene> genes = null;
 
-		if(taxonomyId != null && !taxonomyId.isEmpty() && 
-				extIds != null && extIds.size() > 0) {
+		if(extIds != null && extIds.size() > 0) {
 
 			String sql = "select distinct L2E.ecNum, L2E.locusId, Syn.name, Syn.type " +
 			"from Locus2Ec L2E " + 
 			"join Locus L on (L2E.locusId=L.locusId) " +
 			"join Scaffold S on (L.scaffoldId=S.scaffoldId) " +
 			"left outer join Synonym Syn on (Syn.locusId=L2E.locusId) " +
-			"where S.taxonomyId=" + taxonomyId + " and " +
-			"L.priority=1 and " +
-			"L2E.locusId in (" + GlammUtils.joinArray(extIds.toArray()) + ");";
+			"where L.priority=1 and ";
+			
+			if (taxonomyId != null && !taxonomyId.isEmpty())
+				sql += "S.taxonomyId=" + taxonomyId + " and ";
+			
+			sql += "L2E.locusId in (" + GlammUtils.joinArray(extIds.toArray()) + ");";
 
 			try {
 
@@ -279,5 +281,4 @@ public class GeneMolDAOImpl implements GeneDAO {
 
 		return genes;
 	}
-	
 }

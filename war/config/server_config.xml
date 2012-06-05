@@ -20,6 +20,13 @@
 		isolatehost="brc:bioenergy@www.brc-kb.org" 
 		loginurl="http://brc-kb.org/cgi-bin/login"
 		db="gobi"/>
+	<server
+		serverdomain="kbase.us"
+		hibernatecfg="hibernate-kbase.cfg.xml"
+		isolatehost="microbesonline.org"
+		loginurl="http://microbesonline.org/cgi-bin/login"
+		metagenomehost="meta.microbesonline.org"
+		db="kbase"/>
 	<db 
 		name="debug" 
 		uri="jdbc:mysql://127.0.0.1:3307/genomics_test" 

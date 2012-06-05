@@ -107,6 +107,8 @@ public class AnnotatedMapData implements Serializable {
 
 	public static final String VIEWPORT_ID	= "viewport";
 
+	private OMElement userElement;
+	
 	private OMSVGSVGElement	svgRoot;
 	private OMSVGGElement 	viewport;
 	private Set<String> cpdDbNames;
@@ -115,6 +117,10 @@ public class AnnotatedMapData implements Serializable {
 	private Map<String, Set<OMSVGElement>> id2SvgElements;
 	private Set<OMSVGElement> cpdSvgElements;
 	private Set<OMSVGElement> rxnSvgElements;
+	
+	private Map<String, Set<OMSVGElement>> userId2SvgElements;
+	private Set<OMSVGElement> userCpdSvgElements;
+	private Set<OMSVGElement> userRxnSvgElements;
 
 	private AnnotatedMapDescriptor descriptor;
 	private String svgUrl;
@@ -130,7 +136,7 @@ public class AnnotatedMapData implements Serializable {
 	 */
 	public AnnotatedMapData(final AnnotatedMapDescriptor descriptor) {
 		this.setDescriptor(descriptor);
-		this.cpdDbNames = new HashSet<String>();		
+		this.cpdDbNames = new HashSet<String>();
 		this.rxnDbNames = new HashSet<String>();
 		
 		/* crude and ugly hack to fix a bug where an empty set is returned.
@@ -158,6 +164,13 @@ public class AnnotatedMapData implements Serializable {
 		id2SvgElements = new HashMap<String, Set<OMSVGElement>>();
 		cpdSvgElements = new HashSet<OMSVGElement>();
 		rxnSvgElements = new HashSet<OMSVGElement>();		
+
+		userId2SvgElements = new HashMap<String, Set<OMSVGElement>>();
+		userCpdSvgElements = new HashSet<OMSVGElement>();
+		userRxnSvgElements = new HashSet<OMSVGElement>();		
+		
+		userElement = null;
+
 	}
 
 	/**
@@ -412,9 +425,7 @@ public class AnnotatedMapData implements Serializable {
 					elementsForId.add(element);
 				}
 			}
-
-
-
+			
 			if(g.hasAttribute(Attribute.ENZYME)) {
 				String ecNumString = g.getAttribute(Attribute.ENZYME);
 				String[] ecNums = ecNumString.split("\\+");
@@ -459,6 +470,182 @@ public class AnnotatedMapData implements Serializable {
 				initMapGroup(g);
 			if(g.hasAttribute(Attribute.CLASS) && g.getAttribute(Attribute.CLASS).equals(ElementClass.RXN.getCssClass()))
 				initRxnGroup(g);
+		}
+	}
+	
+	/**
+	 * The KGML+ SVG format used in GLAMM follows a specific format, so that format must be followed in order to insert 
+	 * arbitrary new elements into the map. In general, it looks like this:
+	 * 
+	 * <SVG>
+	 *   <g id="viewport">
+	 *     <g id="_G1">
+	 *       <g class="rxn" reaction="R12345">
+	 *         <path class="rxn" d="xxxxxxxxxxx" fill="none" .... />
+	 *       </g>
+	 *       <g class="cpd" compound="C12345">
+	 *         <ellipse class="cpd" cx="x" cy="y" .... />
+	 *       </g>
+	 *     </g>
+	 *   </g>
+	 * </SVG>
+	 * 
+	 * We'll be adding either reactions (paths) or compounds (ellipses), so we really just need to make a 
+	 * new group node and make sure it's a child of the viewport. The "_G1" (or "_G3878" or "_Gn" or whatever) are just
+	 * another grouping. For our purposes, as long as we can keep track of those elements that have been added, it's fine.
+	 * 
+	 * @param x
+	 * @param y
+	 */
+	public void setUserElement(OMElement userElement) {
+		
+		removeUserElement();
+		
+		this.userElement = userElement;
+		getViewport().appendChild(userElement);
+//		OMElement userElement = newElement
+		
+		for (OMElement g : userElement.getElementsByTagName(SVGConstants.SVG_G_TAG)) {
+			if (g.hasAttribute(Attribute.CLASS) && g.getAttribute(Attribute.CLASS).equals(ElementClass.CPD.getCssClass()))
+				addUserCpdGroup(g);
+			if (g.hasAttribute(Attribute.CLASS) && g.getAttribute(Attribute.CLASS).equals(ElementClass.RXN.getCssClass()))
+				addUserRxnGroup(g);
+			if (g.hasAttribute(Attribute.CLASS) && g.getAttribute(Attribute.CLASS).equals(ElementClass.MAP.getCssClass()))
+				addUserMapGroup(g);
+		}
+
+	}
+	
+	private void addUserCpdGroup(OMElement g) {
+		if (!g.hasAttribute(Attribute.COMPOUND))
+			return;
+		
+		OMNodeList<OMSVGElement> elements = g.getElementsByTagName(SVGConstants.SVG_ELLIPSE_TAG);
+		String cpdIds[] = g.getAttribute(Attribute.COMPOUND).split("\\+");
+		for (String cpdId : cpdIds) {
+			Set<OMSVGElement> elementsForId = this.id2SvgElements.get(cpdId);
+			Set<OMSVGElement> userElementsForId = this.userId2SvgElements.get(cpdId);
+			if (elementsForId == null) {
+				elementsForId = new HashSet<OMSVGElement>();
+				this.id2SvgElements.put(cpdId, elementsForId);
+			}
+			if (userElementsForId == null) {
+				userElementsForId = new HashSet<OMSVGElement>();
+				this.userId2SvgElements.put(cpdId, userElementsForId);
+			}
+			for (OMSVGElement element : elements) {
+				element.setAttribute(Attribute.DEFAULT_COLOR, element.getAttribute(SVGConstants.SVG_FILL_ATTRIBUTE));
+				cpdSvgElements.add(element);
+				elementsForId.add(element);
+				userElementsForId.add(element);
+			}
+		}
+	}
+	
+	private void addUserRxnGroup(OMElement g) {
+		OMNodeList<OMSVGElement> elements = g.getElementsByTagName(SVGConstants.SVG_PATH_TAG);
+
+		for(OMSVGElement element : elements) {
+			element.setAttribute(Attribute.DEFAULT_COLOR, element.getAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE));
+			rxnSvgElements.add(element);
+			userRxnSvgElements.add(element);
+		}
+
+		if(g.hasAttribute(Attribute.REACTION) && !g.getAttribute(Attribute.REACTION).isEmpty()) {
+			String rxnString = g.getAttribute(Attribute.REACTION);
+			String[] rxnIds = rxnString.split("\\+");
+			for(String rxnId : rxnIds) {
+				if(rxnId.isEmpty())
+					continue;
+				Set<OMSVGElement> elementsForId = this.id2SvgElements.get(rxnId);
+				Set<OMSVGElement> userElementsForId = this.userId2SvgElements.get(rxnId);
+				if(elementsForId == null) {
+					elementsForId = new HashSet<OMSVGElement>();
+					this.id2SvgElements.put(rxnId, elementsForId);
+				}
+				if (userElementsForId == null) {
+					userElementsForId = new HashSet<OMSVGElement>();
+					this.userId2SvgElements.put(rxnId, userElementsForId);
+				}
+				for(OMSVGElement element : elements) {
+					elementsForId.add(element);
+					userElementsForId.add(element);
+				}
+			}
+			
+			if(g.hasAttribute(Attribute.ENZYME)) {
+				String ecNumString = g.getAttribute(Attribute.ENZYME);
+				String[] ecNums = ecNumString.split("\\+");
+				for(String ecNum : ecNums) {
+					if(ecNum.isEmpty())
+						continue;
+					Set<OMSVGElement> elementsForId = this.id2SvgElements.get(ecNum);
+					Set<OMSVGElement> userElementsForId = this.userId2SvgElements.get(ecNum);
+					if(elementsForId == null) {
+						elementsForId = new HashSet<OMSVGElement>();
+						this.id2SvgElements.put(ecNum, elementsForId);
+					}
+					if(userElementsForId == null) {
+						userElementsForId = new HashSet<OMSVGElement>();
+						this.userId2SvgElements.put(ecNum, userElementsForId);
+					}
+					for(OMSVGElement element : elements) {
+						elementsForId.add(element);
+						userElementsForId.add(element);
+					}
+				}
+			}
+		}
+	}
+	
+	private void addUserMapGroup(OMElement g) {
+
+		if(!g.hasAttribute(Attribute.MAP))
+			return;
+
+		OMNodeList<OMSVGElement> elements = g.getElementsByTagName(SVGConstants.SVG_T_SPAN_TAG);
+		String mapIds[] = g.getAttribute(Attribute.MAP).split("\\+");
+		for(String mapId : mapIds) {
+			Set<OMSVGElement> elementsForId = this.id2SvgElements.get(mapId);
+			Set<OMSVGElement> userElementsForId = this.userId2SvgElements.get(mapId);
+			if(elementsForId == null) {
+				elementsForId = new HashSet<OMSVGElement>();
+				this.id2SvgElements.put(mapId, elementsForId);
+			}
+			if(userElementsForId == null) {
+				userElementsForId = new HashSet<OMSVGElement>();
+				this.userId2SvgElements.put(mapId, userElementsForId);
+			}
+			for(OMSVGElement element : elements) {
+				elementsForId.add(element);
+				userElementsForId.add(element);
+			}
+		}
+	}
+	
+	public void removeUserElement() {
+		if (userElement != null) {
+			
+			for (String key : userId2SvgElements.keySet()) {
+				Set<OMSVGElement> elements = userId2SvgElements.get(key);
+				if (elements != null && elements.size() != 0) {
+					for (OMSVGElement element : elements) {
+						id2SvgElements.get(key).remove(element);
+					}
+				}
+			}
+			
+			for (OMSVGElement element : this.userCpdSvgElements) {
+				this.cpdSvgElements.remove(element);
+			}
+			
+			for (OMSVGElement element : this.userRxnSvgElements) {
+				this.rxnSvgElements.remove(element);
+			}
+			
+			getViewport().removeChild(userElement);
+			
+			userElement = null;
 		}
 	}
 }

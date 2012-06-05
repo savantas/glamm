@@ -53,10 +53,11 @@ public class ReactionGlammDAOImpl implements ReactionDAO {
 			guid2Rxn.put(rxn.getGuid(), rxn);
 
 		String sql = "select distinct RP.reactionGuid, RP.compoundGuid, RP.coefficient, RP.pType, " +
-		"KRP.rpairRole, C.commonName, C.mass, C.formula, C.smiles, C.inchi " +
+		"KRP.rpairRole, C.commonName, C.mass, C.formula, C.smiles, C.inchi, X.toXrefId, X.xrefDbName " +
 		"from glamm.GlammReactionParticipant RP " +
-		"join glamm.GlammKeggRpair KRP using (reactionGuid) " +
+		"left outer join glamm.GlammKeggRpair KRP using (reactionGuid) " +
 		"join glamm.GlammCompound C on (C.guid=RP.compoundGuid) " +
+		"join glamm.GlammXref X on (C.guid=X.fromGuid) " + 
 		"where RP.reactionGuid in (" + GlammUtils.joinCollection(guid2Rxn.keySet()) + ") " + 
 		"order by RP.reactionGuid;";
 
@@ -94,6 +95,7 @@ public class ReactionGlammDAOImpl implements ReactionDAO {
 					cpd.setInchi(inchi);
 					guid2Cpd.put(cpdGuid, cpd);
 				}
+				cpd.getXrefSet().addXref(new Xref(rs.getString("toXrefId"), rs.getString("X.xrefDbName")));
 				
 				// build participant
 				String participantsKey = rxnGuid + "_" + cpdGuid;
@@ -179,9 +181,6 @@ public class ReactionGlammDAOImpl implements ReactionDAO {
 					def2Rxn.put(definition, reaction);
 				}
 				reaction.addEcNum(ecNum);
-//				if (synonym == null || synonym.equalsIgnoreCase("null")) {
-//					synonym = "No reaction synonym";
-//				}
 				reaction.addSynonym(synonym);
 			}
 

@@ -3,8 +3,11 @@ package gov.lbl.glamm.client.rpc;
 import gov.lbl.glamm.client.model.Algorithm;
 import gov.lbl.glamm.client.model.AnnotatedMapDescriptor;
 import gov.lbl.glamm.client.model.Compound;
+import gov.lbl.glamm.client.model.FluxExperiment;
 import gov.lbl.glamm.client.model.Gene;
+import gov.lbl.glamm.client.model.MetabolicModel;
 import gov.lbl.glamm.client.model.Organism;
+import gov.lbl.glamm.client.model.OverlayDataGroup;
 import gov.lbl.glamm.client.model.Pathway;
 import gov.lbl.glamm.client.model.Reaction;
 import gov.lbl.glamm.client.model.Sample;
@@ -12,6 +15,7 @@ import gov.lbl.glamm.client.model.User;
 import gov.lbl.glamm.client.model.interfaces.HasMeasurements;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -43,6 +47,12 @@ public interface GlammServiceAsync {
 	public void populateOrganisms(final Sample.DataType dataType, AsyncCallback<List<Organism>> callback);
 	public void populateReactionSearch(final String mapId, AsyncCallback<Set<Reaction>> callback);
 	public void populateSamples(final Organism organism, AsyncCallback<List<Sample>> callback);
+	public void getMetabolicModel(String modelId, AsyncCallback<MetabolicModel> callback);
+	public void getFluxes(FluxExperiment exp, AsyncCallback<Set<Reaction>> callback);
+	public void getOverlayData(String text, AsyncCallback<Set<OverlayDataGroup>> callback);
+	public void getOverlayDataFromService(String serviceName, Map<String, String> parameters, AsyncCallback<Set<OverlayDataGroup>> callback);
+	public void populateDataServices(AsyncCallback<Map<String, List<String>>> result);
 	
 	public void nonDBTest(AsyncCallback<String> callback);
+	
 }

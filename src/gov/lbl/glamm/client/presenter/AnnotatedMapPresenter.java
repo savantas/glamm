@@ -10,10 +10,13 @@ import gov.lbl.glamm.client.model.AnnotatedMapData;
 import gov.lbl.glamm.client.model.AnnotatedMapData.State;
 import gov.lbl.glamm.client.model.AnnotatedMapDescriptor;
 import gov.lbl.glamm.client.model.Compound;
+import gov.lbl.glamm.client.model.FluxExperiment;
 import gov.lbl.glamm.client.model.Gene;
 import gov.lbl.glamm.client.model.Measurement;
+import gov.lbl.glamm.client.model.MetabolicModel;
 import gov.lbl.glamm.client.model.MetabolicNetwork.MNNode;
 import gov.lbl.glamm.client.model.Organism;
+import gov.lbl.glamm.client.model.OverlayDataGroup;
 import gov.lbl.glamm.client.model.Pathway;
 import gov.lbl.glamm.client.model.Reaction;
 import gov.lbl.glamm.client.model.Sample;
@@ -22,7 +25,7 @@ import gov.lbl.glamm.client.model.interfaces.HasType;
 import gov.lbl.glamm.client.model.util.Xref;
 import gov.lbl.glamm.client.rpc.GlammServiceAsync;
 import gov.lbl.glamm.client.util.Interpolator;
-import gov.lbl.glamm.client.util.ReactionColor;
+import gov.lbl.glamm.client.util.ReactionSvgBuilder;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -122,6 +125,8 @@ public class AnnotatedMapPresenter {
 	private Mode mode = Mode.INITIAL;
 
 	private Organism organism = null;
+	private MetabolicModel model = null;
+	
 	private int dyThreshold;
 
 	/**
@@ -573,6 +578,7 @@ public class AnnotatedMapPresenter {
 		}
 	}
 
+
 	private void scaleAboutPoint(float scale, final int x, final int y) {
 
 		if(scale >= scaleMax) 
@@ -723,6 +729,190 @@ public class AnnotatedMapPresenter {
 	}
 
 	/**
+	 * Overlays metabolic flux data on the current reactions.
+	 * @param exp
+	 */
+	public void updateMapForFluxes(final FluxExperiment exp) {
+		if (exp == null || model == null) {
+			updateMapForOrganism(this.organism);
+		}
+		else {
+			eventBus.fireEvent(new LoadingEvent(false));
+			
+			rpc.getFluxes(exp, new AsyncCallback<Set<Reaction>>() {
+				
+				@Override
+				public void onFailure(Throwable caught) {
+					eventBus.fireEvent(new LoadingEvent(true));
+					Window.alert("Remove procedure call failure: getFluxes");
+				}
+				
+				@Override
+				public void onSuccess(Set<Reaction> result) {
+					executeOnMapElements(new MapElementCommand() {
+						@Override
+						public void execute(OMSVGElement element) {
+							element.removeAttribute(AnnotatedMapData.Attribute.ROUTE);
+							element.removeAttribute(AnnotatedMapData.Attribute.SEARCH_TARGET);
+							element.removeAttribute(AnnotatedMapData.Attribute.PATHWAY);
+							element.setAttribute(AnnotatedMapData.Attribute.HAS_DATA, "false");
+							if(element.getTagName().equals(SVGConstants.SVG_ELLIPSE_TAG)) {
+								element.removeAttribute(AnnotatedMapData.Attribute.CPD_DST);
+								element.removeAttribute(AnnotatedMapData.Attribute.CPD_SRC);
+							}
+						}
+					});
+					
+					Interpolator interpolator = new Interpolator("mmol/(gDW*h)", -10, 0, 10);
+					for (Reaction rxn : result) {
+						// we only deal with Genes associated with Reactions right now
+						int numMeasurements = 0;
+						float mean = 0.0f;
+	
+	
+						for(Measurement measurement : rxn.getMeasurementSet().getMeasurements()) {
+							mean += measurement.getValue();
+							numMeasurements++;
+						}
+	
+						mean /= (float) numMeasurements;
+	
+						// calculate the css color for the mean
+						String cssColor = interpolator.calcCssColor(mean);
+	
+						// set the css color on all SVG elements associated with id
+						Set<OMSVGElement> elements = mapData.getSvgElements((HasType) rxn);
+						if(elements == null)
+							continue;
+						for(OMSVGElement element : elements) {
+							if(element.hasAttribute(AnnotatedMapData.Attribute.ABSENT) && 
+									element.getAttribute(AnnotatedMapData.Attribute.ABSENT).equals("true"))
+								continue;
+							element.setAttribute(AnnotatedMapData.Attribute.HAS_DATA, "true");
+							element.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, cssColor);
+						}
+					}
+					eventBus.fireEvent(new LoadingEvent(true));
+				}
+			});
+		}
+		
+	}
+	
+	public void updateMapForMetabolicModel(final MetabolicModel model) {
+		this.model = model;
+		
+		if (model == null || model.getReactions().size() == 0) {
+			mapData.removeUserElement();
+			updateMapForOrganism(this.organism);
+		}
+		else {
+			eventBus.fireEvent(new LoadingEvent(false));
+			/* 
+			 * 1. Get list of reactions from the model.
+			 * 2. Figure out set of reactions currently being displayed (by current map -- maybe query the mapData?)
+			 * 3. Figure out set of reactions NOT in the current map.
+			 * 4. Dim everything.
+			 * 5. Color/highlight current map reactions in the model.
+			 * 6. Construct SVG for reactions not currently in the map.
+			 * 7. Done!
+			 */
+			
+			rpc.getRxnsForOrganism(Organism.globalMap(), new AsyncCallback<Set<Reaction>>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					eventBus.fireEvent(new LoadingEvent(true));
+					Window.alert("Remote procedure call failure: getRxnsForOrganism");
+				}
+
+				@Override
+				public void onSuccess(Set<Reaction> result) {
+					Set<Reaction> extraReactions = new HashSet<Reaction>();  // contains those reactions that need to be built as SVG
+					Set<Reaction> modelReactions = model.getReactions();	 // contains the model reactions.
+					for (Reaction rxn : modelReactions) {					 // figures out what set of model reactions aren't being shown on the current global map.
+						if (!result.contains(rxn)) 
+							extraReactions.add(rxn);
+					}
+					// Darken everything
+					executeOnMapElements(new MapElementCommand() {
+						@Override
+						public void execute(OMSVGElement element) {
+							String defaultColor = element.getAttribute(AnnotatedMapData.Attribute.DEFAULT_COLOR);
+							element.setAttribute(AnnotatedMapData.Attribute.ABSENT, "true");
+							element.removeAttribute(AnnotatedMapData.Attribute.HAS_DATA);
+							element.removeAttribute(AnnotatedMapData.Attribute.SEARCH_TARGET);
+							element.removeAttribute(AnnotatedMapData.Attribute.ROUTE);
+							element.removeAttribute(AnnotatedMapData.Attribute.PATHWAY);
+							element.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, defaultColor);
+							if(element.getTagName().equals(SVGConstants.SVG_ELLIPSE_TAG)) {
+								element.setAttribute(SVGConstants.SVG_FILL_ATTRIBUTE, defaultColor);
+								element.removeAttribute(AnnotatedMapData.Attribute.CPD_DST);
+								element.removeAttribute(AnnotatedMapData.Attribute.CPD_SRC);
+							}
+						}
+					});
+					
+					// Light up all the model reactions that are in the global map.
+					for(final Reaction rxn : modelReactions) {
+						Set<Xref> xrefs = rxn.getXrefSet().getXrefs();
+
+						for(final Xref xref : xrefs) {
+
+							String rxnId = xref.getXrefId();
+
+							// set all svg elements corresponding with this xref to present
+							Set<OMSVGElement> elements = mapData.getSvgElementsForId(rxnId);
+							if(elements == null) 
+								continue;
+
+							for(OMSVGElement element : elements) 
+								element.setAttribute(AnnotatedMapData.Attribute.ABSENT, "false");
+
+							// get the compound nodes associated with this reaction and set them to present
+							Set<MNNode> mnNodes = mapData.getDescriptor().getMetabolicNetwork().getNodesForRxnId(rxnId);
+
+							if(mnNodes == null)
+								continue;
+
+							for(final MNNode mnNode : mnNodes) {
+
+								{
+									String cpdId = mnNode.getCpd0ExtId();
+									Set<OMSVGElement> cpdElements = mapData.getSvgElementsForId(cpdId);
+									if(cpdElements != null) {
+										for(OMSVGElement cpdElement : cpdElements) {
+											cpdElement.setAttribute(AnnotatedMapData.Attribute.ABSENT, "false");
+										}
+									}
+								}
+
+								{
+									String cpdId = mnNode.getCpd1ExtId();
+									Set<OMSVGElement> cpdElements = mapData.getSvgElementsForId(cpdId);
+									if(cpdElements != null) {
+										for(OMSVGElement cpdElement : cpdElements) {
+											cpdElement.setAttribute(AnnotatedMapData.Attribute.ABSENT, "false");
+										}
+									}
+								}
+							}
+						}
+					}
+					
+					// Build SVG elements for the new reactions and append them to the current map.
+					OMElement newGroup = ReactionSvgBuilder.buildReactionSvg(extraReactions, mapData, mapData.getSvgWidth(), 0, 500, mapData.getSvgHeight());
+					mapData.setUserElement(newGroup);
+					eventBus.fireEvent(new LoadingEvent(true));		
+					
+					updateMapForFluxes(new FluxExperiment(model.getModelId(), "1"));
+				}
+				
+			});
+		}
+	}
+	
+	/**
 	 * Darkens the reactions for which no genes are specified in the target organism.  If a compound
 	 * has no reactions connected to it, it will also be darkened.
 	 * @param organism The organism.
@@ -841,6 +1031,69 @@ public class AnnotatedMapPresenter {
 				}
 			}
 		});
+	}
+	
+	public void updateMapForOverlayData(final Set<OverlayDataGroup> dataSet) {
+		
+		eventBus.fireEvent(new LoadingEvent(false));
+		
+		// If there's no data, just load the current organism 
+		// Clunky. Do something more logical later. TODO
+		if (dataSet == null || dataSet.isEmpty()) {
+			updateMapForOrganism(this.organism);
+			mapData.removeUserElement();
+			eventBus.fireEvent(new LoadingEvent(true));
+			return;
+		}
+		
+		// Otherwise, do some kind of colored overlay.
+		
+		Set<Reaction> dataRxns = new HashSet<Reaction>();
+		
+		for (OverlayDataGroup group : dataSet)
+			dataRxns.addAll(group.getAllReactions());
+		
+		addUserReactions(dataRxns);
+		
+		executeOnMapElements(new MapElementCommand() {
+			@Override
+			public void execute(OMSVGElement element) {
+				String defaultColor = element.getAttribute(AnnotatedMapData.Attribute.DEFAULT_COLOR);
+				element.setAttribute(AnnotatedMapData.Attribute.ABSENT, "true");
+				element.removeAttribute(AnnotatedMapData.Attribute.PATHWAY);
+				element.removeAttribute(AnnotatedMapData.Attribute.HAS_DATA);
+				element.removeAttribute(AnnotatedMapData.Attribute.SEARCH_TARGET);
+				element.removeAttribute(AnnotatedMapData.Attribute.ROUTE);
+				element.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, defaultColor);
+				if(element.getTagName().equals(SVGConstants.SVG_ELLIPSE_TAG)) {
+					element.setAttribute(SVGConstants.SVG_FILL_ATTRIBUTE, defaultColor);
+					element.removeAttribute(AnnotatedMapData.Attribute.CPD_DST);
+					element.removeAttribute(AnnotatedMapData.Attribute.CPD_SRC);
+				}
+			}
+		});
+		
+		for (OverlayDataGroup group : dataSet) {
+			String cssColor = group.getCssColor();
+			Set<HasType> elements = group.getElementSet();
+			
+			for(HasType element : elements) {
+
+				Set<OMSVGElement> svgElements = mapData.getSvgElements((HasType) element);
+				if(svgElements == null)
+					continue;
+				
+//				element.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, cssColor);
+
+				for(OMSVGElement svgElement : svgElements) {						
+					svgElement.removeAttribute(AnnotatedMapData.Attribute.ABSENT);
+					svgElement.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, cssColor);
+//					svgElement.setAttribute(AnnotatedMapData.Attribute.ROUTE, cssColor);
+				}
+				
+			}
+		}
+		eventBus.fireEvent(new LoadingEvent(true));
 	}
 	
 	/**
@@ -1147,4 +1400,34 @@ public class AnnotatedMapPresenter {
 		previousSearchTargets = searchTargets;
 	}
 
+
+	public void addUserReactions(final Set<Reaction> userRxns) {
+		
+		eventBus.fireEvent(new LoadingEvent(false));
+		
+		rpc.getRxnsForOrganism(Organism.globalMap(), new AsyncCallback<Set<Reaction>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				eventBus.fireEvent(new LoadingEvent(true));
+				Window.alert("Remote procedure call failure: getRxnsForOrganism");
+			}
+
+			@Override
+			public void onSuccess(Set<Reaction> result) {
+				Set<Reaction> extraReactions = new HashSet<Reaction>();  // contains those reactions that need to be built as SVG
+				for (Reaction rxn : userRxns) {					 // figures out what set of model reactions aren't being shown on the current global map.
+					if (!result.contains(rxn)) 
+						extraReactions.add(rxn);
+				}
+				
+				OMElement newGroup = ReactionSvgBuilder.buildReactionSvg(extraReactions, mapData, mapData.getSvgWidth(), 0, 500, mapData.getSvgHeight());
+				mapData.setUserElement(newGroup);
+				eventBus.fireEvent(new LoadingEvent(true));		
+				
+			}
+		});
+		
+	}
+	
 }

@@ -39,7 +39,7 @@ RetrosynthesisPresenter.View {
 	private static final String TEXT_LABEL_CPD_SRC 			= "From: ";
 	private static final String TEXT_LABEL_ROUTES 			= "Route: ";
 	private static final String TEXT_LABEL_SEARCH 			= "Search: ";
-	private static final String DELIMITERS					= "./\\-+[]()";
+	private static final String DELIMITERS					= "/\\-+[]()";
 
 	// main panel
 	private DecoratorPanel 	decoratorPanel	= null;

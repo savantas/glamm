@@ -29,6 +29,7 @@ implements Serializable {
 		NONE("None"),
 		RNA("RNA"),
 		FITNESS("Fitness"),
+		FBA("FBA"),
 		PROTEIN("Protein"),
 		RNASEQ("RNASeq"),
 		SESSION("Session");

@@ -3,18 +3,13 @@ package gov.lbl.glamm.server.dao.impl;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.Pathway;
 import gov.lbl.glamm.client.model.Reaction;
-import gov.lbl.glamm.server.GlammDbConnectionPool;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.actions.GetReactions;
 import gov.lbl.glamm.server.dao.PathwayDAO;
-import gov.lbl.glamm.server.dao.ReactionDAO;
 import gov.lbl.glammdb.domain.PersistentPathway;
 import gov.lbl.glammdb.domain.PersistentPwyElement;
 import gov.lbl.glammdb.util.HibernateUtil;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.HashSet;
 import java.util.Set;
 
