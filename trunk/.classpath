@@ -22,5 +22,8 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/slf4j-api-1.5.8.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/slf4j-log4j12-1.5.8.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/lib-gwt-svg-0.5.4.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/jackson-annotations-2.0.0.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/jackson-core-2.0.0.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/jackson-databind-2.0.0.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

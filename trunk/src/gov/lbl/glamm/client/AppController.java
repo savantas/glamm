@@ -1,7 +1,5 @@
 package gov.lbl.glamm.client;
 
-import java.util.Set;
-
 import gov.lbl.glamm.client.events.AMDPickedEvent;
 import gov.lbl.glamm.client.events.AnnotatedMapDataLoadedEvent;
 import gov.lbl.glamm.client.events.CpdDstDisambiguatedEvent;
@@ -13,11 +11,13 @@ import gov.lbl.glamm.client.events.LoadingEvent;
 import gov.lbl.glamm.client.events.LogInEvent;
 import gov.lbl.glamm.client.events.LogOutEvent;
 import gov.lbl.glamm.client.events.MapElementClickEvent;
-import gov.lbl.glamm.client.events.MapElementMouseOutEvent;
-import gov.lbl.glamm.client.events.MapElementMouseOverEvent;
 import gov.lbl.glamm.client.events.MapUpdateEvent;
+import gov.lbl.glamm.client.events.MetabolicModelLoadedEvent;
 import gov.lbl.glamm.client.events.OrganismPickedEvent;
 import gov.lbl.glamm.client.events.OrganismUploadEvent;
+import gov.lbl.glamm.client.events.GroupDataLoadedEvent;
+import gov.lbl.glamm.client.events.GroupDataServiceEvent;
+import gov.lbl.glamm.client.events.GroupDataUploadEvent;
 import gov.lbl.glamm.client.events.PanZoomControlEvent;
 import gov.lbl.glamm.client.events.RoutePickedEvent;
 import gov.lbl.glamm.client.events.RouteStepPickedEvent;
@@ -31,6 +31,9 @@ import gov.lbl.glamm.client.model.User;
 import gov.lbl.glamm.client.presenter.AMDPresenter;
 import gov.lbl.glamm.client.presenter.AnnotatedMapPresenter;
 import gov.lbl.glamm.client.presenter.CpdDisambiguationPresenter;
+import gov.lbl.glamm.client.presenter.GroupDataPresenter;
+import gov.lbl.glamm.client.presenter.GroupDataServicePresenter;
+import gov.lbl.glamm.client.presenter.GroupDataUploadPresenter;
 import gov.lbl.glamm.client.presenter.ExperimentPresenter;
 import gov.lbl.glamm.client.presenter.ExperimentUploadPresenter;
 import gov.lbl.glamm.client.presenter.ImagePopupPresenter;
@@ -38,6 +41,7 @@ import gov.lbl.glamm.client.presenter.InterpolatorPresenter;
 import gov.lbl.glamm.client.presenter.LoadingPresenter;
 import gov.lbl.glamm.client.presenter.LoginPresenter;
 import gov.lbl.glamm.client.presenter.MapElementPresenter;
+import gov.lbl.glamm.client.presenter.MetabolicModelPresenter;
 import gov.lbl.glamm.client.presenter.MiniMapPresenter;
 import gov.lbl.glamm.client.presenter.OrganismPresenter;
 import gov.lbl.glamm.client.presenter.OrganismUploadPresenter;
@@ -51,6 +55,9 @@ import gov.lbl.glamm.client.util.Interpolator;
 import gov.lbl.glamm.client.view.AMDView;
 import gov.lbl.glamm.client.view.AnnotatedMapView;
 import gov.lbl.glamm.client.view.CpdDisambiguationView;
+import gov.lbl.glamm.client.view.GroupDataServiceView;
+import gov.lbl.glamm.client.view.GroupDataUploadView;
+import gov.lbl.glamm.client.view.GroupDataView;
 import gov.lbl.glamm.client.view.ExperimentUploadView;
 import gov.lbl.glamm.client.view.ExperimentView;
 import gov.lbl.glamm.client.view.ImagePopupView;
@@ -58,6 +65,7 @@ import gov.lbl.glamm.client.view.InterpolatorView;
 import gov.lbl.glamm.client.view.LoadingView;
 import gov.lbl.glamm.client.view.LoginView;
 import gov.lbl.glamm.client.view.MapElementView;
+import gov.lbl.glamm.client.view.MetabolicModelView;
 import gov.lbl.glamm.client.view.MiniMapView;
 import gov.lbl.glamm.client.view.OrganismUploadView;
 import gov.lbl.glamm.client.view.OrganismView;
@@ -145,6 +153,20 @@ public class AppController {
 
 	private RetrosynthesisPresenter retrosynthesisPresenter;
 	private RetrosynthesisView retrosynthesisView;
+	
+	private MetabolicModelPresenter metabolicModelPresenter;
+	private MetabolicModelView metabolicModelView;
+	
+	private GroupDataPresenter dataOverlayPresenter;
+	private GroupDataView dataOverlayView;
+	
+	@SuppressWarnings("unused")
+	private GroupDataUploadPresenter dataOverlayUploadPresenter;
+	private GroupDataUploadView dataOverlayUploadView;
+	
+	@SuppressWarnings("unused")
+	private GroupDataServicePresenter dataOverlayServicePresenter;
+	private GroupDataServiceView dataOverlayServiceView;
 
 	private LayoutPanel layout = new LayoutPanel() {
 
@@ -225,6 +247,18 @@ public class AppController {
 		retrosynthesisView = new RetrosynthesisView();
 		retrosynthesisPresenter = new RetrosynthesisPresenter(rpc,
 				retrosynthesisView, eventBus);
+		
+		metabolicModelView = new MetabolicModelView();
+		metabolicModelPresenter = new MetabolicModelPresenter(rpc, metabolicModelView, eventBus);
+		
+		dataOverlayView = new GroupDataView();
+		dataOverlayPresenter = new GroupDataPresenter(rpc, dataOverlayView, eventBus);
+		
+		dataOverlayUploadView = new GroupDataUploadView();
+		dataOverlayUploadPresenter = new GroupDataUploadPresenter(dataOverlayUploadView, eventBus);
+		
+		dataOverlayServiceView = new GroupDataServiceView();
+		dataOverlayServicePresenter = new GroupDataServicePresenter(rpc, eventBus, dataOverlayServiceView);
 	}
 
 	/**
@@ -266,6 +300,11 @@ public class AppController {
 		loadCitations();
 		loadHelp();
 		loadRetrosynthesis();
+// Not for this live version!
+//		loadMetabolicModelPicker();
+//		loadDataOverlayControl();
+//		loadDataOverlayUpload();
+//		loadDataOverlayService();
 		loadLogin(); // always load last
 
 		onResize();
@@ -309,10 +348,58 @@ public class AppController {
 				mainPanel.setWidgetPosition(interpolatorView, Window.getClientWidth() - interpolatorView.getOffsetWidth(), Window.getClientHeight() - citationsView.getOffsetHeight() - interpolatorView.getOffsetHeight() - 5);
 				mainPanel.setWidgetPosition(helpView, Window.getClientWidth() - helpView.getOffsetWidth(), 0);
 				mainPanel.setWidgetPosition(loginView, Window.getClientWidth() - loginView.getOffsetWidth() - helpView.getOffsetWidth() - 5, 0);
+//				mainPanel.setWidgetPosition(metabolicModelView, 0, Window.getClientHeight() - miniMapView.getOffsetHeight() - amdView.getOffsetHeight() - metabolicModelView.getOffsetHeight() - 10);
+//				mainPanel.setWidgetPosition(dataOverlayView, panZoomView.getOffsetWidth() + miniMapView.getOffsetWidth() + 10, Window.getClientHeight() - dataOverlayView.getOffsetHeight());
 			}
 		});
 	}
 
+	private void loadDataOverlayControl() {
+		mainPanel.add(dataOverlayView, 0, 0);
+		
+		eventBus.addHandler(GroupDataLoadedEvent.TYPE, new GroupDataLoadedEvent.Handler() {
+			@Override
+			public void onLoaded(GroupDataLoadedEvent event) {
+				dataOverlayPresenter.setDataGroups(event.getData());
+			}
+		});
+		
+		//TODO add events that should trigger the controller to clear itself.
+	}
+	
+	private void loadDataOverlayService() {
+		eventBus.addHandler(GroupDataServiceEvent.TYPE, new GroupDataServiceEvent.Handler() {
+			@Override
+			public void onRequest(GroupDataServiceEvent event) {
+				dataOverlayServiceView.showView();
+			}
+
+			@Override
+			public void onSuccess(GroupDataServiceEvent event) {
+				return;
+			}
+		});
+	}
+	
+	private void loadDataOverlayUpload() {
+		eventBus.addHandler(GroupDataUploadEvent.TYPE, new GroupDataUploadEvent.Handler() {
+			@Override
+			public void onRequest(GroupDataUploadEvent event) {
+				dataOverlayUploadView.showView();				
+			}
+
+			@Override
+			public void onSuccess(GroupDataUploadEvent event) {
+				return;
+			}
+		});
+	}
+	
+	private void loadMetabolicModelPicker() {
+		mainPanel.add(metabolicModelView, 0, 0);
+		metabolicModelPresenter.populate("0");
+	}
+	
 	private void loadAnnotatedMapPicker() {
 		mainPanel.add(amdView, 0, 0);
 		amdPresenter.populate("map01100");
@@ -645,11 +732,28 @@ public class AppController {
 				if (event.isControlKeyDown()) {
 					if (event.getElementClass().equals(AnnotatedMapData.ElementClass.MAP))
 						mapPresenter.updateMapForPathway(event.getIds());
-					else
+					else {
 						mapPresenter.updateMapForPathway(null);
+//						mapPresenter.addSvgElement();
+					}
 				}
 			}
 		});
+		
+		eventBus.addHandler(MetabolicModelLoadedEvent.TYPE, new MetabolicModelLoadedEvent.Handler() {
+			@Override
+			public void onLoaded(MetabolicModelLoadedEvent event) {
+				mapPresenter.updateMapForMetabolicModel(event.getModel());
+			}			
+		});
+		
+		eventBus.addHandler(GroupDataLoadedEvent.TYPE, new GroupDataLoadedEvent.Handler() {
+			@Override
+			public void onLoaded(GroupDataLoadedEvent event) {
+				mapPresenter.updateMapForOverlayData(event.getData());
+			}
+		});
+		
 	}
 
 	private void loadMiniMapPanel() {
@@ -669,7 +773,6 @@ public class AppController {
 				miniMapPresenter.updateReticle(event.getViewRectNorm());
 			}
 		});
-
 	}
 
 	private void loadOrganismPicker() {

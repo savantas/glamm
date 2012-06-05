@@ -17,16 +17,13 @@ import gov.lbl.glamm.client.rpc.GlammServiceAsync;
 
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.DataGrid;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import com.google.gwt.cell.client.ImageCell;
 import com.google.gwt.cell.client.SafeHtmlCell;
-import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -34,15 +31,10 @@ import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.view.client.ListDataProvider;
-
-/* TODO - This is a stub.  The goal is to generate pathway popups client-side, so we'll have access to the Pathway object,
- * so that we can manipulate it directly from the popup (e.g. add it to the Cart, etc.)  See the RxnPopupPresenter for an analogous approach.
- */
 
 /**
  * Presenter for pathway popups.
@@ -60,7 +52,7 @@ public class PwyPopupPresenter {
 	public interface View {
 		
 		/**
-		 * 
+		 * Gets the table that contains pathway information.
 		 */
 		public DataGrid<Reaction> getPwyTable();
 		
@@ -76,10 +68,21 @@ public class PwyPopupPresenter {
 		 */
 		public Button getAddNativeToCartButton();
 		
+		/**
+		 * Gets the view style button.
+		 * @return
+		 */
 		public Button getViewStyleButton();
 		
+		/**
+		 * Toggles the view style between the KEGG canonical map and the Reaction table.
+		 */
 		public void toggleViewStyle();
 		
+		/**
+		 * Gets the button panel for this view. The button panel should contain the add to cart buttons.
+		 * @return
+		 */
 		public Panel getButtonPanel();
 		
 		/**
@@ -117,16 +120,28 @@ public class PwyPopupPresenter {
 		 */
 		public void showPopup(int left, int top);
 		
+		/**
+		 * Gets the bit of HTML code that defines a link to the Pathway in MicrobesOnline
+		 * @return
+		 */
 		public HTML getPwyLinkHtml();
 		
+		/**
+		 * Updates the pathway map image in the viewer with the given URL.
+		 * @param imgUrl
+		 */
 		public void updateImage(String imgUrl);
 		
+		/**
+		 * Resets the position of the popup window.
+		 */
 		public void resetPopupPosition();
 
 	}
 	
 	private GlammServiceAsync rpc;
 	private View view;
+	@SuppressWarnings("unused")
 	private SimpleEventBus eventBus;
 	
 	private Set<Pathway> pathways;
@@ -160,6 +175,9 @@ public class PwyPopupPresenter {
 		bindView();
 	}
 	
+	/**
+	 * Initializes button behavior in the view.
+	 */
 	private void bindView() {
 		view.getAddAllToCartButton().addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
@@ -182,7 +200,12 @@ public class PwyPopupPresenter {
 		});
 	}
 	
-	private String genEcNumLink(final String ecNum, final int numGenes) {
+	/**
+	 * Generates an HTML link to the right EC number page on MicrobesOnline.
+	 * @param ecNum the EC number to link to
+	 * @return an HTML String
+	 */
+	private String genEcNumLink(final String ecNum) {
 
 		StringBuilder builder = new StringBuilder();
 
@@ -194,6 +217,11 @@ public class PwyPopupPresenter {
 		return builder.toString();
 	}
 
+	/**
+	 * Constructs a URL to information about the given EC number.
+	 * @param ecNum the EC number
+	 * @return a URL with info about the EC number.
+	 */
 	private String genEcNumUrl(final String ecNum) {
 
 		UrlBuilder urlBuilder = new UrlBuilder();
@@ -209,6 +237,11 @@ public class PwyPopupPresenter {
 		return urlBuilder.buildString();
 	}
 
+	/**
+	 * Generates a link to information about the given gene by wrapping a locus URL with an HTML <a> tag.
+	 * @param gene the Gene of interest
+	 * @return a String containing an HTML link.
+	 */
 	private String genGeneLink(final Gene gene) {
 		if (gene == null)
 			return "";
@@ -237,6 +270,11 @@ public class PwyPopupPresenter {
 		return builder.toString();
 	}
 	
+	/**
+	 * Generates a locus URL that points to the MicrobesOnline on whichever host it's currently situtated to run on.
+	 * @param vimssId
+	 * @return
+	 */
 	private String genLocusUrl(final String vimssId) {
 
 		UrlBuilder urlBuilder = new UrlBuilder();
@@ -250,6 +288,11 @@ public class PwyPopupPresenter {
 		return urlBuilder.buildString();
 	}
 
+	/**
+	 * Initializes the pathway reaction table, and sets it to display data properly.
+	 * @param table
+	 * @param dataProvider
+	 */
 	private void initTable(final DataGrid<Reaction> table, ListDataProvider<Reaction> dataProvider) {
 		/* Columns:
 		 * 1. EC number
@@ -257,14 +300,6 @@ public class PwyPopupPresenter {
 		 * 3. Reaction definition (e.g. A + B <=> C + D)
 		 * 4. Is native? (checkbox? color block?)
 		 */
-		
-		
-		/* This isn't going to be an Image... or likely a Table column. Just a placeholder for now */
-		Column<Reaction, SafeHtml> linPwyColumn = new Column<Reaction, SafeHtml>(new SafeHtmlCell()) {
-			public SafeHtml getValue(Reaction r) {
-				return null;
-			}
-		};
 		
 		Column<Reaction, SafeHtml> ecColumn = new Column<Reaction, SafeHtml>(new SafeHtmlCell()) {
 			public SafeHtml getValue(Reaction r) {
@@ -279,7 +314,7 @@ public class PwyPopupPresenter {
 					Arrays.sort(ecSet);
 					for (String ecNum : ecSet) {
 						if (ecNum != null && ecNum.length() > 0) {
-							builder.appendHtmlConstant(genEcNumLink(ecNum, r.getGenes().size()));
+							builder.appendHtmlConstant(genEcNumLink(ecNum));
 						}
 						builder.appendHtmlConstant("<br>");
 					}
@@ -334,13 +369,11 @@ public class PwyPopupPresenter {
 			}
 		};
 		
-		//table.addColumn(linPwyColumn, "");
 		table.addColumn(ecColumn, "EC");
 		table.addColumn(nameColumn, "Reaction Name(s)");
 		table.addColumn(defColumn, "Definition");
 		table.addColumn(geneColumn, "Gene Name(s)");
 	
-		//table.setColumnWidth(linPwyColumn, "10em");
 		table.setColumnWidth(ecColumn, "8em");
 		table.setColumnWidth(nameColumn, "25em");
 		table.setColumnWidth(defColumn, "25em");
@@ -475,6 +508,7 @@ public class PwyPopupPresenter {
 	
 	/**
 	 * Clears the pathway panel.
+	 * //TODO stub
 	 */
 	private void clearPathwayPanel() {
 	}
@@ -496,14 +530,14 @@ public class PwyPopupPresenter {
 				String sampleId = sample == null ? null : sample.getSampleId();
 				
 				view.getPwyLinkHtml().setHTML(genKeggMapLink(pwy, taxonomyId, experimentId, sampleId));
-				String imageUrl = genImgLink(pwy);
+				String imageUrl = genImgUrl(pwy);
 				view.updateImage(imageUrl);
 			}
 		}
 	}
 
 	/**
-	 * 
+	 * Generates a link to the KEGG map that shows an image of the given pathway.
 	 * @param pwy
 	 * @param taxonomyId
 	 * @param experimentId
@@ -542,6 +576,11 @@ public class PwyPopupPresenter {
 
 		String url = "";
 		String mapId = pwy.getMapId();
+		
+		// Hack to peel off the 'map' part of the id, if it exists.
+		// If left in, this can cause issues with MicrobesOnline.
+		if (mapId.startsWith("map"))
+			mapId = mapId.substring(3);
 
 		if(	experimentId != null && !experimentId.equals(Experiment.DEFAULT_EXPERIMENT_ID) &&
 				sampleId != null && !sampleId.equals(Sample.DEFAULT_SAMPLE_ID) &&
@@ -566,11 +605,11 @@ public class PwyPopupPresenter {
 	}
 
 	/**
-	 * 
+	 * Generates a URL that points to the KEGG image for the given pathway.
 	 * @param pwy
 	 * @return
 	 */
-	private String genImgLink(final Pathway pwy) {
+	private String genImgUrl(final Pathway pwy) {
 		String imgUrlString = "http://" + host + "/kegg/" + pwy.getMapId() + ".png";
 		return imgUrlString;
 	}

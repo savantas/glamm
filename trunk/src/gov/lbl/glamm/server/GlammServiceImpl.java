@@ -3,8 +3,11 @@ package gov.lbl.glamm.server;
 import gov.lbl.glamm.client.model.Algorithm;
 import gov.lbl.glamm.client.model.AnnotatedMapDescriptor;
 import gov.lbl.glamm.client.model.Compound;
+import gov.lbl.glamm.client.model.FluxExperiment;
 import gov.lbl.glamm.client.model.Gene;
+import gov.lbl.glamm.client.model.MetabolicModel;
 import gov.lbl.glamm.client.model.Organism;
+import gov.lbl.glamm.client.model.OverlayDataGroup;
 import gov.lbl.glamm.client.model.Pathway;
 import gov.lbl.glamm.client.model.Reaction;
 import gov.lbl.glamm.client.model.Sample;
@@ -16,11 +19,15 @@ import gov.lbl.glamm.server.actions.GenCpdPopup;
 import gov.lbl.glamm.server.actions.GenPwyPopup;
 import gov.lbl.glamm.server.actions.GetAnnotatedMapDescriptors;
 import gov.lbl.glamm.server.actions.GetAvailableExperimentTypes;
+import gov.lbl.glamm.server.actions.GetFluxes;
+import gov.lbl.glamm.server.actions.GetMetabolicModel;
+import gov.lbl.glamm.server.actions.GetGroupData;
 import gov.lbl.glamm.server.actions.GetPathways;
 import gov.lbl.glamm.server.actions.GetReactions;
 import gov.lbl.glamm.server.actions.GetRxnsForOrganism;
 import gov.lbl.glamm.server.actions.GetSample;
 import gov.lbl.glamm.server.actions.PopulateCompoundSearch;
+import gov.lbl.glamm.server.actions.PopulateDataServices;
 import gov.lbl.glamm.server.actions.PopulateLocusSearch;
 import gov.lbl.glamm.server.actions.PopulateOrganisms;
 import gov.lbl.glamm.server.actions.PopulateReactionSearch;
@@ -28,6 +35,7 @@ import gov.lbl.glamm.server.actions.PopulateSamples;
 import gov.lbl.glamm.server.actions.requesthandlers.GetDirections;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.ServletContext;
@@ -46,6 +54,7 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	implements GlammService {
 	
 	private static final String SERVER_CONFIG_XML_FILE_NAME		= "/config/server_config.xml";
+	private static final String EXTERNAL_SERVICES_XML_FILE_NAME = "/config/external_services.xml";
 	
 	/**
 	 * Gets the single instance of the GlammSession object associated with this session
@@ -174,6 +183,7 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	throws ServletException  {
 		try {
 			ServletContext sc = this.getServletContext();
+			GroupDataServiceManager.init(sc.getResource(EXTERNAL_SERVICES_XML_FILE_NAME).toString());
 			ConfigurationManager.init(sc.getResource(SERVER_CONFIG_XML_FILE_NAME).toString());
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -186,6 +196,30 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	@Override
 	public void destroy() {
 		GlammDbConnectionPool.destroy();
+	}
+
+	@Override
+	public MetabolicModel getMetabolicModel(String modelId) {
+		return GetMetabolicModel.getMetabolicModel(getGlammSession(), modelId);
+	}
+	
+	@Override
+	public Set<Reaction> getFluxes(FluxExperiment exp) {
+		return GetFluxes.getFluxes(getGlammSession(), exp);
+	}
+
+	@Override
+	public Set<OverlayDataGroup> getOverlayData(String text) {
+		return GetGroupData.getOverlayData(getGlammSession(), text);
+	}
+
+	@Override
+	public Set<OverlayDataGroup> getOverlayDataFromService(String serviceName, Map<String, String> parameters) {
+		return GetGroupData.getOverlayDataFromService(getGlammSession(), serviceName, parameters);
+	}
+	
+	public Map<String, List<String>> populateDataServices() {
+		return PopulateDataServices.populateDataServices(getGlammSession());
 	}
 
 }

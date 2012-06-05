@@ -2,7 +2,6 @@ package gov.lbl.glamm.client.view;
 
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
-import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.DataGrid;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
@@ -88,6 +87,9 @@ public class PwyPopupView extends PopupPanel implements PwyPopupPresenter.View {
 		
 	}
 	
+	/**
+	 * Initializes the layout of the various widgets in the panel.
+	 */
 	public void init() {
 		imgScrollPanel.setSize(PANEL_WIDTH + "px", PANEL_HEIGHT + "px");
 
@@ -105,7 +107,7 @@ public class PwyPopupView extends PopupPanel implements PwyPopupPresenter.View {
 		headerPanel.add(pwyViewStyle);
 
 		tableLayoutPanel.add(pwyTable);
-		tableLayoutPanel.setSize(PANEL_WIDTH + "px", PANEL_HEIGHT + "px");
+		tableLayoutPanel.setSize("68em", PANEL_HEIGHT + "px");
 		
 		buttonPanel.setSpacing(5);
 		buttonPanel.add(addAllToCart);
@@ -120,7 +122,6 @@ public class PwyPopupView extends PopupPanel implements PwyPopupPresenter.View {
 		pwyPanel.add(emptyTableLabel);
 		emptyTableLabel.setVisible(false);
 		imgScrollPanel.setVisible(false);
-//		pwyPanel.add(buttonPanel);
 
 		this.setWidget(mainPanel);
 		this.setAutoHideEnabled(true);
@@ -129,10 +130,16 @@ public class PwyPopupView extends PopupPanel implements PwyPopupPresenter.View {
 		mainPanel.setStylePrimaryName("glamm-picker");
 	}
 	
+	/**
+	 * Returns the buttonPanel containing the cart buttons.
+	 */
 	public Panel getButtonPanel() {
 		return buttonPanel;
 	}
 	
+	/**
+	 * Toggles the view style between just showing the KEGG image or the list of reactions in the pathway.
+	 */
 	public void toggleViewStyle() {
 		boolean showKegg = pwyViewStyle.getText().equals(REACTION_TABLE_STYLE);
 		pwyViewStyle.setText(showKegg ? KEGG_MAP_STYLE : REACTION_TABLE_STYLE);
@@ -148,6 +155,12 @@ public class PwyPopupView extends PopupPanel implements PwyPopupPresenter.View {
 		}
 	}
 	
+	/**
+	 * If the pathway table is empty, this just shows a string saying so,
+	 * avoiding the awkwardness of a set of table headers without any rows.
+	 * 
+	 * Otherwise, it shows the table.
+	 */
 	public void showTableIfNotEmpty() {
 		if (pwyTable.getVisibleItemCount() == 0) {
 			emptyTableLabel.setVisible(true);
