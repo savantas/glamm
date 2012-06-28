@@ -125,6 +125,9 @@ public class AnnotatedMapData implements Serializable {
 	private AnnotatedMapDescriptor descriptor;
 	private String svgUrl;
 	private String iconUrl;
+	
+	private float svgWidth = 0;
+	private float svgHeight = 0;
 
 
 	@SuppressWarnings("unused")
@@ -152,7 +155,7 @@ public class AnnotatedMapData implements Serializable {
 		 *     WHERE R.am_id=M.id AND 
 		 *   	     E.amRxn_id = R.id AND 
 		 *   	     X.toXrefId = E.xrefId AND
-		 *    		 M.mapId = "map01100" AND		// or whatever map we're on
+		 *    		 M.mapId = "map01100" AND		// or whatever map we're on, based on the descriptor
 		 *   	     E.type = "REACTION";           // or != REACTION to get the compound db set.
 		 */
 
@@ -161,13 +164,13 @@ public class AnnotatedMapData implements Serializable {
 		rxnDbNames.add("LIGAND-RXN");
 
 		// allocate space for id2SvgElements
-		id2SvgElements = new HashMap<String, Set<OMSVGElement>>();
-		cpdSvgElements = new HashSet<OMSVGElement>();
-		rxnSvgElements = new HashSet<OMSVGElement>();		
+		id2SvgElements = new HashMap<String, Set<OMSVGElement>>(); // contains all id and svg elements present in the map
+		cpdSvgElements = new HashSet<OMSVGElement>();			   // contains all cpd svg elements present
+		rxnSvgElements = new HashSet<OMSVGElement>();			   // contains all rxn elements present
 
-		userId2SvgElements = new HashMap<String, Set<OMSVGElement>>();
-		userCpdSvgElements = new HashSet<OMSVGElement>();
-		userRxnSvgElements = new HashSet<OMSVGElement>();		
+		userId2SvgElements = new HashMap<String, Set<OMSVGElement>>();  // contains ONLY user-placed id/element sets
+		userCpdSvgElements = new HashSet<OMSVGElement>();				// contains ONLY user-placed cpd elements
+		userRxnSvgElements = new HashSet<OMSVGElement>();				// contains ONLY user-placed rxn elements
 		
 		userElement = null;
 
@@ -310,7 +313,6 @@ public class AnnotatedMapData implements Serializable {
 			return allSvgElements;
 		}
 
-
 		return null;
 	}
 
@@ -337,10 +339,11 @@ public class AnnotatedMapData implements Serializable {
 	 * @return The height attribute the SVG root element.
 	 */
 	public float getSvgHeight() {
-		float result = 0;
-		if(svgRoot.hasAttribute(Attribute.HEIGHT))
-			result = Float.parseFloat(svgRoot.getAttribute(Attribute.HEIGHT));
-		return result;
+		return svgHeight;
+//		float result = 0;
+//		if(svgRoot.hasAttribute(Attribute.HEIGHT))
+//			result = Float.parseFloat(svgRoot.getAttribute(Attribute.HEIGHT));
+//		return result;
 	}
 
 	/**
@@ -348,10 +351,11 @@ public class AnnotatedMapData implements Serializable {
 	 * @return The width attribute the SVG root element.
 	 */
 	public float getSvgWidth() {
-		float result = 0;
-		if(svgRoot.hasAttribute(Attribute.WIDTH))
-			result = Float.parseFloat(svgRoot.getAttribute(Attribute.WIDTH));
-		return result;
+		return svgWidth;
+//		float result = 0;
+//		if(svgRoot.hasAttribute(Attribute.WIDTH))
+//			result = Float.parseFloat(svgRoot.getAttribute(Attribute.WIDTH));
+//		return result;
 	}
 
 	/**
@@ -471,6 +475,25 @@ public class AnnotatedMapData implements Serializable {
 			if(g.hasAttribute(Attribute.CLASS) && g.getAttribute(Attribute.CLASS).equals(ElementClass.RXN.getCssClass()))
 				initRxnGroup(g);
 		}
+		
+		setSvgDimensions();
+	}
+
+	private void setSvgDimensions() {
+		
+		if(svgRoot.hasAttribute(Attribute.WIDTH))
+			svgWidth = Float.parseFloat(svgRoot.getAttribute(Attribute.WIDTH));
+
+		if(svgRoot.hasAttribute(Attribute.HEIGHT))
+			svgHeight = Float.parseFloat(svgRoot.getAttribute(Attribute.HEIGHT));
+	
+		if (userElement != null) {
+			if (userElement.hasAttribute(Attribute.WIDTH))
+				svgWidth = Float.parseFloat(userElement.getAttribute(Attribute.WIDTH));
+			
+			if (userElement.hasAttribute(Attribute.HEIGHT))
+				svgHeight = Float.parseFloat(userElement.getAttribute(Attribute.HEIGHT));
+		}
 	}
 	
 	/**
@@ -503,7 +526,6 @@ public class AnnotatedMapData implements Serializable {
 		
 		this.userElement = userElement;
 		getViewport().appendChild(userElement);
-//		OMElement userElement = newElement
 		
 		for (OMElement g : userElement.getElementsByTagName(SVGConstants.SVG_G_TAG)) {
 			if (g.hasAttribute(Attribute.CLASS) && g.getAttribute(Attribute.CLASS).equals(ElementClass.CPD.getCssClass()))
@@ -513,7 +535,8 @@ public class AnnotatedMapData implements Serializable {
 			if (g.hasAttribute(Attribute.CLASS) && g.getAttribute(Attribute.CLASS).equals(ElementClass.MAP.getCssClass()))
 				addUserMapGroup(g);
 		}
-
+		
+		setSvgDimensions();
 	}
 	
 	private void addUserCpdGroup(OMElement g) {
@@ -535,7 +558,10 @@ public class AnnotatedMapData implements Serializable {
 			}
 			for (OMSVGElement element : elements) {
 				element.setAttribute(Attribute.DEFAULT_COLOR, element.getAttribute(SVGConstants.SVG_FILL_ATTRIBUTE));
-				cpdSvgElements.add(element);
+				if (!cpdSvgElements.contains(element)) {
+					cpdSvgElements.add(element);
+					userCpdSvgElements.add(element);
+				}
 				elementsForId.add(element);
 				userElementsForId.add(element);
 			}
@@ -633,19 +659,24 @@ public class AnnotatedMapData implements Serializable {
 						id2SvgElements.get(key).remove(element);
 					}
 				}
+				if (id2SvgElements.get(key).isEmpty())
+					id2SvgElements.remove(key);
 			}
 			
 			for (OMSVGElement element : this.userCpdSvgElements) {
 				this.cpdSvgElements.remove(element);
 			}
+			userCpdSvgElements.clear();
 			
 			for (OMSVGElement element : this.userRxnSvgElements) {
 				this.rxnSvgElements.remove(element);
 			}
+			userRxnSvgElements.clear();
 			
 			getViewport().removeChild(userElement);
 			
 			userElement = null;
+			setSvgDimensions();
 		}
 	}
 }

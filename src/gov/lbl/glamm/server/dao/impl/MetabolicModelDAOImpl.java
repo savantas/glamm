@@ -65,6 +65,8 @@ public class MetabolicModelDAOImpl implements MetabolicModelDAO {
 		ids.add("R09232");
 		ids.add("R09233");
 		ids.add("R01281");
+		ids.add("R01954");
+		ids.add("R01085");
 		
 		ReactionDAO reactionDao = new ReactionGlammDAOImpl(sm);
 		Set<Reaction> reactions = reactionDao.getReactions(ids);

@@ -52,5 +52,8 @@ public class LoadingPresenter {
 			view.showLoading();
 	}
 	
+	public boolean finishedLoading() {
+		return loadingCount <= 0;
+	}
 	
 }

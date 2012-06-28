@@ -33,6 +33,12 @@
 		driver="org.gjt.mm.mysql.Driver" 
 		user="test" 
 		passwd="test"/>
+	<db
+		name="kbase"
+		uri="jdbc:mysql://db2.chicago.kbase.us/genomics"
+		driver="org.gjt.mm.mysql.Driver"
+		user="guest"
+		passwd="guest"/>
 	<db 
 		name="gobi" 
 		uri="jdbc:mysql://gobi.qb3.berkeley.edu/genomics_test" 

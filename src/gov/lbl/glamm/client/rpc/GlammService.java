@@ -5,6 +5,7 @@ import gov.lbl.glamm.client.model.AnnotatedMapDescriptor;
 import gov.lbl.glamm.client.model.Compound;
 import gov.lbl.glamm.client.model.FluxExperiment;
 import gov.lbl.glamm.client.model.Gene;
+import gov.lbl.glamm.client.model.GlammState;
 import gov.lbl.glamm.client.model.MetabolicModel;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.OverlayDataGroup;
@@ -213,6 +214,10 @@ public interface GlammService extends RemoteService {
 	 * @return a Map of data service information. Keys are the service name, and values are a list of parameter names for that service.
 	 */
 	public Map<String, List<String>> populateDataServices();
+	
+	public Organism getOrganismForTaxId(String taxId);
+	
+	public GlammState getStateFromHistoryToken(String token);
 	
 	/**
 	 * A debug rpc call that contacts the server without invoking the database.

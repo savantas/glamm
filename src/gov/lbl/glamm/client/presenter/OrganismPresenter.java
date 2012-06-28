@@ -1,5 +1,6 @@
 package gov.lbl.glamm.client.presenter;
 
+import gov.lbl.glamm.client.events.LoadingEvent;
 import gov.lbl.glamm.client.events.OrganismPickedEvent;
 import gov.lbl.glamm.client.events.OrganismUploadEvent;
 import gov.lbl.glamm.client.events.ViewResizedEvent;
@@ -335,7 +336,32 @@ public class OrganismPresenter {
 				eventBus.fireEvent(new OrganismPickedEvent(organism));
 		}
 	}
+	
+	public void resetOrganism() {
+		if (this.organism == null)
+			this.organism = Organism.globalMap();
+		
+		setOrganism(this.organism, false);
+	}
 
+	public void setOrganismById(final String orgId) {
+		
+		rpc.getOrganismForTaxId(orgId, new AsyncCallback<Organism>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert("RPC failed: getOrganismForTaxId");
+			}
+
+			@Override
+			public void onSuccess(Organism result) {
+				setOrganism(result, true);
+				
+			}
+			
+		});
+	}
+	
 	private void updatePopulatingStatus(final boolean donePopulating) {
 		final String POPULATING_TEXT = "Populating...";
 		if(donePopulating) {

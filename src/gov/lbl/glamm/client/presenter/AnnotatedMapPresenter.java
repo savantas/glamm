@@ -619,9 +619,21 @@ public class AnnotatedMapPresenter {
 
 		// bind map events
 		bindMapEvents();
+		
+		updateMapForOrganism(this.organism);
 
 		eventBus.fireEvent(new LoadingEvent(true));
 
+	}
+	
+	public void setOrganism(Organism organism) {
+		if (organism == null)
+			organism = Organism.globalMap();
+
+		this.organism = organism;
+		
+		if (mapData != null)
+			updateMapForOrganism(organism);
 	}
 
 	private void setTransform(final OMSVGElement element, final OMSVGMatrix matrix) {
@@ -808,110 +820,92 @@ public class AnnotatedMapPresenter {
 		}
 		else {
 			eventBus.fireEvent(new LoadingEvent(false));
-			/* 
-			 * 1. Get list of reactions from the model.
-			 * 2. Figure out set of reactions currently being displayed (by current map -- maybe query the mapData?)
-			 * 3. Figure out set of reactions NOT in the current map.
-			 * 4. Dim everything.
-			 * 5. Color/highlight current map reactions in the model.
-			 * 6. Construct SVG for reactions not currently in the map.
-			 * 7. Done!
-			 */
-			
-			rpc.getRxnsForOrganism(Organism.globalMap(), new AsyncCallback<Set<Reaction>>() {
-
+			executeOnMapElements(new MapElementCommand() {
 				@Override
-				public void onFailure(Throwable caught) {
-					eventBus.fireEvent(new LoadingEvent(true));
-					Window.alert("Remote procedure call failure: getRxnsForOrganism");
-				}
-
-				@Override
-				public void onSuccess(Set<Reaction> result) {
-					Set<Reaction> extraReactions = new HashSet<Reaction>();  // contains those reactions that need to be built as SVG
-					Set<Reaction> modelReactions = model.getReactions();	 // contains the model reactions.
-					for (Reaction rxn : modelReactions) {					 // figures out what set of model reactions aren't being shown on the current global map.
-						if (!result.contains(rxn)) 
-							extraReactions.add(rxn);
+				public void execute(OMSVGElement element) {
+					String defaultColor = element.getAttribute(AnnotatedMapData.Attribute.DEFAULT_COLOR);
+					element.setAttribute(AnnotatedMapData.Attribute.ABSENT, "true");
+					element.removeAttribute(AnnotatedMapData.Attribute.HAS_DATA);
+					element.removeAttribute(AnnotatedMapData.Attribute.SEARCH_TARGET);
+					element.removeAttribute(AnnotatedMapData.Attribute.ROUTE);
+					element.removeAttribute(AnnotatedMapData.Attribute.PATHWAY);
+					element.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, defaultColor);
+					if(element.getTagName().equals(SVGConstants.SVG_ELLIPSE_TAG)) {
+						element.setAttribute(SVGConstants.SVG_FILL_ATTRIBUTE, defaultColor);
+						element.removeAttribute(AnnotatedMapData.Attribute.CPD_DST);
+						element.removeAttribute(AnnotatedMapData.Attribute.CPD_SRC);
 					}
-					// Darken everything
-					executeOnMapElements(new MapElementCommand() {
-						@Override
-						public void execute(OMSVGElement element) {
-							String defaultColor = element.getAttribute(AnnotatedMapData.Attribute.DEFAULT_COLOR);
-							element.setAttribute(AnnotatedMapData.Attribute.ABSENT, "true");
-							element.removeAttribute(AnnotatedMapData.Attribute.HAS_DATA);
-							element.removeAttribute(AnnotatedMapData.Attribute.SEARCH_TARGET);
-							element.removeAttribute(AnnotatedMapData.Attribute.ROUTE);
-							element.removeAttribute(AnnotatedMapData.Attribute.PATHWAY);
-							element.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, defaultColor);
-							if(element.getTagName().equals(SVGConstants.SVG_ELLIPSE_TAG)) {
-								element.setAttribute(SVGConstants.SVG_FILL_ATTRIBUTE, defaultColor);
-								element.removeAttribute(AnnotatedMapData.Attribute.CPD_DST);
-								element.removeAttribute(AnnotatedMapData.Attribute.CPD_SRC);
-							}
-						}
-					});
-					
-					// Light up all the model reactions that are in the global map.
-					for(final Reaction rxn : modelReactions) {
-						Set<Xref> xrefs = rxn.getXrefSet().getXrefs();
-
-						for(final Xref xref : xrefs) {
-
-							String rxnId = xref.getXrefId();
-
-							// set all svg elements corresponding with this xref to present
-							Set<OMSVGElement> elements = mapData.getSvgElementsForId(rxnId);
-							if(elements == null) 
-								continue;
-
-							for(OMSVGElement element : elements) 
-								element.setAttribute(AnnotatedMapData.Attribute.ABSENT, "false");
-
-							// get the compound nodes associated with this reaction and set them to present
-							Set<MNNode> mnNodes = mapData.getDescriptor().getMetabolicNetwork().getNodesForRxnId(rxnId);
-
-							if(mnNodes == null)
-								continue;
-
-							for(final MNNode mnNode : mnNodes) {
-
-								{
-									String cpdId = mnNode.getCpd0ExtId();
-									Set<OMSVGElement> cpdElements = mapData.getSvgElementsForId(cpdId);
-									if(cpdElements != null) {
-										for(OMSVGElement cpdElement : cpdElements) {
-											cpdElement.setAttribute(AnnotatedMapData.Attribute.ABSENT, "false");
-										}
-									}
-								}
-
-								{
-									String cpdId = mnNode.getCpd1ExtId();
-									Set<OMSVGElement> cpdElements = mapData.getSvgElementsForId(cpdId);
-									if(cpdElements != null) {
-										for(OMSVGElement cpdElement : cpdElements) {
-											cpdElement.setAttribute(AnnotatedMapData.Attribute.ABSENT, "false");
-										}
-									}
-								}
-							}
-						}
-					}
-					
-					// Build SVG elements for the new reactions and append them to the current map.
-					OMElement newGroup = ReactionSvgBuilder.buildReactionSvg(extraReactions, mapData, mapData.getSvgWidth(), 0, 500, mapData.getSvgHeight());
-					mapData.setUserElement(newGroup);
-					eventBus.fireEvent(new LoadingEvent(true));		
-					
-					updateMapForFluxes(new FluxExperiment(model.getModelId(), "1"));
 				}
-				
 			});
+			
+			Set<Reaction> extraReactions = new HashSet<Reaction>();
+			Set<Reaction> modelReactions = model.getReactions();
+
+			// Light up all the model reactions that are in the global map.
+			for(final Reaction rxn : modelReactions) {
+				boolean usedRxn = false;
+				Set<Xref> xrefs = rxn.getXrefSet().getXrefs();
+
+				for(final Xref xref : xrefs) {
+
+					String rxnId = xref.getXrefId();
+
+					// set all svg elements corresponding with this xref to present
+					Set<OMSVGElement> elements = mapData.getSvgElementsForId(rxnId);
+					if(elements == null)
+						continue;
+
+					usedRxn = true;
+					for(OMSVGElement element : elements) 
+						element.setAttribute(AnnotatedMapData.Attribute.ABSENT, "false");
+
+					// get the compound nodes associated with this reaction and set them to present
+					Set<MNNode> mnNodes = mapData.getDescriptor().getMetabolicNetwork().getNodesForRxnId(rxnId);
+
+					if(mnNodes == null)
+						continue;
+
+					for(final MNNode mnNode : mnNodes) {
+
+						{
+							String cpdId = mnNode.getCpd0ExtId();
+							Set<OMSVGElement> cpdElements = mapData.getSvgElementsForId(cpdId);
+							if(cpdElements != null) {
+								for(OMSVGElement cpdElement : cpdElements) {
+									cpdElement.setAttribute(AnnotatedMapData.Attribute.ABSENT, "false");
+								}
+							}
+						}
+
+						{
+							String cpdId = mnNode.getCpd1ExtId();
+							Set<OMSVGElement> cpdElements = mapData.getSvgElementsForId(cpdId);
+							if(cpdElements != null) {
+								for(OMSVGElement cpdElement : cpdElements) {
+									cpdElement.setAttribute(AnnotatedMapData.Attribute.ABSENT, "false");
+								}
+							}
+						}
+					}
+				}
+				if (!usedRxn)
+					extraReactions.add(rxn);
+				
+			}
+			// Build SVG elements for the new reactions and append them to the current map.
+			if (!extraReactions.isEmpty()) {
+				OMElement newGroup = ReactionSvgBuilder.buildReactionSvg(extraReactions, mapData, mapData.getSvgWidth(), 0, 500, mapData.getSvgHeight());
+				mapData.setUserElement(newGroup);
+			}
+
+			fitMapToWindow();
+			eventBus.fireEvent(new LoadingEvent(true));		
+			updateMapForFluxes(new FluxExperiment(model.getModelId(), "1"));
 		}
+		
 	}
 	
+
 	/**
 	 * Darkens the reactions for which no genes are specified in the target organism.  If a compound
 	 * has no reactions connected to it, it will also be darkened.
