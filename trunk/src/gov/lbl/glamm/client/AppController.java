@@ -25,7 +25,7 @@ import gov.lbl.glamm.client.events.SamplePickedEvent;
 import gov.lbl.glamm.client.events.SearchTargetEvent;
 import gov.lbl.glamm.client.events.ViewResizedEvent;
 import gov.lbl.glamm.client.model.AnnotatedMapData;
-import gov.lbl.glamm.client.model.Organism;
+import gov.lbl.glamm.client.model.GlammState;
 import gov.lbl.glamm.client.model.Sample;
 import gov.lbl.glamm.client.model.User;
 import gov.lbl.glamm.client.presenter.AMDPresenter;
@@ -73,14 +73,17 @@ import gov.lbl.glamm.client.view.PanZoomControlView;
 import gov.lbl.glamm.client.view.PwyPopupView;
 import gov.lbl.glamm.client.view.RetrosynthesisView;
 import gov.lbl.glamm.client.view.RxnPopupView;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
@@ -283,8 +286,39 @@ public class AppController {
 		mainPanel.setStylePrimaryName("glamm-global-map");
 		layout.add(mainPanel);
 
+		rpc.getStateFromHistoryToken(History.getToken(), new AsyncCallback<GlammState>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert("Unable to resolve optional state.\nStarting with default options...");
+				initialize(GlammState.defaultState());
+			}
+			
+			@Override
+			public void onSuccess(GlammState state) {
+				initialize(state);
+			}
+		});
+	}
+	
+	private void initialize(GlammState state) {
+		
+		/**
+		 * This kinda breaks the MVC paradigm... but I think it's the best way to initialize without
+		 * potentially throwing a cascade of RPCs before the map itself is loaded.
+		 * 
+		 * That is, once the map gets loaded, everything should know what the state is supposed to look like.
+		 */
+		retrosynthesisPresenter.setOrganism(state.getOrganism());
+		rxnElementPresenter.setOrganism(state.getOrganism());
+		pwyPresenter.setOrganism(state.getOrganism());
+		experimentPresenter.setOrganism(state.getOrganism());
+		organismPresenter.setOrganism(state.getOrganism(), false);
+		mapElementPresenter.setOrganism(state.getOrganism());
+		experimentUploadPresenter.setOrganism(state.getOrganism());
+		mapPresenter.setOrganism(state.getOrganism());
+		
 		loadMapPanel(); // always load first
-		loadAnnotatedMapPicker();
+		loadAnnotatedMapPicker(state.getAMDId());
 		loadCpdDisambiguation();
 		loadInterpolator();
 		loadLoadingPanel();
@@ -293,18 +327,19 @@ public class AppController {
 		loadPwyElementPopup();
 		loadMiniMapPanel();
 		loadPanZoomControl();
-		loadOrganismPicker();
+/**/	loadOrganismPicker();
 		loadOrganismUpload();
-		loadExperimentPicker();
+/**/	loadExperimentPicker();
 		loadExperimentUpload();
 		loadCitations();
 		loadHelp();
 		loadRetrosynthesis();
-// Not for this live version!
-//		loadMetabolicModelPicker();
-//		loadDataOverlayControl();
-//		loadDataOverlayUpload();
-//		loadDataOverlayService();
+
+/**/	loadMetabolicModelPicker();
+/**/	loadDataOverlayControl();
+		loadDataOverlayUpload();
+/**/	loadDataOverlayService();
+
 		loadLogin(); // always load last
 
 		onResize();
@@ -317,9 +352,38 @@ public class AppController {
 			}
 		});
 
-		
+		initHistory();
 	}
+	
+	public void initHistory() {
+		History.addValueChangeHandler(new ValueChangeHandler<String>() {
+			public void onValueChange(ValueChangeEvent<String> event) {
+				final String token = event.getValue();
+				
+				rpc.getStateFromHistoryToken(token, new AsyncCallback<GlammState>() {
 
+					@Override
+					public void onFailure(Throwable caught) {
+						Window.alert("RPC failed: getStateFromHistoryToken\nNot changing state.");
+						
+					}
+
+					@Override
+					public void onSuccess(GlammState state) {
+						/**
+						 * Only set if they're different from the state we're loading!
+						 * Don't need to refire loading events if we're just loading up the same species again.
+						 * 
+						 * Then again, this should be handled by the presenters... right?
+						 */
+						organismPresenter.setOrganism(state.getOrganism(), true);
+						amdPresenter.selectMap(state.getAMDId());
+					}
+				});
+			}
+		});
+	}
+	
 	/**
 	 * Computes widget position when the window is resized.
 	 * All resize computations are performed at the end of the current event loop.
@@ -341,6 +405,7 @@ public class AppController {
 					mainPanel.setWidgetPosition(experimentView, retrosynthesisView.getOffsetWidth() + organismView.getOffsetWidth() + 10, 0);
 				else
 					mainPanel.setWidgetPosition(experimentView, 0, organismView.getOffsetHeight() + 5);
+				
 				mainPanel.setWidgetPosition(miniMapView, 0, Window.getClientHeight() - miniMapView.getOffsetHeight());
 				mainPanel.setWidgetPosition(panZoomView, miniMapView.getOffsetWidth() + 1, Window.getClientHeight() - panZoomView.getOffsetHeight());
 				mainPanel.setWidgetPosition(amdView, 0, Window.getClientHeight() - amdView.getOffsetHeight() - miniMapView.getOffsetHeight() - 5);
@@ -348,8 +413,8 @@ public class AppController {
 				mainPanel.setWidgetPosition(interpolatorView, Window.getClientWidth() - interpolatorView.getOffsetWidth(), Window.getClientHeight() - citationsView.getOffsetHeight() - interpolatorView.getOffsetHeight() - 5);
 				mainPanel.setWidgetPosition(helpView, Window.getClientWidth() - helpView.getOffsetWidth(), 0);
 				mainPanel.setWidgetPosition(loginView, Window.getClientWidth() - loginView.getOffsetWidth() - helpView.getOffsetWidth() - 5, 0);
-//				mainPanel.setWidgetPosition(metabolicModelView, 0, Window.getClientHeight() - miniMapView.getOffsetHeight() - amdView.getOffsetHeight() - metabolicModelView.getOffsetHeight() - 10);
-//				mainPanel.setWidgetPosition(dataOverlayView, panZoomView.getOffsetWidth() + miniMapView.getOffsetWidth() + 10, Window.getClientHeight() - dataOverlayView.getOffsetHeight());
+				mainPanel.setWidgetPosition(metabolicModelView, 0, Window.getClientHeight() - miniMapView.getOffsetHeight() - amdView.getOffsetHeight() - metabolicModelView.getOffsetHeight() - 10);
+				mainPanel.setWidgetPosition(dataOverlayView, panZoomView.getOffsetWidth() + miniMapView.getOffsetWidth() + 10, Window.getClientHeight() - dataOverlayView.getOffsetHeight());
 			}
 		});
 	}
@@ -400,9 +465,10 @@ public class AppController {
 		metabolicModelPresenter.populate("0");
 	}
 	
-	private void loadAnnotatedMapPicker() {
+	private void loadAnnotatedMapPicker(String amdId) {
 		mainPanel.add(amdView, 0, 0);
-		amdPresenter.populate("map01100");
+//		amdPresenter.populate("map01100");
+		amdPresenter.populate(amdId);
 	}
 
 	private void loadCpdDisambiguation() {
@@ -452,7 +518,7 @@ public class AppController {
 		eventBus.addHandler(AnnotatedMapDataLoadedEvent.TYPE, new AnnotatedMapDataLoadedEvent.Handler() {
 			@Override
 			public void onLoaded(AnnotatedMapDataLoadedEvent event) {
-				mapElementPresenter.setOrganism(Organism.globalMap());
+//				mapElementPresenter.setOrganism(Organism.globalMap());
 				mapElementPresenter.setSample(null);
 			}
 		});
@@ -500,7 +566,7 @@ public class AppController {
 		eventBus.addHandler(AnnotatedMapDataLoadedEvent.TYPE, new AnnotatedMapDataLoadedEvent.Handler() {
 			@Override
 			public void onLoaded(AnnotatedMapDataLoadedEvent event) {
-				rxnElementPresenter.setOrganism(Organism.globalMap());
+//				rxnElementPresenter.setOrganism(Organism.globalMap());
 				rxnElementPresenter.setSample(null);
 			}
 		});
@@ -569,7 +635,7 @@ public class AppController {
 		eventBus.addHandler(AnnotatedMapDataLoadedEvent.TYPE, new AnnotatedMapDataLoadedEvent.Handler() {
 			@Override
 			public void onLoaded(AnnotatedMapDataLoadedEvent event) {
-				pwyPresenter.setOrganism(Organism.globalMap());
+//				pwyPresenter.setOrganism(Organism.globalMap());
 				pwyPresenter.setSample(null);
 			}
 		});
@@ -734,7 +800,6 @@ public class AppController {
 						mapPresenter.updateMapForPathway(event.getIds());
 					else {
 						mapPresenter.updateMapForPathway(null);
-//						mapPresenter.addSvgElement();
 					}
 				}
 			}
@@ -778,11 +843,12 @@ public class AppController {
 	private void loadOrganismPicker() {
 		mainPanel.add(organismView, 0, 0);
 		organismPresenter.populate();
-
+		
 		eventBus.addHandler(AnnotatedMapDataLoadedEvent.TYPE, new AnnotatedMapDataLoadedEvent.Handler() {
 			@Override
 			public void onLoaded(AnnotatedMapDataLoadedEvent event) {
-				organismPresenter.setOrganism(Organism.globalMap(), false);
+//				organismPresenter.setOrganism(Organism.globalMap(), false);
+				organismPresenter.resetOrganism();
 			}
 		});
 
@@ -837,7 +903,7 @@ public class AppController {
 		eventBus.addHandler(AnnotatedMapDataLoadedEvent.TYPE, new AnnotatedMapDataLoadedEvent.Handler() {
 			@Override
 			public void onLoaded(AnnotatedMapDataLoadedEvent event) {
-				experimentPresenter.setOrganism(Organism.globalMap());
+//				experimentPresenter.setOrganism(Organism.globalMap());
 			}
 		});
 
@@ -1026,7 +1092,7 @@ public class AppController {
 			@Override
 			public void onLoaded(AnnotatedMapDataLoadedEvent event) {
 				retrosynthesisPresenter.setMapData(event.getMapData());
-				retrosynthesisPresenter.setOrganism(Organism.globalMap());
+//				retrosynthesisPresenter.setOrganism(Organism.globalMap());
 				retrosynthesisPresenter.populate();
 				retrosynthesisPresenter.reset();
 			}

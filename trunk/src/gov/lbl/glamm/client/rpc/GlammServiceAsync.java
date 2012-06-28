@@ -5,6 +5,7 @@ import gov.lbl.glamm.client.model.AnnotatedMapDescriptor;
 import gov.lbl.glamm.client.model.Compound;
 import gov.lbl.glamm.client.model.FluxExperiment;
 import gov.lbl.glamm.client.model.Gene;
+import gov.lbl.glamm.client.model.GlammState;
 import gov.lbl.glamm.client.model.MetabolicModel;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.OverlayDataGroup;
@@ -51,8 +52,10 @@ public interface GlammServiceAsync {
 	public void getFluxes(FluxExperiment exp, AsyncCallback<Set<Reaction>> callback);
 	public void getOverlayData(String text, AsyncCallback<Set<OverlayDataGroup>> callback);
 	public void getOverlayDataFromService(String serviceName, Map<String, String> parameters, AsyncCallback<Set<OverlayDataGroup>> callback);
-	public void populateDataServices(AsyncCallback<Map<String, List<String>>> result);
+	public void populateDataServices(AsyncCallback<Map<String, List<String>>> callback);
+	public void getOrganismForTaxId(final String taxId, AsyncCallback<Organism> callback);
 	
 	public void nonDBTest(AsyncCallback<String> callback);
+	public void getStateFromHistoryToken(String token, AsyncCallback<GlammState> asyncCallback);
 	
 }

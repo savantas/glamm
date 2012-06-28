@@ -77,6 +77,10 @@ public class ReactionSvgBuilder {
 			}
 		}
 		
+		group.setAttribute(Attribute.WIDTH, String.valueOf(curX + width + MARGIN_X));
+		group.setAttribute(Attribute.HEIGHT, String.valueOf(maxHeight));
+		
+		
 		return group;
 	}
 	
@@ -318,71 +322,4 @@ public class ReactionSvgBuilder {
 			}
 		});
 	}
-	
-//	public static OMElement buildTestSvg(AnnotatedMapData mapData) {
-//
-//		// Transform from client space (x, y) to SVG space
-////		OMSVGPoint p = mapData.getSvg().createSVGPoint(x, y);
-////		OMSVGMatrix m = mapData.getViewport().getCTM().inverse();
-////		p = p.matrixTransform(m);
-//		
-//		// The owner document must create the initial group element
-//		OMElement g = ((OMSVGDocument)(mapData.getSvg().getOwnerDocument())).createSVGGElement();
-//		g.setAttribute("class", ElementClass.CPD.getCssClass());
-//		g.setAttribute(Attribute.COMPOUND, "C00110");
-//
-//		// It must also create the ellipse element.
-//		OMSVGEllipseElement cpd = ((OMSVGDocument)(mapData.getSvg().getOwnerDocument())).createSVGEllipseElement(3800, 2250, 7.0f, 7.0f);
-//		
-//		// Flesh out its attributes
-//		cpd.setAttribute(Attribute.DEFAULT_COLOR, SVGConstants.CSS_WHITE_VALUE);
-//		cpd.setAttribute(Attribute.CLASS, ElementClass.CPD.getCssClass());
-//		cpd.setAttribute(SVGConstants.CSS_FILL_PROPERTY, SVGConstants.CSS_WHITE_VALUE);
-//		cpd.setAttribute(SVGConstants.CSS_STROKE_PROPERTY, SVGConstants.CSS_WHITE_VALUE);
-//		cpd.setAttribute(SVGConstants.CSS_STROKE_WIDTH_PROPERTY, CPD_STROKE_WIDTH);
-//        cpd.setAttribute(Attribute.STATE, State.DEFAULT);
-//        
-//        // Put the new ellipse into the <g> element
-//        g.appendChild(cpd);
-//        
-//        final String tagName = SVGConstants.SVG_ELLIPSE_TAG;
-//        
-//        // Give it the mouse handlers that highlight/de-highlight on mouseover
-//		((HasMouseOverHandlers)g).addMouseOverHandler(new MouseOverHandler() {
-//			public void onMouseOver(MouseOverEvent event) {
-//				Element element = event.getRelativeElement();
-//				if(element != null) {
-//
-//					NodeList<Element> siblings = element.getElementsByTagName(tagName);
-//					//NodeList<Element> siblings = element.getParentElement().getElementsByTagName(tagName);
-//					for(int i = 0; i < siblings.getLength(); i++) {
-//						final Element sibling = siblings.getItem(i);
-//						if(!sibling.hasAttribute(AnnotatedMapData.Attribute.STATE) || 
-//								!sibling.getAttribute(AnnotatedMapData.Attribute.STATE).equals(State.SELECTED))
-//							sibling.setAttribute(AnnotatedMapData.Attribute.STATE, State.MOUSEOVER);
-//					}
-//				}
-//			}
-//		});
-//
-//		((HasMouseOutHandlers)g).addMouseOutHandler(new MouseOutHandler() {
-//			public void onMouseOut(MouseOutEvent event) {
-//				Element element = event.getRelativeElement();
-//				if(element != null) {
-//					NodeList<Element> siblings = element.getElementsByTagName(tagName);
-//					for(int i = 0; i < siblings.getLength(); i++) {
-//						final Element sibling = siblings.getItem(i);
-//						if(!sibling.hasAttribute(AnnotatedMapData.Attribute.STATE) || 
-//								!sibling.getAttribute(AnnotatedMapData.Attribute.STATE).equals(State.SELECTED))
-//							sibling.setAttribute(AnnotatedMapData.Attribute.STATE, State.DEFAULT);
-//					}
-//				}
-//			}
-//		});
-//        
-//		return g;
-//		
-//		// Put the new ellipse group into the viewport. Done!
-////		mapData.getViewport().appendChild(g);
-//	}
 }

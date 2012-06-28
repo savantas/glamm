@@ -5,6 +5,7 @@ import gov.lbl.glamm.client.model.AnnotatedMapDescriptor;
 import gov.lbl.glamm.client.model.Compound;
 import gov.lbl.glamm.client.model.FluxExperiment;
 import gov.lbl.glamm.client.model.Gene;
+import gov.lbl.glamm.client.model.GlammState;
 import gov.lbl.glamm.client.model.MetabolicModel;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.OverlayDataGroup;
@@ -20,8 +21,10 @@ import gov.lbl.glamm.server.actions.GenPwyPopup;
 import gov.lbl.glamm.server.actions.GetAnnotatedMapDescriptors;
 import gov.lbl.glamm.server.actions.GetAvailableExperimentTypes;
 import gov.lbl.glamm.server.actions.GetFluxes;
+import gov.lbl.glamm.server.actions.GetGlammState;
 import gov.lbl.glamm.server.actions.GetMetabolicModel;
 import gov.lbl.glamm.server.actions.GetGroupData;
+import gov.lbl.glamm.server.actions.GetOrganism;
 import gov.lbl.glamm.server.actions.GetPathways;
 import gov.lbl.glamm.server.actions.GetReactions;
 import gov.lbl.glamm.server.actions.GetRxnsForOrganism;
@@ -217,9 +220,21 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	public Set<OverlayDataGroup> getOverlayDataFromService(String serviceName, Map<String, String> parameters) {
 		return GetGroupData.getOverlayDataFromService(getGlammSession(), serviceName, parameters);
 	}
-	
+
+	@Override
 	public Map<String, List<String>> populateDataServices() {
 		return PopulateDataServices.populateDataServices(getGlammSession());
 	}
 
+	@Override
+	public Organism getOrganismForTaxId(String taxId) {
+		return GetOrganism.getOrganismForTaxId(getGlammSession(), taxId);
+	}
+	
+	@Override
+	public GlammState getStateFromHistoryToken(String token) {
+		GlammState state = GetGlammState.getStateFromHistoryToken(getGlammSession(), token);
+//		return GetGlammState.getStateFromHistoryToken(getGlammSession(), token);
+		return state;
+	}
 }
