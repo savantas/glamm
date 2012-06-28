@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+
+    <session-factory>
+
+        <!-- Database connection settings -->
+        <property name="connection.driver_class">org.gjt.mm.mysql.Driver</property>
+        <property name="connection.url">jdbc:mysql://db2.chicago.kbase.us/glamm</property>
+        <property name="connection.username">guest</property>
+        <property name="connection.password">guest</property>
+        <property name="hibernate.c3p0.min_size">3</property>
+        <property name="hibernate.c3p0.max_size">15</property>
+        <property name="hibernate.c3p0.timeout">20</property>
+        <property name="hibernate.c3p0.max_statements">10</property>
+
+        <!-- SQL dialect -->
+        <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+
+        <!-- Enable Hibernate's automatic session context management -->
+        <property name="current_session_context_class">thread</property>
+
+        <!-- Disable the second-level cache  -->
+        <property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
+
+        <!-- Echo all executed SQL to stdout -->
+        <property name="show_sql">false</property>
+
+        <!-- Drop and re-create the database schema on startup -->
+        <property name="hbm2ddl.auto">update</property>
+
+        <mapping class="gov.lbl.glammdb.domain.PersistentAMRxn"/>
+        <mapping class="gov.lbl.glammdb.domain.PersistentAMRxnElement"/>
+        <mapping class="gov.lbl.glammdb.domain.PersistentAnnotatedMap"/>
+        <mapping class="gov.lbl.glammdb.domain.PersistentPathway"/>
+        <mapping class="gov.lbl.glammdb.domain.PersistentPwyElement"/>
+        
+
+    </session-factory>
+
+</hibernate-configuration>
