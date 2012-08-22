@@ -11,7 +11,7 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
-public class AllEntitiesModel implements KbaseServiceCall {
+public class GetAllEntitiesModel implements KbaseServiceCall {
 	
 	private String version = "1.1";
 	private String method = "CDMI_EntityAPI.all_entities_Model";
@@ -19,7 +19,7 @@ public class AllEntitiesModel implements KbaseServiceCall {
 	private int first;
 	private int count;
 	
-	public AllEntitiesModel(int first, int count, List<String> fields) {
+	public GetAllEntitiesModel(int first, int count, List<String> fields) {
 		this.first = first;
 		this.count = count;
 		this.fields = fields;

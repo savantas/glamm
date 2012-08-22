@@ -1027,7 +1027,7 @@ public class AnnotatedMapPresenter {
 		});
 	}
 	
-	public void updateMapForOverlayData(final Set<OverlayDataGroup> dataSet) {
+	public void updateMapForGroupData(final Set<OverlayDataGroup> dataSet) {
 		
 		eventBus.fireEvent(new LoadingEvent(false));
 		
@@ -1035,19 +1035,11 @@ public class AnnotatedMapPresenter {
 		// Clunky. Do something more logical later. TODO
 		if (dataSet == null || dataSet.isEmpty()) {
 			updateMapForOrganism(this.organism);
-			mapData.removeUserElement();
 			eventBus.fireEvent(new LoadingEvent(true));
 			return;
 		}
 		
 		// Otherwise, do some kind of colored overlay.
-		
-		Set<Reaction> dataRxns = new HashSet<Reaction>();
-		
-		for (OverlayDataGroup group : dataSet)
-			dataRxns.addAll(group.getAllReactions());
-		
-		addUserReactions(dataRxns);
 		
 		executeOnMapElements(new MapElementCommand() {
 			@Override
@@ -1069,7 +1061,7 @@ public class AnnotatedMapPresenter {
 		
 		for (OverlayDataGroup group : dataSet) {
 			String cssColor = group.getCssColor();
-			Set<HasType> elements = group.getElementSet();
+			Set<HasType> elements = group.getAllElements();
 			
 			for(HasType element : elements) {
 
@@ -1077,12 +1069,9 @@ public class AnnotatedMapPresenter {
 				if(svgElements == null)
 					continue;
 				
-//				element.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, cssColor);
-
 				for(OMSVGElement svgElement : svgElements) {						
 					svgElement.removeAttribute(AnnotatedMapData.Attribute.ABSENT);
 					svgElement.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, cssColor);
-//					svgElement.setAttribute(AnnotatedMapData.Attribute.ROUTE, cssColor);
 				}
 				
 			}

@@ -118,7 +118,6 @@ public class GroupDataServicePresenter {
 		for (String paramName : dataServices.get(serviceName)) {
 			parameters.put(paramName, paramValue);
 		}
-		
 				
 		eventBus.fireEvent(new LoadingEvent(false));
 		rpc.getOverlayDataFromService(serviceName, parameters, new AsyncCallback<Set<OverlayDataGroup>>() {

@@ -138,12 +138,6 @@ public class ReactionGlammDAOImpl implements ReactionDAO {
 
 		Map<String, Reaction> def2Rxn = new HashMap<String, Reaction>();
 
-//		String sql = "select R.guid, E.ecNum, R.definition, X.toXrefId, X.xrefDbName " +
-//		"from glamm.GlammEnzyme E " +
-//		"right outer join glamm.GlammReaction R on (E.reactionGuid=R.guid) " +
-//		"join glamm.GlammXref X on (X.fromGuid=R.guid) " +
-//		"where X.toXrefId in (" + GlammUtils.joinCollection(rxnIds) + ");"; 
-
 		String sql = "select R.guid, E.ecNum, R.definition, X.toXrefId, X.xrefDbName, S.synonym " +
 		"from glamm.GlammEnzyme E " +
 		"right outer join glamm.GlammReaction R on (E.reactionGuid=R.guid) " +

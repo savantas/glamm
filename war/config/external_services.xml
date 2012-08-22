@@ -1,6 +1,12 @@
 <?xml version="1.0"?>
 <DataServices>
-	<Service name="RegPrecise Regulons" url="http://regprecise.lbl.gov/Services/rest/glammElements">
-		<Parameter name="MO taxonomy id" extName="taxonomyId" />
+	<Service name="RegPrecise Species Regulons" url="http://regprecise.lbl.gov/Services/rest/glammElements">
+		<Parameter displayName="MO taxonomy id" extName="taxonomyId" urlName="tId" />
+	</Service>
+	<Service name="RegPrecise TF Family" url="http://regprecise.lbl.gov/Services/rest/">
+		<Parameter displayName="TF Family id" extName="tfFamilyId" urlName="tfId" />
+	</Service>
+	<Service name="RegPrecise Single Regulon" url="http://regprecise.lbl.gov/Services/rest/">
+		<Parameter displayName="Regulon id" extName="regId" urlName="rId" />
 	</Service>
 </DataServices>

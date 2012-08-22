@@ -135,7 +135,7 @@ public class GetSample  {
 						rxn.addGene(gene);
 			}
 		}
-		
+
 		return rxns;
 	}
 	

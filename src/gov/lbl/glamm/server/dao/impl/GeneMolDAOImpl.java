@@ -256,8 +256,8 @@ public class GeneMolDAOImpl implements GeneDAO {
 			"left outer join Synonym Syn on (Syn.locusId=L2E.locusId) " +
 			"where L.priority=1 and ";
 			
-			if (taxonomyId != null && !taxonomyId.isEmpty())
-				sql += "S.taxonomyId=" + taxonomyId + " and ";
+//			if (taxonomyId != null && !taxonomyId.isEmpty())
+//				sql += "S.taxonomyId=" + taxonomyId + " and ";
 			
 			sql += "L2E.locusId in (" + GlammUtils.joinArray(extIds.toArray()) + ");";
 

@@ -1,9 +1,15 @@
 package gov.lbl.glamm.server.dao.impl;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import gov.lbl.glamm.client.model.FluxExperiment;
 import gov.lbl.glamm.client.model.Measurement;
@@ -97,5 +103,30 @@ public class MetabolicModelDAOImpl implements MetabolicModelDAO {
 		}
 		return resultSet;
 	}
-
+	
+	public MetabolicModel getMetabolicModelFromService(String serviceUrl) {
+		
+//		if (serviceUrl == null)
+//			return null;
+//		
+//		String uri = serviceUrl + buildParameterString(parameters);
+//
+//		try {
+//			URL url = new URL(uri);
+//			
+//			ObjectMapper mapper = new ObjectMapper();
+//			
+//			InputStream stream = url.openStream();
+//			KBaseMetabolicModel kbaseModel = mapper.readValue(stream, KBaseMetabolicModel.class);
+//			stream.close();
+//		}
+//		catch (MalformedURLException e) {
+//			System.out.println(e.getLocalizedMessage());
+//		} catch (IOException e) {
+//			System.out.println(e.getLocalizedMessage());
+//		}
+		
+		return new MetabolicModel("");
+	}
+		
 }

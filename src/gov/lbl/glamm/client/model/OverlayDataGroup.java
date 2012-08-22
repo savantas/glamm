@@ -4,9 +4,13 @@ import gov.lbl.glamm.client.model.interfaces.HasType;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+
+import com.google.gwt.view.client.ProvidesKey;
 
 /**
  * Class for describing overlay data that has been separated into sets.
@@ -26,12 +30,12 @@ public class OverlayDataGroup implements Serializable {
 	 */
 	private static final List<String> cssColors = new ArrayList<String>();
 	static {
-		cssColors.add("red");
-		cssColors.add("yellow");
-		cssColors.add("orange");
-		cssColors.add("green");
 		cssColors.add("cyan");
+		cssColors.add("yellow");
+		cssColors.add("red");
+		cssColors.add("green");
 		cssColors.add("blue");
+		cssColors.add("orange");
 		cssColors.add("violet");
 		cssColors.add("magenta");
 		cssColors.add("gray");
@@ -42,12 +46,26 @@ public class OverlayDataGroup implements Serializable {
 	private String name = "";
 	private String source = "";
 	private String cssColor = "white";
-	private Set<HasType> dataGroup;
+//	private Set<HasType> dataGroup;
+	private Set<Gene> geneGroup;
+	private Set<Compound> compoundGroup;
+	private Set<Reaction> reactionGroup;
+	
+	private Map<String, Reaction> def2Reaction; // reaction definition --> reaction. should be 1 to 1, right?
 	private String url;
 	
+	/**
+	 * Key provider. 
+	 */
+	public static final transient ProvidesKey<OverlayDataGroup> KEY_PROVIDER = new ProvidesKey<OverlayDataGroup>() {
+		public Object getKey(OverlayDataGroup item) {
+			return item == null ? null : item.getName() + "_" + item.getId();
+		}
+	};
+
 	@SuppressWarnings("unused")
 	private OverlayDataGroup() { }
-	
+
 	/**
 	 * Constructor. When initializing a set, it needs an id and a name.
 	 * @param id
@@ -56,7 +74,11 @@ public class OverlayDataGroup implements Serializable {
 	public OverlayDataGroup(String id, String name) {
 		this.id = id;
 		this.name = name;
-		dataGroup = new HashSet<HasType>();
+//		dataGroup = new HashSet<HasType>();
+		geneGroup = new HashSet<Gene>();
+		compoundGroup = new HashSet<Compound>();
+		reactionGroup = new HashSet<Reaction>();
+		def2Reaction = new HashMap<String, Reaction>();
 		cssColor = cssColors.get(colorPointer++ % cssColors.size());
 		url = null;
 	}
@@ -112,16 +134,35 @@ public class OverlayDataGroup implements Serializable {
 	 * Gets the set of all elements of the group
 	 * @return a Set of all elements in the data group as HasTypes
 	 */
-	public Set<HasType> getElementSet() {
-		return dataGroup;
-	}
+//	public Set<HasType> getElementSet() {
+//		return dataGroup;
+//	}
 	
 	/**
 	 * Adds the given element to the group
 	 * @param element the element to add to the group
 	 */
-	public void addGroupElement(HasType element) {
-		dataGroup.add(element);
+	public void addElement(HasType element) {
+		if (element.getType() == Reaction.TYPE)
+			addReaction((Reaction)element);
+		else if (element.getType() == Compound.TYPE)
+			addCompound((Compound)element);
+		else if (element.getType() == Gene.TYPE)
+			addGene((Gene)element);
+//		dataGroup.add(element);
+	}
+	
+	public void addReaction(Reaction rxn) {
+		reactionGroup.add(rxn);
+		def2Reaction.put(rxn.getDefinition(), rxn);
+	}
+	
+	public void addCompound(Compound cpd) {
+		compoundGroup.add(cpd);
+	}
+	
+	public void addGene(Gene gene) {
+		geneGroup.add(gene);
 	}
 	
 	/**
@@ -129,7 +170,8 @@ public class OverlayDataGroup implements Serializable {
 	 * @return true if the data group is empty.
 	 */
 	public boolean isEmpty() {
-		return dataGroup.isEmpty();
+//		return dataGroup.isEmpty();
+		return (geneGroup.isEmpty() && compoundGroup.isEmpty() && reactionGroup.isEmpty());
 	}
 	
 	/**
@@ -167,19 +209,29 @@ public class OverlayDataGroup implements Serializable {
 		this.source = source;
 	}
 	
+	public Set<HasType> getAllElements() {
+		Set<HasType> elements = new HashSet<HasType>();
+		elements.addAll(reactionGroup);
+		elements.addAll(geneGroup);
+		elements.addAll(compoundGroup);
+		return elements;
+	}
+	
 	/**
 	 * Gets a set of all Reactions that are associated with this data group. This can be an empty set if there are no Reactions given.
 	 * @return the set of all Reactions in this data group.
 	 */
 	public Set<Reaction> getAllReactions() {
-		Set<Reaction> rxns = new HashSet<Reaction>();
-
-		for (HasType element : dataGroup) {
-			if (element.getType() == Reaction.TYPE)
-				rxns.add((Reaction)element);
-		}
+		return reactionGroup;
 		
-		return rxns;
+//		Set<Reaction> rxns = new HashSet<Reaction>();
+//
+//		for (HasType element : dataGroup) {
+//			if (element.getType() == Reaction.TYPE)
+//				rxns.add((Reaction)element);
+//		}
+//		
+//		return rxns;
 	}
 
 	/**
@@ -189,13 +241,65 @@ public class OverlayDataGroup implements Serializable {
 	 * @return the set of all Compounds in this data group
 	 */
 	public Set<Compound> getAllCompounds() {
-		Set<Compound> cpds = new HashSet<Compound>();
+		return compoundGroup;
+//		Set<Compound> cpds = new HashSet<Compound>();
+//
+//		for (HasType element : dataGroup) {
+//			if (element.getType() == Compound.TYPE)
+//				cpds.add((Compound)element);
+//		}
+//		
+//		return cpds;
+	}
+	
+	
+	public Set<Gene> getAllGenes() {
+		return geneGroup;
+	}
+	
+	/**
+	 * TODO: Make this run in (more or less) constant time. Problems with how Reactions and Compounds are hashed.
+	 * @param element
+	 * @return
+	 */
+	public boolean containsElement(HasType element) {
+		if (element.getType() == Reaction.TYPE)
+			return containsReaction((Reaction) element);
+		else if (element.getType() == Compound.TYPE)
+			return containsCompound((Compound) element);
+		else if (element.getType() == Gene.TYPE)
+			return containsGene((Gene) element);
+		else
+			return false;
+	}
+	
+	public boolean containsReaction(Reaction rxn) {
+		return def2Reaction.containsKey(rxn.getDefinition());
+	}
+	
+	public boolean containsCompound(Compound cpd) {
+		return compoundGroup.contains(cpd);
+	}
+	
+	public boolean containsGene(Gene gene) {
+		return geneGroup.contains(gene);
+	}
+	
+	public int size() {
+		return geneGroup.size() +
+			   reactionGroup.size() + 
+			   compoundGroup.size();
+	}
 
-		for (HasType element : dataGroup) {
-			if (element.getType() == Compound.TYPE)
-				cpds.add((Compound)element);
+	public Set<Gene> getGenesForReaction(Reaction reaction) {
+		Set<Gene> genes = new HashSet<Gene>();
+		if (def2Reaction.containsKey(reaction.getDefinition())) {
+			Reaction rxn = def2Reaction.get(reaction.getDefinition());
+			for (Gene gene : rxn.getGenes()) {
+				if (containsGene(gene))
+					genes.add(gene);
+			}
 		}
-		
-		return cpds;
+		return genes;
 	}
 }

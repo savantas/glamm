@@ -7,6 +7,7 @@ import gov.lbl.glamm.client.events.CpdDstPickedEvent;
 import gov.lbl.glamm.client.events.CpdSrcDisambiguatedEvent;
 import gov.lbl.glamm.client.events.CpdSrcPickedEvent;
 import gov.lbl.glamm.client.events.ExperimentUploadEvent;
+import gov.lbl.glamm.client.events.GroupDataPickedEvent;
 import gov.lbl.glamm.client.events.LoadingEvent;
 import gov.lbl.glamm.client.events.LogInEvent;
 import gov.lbl.glamm.client.events.LogOutEvent;
@@ -628,6 +629,14 @@ public class AppController {
 				rxnElementPresenter.setSample(null);
 			}
 		});
+		
+		eventBus.addHandler(GroupDataLoadedEvent.TYPE, new GroupDataLoadedEvent.Handler() {
+			@Override
+			public void onLoaded(GroupDataLoadedEvent event) {
+				rxnElementPresenter.setDataGroups(event.getData());
+			}
+		});
+
 	}
 
 	private void loadPwyElementPopup() {
@@ -812,10 +821,10 @@ public class AppController {
 			}			
 		});
 		
-		eventBus.addHandler(GroupDataLoadedEvent.TYPE, new GroupDataLoadedEvent.Handler() {
+		eventBus.addHandler(GroupDataPickedEvent.TYPE, new GroupDataPickedEvent.Handler() {
 			@Override
-			public void onLoaded(GroupDataLoadedEvent event) {
-				mapPresenter.updateMapForOverlayData(event.getData());
+			public void onDataPicked(GroupDataPickedEvent event) {
+				mapPresenter.updateMapForGroupData(event.getData());
 			}
 		});
 		

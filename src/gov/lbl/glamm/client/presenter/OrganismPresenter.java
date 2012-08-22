@@ -1,6 +1,5 @@
 package gov.lbl.glamm.client.presenter;
 
-import gov.lbl.glamm.client.events.LoadingEvent;
 import gov.lbl.glamm.client.events.OrganismPickedEvent;
 import gov.lbl.glamm.client.events.OrganismUploadEvent;
 import gov.lbl.glamm.client.events.ViewResizedEvent;
@@ -319,6 +318,12 @@ public class OrganismPresenter {
 	 */
 	public void setOrganism(Organism organism, boolean shouldFireEvent) {
 
+		if (this.organism != null && this.organism.equals(organism))
+			return;
+		
+		if (organism == null)
+			organism = Organism.globalMap();
+		
 		this.organism = organism;
 
 		if(this.organism != null) {
