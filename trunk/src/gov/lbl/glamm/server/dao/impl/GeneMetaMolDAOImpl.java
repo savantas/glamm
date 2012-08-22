@@ -311,6 +311,9 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 
 				taxonomyIds.add(taxonomyId);
 			}
+			
+			rs.close();
+			connection.close();
 
 		} catch(Exception e) {
 			e.printStackTrace();

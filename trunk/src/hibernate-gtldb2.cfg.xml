@@ -16,6 +16,9 @@
         <property name="hibernate.c3p0.max_size">15</property>
         <property name="hibernate.c3p0.timeout">20</property>
         <property name="hibernate.c3p0.max_statements">10</property>
+        <property name="hibernate.c3p0.max_connection_age">18000</property>
+        <property name="hibernate.c3p0.acquire_increment">1</property>
+        <property name="hibernate.c3p0.idle_test_period">3600</property>
 
         <!-- SQL dialect -->
         <property name="dialect">org.hibernate.dialect.MySQLDialect</property>

@@ -1,36 +1,49 @@
 package gov.lbl.glamm.client.presenter;
 
 import java.util.Comparator;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import gov.lbl.glamm.client.events.GroupDataPickedEvent;
 import gov.lbl.glamm.client.events.LoadingEvent;
-import gov.lbl.glamm.client.events.GroupDataLoadedEvent;
 import gov.lbl.glamm.client.events.GroupDataServiceEvent;
 import gov.lbl.glamm.client.events.GroupDataUploadEvent;
 import gov.lbl.glamm.client.events.ViewResizedEvent;
 import gov.lbl.glamm.client.model.OverlayDataGroup;
 import gov.lbl.glamm.client.rpc.GlammServiceAsync;
 
+import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.RowStyles;
 import com.google.gwt.user.cellview.client.TextColumn;
-import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.SuggestBox;
+import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
+import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.MultiSelectionModel;
+import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 
 /**
@@ -55,22 +68,15 @@ public class GroupDataPresenter {
 		 * Returns the load button. When pressed, it should load a new dataset.
 		 * @return the Button
 		 */
-		public Button getUploadButton();
+		public HasClickHandlers getUploadButton();
 
-		public Button getServiceButton();
+		public HasClickHandlers getServiceButton();
 		
 		/**
 		 * Returns the clear button. When pressed, it should clear the loaded data.
 		 * @return the Button
 		 */
-		public Button getClearButton();
-		
-		/**
-		 * Returns an input box for loading. Essentially a placeholder for input.
-		 * //TODO - make it not a placeholder...
-		 * @return the TextBox
-		 */
-//		public TextBox getInputBox();
+		public HasClickHandlers getClearButton();
 		
 		/**
 		 * Returns the DisclosurePanel containing the a summary view of loaded group data and widgets for interacting with it.
@@ -95,6 +101,39 @@ public class GroupDataPresenter {
 		 * @return the Label
 		 */
 		public Label getInfoLabel();
+		
+		public SuggestBox getSuggestBox();
+		
+		public HasClickHandlers getPrevButton();
+		
+		public HasClickHandlers getNextButton();
+		
+		public HasClickHandlers getSelectAllButton();
+		
+		public HasClickHandlers getDeselectAllButton();
+		
+		public void maximize();
+		
+		public void minimize();
+	}
+	
+	private enum State {
+		NO_DATA_LOADED("No group data loaded"),
+		DATA_LOADING("Loading..."),
+		ALL_SELECTED("Showing all groups"),
+		NONE_SELECTED("No groups selected"),
+		MULTIPLE_SELECTED("Showing multiple groups");
+		
+		
+		private String statusText;
+		
+		private State(String statusText) {
+			this.statusText = statusText;
+		}
+		
+		String getStatusText() {
+			return statusText;
+		}
 	}
 	
 	@SuppressWarnings("unused")
@@ -102,6 +141,9 @@ public class GroupDataPresenter {
 	private View view;
 	private SimpleEventBus eventBus;
 	private ListDataProvider<OverlayDataGroup> groupDataProvider = null;
+	private MultiSelectionModel<OverlayDataGroup> selectionModel;
+	private MultiWordSuggestOracle suggestOracle;
+	private Map<String, OverlayDataGroup> name2DataGroup;
 	
 	public GroupDataPresenter(final GlammServiceAsync rpc, final View view, final SimpleEventBus eventBus) {
 		this.rpc = rpc;
@@ -111,6 +153,9 @@ public class GroupDataPresenter {
 		groupDataProvider = new ListDataProvider<OverlayDataGroup>();
 		bindView();
 		initTable(view.getGroupTable(), groupDataProvider);
+		setViewState(State.NO_DATA_LOADED);
+		suggestOracle = (MultiWordSuggestOracle) view.getSuggestBox().getSuggestOracle();
+		name2DataGroup = new HashMap<String, OverlayDataGroup>();
 	}
 	
 	public void bindView() {
@@ -161,6 +206,101 @@ public class GroupDataPresenter {
 				eventBus.fireEvent(new ViewResizedEvent());
 			}
 		});
+		
+		view.getPrevButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				if (groupDataProvider.getList().isEmpty())
+					return;
+				
+				Set<OverlayDataGroup> selectedGroups = selectionModel.getSelectedSet();
+				List<OverlayDataGroup> dpList = groupDataProvider.getList();
+				if (selectedGroups.isEmpty()) {
+					selectionModel.setSelected(dpList.get(0), true);					
+				}
+				else {
+					// Figure out where the top-most (i.e. lowest index) group is.
+					// Then select the previous one.
+					int topIndex = dpList.size();
+					for (OverlayDataGroup g : selectedGroups) {
+						int curIndex = dpList.indexOf(g);
+						if (curIndex != -1 && curIndex < topIndex)
+							topIndex = curIndex;
+					}
+					if (topIndex != dpList.size()) {
+						selectAllGroups(false);
+						topIndex--;
+						if (topIndex < 0)
+							topIndex = dpList.size()-1;
+						selectionModel.setSelected(dpList.get(topIndex), true);
+					}
+				}
+			}
+		});
+		
+		view.getNextButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				if (groupDataProvider.getList().isEmpty())
+					return;
+				
+				Set<OverlayDataGroup> selectedGroups = selectionModel.getSelectedSet();
+				List<OverlayDataGroup> dpList = groupDataProvider.getList();
+				if (selectedGroups.isEmpty()) {
+					selectionModel.setSelected(dpList.get(0), true);					
+				}
+				else {
+					// Figure out where the top-most (i.e. lowest index) group is.
+					// Then select the previous one.
+					int topIndex = dpList.size();
+					for (OverlayDataGroup g : selectedGroups) {
+						int curIndex = dpList.indexOf(g);
+						if (curIndex != -1 && curIndex < topIndex)
+							topIndex = curIndex;
+					}
+					if (topIndex != dpList.size()) {
+						selectAllGroups(false);
+						topIndex++;
+						if (topIndex >= dpList.size())
+							topIndex = 0;
+						selectionModel.setSelected(dpList.get(topIndex), true);
+					}
+				}
+
+			}
+		});
+		
+		view.getSelectAllButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				selectAllGroups(true);
+			}
+		});
+		
+		view.getDeselectAllButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				selectAllGroups(false);
+			}
+		});
+		
+		view.getSuggestBox().addSelectionHandler(new SelectionHandler<Suggestion>() {
+			@Override
+			public void onSelection(SelectionEvent<Suggestion> event) {
+				String name = event.getSelectedItem().getReplacementString();
+				
+				if (name == null)
+					return;
+				
+				OverlayDataGroup g = name2DataGroup.get(name);
+				
+				if (g == null)
+					return;
+				
+				selectAllGroups(false);
+				selectionModel.setSelected(g, true);
+			}
+		});
 	}
 	
 	/**
@@ -173,6 +313,20 @@ public class GroupDataPresenter {
 	 */
 	public void initTable(CellTable<OverlayDataGroup> table, ListDataProvider<OverlayDataGroup> dataProvider) {
 
+		table.setRowStyles(new RowStyles<OverlayDataGroup>() {
+
+			@Override
+			public String getStyleNames(OverlayDataGroup row, int rowIndex) {
+				if (selectionModel.isSelected(row))
+					return "glamm-ExtendedFlexTable-EvenRow";
+				
+				if (rowIndex % 2 == 0)
+					return "glamm-ExtendedFlexTable-EvenRow";
+				return "glamm-ExtendedFlexTable-OddRow";
+			}
+			
+		});
+		
 		TextColumn<OverlayDataGroup> nameColumn = new TextColumn<OverlayDataGroup>() {
 			public String getValue(OverlayDataGroup g) {
 				return g.getName();
@@ -193,10 +347,28 @@ public class GroupDataPresenter {
         		return builder.toSafeHtml();
         	}
         };
-          
+        
+        // Add a selection model so we can select cells.
+        selectionModel = new MultiSelectionModel<OverlayDataGroup>(OverlayDataGroup.KEY_PROVIDER);
+        table.setSelectionModel(selectionModel, DefaultSelectionEventManager.<OverlayDataGroup> createCheckboxManager());
+        
+        selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+			@Override
+			public void onSelectionChange(SelectionChangeEvent event) {
+				setView();
+			}
+        });
+
+    	Column<OverlayDataGroup, Boolean> checkColumn = new Column<OverlayDataGroup, Boolean>(new CheckboxCell(true, false)) {
+    		@Override
+    		public Boolean getValue(OverlayDataGroup object) {
+    			return selectionModel.isSelected(object);
+    		}
+    	};
+
         TextColumn<OverlayDataGroup> countColumn = new TextColumn<OverlayDataGroup>() {
         	public String getValue(OverlayDataGroup g) {
-        		return String.valueOf(g.getElementSet().size());
+        		return String.valueOf(g.getAllElements().size());
         	}
         };
         countColumn.setSortable(true);
@@ -231,6 +403,7 @@ public class GroupDataPresenter {
 				return -1;
 			}
 		});
+		
 		nameSortHandler.setComparator(countColumn, new Comparator<OverlayDataGroup>() {
 			@SuppressWarnings("unused")
 			public int compare(OverlayDataGroup g1, OverlayDataGroup g2) {
@@ -239,7 +412,7 @@ public class GroupDataPresenter {
 				}
 				if (g1 != null) {
 					if (g2 != null) {
-						if (g1.getElementSet().size() < g2.getElementSet().size())
+						if (g1.size() < g2.size())
 							return -1;
 					}
 					return 1;
@@ -250,7 +423,9 @@ public class GroupDataPresenter {
 		
 		table.addColumnSortHandler(nameSortHandler);
 		table.getColumnSortList().push(nameColumn);
-		
+
+		table.addColumn(checkColumn, SafeHtmlUtils.fromSafeConstant("<br/>"));
+
 		table.addColumn(nameColumn, "Group");
 		table.addColumn(colorColumn, "Color");
 		table.addColumn(countColumn, "Count");
@@ -266,10 +441,12 @@ public class GroupDataPresenter {
 		eventBus.fireEvent(new LoadingEvent(false));
 
 		groupDataProvider.getList().clear();
+		name2DataGroup.clear();
+		selectionModel.clear();
 		view.getGroupTablePanel().setVisible(false);
-		view.getInfoLabel().setText("none loaded");
-		eventBus.fireEvent(new GroupDataLoadedEvent(new HashSet<OverlayDataGroup>()));
-
+		setViewState(State.NO_DATA_LOADED);
+		view.minimize();
+		
 		eventBus.fireEvent(new LoadingEvent(true));
 	}
 
@@ -277,42 +454,73 @@ public class GroupDataPresenter {
 	 * Sets the currently displayed data groups. This populates the summary table with data and triggers a resize event.
 	 * @param dataGroups the Set of OverlayDataGroups
 	 */
-	public void setDataGroups(Set<OverlayDataGroup> dataGroups) {
+	public void setDataGroups(final Set<OverlayDataGroup> dataGroups) {
+		setViewState(State.DATA_LOADING);
 		List<OverlayDataGroup> dpList = groupDataProvider.getList();
 		dpList.clear();
+		name2DataGroup.clear();
 		
-		for (OverlayDataGroup g : dataGroups)
+		for (OverlayDataGroup g : dataGroups) {
 			dpList.add(g);
+			name2DataGroup.put(g.getName(), g);
+		}
+		
+		populateSuggestBox(dataGroups);
 		
 		view.getGroupTable().setVisibleRange(0, dpList.size());
 		view.getGroupTablePanel().setVisible(dataGroups.size() != 0);
+		selectAllGroups(true);
 		eventBus.fireEvent(new ViewResizedEvent());
+		
 	}
 	
-//	/**
-//	 * Loads the overlay group data from some user input. Pending change to something more robust than loading a simple string.
-//	 * 
-//	 * Once the data is loaded (via an rpc), it triggers an OverlayDataLoadedEvent with the outcome.
-//	 * @param text
-//	 */
-//	private void loadData(String text, final String source) {
-//		eventBus.fireEvent(new LoadingEvent(false));
-//
-//		rpc.getOverlayData(text, new AsyncCallback<Set<OverlayDataGroup>>() {
-//
-//			@Override
-//			public void onFailure(Throwable caught) {
-//				eventBus.fireEvent(new LoadingEvent(true));
-//				Window.alert("Remote procedure call failed: getOverlayData");
-//			}
-//
-//			@Override
-//			public void onSuccess(Set<OverlayDataGroup> result) {
-//				view.getInfoLabel().setText(source);
-//				eventBus.fireEvent(new OverlayDataLoadedEvent(result));
-//				eventBus.fireEvent(new LoadingEvent(true));
-//			}
-//		});
-//	}
+	public void populateSuggestBox(final Set<OverlayDataGroup> dataGroups) {
+		((MultiWordSuggestOracle) view.getSuggestBox().getSuggestOracle()).clear();
+		
+		for (OverlayDataGroup g : dataGroups) {
+			suggestOracle.add(g.getName());
+		}
+	}
+	
+	/**
+	 * Selects all (or zero) groups from the loaded table, depending on the boolean value of select. Note that this does NOT trigger any 
+	 * visualization changes for anything, except for the table that shows the list of Data Groups.
+	 * @param select If true, selects all groups to be shown. If false, deselects all.
+	 */
+	private void selectAllGroups(boolean select) {
+		for (OverlayDataGroup dg : groupDataProvider.getList()) {
+			selectionModel.setSelected(dg, select);
+		}
+		setViewState(State.ALL_SELECTED);
+	}
+	
+	private void setView() {
+		Set<OverlayDataGroup> displaySet = selectionModel.getSelectedSet();
+		if (displaySet.size() == 0) {
+			if (name2DataGroup.size() == 0)
+				setViewState(State.NO_DATA_LOADED);
+			else
+				setViewState(State.NONE_SELECTED);
+		} else if (displaySet.size() == 1) {
+			for (OverlayDataGroup g : displaySet)
+				view.getSuggestBox().setText(g.getName());
+		} else if (displaySet.size() < groupDataProvider.getList().size()) {
+			setViewState(State.MULTIPLE_SELECTED);
+		} else
+			setViewState(State.ALL_SELECTED);
+		
+		eventBus.fireEvent(new GroupDataPickedEvent(displaySet));
+	}
+	
+	private void setViewState(final State state) {
+		view.getSuggestBox().setText(state.getStatusText());
+		
+		boolean disabled = false;
+		if (state == State.DATA_LOADING ||
+			state == State.NO_DATA_LOADED)
+			disabled = true;
+		
+		DOM.setElementPropertyBoolean(view.getSuggestBox().getElement(), "disabled", disabled);
+	}
 
 }

@@ -18,12 +18,13 @@ public class HibernateUtil {
 	private static final Map<String, SessionFactory> s2sf = new HashMap<String, SessionFactory>();
 
 	static {
-		try {
-			sessionFactory = new AnnotationConfiguration()
-			.configure().buildSessionFactory();
-		} catch (Throwable ex) {
-			throw new ExceptionInInitializerError(ex);
-		}
+		sessionFactory = null;
+//		try {
+//			sessionFactory = new AnnotationConfiguration()
+//			.configure().buildSessionFactory();
+//		} catch (Throwable ex) {
+//			throw new ExceptionInInitializerError(ex);
+//		}
 	}
 
 	/**

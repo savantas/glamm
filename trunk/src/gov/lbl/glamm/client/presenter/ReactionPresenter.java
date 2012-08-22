@@ -3,6 +3,7 @@ package gov.lbl.glamm.client.presenter;
 import gov.lbl.glamm.client.model.Gene;
 import gov.lbl.glamm.client.model.Measurement;
 import gov.lbl.glamm.client.model.Organism;
+import gov.lbl.glamm.client.model.OverlayDataGroup;
 import gov.lbl.glamm.client.model.Reaction;
 import gov.lbl.glamm.client.model.User;
 import gov.lbl.glamm.client.rpc.GlammServiceAsync;
@@ -80,6 +81,7 @@ public class ReactionPresenter {
 
 	private String host;
 	private Organism organism;
+	private Set<OverlayDataGroup> dataGroups = null;
 	@SuppressWarnings("unused")
 	private Reaction reaction;
 
@@ -251,7 +253,10 @@ public class ReactionPresenter {
 		table.setSelectionModel(selectionModel);
 	}
 
-
+	public void setDataGroups(final Set<OverlayDataGroup> dataGroups) {
+		this.dataGroups = dataGroups;
+	}
+	
 	/**
 	 * Sets the host to which genes and ec links will be linked.
 	 * @param host The host name.
@@ -303,6 +308,18 @@ public class ReactionPresenter {
 						}
 						genesForEcNum.add(gene);
 					}
+				}
+			}
+			
+			if (dataGroups != null && !dataGroups.isEmpty()) {
+//				groupDataProvider.getList().addAll(dataGroups);
+				for (OverlayDataGroup g : dataGroups) {
+					System.out.print(g.getName() + ":");
+					Set<Gene> groupGenes = g.getGenesForReaction(reaction);
+					for (Gene gene : groupGenes) {
+						System.out.print(" " + gene.getVimssId());
+					}
+					System.out.println();
 				}
 			}
 

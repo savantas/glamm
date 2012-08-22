@@ -1,13 +1,18 @@
 package gov.lbl.glamm.server.actions;
 
+import gov.lbl.glamm.client.model.Experiment;
 import gov.lbl.glamm.client.model.GlammState;
+import gov.lbl.glamm.client.model.MetabolicModel;
 import gov.lbl.glamm.client.model.Organism;
+import gov.lbl.glamm.client.model.OverlayDataGroup;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.OrganismDAO;
 import gov.lbl.glamm.server.dao.impl.OrganismDAOImpl;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class GetGlammState {
 	
@@ -16,7 +21,8 @@ public class GetGlammState {
 		MAP("mapId"),
 		ZOOM("v"),
 		MODEL("modelId"),
-		EXPERIMENT("expId");
+		EXPERIMENT("expId"),
+		GROUP("gId");
 
 		private static final Map<String, StateParam> string2State = new HashMap<String, StateParam>();
 		static{
@@ -61,14 +67,28 @@ public class GetGlammState {
 					
 				case ZOOM :
 					// some kind of zoom state class, or a map or something.
+					state.setViewport(tokenMap.get(p));
 					break;
 				
 				case MODEL :
 					// look up the model using its id and send it out.
+					String modelInfo = tokenMap.get(p);
+					MetabolicModel model = null; // = look up model using data in p
+					state.setModel(model);
 					break;
 					
 				case EXPERIMENT :
 					// get the experiment from its id and append it to the state.
+					String expInfo = tokenMap.get(p);
+					// use expInfo to get the Experiment data.
+					Experiment exp = null;
+					state.setExperiment(exp);
+					break;
+				
+				case GROUP:
+					// deal with group data
+					Set<OverlayDataGroup> groupData = new HashSet<OverlayDataGroup>();
+					state.setGroupData(groupData);
 					break;
 					
 				default :

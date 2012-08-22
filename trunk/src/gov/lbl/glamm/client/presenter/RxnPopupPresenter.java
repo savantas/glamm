@@ -1,6 +1,8 @@
 package gov.lbl.glamm.client.presenter;
 
+import gov.lbl.glamm.client.model.Gene;
 import gov.lbl.glamm.client.model.Organism;
+import gov.lbl.glamm.client.model.OverlayDataGroup;
 import gov.lbl.glamm.client.model.Reaction;
 import gov.lbl.glamm.client.model.Sample;
 import gov.lbl.glamm.client.model.User;
@@ -73,6 +75,7 @@ public class RxnPopupPresenter {
 	private Organism organism;
 	private Set<Reaction> reactions;
 	private Sample sample;
+	private Set<OverlayDataGroup> dataGroups;
 	
 	private String isolateHost;
 	private String metagenomeHost;
@@ -107,6 +110,17 @@ public class RxnPopupPresenter {
 			
 			ReactionView rv = new ReactionView();
 			ReactionPresenter rp = new ReactionPresenter(rpc, rv, eventBus);
+
+			Set<OverlayDataGroup> memberGroups = new HashSet<OverlayDataGroup>();
+			if (dataGroups != null && !dataGroups.isEmpty()) {
+				for (OverlayDataGroup g : dataGroups) {
+					if (g.containsReaction(reaction)) {
+						memberGroups.add(g);
+					}
+				}
+				System.out.println();
+				rp.setDataGroups(memberGroups);
+			}
 			
 			rp.setOrganism(organism);
 			rp.setHost(host);
@@ -183,6 +197,10 @@ public class RxnPopupPresenter {
 	public void setOrganism(final Organism organism) {
 		this.organism = organism;
 		setHost();
+	}
+	
+	public void setDataGroups(Set<OverlayDataGroup> dataGroups) {
+		this.dataGroups = dataGroups;
 	}
 
 	private void setReactions(final Set<Reaction> reactions) {

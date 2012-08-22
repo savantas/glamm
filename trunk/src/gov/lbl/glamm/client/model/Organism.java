@@ -151,13 +151,15 @@ public class Organism implements Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
+		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof Organism))
 			return false;
 		Organism other = (Organism) obj;
+		if (this == other)
+			return true;
+		if (!super.equals(other))
+			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;
