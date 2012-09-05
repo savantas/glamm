@@ -158,6 +158,38 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 
 		return genes;
 	}
+	
+	@Override
+	public Set<Gene> getGenesForVimssIds(Collection<String> ids) {
+		if (!sm.getServerConfig().hasMetagenomeHost() || ids == null || ids.size() == 0)
+			return new HashSet<Gene>();
+		
+		String sql = "SELECT DISTINCT L2E.ecNum, L2E.locusId, Syn.name, Syn.type " +
+					 "FROM meta2010jul.Locus2Ec L2E " +
+					 "JOIN meta2010jul.Locus L on (L2E.locusId=L.locusId) " +
+					 "LEFT OUTER JOIN meta2010jul.Synonym Syn on (Syn.locusId=L2E.locusId) " +
+					 "WHERE L.priority=1 AND" +
+					 "L2E.locusId in (" + GlammUtils.joinArray(ids.toArray()) + ");";
+		
+		try {
+			Connection connection = GlammDbConnectionPool.getConnection(sm);
+			Statement statement = connection.createStatement();
+			
+			ResultSet rs = statement.executeQuery(sql);
+			
+			Set<Gene> genes = processResultSet(rs);
+			
+			rs.close();
+			statement.close();
+			connection.close();
+
+			return genes;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return new HashSet<Gene>();
+	}
 
 	@Override
 	public Set<Gene> getGenesForOrganism(String taxonomyId) {

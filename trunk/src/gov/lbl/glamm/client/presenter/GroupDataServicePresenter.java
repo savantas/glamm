@@ -9,7 +9,11 @@ import gov.lbl.glamm.client.events.LoadingEvent;
 import gov.lbl.glamm.client.events.GroupDataLoadedEvent;
 import gov.lbl.glamm.client.model.OverlayDataGroup;
 import gov.lbl.glamm.client.rpc.GlammServiceAsync;
+import gov.lbl.glamm.shared.ExternalServiceParameter;
+import gov.lbl.glamm.shared.ExternalDataService;
 
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -46,14 +50,6 @@ public class GroupDataServicePresenter {
 		public HasClickHandlers getCancelButton();
 		
 		/**
-		 * Gets an input text box for parameters
-		 * //TODO : this should return a List of text boxes (or better, a Map from 
-		 * parameter name -> text box) for each service.
-		 * @return a text box
-		 */
-		public TextBox getInputTextBox();
-		
-		/**
 		 * Returns the list box that contains the available services.
 		 * @return a ListBox with all services.
 		 */
@@ -68,9 +64,15 @@ public class GroupDataServicePresenter {
 		 * Tells the view to hide itself, and reset fields if necessary.
 		 */
 		public void hideView();
+
+		public void setParameters(List<String> paramNames);
+
+		public void removeParameters();
+
+		public Map<String, TextBox> getParameters();
 	}
 	
-	private Map<String, List<String>> dataServices;
+	private Map<String, ExternalDataService> name2DataService;
 	private View view;
 	private SimpleEventBus eventBus;
 	private GlammServiceAsync rpc;
@@ -81,7 +83,7 @@ public class GroupDataServicePresenter {
 		this.rpc = rpc;
 		
 		bindView();
-		populateServices(view.getServiceListBox());
+		populateServices();
 	}
 
 	/**
@@ -102,25 +104,56 @@ public class GroupDataServicePresenter {
 				view.hideView();
 			}
 		});
+		
+		view.getServiceListBox().addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(ChangeEvent event) {
+				view.removeParameters();
+				String serviceName = view.getServiceListBox().getItemText(view.getServiceListBox().getSelectedIndex());
+				if (name2DataService.containsKey(serviceName)) {
+					view.setParameters(name2DataService.get(serviceName).getParameterNames());
+				}
+			}
+		});
 	}
 
 	/**
+	 * Populates the view with the loaded data services and fields for their parameters.
+	 */
+	private void populateView() {
+		view.getServiceListBox().clear();
+		view.removeParameters();
+		
+		if (name2DataService.size() == 0) {
+			view.getServiceListBox().addItem("No services available");
+			return;
+		}
+		
+		for (String name : name2DataService.keySet()) {
+			view.getServiceListBox().addItem(name);
+		}
+		view.getServiceListBox().setSelectedIndex(0);
+		view.setParameters(name2DataService.get(view.getServiceListBox().getValue(0)).getParameterNames());
+	}
+	
+	/**
 	 * Invokes a data service call when the user hits the submit button.
 	 * 
-	 * If overlay data is returned, it is used sent to the rest of the program through a GroupDataLoadedEvent,
+	 * If overlay data is returned, it is sent to the rest of the program through a GroupDataLoadedEvent,
 	 * otherwise, an alert window is displayed with an error or warning.
 	 */
 	protected void doServiceCall() {
-		String serviceName = view.getServiceListBox().getItemText(view.getServiceListBox().getSelectedIndex());
-		String paramValue = view.getInputTextBox().getText();
-		
-		final Map<String, String> parameters = new HashMap<String, String>();
-		for (String paramName : dataServices.get(serviceName)) {
-			parameters.put(paramName, paramValue);
+		final ExternalDataService service = name2DataService.get(
+											view.getServiceListBox().getItemText(
+												view.getServiceListBox().getSelectedIndex()));
+		Map<String, TextBox> paramMap = view.getParameters();
+
+		for (String paramName : paramMap.keySet()) {
+			service.setParameterValue(paramName, paramMap.get(paramName).getText());
 		}
-				
+		
 		eventBus.fireEvent(new LoadingEvent(false));
-		rpc.getOverlayDataFromService(serviceName, parameters, new AsyncCallback<Set<OverlayDataGroup>>() {
+		rpc.getOverlayDataFromService(service, new AsyncCallback<Set<OverlayDataGroup>>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -132,9 +165,9 @@ public class GroupDataServicePresenter {
 			public void onSuccess(Set<OverlayDataGroup> result) {
 				if (result.size() == 0) {
 					String errStr = "No Overlay Data found for '" + view.getServiceListBox().getItemText(view.getServiceListBox().getSelectedIndex()) + "'\nwith parameters:\n";
-					for (String name : parameters.keySet())
-						errStr += name + " = " + parameters.get(name);
-				
+					for (ExternalServiceParameter p : service.getParameters()) {
+						errStr += p.getHumanReadableName() + " = " + p.getValue() + "\n";
+					}
 					Window.alert(errStr);
 				}
 				else
@@ -142,7 +175,6 @@ public class GroupDataServicePresenter {
 				
 				eventBus.fireEvent(new LoadingEvent(true));
 			}
-			
 		});
 	}
 
@@ -150,9 +182,9 @@ public class GroupDataServicePresenter {
 	 * Populates the view's ListBox with information about the available services.
 	 * @param serviceListBox
 	 */
-	private void populateServices(final ListBox serviceListBox) {
+	private void populateServices() {
 		eventBus.fireEvent(new LoadingEvent(false));
-		rpc.populateDataServices(new AsyncCallback<Map<String, List<String>>>() {
+		rpc.populateDataServices(new AsyncCallback<List<ExternalDataService>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				eventBus.fireEvent(new LoadingEvent(true));
@@ -160,17 +192,18 @@ public class GroupDataServicePresenter {
 			}
 			
 			@Override
-			public void onSuccess(Map<String, List<String>> result) {
+			public void onSuccess(List<ExternalDataService> result) {
 				if (result.size() == 0) {
 					System.out.println("No data services found.");
+					//TODO add/change behavior of popup to "no services available"
 				}
 				else {
-					serviceListBox.clear();
-					for (String name : result.keySet()) {
-						serviceListBox.addItem(name);
+					name2DataService = new HashMap<String, ExternalDataService>();
+					for (ExternalDataService s : result) {
+						name2DataService.put(s.getServiceName(), s);
 					}
 				}
-				dataServices = result;
+				populateView();
 				eventBus.fireEvent(new LoadingEvent(true));
 			}
 		});

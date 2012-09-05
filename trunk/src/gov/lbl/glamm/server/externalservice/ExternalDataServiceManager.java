@@ -1,10 +1,15 @@
-package gov.lbl.glamm.server;
+package gov.lbl.glamm.server.externalservice;
+
+import gov.lbl.glamm.shared.ExternalServiceParameter;
+import gov.lbl.glamm.shared.ExternalDataService;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -31,26 +36,31 @@ import org.xml.sax.SAXException;
  *     http://service_url.com/Service?machineReadableName=XXX&anotherParam=YYY
  *
  * TODO:
- *     - Some kind of more explicity RESTful tags should be included later, as necessary.
+ *     - Some kind of more explicitly RESTful tags should be included later, as necessary.
  *     - Even better, it should include a simple paradigm for how the url should be constructed.
  * 
  * @author wjriehl
  *
  */
-public class GroupDataServiceManager {
+public class ExternalDataServiceManager {
 	
-	private static final String TAG_SERVICE 		= "Service";
-	private static final String ATTR_SERVICE_NAME 	= "name";
-	private static final String ATTR_SERVICE_URL 	= "url";
+	private static final String TAG_SERVICE			  = "Service";
+	private static final String ATTR_SERVICE_NAME	  = "name";			// Human-readable name of the service
+	private static final String ATTR_SERVICE_URL	  = "url";			// URL of the external service
+	private static final String ATTR_SERVICE_PARSER	  = "parser";		// class name of the parser for retrieved data
+	private static final String ATTR_SERVICE_ABBREV	  = "abbreviation";
 	
-	private static final String TAG_PARAMETER 		= "Parameter";
-	private static final String ATTR_PARAM_NAME 	= "name";
-	private static final String ATTR_PARAM_URL_NAME = "extName";
+	private static final String TAG_PARAMETER		  = "Parameter";
+	private static final String ATTR_PARAM_NAME 	  = "displayName";  // Human-readable name of a parameter
+	private static final String ATTR_PARAM_URL_NAME   = "extUrlName";	// External URL id of the parameter
+	private static final String ATTR_PARAM_STATE_NAME = "stateUrlName"; // GLAMM state URl id of the parameter.
 	
-	private static Map<String, GroupDataService> name2DataService;
+	private static Map<String, ExternalDataService> name2DataService;
+	private static List<ExternalDataService> dataServices;
 
 	static {
-		name2DataService = new HashMap<String, GroupDataService>();
+		name2DataService = new HashMap<String, ExternalDataService>();
+		dataServices = new ArrayList<ExternalDataService>();
 	}
 	
 	/**
@@ -65,22 +75,35 @@ public class GroupDataServiceManager {
 		DocumentBuilder db = dbf.newDocumentBuilder();
 		Document doc = db.parse(uri);
 		
+		// Get all the <Service> tags
 		NodeList nodeList = doc.getElementsByTagName(TAG_SERVICE);
 		for(int i = 0; i < nodeList.getLength(); i++) {
 			Element serviceElem = (Element) nodeList.item(i);
 			
+			// Extract the service name and URL
 			String serviceName = serviceElem.getAttribute(ATTR_SERVICE_NAME);
 			String url = serviceElem.getAttribute(ATTR_SERVICE_URL);
+			String parser = serviceElem.getAttribute(ATTR_SERVICE_PARSER);
+			String abbrev = serviceElem.getAttribute(ATTR_SERVICE_ABBREV);
 			
-			Map<String, String> parameters = new HashMap<String, String>();
+			// Get all the parameter identifiers
+			Set<ExternalServiceParameter> parameters = new HashSet<ExternalServiceParameter>();
 			NodeList paramList = serviceElem.getElementsByTagName(TAG_PARAMETER);
 			for (int j = 0; j < paramList.getLength(); j++) {
 				Element paramElem = (Element) paramList.item(j);
-				parameters.put(paramElem.getAttribute(ATTR_PARAM_NAME), paramElem.getAttribute(ATTR_PARAM_URL_NAME));
+				
+				ExternalServiceParameter param = new ExternalServiceParameter();
+				param.setHumanReadableName(paramElem.getAttribute(ATTR_PARAM_NAME));
+				param.setExternalUrlName(paramElem.getAttribute(ATTR_PARAM_URL_NAME));
+				param.setStateUrlName(paramElem.getAttribute(ATTR_PARAM_STATE_NAME));
+
+				parameters.add(param);
 			}
 			
-			GroupDataService service = new GroupDataService(serviceName, url, parameters);
+			ExternalDataService service = new ExternalDataService(serviceName, abbrev, url, parser, parameters);
 			name2DataService.put(serviceName, service);
+			name2DataService.put(abbrev, service);
+			dataServices.add(service);
 		}
 	}
 	
@@ -89,7 +112,7 @@ public class GroupDataServiceManager {
 	 * @param name the service name
 	 * @return the OverlayDataService if it exists, null otherwise
 	 */
-	public static GroupDataService getServiceFromName(String name) {
+	public static ExternalDataService getServiceFromName(String name) {
 		if (name2DataService.containsKey(name))
 			return name2DataService.get(name);
 		else
@@ -97,7 +120,6 @@ public class GroupDataServiceManager {
 		
 		//TODO make it return an empty service on null?
 		// Or maybe throw some kind of exception to be caught and handled?
-		
 	}
 	
 	/**
@@ -105,16 +127,7 @@ public class GroupDataServiceManager {
 	 * values are the lists of user-readable parameter names.
 	 * @return
 	 */
-	public static Map<String, List<String>> getAvailableServiceInformation() {
-		Map<String, List<String>> serviceInfo = new HashMap<String, List<String>>();
-		
-		for (GroupDataService s : name2DataService.values()) {
-			Map<String, String> params = s.getParameterNames();
-			List<String> paramList = new ArrayList<String>();
-			paramList.addAll(params.keySet());
-			serviceInfo.put(s.getName(), paramList);
-		}
-		
-		return serviceInfo;
+	public static List<ExternalDataService> getAvailableServiceInformation() {
+		return dataServices;
 	}
 }

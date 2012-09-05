@@ -256,8 +256,8 @@ public class GeneMolDAOImpl implements GeneDAO {
 			"left outer join Synonym Syn on (Syn.locusId=L2E.locusId) " +
 			"where L.priority=1 and ";
 			
-//			if (taxonomyId != null && !taxonomyId.isEmpty())
-//				sql += "S.taxonomyId=" + taxonomyId + " and ";
+			if (taxonomyId != null && !taxonomyId.isEmpty())
+				sql += "S.taxonomyId=" + taxonomyId + " and ";
 			
 			sql += "L2E.locusId in (" + GlammUtils.joinArray(extIds.toArray()) + ");";
 
@@ -280,5 +280,38 @@ public class GeneMolDAOImpl implements GeneDAO {
 		}
 
 		return genes;
+	}
+	
+	@Override
+	public Set<Gene> getGenesForVimssIds(Collection<String> ids) {
+		if (ids == null || ids.size() == 0) {
+			return new HashSet<Gene>();
+		}
+		
+		String sql = "SELECT DISTINCT L2E.ecNum, L2E.locusId, Syn.name, Syn.type " +
+					 "FROM Locus2Ec L2E " +
+					 "JOIN Locus L on (L2E.locusId=L.locusId) " +
+					 "JOIN Scaffold S on (L.scaffoldId=S.scaffoldId) " +
+					 "LEFT OUTER JOIN Synonym Syn on (Syn.locusId=L2E.locusId) " +
+					 "WHERE L.priority=1 AND " +
+					 "L2E.locusId in (" + GlammUtils.joinArray(ids.toArray()) + ");";
+		
+		try {
+			Connection connection = GlammDbConnectionPool.getConnection(sm);
+			Statement statement = connection.createStatement();
+			
+			ResultSet rs = statement.executeQuery(sql);
+			
+			Set<Gene> genes = processResultSet(rs);
+			
+			rs.close();
+			connection.close();
+			
+			return genes;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return new HashSet<Gene>();
 	}
 }

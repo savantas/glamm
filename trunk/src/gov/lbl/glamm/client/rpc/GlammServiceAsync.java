@@ -14,6 +14,7 @@ import gov.lbl.glamm.client.model.Reaction;
 import gov.lbl.glamm.client.model.Sample;
 import gov.lbl.glamm.client.model.User;
 import gov.lbl.glamm.client.model.interfaces.HasMeasurements;
+import gov.lbl.glamm.shared.ExternalDataService;
 
 import java.util.List;
 import java.util.Map;
@@ -51,8 +52,8 @@ public interface GlammServiceAsync {
 	public void getMetabolicModel(String modelId, AsyncCallback<MetabolicModel> callback);
 	public void getFluxes(FluxExperiment exp, AsyncCallback<Set<Reaction>> callback);
 	public void getOverlayData(String text, AsyncCallback<Set<OverlayDataGroup>> callback);
-	public void getOverlayDataFromService(String serviceName, Map<String, String> parameters, AsyncCallback<Set<OverlayDataGroup>> callback);
-	public void populateDataServices(AsyncCallback<Map<String, List<String>>> callback);
+	public void getOverlayDataFromService(ExternalDataService service, AsyncCallback<Set<OverlayDataGroup>> callback);
+	public void populateDataServices(AsyncCallback<List<ExternalDataService>> asyncCallback);
 	public void getOrganismForTaxId(final String taxId, AsyncCallback<Organism> callback);
 	
 	public void nonDBTest(AsyncCallback<String> callback);

@@ -112,5 +112,11 @@ public class GeneSessionDAOImpl implements GeneDAO {
 	public Set<Gene> getGenesForVimssIds(String taxonomyId, Collection<String> extIds) {
 		return getGenesForSynonyms(taxonomyId, extIds);
 	}
+	
+	@Override
+	//TODO - stub.
+	public Set<Gene> getGenesForVimssIds(Collection<String> ids) {
+		return getGenesForSynonyms("", ids);
+	}
 
 }

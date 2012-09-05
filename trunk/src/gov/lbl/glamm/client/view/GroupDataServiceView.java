@@ -1,5 +1,9 @@
 package gov.lbl.glamm.client.view;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
@@ -22,47 +26,47 @@ public class GroupDataServiceView extends DecoratedPopupPanel implements GroupDa
 	private static final String SUBMIT = "Submit";
 	private static final String CANCEL = "Cancel";
 	private static final String SERVICE = "Service: ";
-	private static final String INPUT = "Input: ";
 	
 	private Button submitButton;
 	private Button cancelButton;
-	private TextBox inputTextBox;
 	private ListBox serviceListBox;
 	private Label serviceLabel;
-	private Label inputLabel;
 	
-	private Grid grid;
+	private Grid panelGrid,
+				 parameterGrid;
 	private HorizontalPanel buttonPanel;
 	private VerticalPanel mainPanel;
 	
+	private Map<String, TextBox> parameterMap;
+	
 	public GroupDataServiceView() {
+		parameterMap = new HashMap<String, TextBox>();
+		
 		submitButton = new Button(SUBMIT);
 		cancelButton = new Button(CANCEL);
 		serviceLabel = new Label(SERVICE);
-		inputLabel = new Label(INPUT);
 		
-		inputTextBox = new TextBox();
 		serviceListBox = new ListBox();
 		
 		buttonPanel = new HorizontalPanel();
 		mainPanel = new VerticalPanel();
-		
-		grid = new Grid(2,2);
+
+		panelGrid = new Grid(1,2);
+		parameterGrid = new Grid(3,2);
 		
 		init();
 	}
 	
 	private void init() {
-		grid.setWidget(0, 0, serviceLabel);
-		grid.setWidget(0, 1, serviceListBox);
-		
-		grid.setWidget(1, 0, inputLabel);
-		grid.setWidget(1, 1, inputTextBox);
+		panelGrid.setWidget(0, 0, serviceLabel);
+		panelGrid.setWidget(0, 1, serviceListBox);
+
 		
 		buttonPanel.add(submitButton);
 		buttonPanel.add(cancelButton);
 		
-		mainPanel.add(grid);
+		mainPanel.add(panelGrid);
+		mainPanel.add(parameterGrid);
 		mainPanel.add(buttonPanel);
 		
 		mainPanel.setStylePrimaryName("glamm-picker");
@@ -80,11 +84,6 @@ public class GroupDataServiceView extends DecoratedPopupPanel implements GroupDa
 	}
 
 	@Override
-	public TextBox getInputTextBox() {
-		return inputTextBox;
-	}
-
-	@Override
 	public ListBox getServiceListBox() {
 		return serviceListBox;
 	}
@@ -98,6 +97,29 @@ public class GroupDataServiceView extends DecoratedPopupPanel implements GroupDa
 	@Override
 	public void hideView() {
 		this.hide();
+	}
+
+	@Override
+	public void setParameters(List<String> paramNames) {
+		removeParameters();
+		for (int i=0; i<paramNames.size(); i++) {
+			String name = paramNames.get(i);
+			TextBox paramBox = new TextBox();
+			parameterMap.put(name, paramBox);
+			parameterGrid.setWidget(i, 0, new Label(name));
+			parameterGrid.setWidget(i, 1, paramBox);
+		}
+	}
+
+	@Override
+	public void removeParameters() {
+		parameterGrid.clear();
+		parameterMap.clear();
+	}
+
+	@Override
+	public Map<String, TextBox> getParameters() {
+		return parameterMap;
 	}
 
 }

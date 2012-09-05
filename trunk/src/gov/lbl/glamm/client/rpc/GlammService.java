@@ -14,6 +14,7 @@ import gov.lbl.glamm.client.model.Reaction;
 import gov.lbl.glamm.client.model.Sample;
 import gov.lbl.glamm.client.model.User;
 import gov.lbl.glamm.client.model.interfaces.HasMeasurements;
+import gov.lbl.glamm.shared.ExternalDataService;
 
 import java.util.List;
 import java.util.Map;
@@ -207,13 +208,13 @@ public interface GlammService extends RemoteService {
 	 * @param parameters the Map of parameters (key = parameter name, value = parameter value)
 	 * @return a Set of OverlayDataGroup, which might be empty if no data is found.
 	 */
-	public Set<OverlayDataGroup> getOverlayDataFromService(String serviceName, Map<String, String> parameters);
+	public Set<OverlayDataGroup> getOverlayDataFromService(ExternalDataService service);
 	
 	/**
 	 * Gets a Map containing information about available data services.
 	 * @return a Map of data service information. Keys are the service name, and values are a list of parameter names for that service.
 	 */
-	public Map<String, List<String>> populateDataServices();
+	public List<ExternalDataService> populateDataServices();
 	
 	public Organism getOrganismForTaxId(String taxId);
 	

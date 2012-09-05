@@ -1,5 +1,7 @@
 package gov.lbl.glamm.client;
 
+import java.util.Set;
+
 import gov.lbl.glamm.client.events.AMDPickedEvent;
 import gov.lbl.glamm.client.events.AnnotatedMapDataLoadedEvent;
 import gov.lbl.glamm.client.events.CpdDstDisambiguatedEvent;
@@ -27,6 +29,7 @@ import gov.lbl.glamm.client.events.SearchTargetEvent;
 import gov.lbl.glamm.client.events.ViewResizedEvent;
 import gov.lbl.glamm.client.model.AnnotatedMapData;
 import gov.lbl.glamm.client.model.GlammState;
+import gov.lbl.glamm.client.model.OverlayDataGroup;
 import gov.lbl.glamm.client.model.Sample;
 import gov.lbl.glamm.client.model.User;
 import gov.lbl.glamm.client.presenter.AMDPresenter;
@@ -77,6 +80,11 @@ import gov.lbl.glamm.client.view.RxnPopupView;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.SimpleEventBus;
@@ -86,6 +94,8 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 
@@ -97,6 +107,8 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
 public class AppController {
 
 	private static AppController instance;
+	
+	private boolean showUI = true;
 
 	private GlammServiceAsync rpc;
 	private SimpleEventBus eventBus;
@@ -172,6 +184,8 @@ public class AppController {
 	private GroupDataServicePresenter dataOverlayServicePresenter;
 	private GroupDataServiceView dataOverlayServiceView;
 
+	private CheckBox uiCheckBox;
+	
 	private LayoutPanel layout = new LayoutPanel() {
 
 		@Override
@@ -263,6 +277,8 @@ public class AppController {
 		
 		dataOverlayServiceView = new GroupDataServiceView();
 		dataOverlayServicePresenter = new GroupDataServicePresenter(rpc, eventBus, dataOverlayServiceView);
+		
+		uiCheckBox = new CheckBox();
 	}
 
 	/**
@@ -305,7 +321,7 @@ public class AppController {
 		
 		/**
 		 * This kinda breaks the MVC paradigm... but I think it's the best way to initialize without
-		 * potentially throwing a cascade of RPCs before the map itself is loaded.
+		 * potentially throwing a cascade of conflicting RPCs before the map itself is loaded.
 		 * 
 		 * That is, once the map gets loaded, everything should know what the state is supposed to look like.
 		 */
@@ -319,6 +335,7 @@ public class AppController {
 		mapPresenter.setOrganism(state.getOrganism());
 		
 		loadMapPanel(); // always load first
+		
 		loadAnnotatedMapPicker(state.getAMDId());
 		loadCpdDisambiguation();
 		loadInterpolator();
@@ -337,7 +354,7 @@ public class AppController {
 		loadRetrosynthesis();
 
 /**/	loadMetabolicModelPicker();
-/**/	loadDataOverlayControl();
+/**/	loadDataOverlayControl(state.getGroupData());
 		loadDataOverlayUpload();
 /**/	loadDataOverlayService();
 
@@ -352,11 +369,21 @@ public class AppController {
 				onResize();
 			}
 		});
+		
+		uiCheckBox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<Boolean> event) {
+				setUIVisible(event.getValue());
+			}
+		});
+		uiCheckBox.setValue(showUI);
+		
+		mainPanel.add(uiCheckBox, 0, 0);
 
 		initHistory();
 	}
 	
-	public void initHistory() {
+	private void initHistory() {
 		History.addValueChangeHandler(new ValueChangeHandler<String>() {
 			public void onValueChange(ValueChangeEvent<String> event) {
 				final String token = event.getValue();
@@ -379,6 +406,9 @@ public class AppController {
 						 */
 						organismPresenter.setOrganism(state.getOrganism(), true);
 						amdPresenter.selectMap(state.getAMDId());
+						
+						if (state.getGroupData() != null && state.getGroupData().size() != 0)
+							eventBus.fireEvent(new GroupDataLoadedEvent(state.getGroupData()));
 					}
 				});
 			}
@@ -389,7 +419,8 @@ public class AppController {
 	 * Computes widget position when the window is resized.
 	 * All resize computations are performed at the end of the current event loop.
 	 */
-	public void onResize() {
+	private void onResize() {
+		
 		// perform resize computations at the end of the current event loop
 		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
 			@Override
@@ -416,12 +447,31 @@ public class AppController {
 				mainPanel.setWidgetPosition(loginView, Window.getClientWidth() - loginView.getOffsetWidth() - helpView.getOffsetWidth() - 5, 0);
 				mainPanel.setWidgetPosition(metabolicModelView, 0, Window.getClientHeight() - miniMapView.getOffsetHeight() - amdView.getOffsetHeight() - metabolicModelView.getOffsetHeight() - 10);
 				mainPanel.setWidgetPosition(dataOverlayView, panZoomView.getOffsetWidth() + miniMapView.getOffsetWidth() + 10, Window.getClientHeight() - dataOverlayView.getOffsetHeight());
+
+				mainPanel.setWidgetPosition(uiCheckBox, Window.getClientWidth() - uiCheckBox.getOffsetWidth(), helpView.getOffsetHeight());
 			}
 		});
 	}
 
-	private void loadDataOverlayControl() {
+	private void setUIVisible(boolean show) {
+		showUI = show;
+		organismView.setVisible(showUI);
+		experimentView.setVisible(showUI);
+		loginView.setVisible(showUI);
+		amdView.setVisible(showUI);
+		metabolicModelView.setVisible(showUI);
+		dataOverlayView.setVisible(showUI);
+		retrosynthesisView.setVisible(showUI);
+		miniMapView.setVisible(showUI);
+		panZoomView.setVisible(showUI);
+		
+		onResize();
+	}
+	
+	private void loadDataOverlayControl(Set<OverlayDataGroup> data) {
 		mainPanel.add(dataOverlayView, 0, 0);
+		
+		dataOverlayPresenter.setDataGroups(data);
 		
 		eventBus.addHandler(GroupDataLoadedEvent.TYPE, new GroupDataLoadedEvent.Handler() {
 			@Override
@@ -468,7 +518,6 @@ public class AppController {
 	
 	private void loadAnnotatedMapPicker(String amdId) {
 		mainPanel.add(amdView, 0, 0);
-//		amdPresenter.populate("map01100");
 		amdPresenter.populate(amdId);
 	}
 
@@ -519,7 +568,6 @@ public class AppController {
 		eventBus.addHandler(AnnotatedMapDataLoadedEvent.TYPE, new AnnotatedMapDataLoadedEvent.Handler() {
 			@Override
 			public void onLoaded(AnnotatedMapDataLoadedEvent event) {
-//				mapElementPresenter.setOrganism(Organism.globalMap());
 				mapElementPresenter.setSample(null);
 			}
 		});
@@ -567,7 +615,6 @@ public class AppController {
 		eventBus.addHandler(AnnotatedMapDataLoadedEvent.TYPE, new AnnotatedMapDataLoadedEvent.Handler() {
 			@Override
 			public void onLoaded(AnnotatedMapDataLoadedEvent event) {
-//				rxnElementPresenter.setOrganism(Organism.globalMap());
 				rxnElementPresenter.setSample(null);
 			}
 		});
@@ -644,7 +691,6 @@ public class AppController {
 		eventBus.addHandler(AnnotatedMapDataLoadedEvent.TYPE, new AnnotatedMapDataLoadedEvent.Handler() {
 			@Override
 			public void onLoaded(AnnotatedMapDataLoadedEvent event) {
-//				pwyPresenter.setOrganism(Organism.globalMap());
 				pwyPresenter.setSample(null);
 			}
 		});
@@ -856,7 +902,6 @@ public class AppController {
 		eventBus.addHandler(AnnotatedMapDataLoadedEvent.TYPE, new AnnotatedMapDataLoadedEvent.Handler() {
 			@Override
 			public void onLoaded(AnnotatedMapDataLoadedEvent event) {
-//				organismPresenter.setOrganism(Organism.globalMap(), false);
 				organismPresenter.resetOrganism();
 			}
 		});

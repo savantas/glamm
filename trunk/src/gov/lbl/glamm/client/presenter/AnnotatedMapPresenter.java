@@ -457,11 +457,13 @@ public class AnnotatedMapPresenter {
 	}
 
 	private void executeOnMapElements(final MapElementCommand command) {
-		for(OMSVGElement element : mapData.getRxnSvgElements()) 
-			command.execute(element);
-
-		for(OMSVGElement element : mapData.getCpdSvgElements())
-			command.execute(element);
+		if (mapData != null) {
+			for(OMSVGElement element : mapData.getRxnSvgElements()) 
+				command.execute(element);
+	
+			for(OMSVGElement element : mapData.getCpdSvgElements())
+				command.execute(element);
+		}
 	}
 
 
@@ -1028,6 +1030,8 @@ public class AnnotatedMapPresenter {
 	}
 	
 	public void updateMapForGroupData(final Set<OverlayDataGroup> dataSet) {
+		if (mapData == null)
+			return;
 		
 		eventBus.fireEvent(new LoadingEvent(false));
 		
