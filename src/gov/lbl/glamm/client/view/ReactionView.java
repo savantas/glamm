@@ -1,6 +1,7 @@
 package gov.lbl.glamm.client.view;
 
 import gov.lbl.glamm.client.model.Gene;
+import gov.lbl.glamm.client.model.OverlayDataGroup;
 import gov.lbl.glamm.client.presenter.ReactionPresenter;
 
 import com.google.gwt.user.cellview.client.CellTable;
@@ -26,6 +27,8 @@ implements ReactionPresenter.View {
 	private Button addToCart;
 	private CellTable<Gene> geneTable;
 	private ScrollPanel geneTableScrollPanel;
+	private CellTable<OverlayDataGroup> groupTable;
+	private ScrollPanel groupTableScrollPanel;
 
 	/**
 	 * Constructor
@@ -38,14 +41,24 @@ implements ReactionPresenter.View {
 		geneTable = new CellTable<Gene>();
 		geneTableScrollPanel = new ScrollPanel();
 		
+		groupTable = new CellTable<OverlayDataGroup>();
+		groupTableScrollPanel = new ScrollPanel();
+		
 		mainPanel.add(definitionHtml);
 		mainPanel.add(ecNumHtml);
 //		mainPanel.add(addToCart);
 		mainPanel.add(geneTableScrollPanel);
 		geneTableScrollPanel.add(geneTable);
 		
+		mainPanel.add(groupTableScrollPanel);
+		groupTableScrollPanel.add(groupTable);
+		
 		geneTableScrollPanel.setSize("100%", "10em");
 		geneTable.setWidth("100%");
+		
+		groupTableScrollPanel.setSize("100%", "10em");
+		groupTable.setWidth("100%");
+		
 		mainPanel.setWidth("30em");
 		mainPanel.setStylePrimaryName("glamm-picker");
 		initWidget(mainPanel);
@@ -70,6 +83,11 @@ implements ReactionPresenter.View {
 	public CellTable<Gene> getGeneTable() {
 		return geneTable;
 	}
+	
+	@Override
+	public CellTable<OverlayDataGroup> getGroupTable() {
+		return groupTable;
+	}
 
 	@Override
 	public void hideGeneTable() {
@@ -81,5 +99,15 @@ implements ReactionPresenter.View {
 	public void showGeneTable() {
 		geneTable.setVisible(true);
 		geneTableScrollPanel.setVisible(true);
+	}
+	
+	public void hideGroupTable() {
+		groupTable.setVisible(false);
+		groupTableScrollPanel.setVisible(false);
+	}
+	
+	public void showGroupTable() {
+		groupTable.setVisible(true);
+		groupTableScrollPanel.setVisible(true);
 	}
 }

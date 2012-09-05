@@ -35,6 +35,8 @@ public interface GeneDAO {
 	 */
 	public Set<Gene> getGenesForVimssIds(String taxonomyId, Collection<String> vimssIds);
 
+	public Set<Gene> getGenesForVimssIds(Collection<String> vimssIds); 
+	
 	/**
 	 * Gets the set of all genes for a given taxonomy id.
 	 * @param taxonomyId The taxonomy id.

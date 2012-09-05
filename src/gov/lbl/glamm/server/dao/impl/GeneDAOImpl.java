@@ -59,7 +59,11 @@ public class GeneDAOImpl implements GeneDAO {
 			return metaMolDao.getGenesForVimssIds(taxonomyId, vimssIds);
 		return molDao.getGenesForVimssIds(taxonomyId, vimssIds);
 	}
-
+	
+	@Override
+	public Set<Gene> getGenesForVimssIds(Collection<String> vimssIds) {
+		return molDao.getGenesForVimssIds(vimssIds);
+	}
 
 	@Override
 	public Set<Gene> getGenesForOrganism(String taxonomyId) {

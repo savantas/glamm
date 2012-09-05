@@ -67,6 +67,8 @@ public class ReactionPresenter {
 		 */
 		public CellTable<Gene> getGeneTable();
 		
+		public CellTable<OverlayDataGroup> getGroupTable();
+		
 		/**
 		 * Hides the gene table.
 		 */
@@ -76,6 +78,17 @@ public class ReactionPresenter {
 		 * Shows the gene table.
 		 */
 		public void showGeneTable();
+		
+		/**
+		 * Hides the grouping information table.
+		 */
+		public void hideGroupTable();
+
+		/**
+		 * Shows the grouping information table.
+		 */
+		public void showGroupTable();
+		
 
 	}
 
@@ -86,6 +99,7 @@ public class ReactionPresenter {
 	private Reaction reaction;
 
 	private ListDataProvider<Gene> geneDataProvider;
+	private ListDataProvider<OverlayDataGroup> groupDataProvider;
 
 	@SuppressWarnings("unused")
 	private GlammServiceAsync rpc;
@@ -107,6 +121,7 @@ public class ReactionPresenter {
 		this.eventBus = eventBus;
 
 		geneDataProvider = new ListDataProvider<Gene>(Gene.KEY_PROVIDER);
+		groupDataProvider = new ListDataProvider<OverlayDataGroup>(OverlayDataGroup.KEY_PROVIDER);
 	}
 
 	private String genEcNumLink(final String ecNum, final int numGenes) {
@@ -165,7 +180,57 @@ public class ReactionPresenter {
 		return urlBuilder.buildString();
 	}
 
-	private void initTable(CellTable<Gene> table, ListDataProvider<Gene> dataProvider) {
+	private void initGroupTable(CellTable<OverlayDataGroup> table, ListDataProvider<OverlayDataGroup> dataProvider) {
+		if (table == null || dataProvider == null)
+			return;
+		
+		
+		// init columns
+		Column<OverlayDataGroup, SafeHtml> groupNameColumn = new Column<OverlayDataGroup, SafeHtml>(new SafeHtmlCell()) {
+
+			@Override
+			public SafeHtml getValue(OverlayDataGroup group) {
+				SafeHtmlBuilder builder = new SafeHtmlBuilder();
+				builder.appendHtmlConstant(group.getName());
+				return builder.toSafeHtml();
+			}
+		};
+		
+		Column<OverlayDataGroup, SafeHtml> genomeNameColumn = new Column<OverlayDataGroup, SafeHtml>(new SafeHtmlCell()) {
+			
+			@Override
+			public SafeHtml getValue(OverlayDataGroup group) {
+				SafeHtmlBuilder builder = new SafeHtmlBuilder();
+				builder.appendHtmlConstant(group.getGenomeName());
+				return builder.toSafeHtml();
+			}
+		};
+		
+		Column<OverlayDataGroup, SafeHtml> groupUrlColumn = new Column<OverlayDataGroup, SafeHtml>(new SafeHtmlCell()) {
+			@Override
+			public SafeHtml getValue(OverlayDataGroup group) {
+				SafeHtmlBuilder builder = new SafeHtmlBuilder();
+				builder.appendHtmlConstant("<a href=\"" + group.getUrl() + "\">" + group.getSource() + "</a>");
+				return builder.toSafeHtml();
+			}
+		};
+		
+		// add columns to table
+		table.addColumn(groupNameColumn, "Group Name");
+		table.addColumn(genomeNameColumn, "Source Genome");
+		table.addColumn(groupUrlColumn, "Link");
+
+		// set the data provider
+		groupDataProvider.addDataDisplay(table);
+		table.setVisibleRange(0, groupDataProvider.getList().size());
+
+		// add a selection model
+		final SingleSelectionModel<OverlayDataGroup> selectionModel = new SingleSelectionModel<OverlayDataGroup>(OverlayDataGroup.KEY_PROVIDER);
+		table.setSelectionModel(selectionModel);
+
+	}
+	
+	private void initGeneTable(CellTable<Gene> table, ListDataProvider<Gene> dataProvider) {
 
 		if(table == null || dataProvider == null)
 			return;
@@ -178,7 +243,6 @@ public class ReactionPresenter {
 				break;
 			}
 		}
-
 
 		// initialize table columns
 		Column<Gene, SafeHtml> vimssIdColumn = new Column<Gene, SafeHtml>(new SafeHtmlCell()) {
@@ -290,6 +354,7 @@ public class ReactionPresenter {
 
 
 		view.hideGeneTable();
+		view.hideGroupTable();
 
 		if(ecNums == null || ecNums.size() == 0)
 			view.getEcNumHtml().setHTML("<b>No EC</b>");
@@ -298,7 +363,7 @@ public class ReactionPresenter {
 			if(genes != null && !genes.isEmpty()) {
 				view.showGeneTable();
 				geneDataProvider.getList().addAll(genes);
-				initTable(view.getGeneTable(), geneDataProvider);
+				initGeneTable(view.getGeneTable(), geneDataProvider);
 				for(Gene gene : genes) {
 					for(String ecNum : gene.getEcNums()) {
 						Set<Gene> genesForEcNum = ecNum2Genes.get(ecNum);
@@ -312,7 +377,10 @@ public class ReactionPresenter {
 			}
 			
 			if (dataGroups != null && !dataGroups.isEmpty()) {
-//				groupDataProvider.getList().addAll(dataGroups);
+				view.showGroupTable();
+				groupDataProvider.getList().addAll(dataGroups);
+				initGroupTable(view.getGroupTable(), groupDataProvider);
+				
 				for (OverlayDataGroup g : dataGroups) {
 					System.out.print(g.getName() + ":");
 					Set<Gene> groupGenes = g.getGenesForReaction(reaction);

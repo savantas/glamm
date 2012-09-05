@@ -6,13 +6,24 @@ import gov.lbl.glamm.client.model.MetabolicModel;
 import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.client.model.OverlayDataGroup;
 import gov.lbl.glamm.server.GlammSession;
+import gov.lbl.glamm.server.dao.GroupDataDAO;
 import gov.lbl.glamm.server.dao.OrganismDAO;
+import gov.lbl.glamm.server.dao.impl.GroupDataDAOImpl;
 import gov.lbl.glamm.server.dao.impl.OrganismDAOImpl;
+import gov.lbl.glamm.server.externalservice.ExternalDataServiceManager;
+import gov.lbl.glamm.shared.ExternalDataService;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
+
+/**
+ * glamm/#taxId=XXX&ext=rpOperon|taxonomyId=YYY&...
+ * @author wjriehl
+ *
+ */
 
 public class GetGlammState {
 	
@@ -22,7 +33,7 @@ public class GetGlammState {
 		ZOOM("v"),
 		MODEL("modelId"),
 		EXPERIMENT("expId"),
-		GROUP("gId");
+		GROUP("ext");			//external service
 
 		private static final Map<String, StateParam> string2State = new HashMap<String, StateParam>();
 		static{
@@ -87,7 +98,13 @@ public class GetGlammState {
 				
 				case GROUP:
 					// deal with group data
-					Set<OverlayDataGroup> groupData = new HashSet<OverlayDataGroup>();
+					ExternalDataService service = buildExternalService(tokenMap.get(p));
+					
+					// perform the service and get the group data results.
+					// then pass them back in.
+					
+					GroupDataDAO dataDao = new GroupDataDAOImpl(sm);
+					Set<OverlayDataGroup> groupData = dataDao.getGroupDataFromService(service);
 					state.setGroupData(groupData);
 					break;
 					
@@ -100,13 +117,46 @@ public class GetGlammState {
 		return state;
 	}
 
+	// TODO - for building a current state URL that can be exported. Kind of a poor-man's session save.
 	public static String generateHistoryToken(GlammSession sm, Organism organism, String mapId) {
 		return "";
 	}
 	
+	private static ExternalDataService buildExternalService(String token) {
+		/** token looks like this:
+		 *  serviceCallId|param1=XXX|param2=YYY (not sure if | will be the delimiter in the end.
+		 *  	maybe || eventually?)
+		 */
+		
+		if (token == null || token.length() == 0)
+			return null; // hate to do this, but I can't think of a better way. throw an error?
+
+		// parse token into an ExternalDataService and fill it in with parameters
+		
+		String[] paramArr = token.split("\\|");
+		// the first element is the name of the service, 
+		// the remaining elements should all be split on "="
+		
+		String serviceName = paramArr[0];
+		ExternalDataService service = ExternalDataServiceManager.getServiceFromName(serviceName);
+		if (service == null)
+			return null; 		// now we really should throw an exception.
+		
+		for (int i=1; i<paramArr.length; i++) {
+			String[] kvPair = paramArr[i].split("=");
+			if (service.hasParameter(kvPair[0]))
+				service.setParameterValue(kvPair[0], kvPair[1]);
+			else
+				return null; // throw exception
+		}
+		
+		return service;
+		
+	}
+	
 	private static Map<StateParam, String> parseHistoryToken(String token) {
 		final Map<StateParam, String> tokenMap = new HashMap<StateParam, String>();
-		if (token.length() == 0) {
+		if (token == null || token.length() == 0) {
 			return tokenMap; // filled with defaults...
 		}
 		else {
@@ -114,17 +164,25 @@ public class GetGlammState {
 			// token looks like: key=value&key=value;...
 			String[] paramArr = token.split("&");
 			for (int i=0; i<paramArr.length; i++) {
-				final String[] kvPair = paramArr[i].split("=");
-				if (kvPair.length != 2) {
+				
+				int limiter = paramArr[i].indexOf('=');
+
+				if (limiter == -1 || limiter >= paramArr[i].length())
+					return null; //error'd - no delimiter present.
+				
+				String name = paramArr[i].substring(0, limiter);
+				String value = paramArr[i].substring(limiter+1);
+
+				if (name.length() == 0 || value.length() == 0) {
 					//Ignore for now, eventually build an error-reporting mechanism.
 				}
 				else {
-					StateParam s = StateParam.fromName(kvPair[0].toLowerCase());
+					StateParam s = StateParam.fromName(name.toLowerCase());
 					if (s == null) {
 						//Error'd
 					}
 					else {
-						tokenMap.put(s, kvPair[1]);
+						tokenMap.put(s, value);
 					}
 				}
 			}

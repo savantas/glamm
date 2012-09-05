@@ -36,6 +36,8 @@ import gov.lbl.glamm.server.actions.PopulateOrganisms;
 import gov.lbl.glamm.server.actions.PopulateReactionSearch;
 import gov.lbl.glamm.server.actions.PopulateSamples;
 import gov.lbl.glamm.server.actions.requesthandlers.GetDirections;
+import gov.lbl.glamm.server.externalservice.ExternalDataServiceManager;
+import gov.lbl.glamm.shared.ExternalDataService;
 
 import java.util.List;
 import java.util.Map;
@@ -186,7 +188,7 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	throws ServletException  {
 		try {
 			ServletContext sc = this.getServletContext();
-			GroupDataServiceManager.init(sc.getResource(EXTERNAL_SERVICES_XML_FILE_NAME).toString());
+			ExternalDataServiceManager.init(sc.getResource(EXTERNAL_SERVICES_XML_FILE_NAME).toString());
 			ConfigurationManager.init(sc.getResource(SERVER_CONFIG_XML_FILE_NAME).toString());
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -217,12 +219,12 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	}
 
 	@Override
-	public Set<OverlayDataGroup> getOverlayDataFromService(String serviceName, Map<String, String> parameters) {
-		return GetGroupData.getOverlayDataFromService(getGlammSession(), serviceName, parameters);
+	public Set<OverlayDataGroup> getOverlayDataFromService(ExternalDataService service) {
+		return GetGroupData.getOverlayDataFromService(getGlammSession(), service);
 	}
 
 	@Override
-	public Map<String, List<String>> populateDataServices() {
+	public List<ExternalDataService> populateDataServices() {
 		return PopulateDataServices.populateDataServices(getGlammSession());
 	}
 

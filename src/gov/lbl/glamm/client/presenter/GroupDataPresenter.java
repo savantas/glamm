@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import gov.lbl.glamm.client.events.GroupDataLoadedEvent;
 import gov.lbl.glamm.client.events.GroupDataPickedEvent;
 import gov.lbl.glamm.client.events.LoadingEvent;
 import gov.lbl.glamm.client.events.GroupDataServiceEvent;
@@ -447,6 +448,7 @@ public class GroupDataPresenter {
 		setViewState(State.NO_DATA_LOADED);
 		view.minimize();
 		
+		eventBus.fireEvent(new GroupDataLoadedEvent(null));
 		eventBus.fireEvent(new LoadingEvent(true));
 	}
 
@@ -455,6 +457,9 @@ public class GroupDataPresenter {
 	 * @param dataGroups the Set of OverlayDataGroups
 	 */
 	public void setDataGroups(final Set<OverlayDataGroup> dataGroups) {
+		if (dataGroups == null || dataGroups.size() == 0)
+			return;
+		
 		setViewState(State.DATA_LOADING);
 		List<OverlayDataGroup> dpList = groupDataProvider.getList();
 		dpList.clear();

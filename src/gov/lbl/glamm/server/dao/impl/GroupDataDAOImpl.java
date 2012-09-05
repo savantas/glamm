@@ -1,10 +1,8 @@
 package gov.lbl.glamm.server.dao.impl;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -18,12 +16,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.lbl.glamm.client.model.Gene;
 import gov.lbl.glamm.client.model.OverlayDataGroup;
 import gov.lbl.glamm.client.model.Reaction;
-import gov.lbl.glamm.server.GroupDataServiceManager;
 import gov.lbl.glamm.server.GlammSession;
-import gov.lbl.glamm.server.GroupDataService;
+import gov.lbl.glamm.server.RequestHandler;
 import gov.lbl.glamm.server.dao.GeneDAO;
 import gov.lbl.glamm.server.dao.GroupDataDAO;
 import gov.lbl.glamm.server.dao.ReactionDAO;
+import gov.lbl.glamm.server.externalservice.ServiceJsonParser;
+import gov.lbl.glamm.server.externalservice.parsers.RegPreciseParser;
+import gov.lbl.glamm.shared.ExternalServiceParameter;
+import gov.lbl.glamm.shared.ExternalDataService;
 
 /**
  * Implementation of the Group Data DAO interface.
@@ -55,9 +56,13 @@ public class GroupDataDAOImpl implements GroupDataDAO {
 	
 	/**
 	 * Makes a dummy set of OverlayDataGroups and returns them.
+	 * The first group holds most of the genes in S. oneidensis MR-1, the second and third
+	 * split the remainder, and call them GapFill or GrowMatch.
+	 * 
+	 * Just some dummy data for testing and visualization.
 	 * @return
 	 */
-	public Set<OverlayDataGroup> getGroupDataFromService(String s, Map<String, String> t) {
+	public Set<OverlayDataGroup> getDummyDataSet(String s, Map<String, String> t) {
 		Set<OverlayDataGroup> dataSet = new HashSet<OverlayDataGroup>();
 		
 		Set<String> ecNums = new HashSet<String>();
@@ -775,191 +780,39 @@ public class GroupDataDAOImpl implements GroupDataDAO {
 	 * @param parameters the parameters for the service, where the key is the parameter name and the value is its value.
 	 * @return a Set of OverlayDataGroups from the service
 	 */
-//	@Override
-	public Set<OverlayDataGroup> getGroupDataFromService2(String serviceName, Map<String, String> parameters) {
+	@Override
+	public Set<OverlayDataGroup> getGroupDataFromService(ExternalDataService service) { 
 		
 		Set<OverlayDataGroup> dataSet = new HashSet<OverlayDataGroup>();
 
-		GroupDataService service = GroupDataServiceManager.getServiceFromName(serviceName);
-		
 		if (service == null)
 			return dataSet;
 		
-		String uri = service.getUrl();
-		uri += buildParameterString(service, parameters);
+		String uri = service.getUrl() + buildParameterString(service);
 
-		// Horrible hack for prototyping this up for now.
-		// Later, should make a separate parser for each service, and invoke through reflection.
-		String taxId = "";
-		if (parameters.containsKey("MO taxonomy id"))
-			taxId = parameters.get("MO taxonomy id");
-		
 		try {
 			URL url = new URL(uri);
 			
-			ObjectMapper mapper = new ObjectMapper();
-			
 			InputStream stream = url.openStream();
-			ElementSet dataElements = mapper.readValue(stream, ElementSet.class);
+			
+			Class<?> parserClass = Class.forName(service.getParser());
+			
+			ServiceJsonParser parser = (ServiceJsonParser) parserClass.newInstance();
+			dataSet = parser.parseJson(service, stream, sm);
 			stream.close();
-			
-/** Maybe this structure would work better?
- * 			{
-				[
-					{ 
-					  "groupName" : "name",
-					  "groupId"   : "id",
-					  "URL"		  : "url",
-					  "source"    : "source"
-					  [ 
-					  	{ 
-					  	  "ec"    : "##",
-					  	  "vimss  : "##"
-					  	},
-					  	{ 
-					  	  "ec"    : "##",
-					  	  "vimss" : "##"
-					  	}, ...
-					  ]
-					},
-					{ 
-					  "groupName" : "name",
-					  "groupId"   : "id",
-					  "URL"		  : "url",
-					  "source"    : "source"
-					  [ 
-					  	{ 
-					  	  "ec"    : "##",
-					  	  "vimss  : "##"
-					  	},
-					  	{ 
-					  	  "ec"    : "##",
-					  	  "vimss" : "##"
-					  	}, ...
-					  ]
-					}					
-				]
-			}
-**/			
-
-			/**
-			 *  Shuffle around elements and restructure into a Set<OverlayDataGroup>
-			 *  
-			 *  OverlayData works on a set of reactions or compounds.
-			 *  In this case, we're dealing with reactions (not always, though).
-			 *  So we want to go from either VIMSS ids (if that's the only option) to reactions
-			 *  Or form EC nums to reactions.
-			 *  
-			 *  First, break things up into sets.
-			 *  	group id -> set of VIMSS ids
-			 *      group id -> set of EC nums
-			 *  
-			 *  Look up the Genes for the VIMSS ids in each group. Now we should have JUST
-			 *      group id -> set of EC nums
-			 *  
-			 *  Look up the Reactions for the EC nums.
-			 *  
-			 *  Now make one OverlayDataGroup for each group id/name, populate with reactions.
-			 */
-
-			// Map of all data groups by their group id.
-			Map<String, OverlayDataGroup> id2DataGroup = new HashMap<String, OverlayDataGroup>();
-			
-			Map<String, Set<String>> locus2GroupId = new HashMap<String, Set<String>>();
-			
-			Map<String, Set<String>> ecNum2GroupId = new HashMap<String, Set<String>>();
-			
-			Map<String, Set<Gene>> ecNum2Genes = new HashMap<String, Set<Gene>>();
-			
-			
-			/** Initial setup - parse info that was downloaded **/
-			for (Element elem : dataElements.getGlammElement()) {
-				
-				// Check the groupId for format (if no group Id, move on to the next Element)
-				String groupId = elem.getGroupId();
-				if (groupId == null || groupId.isEmpty())
-					continue;
-
-				String ecNum = elem.getEcNumber();
-				String locusId = elem.getVimssId();
-				
-				// If there's no OverlayDataGroup yet, make one.
-				if (!id2DataGroup.containsKey(groupId))
-					id2DataGroup.put(groupId, new OverlayDataGroup(groupId, elem.getGroupName(), elem.getCallbackURL(), service.getName()));
-				
-				// Put the EC num in that group.
-				if (ecNum != null && !ecNum.isEmpty()) {
-					if (!ecNum2GroupId.containsKey(ecNum))
-						ecNum2GroupId.put(ecNum, new HashSet<String>());
-					ecNum2GroupId.get(ecNum).add(groupId);
-				}
-				
-				// Put the locusId in that group.
-				if (locusId != null && !locusId.isEmpty()) {
-					if (!locus2GroupId.containsKey(locusId))
-						locus2GroupId.put(locusId, new HashSet<String>());
-					locus2GroupId.get(locusId).add(groupId);
-				}
-				
-			}
-
-			// Get all genes from VIMSS locus IDs.
-			GeneDAO geneDao = new GeneDAOImpl(sm);
-			Set<Gene> genes = geneDao.getGenesForVimssIds(taxId, locus2GroupId.keySet());
-			
-			// Shuffle them around to be in the right groups.
-			for (Gene gene : genes) {
-				if (!locus2GroupId.containsKey(gene.getVimssId()))
-					continue;
-				
-				for (String groupId : locus2GroupId.get(gene.getVimssId())) {
-					id2DataGroup.get(groupId).addElement(gene);
-				}
-				
-				for (String ecNum : gene.getEcNums()) {
-					if (!ecNum2GroupId.containsKey(ecNum))
-						ecNum2GroupId.put(ecNum, new HashSet<String>());
-					ecNum2GroupId.get(ecNum).addAll(locus2GroupId.get(gene.getVimssId()));
-					
-					if (!ecNum2Genes.containsKey(ecNum))
-						ecNum2Genes.put(ecNum, new HashSet<Gene>());
-					ecNum2Genes.get(ecNum).add(gene);
-				}
-			}
-			
-			// NOW we need gene->EC
-			// get all ECs.
-			// get all Reactions for those ECs.
-			// now we can map (for all genes), which reactions they belong to (reaction -> EC set, EC -> gene set, gene -> Group)
-			
-			ReactionDAO rxnDao = new ReactionGlammDAOImpl(sm);
-			Set<Reaction> reactions = rxnDao.getReactions(rxnDao.getRxnIdsForEcNums(ecNum2GroupId.keySet()));
-
-			for (Reaction rxn : reactions) {
-				for (String ecNum : rxn.getEcNums()) {
-					Set<Gene> geneSet = ecNum2Genes.get(ecNum);
-					if (geneSet != null && !geneSet.isEmpty()) {
-						for (Gene g : geneSet) {
-							rxn.addGene(g);
-						}
-					}
-					
-					Set<String> groupIds = ecNum2GroupId.get(ecNum);
-					if (groupIds == null || groupIds.isEmpty())
-						continue;
-					
-					for (String id : groupIds) {
-						id2DataGroup.get(id).addReaction(rxn);
-					}
-				}
-			}
-			
-			dataSet.addAll(id2DataGroup.values());
 			
 		} catch (MalformedURLException e) {
 			System.out.println(e.getLocalizedMessage());
 		} catch (IOException e) {
 			System.out.println(e.getLocalizedMessage());
+		} catch (ClassNotFoundException e) {
+			System.out.println(e.getLocalizedMessage());
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return dataSet;
 	}
@@ -970,86 +823,20 @@ public class GroupDataDAOImpl implements GroupDataDAO {
 	 * @param parameters
 	 * @return
 	 */
-	private String buildParameterString(GroupDataService service, Map<String, String> parameters) {
-		if (parameters == null || parameters.size() == 0)
+	private String buildParameterString(ExternalDataService service) {
+		if (service == null || service.getParameters().size() == 0)
 			return "";
-
-		String paramString = "?";
-		List<String> pairs = new ArrayList<String>();
-		for (String p : parameters.keySet()) {
-			String urlParamName = service.getUrlParamName(p);
-			if (urlParamName != null)
-				pairs.add(urlParamName + "=" + parameters.get(p));
-		}
 		
-		paramString += pairs.get(0);
-		for (int i=1; i<pairs.size(); i++) {
-			paramString += "&" + pairs.get(i);
+		StringBuilder paramBuilder = new StringBuilder("?");
+		for (ExternalServiceParameter p : service.getParameters()) {
+			paramBuilder.append(p.getExternalUrlName());
+			paramBuilder.append("=");
+			paramBuilder.append(p.getValue());
+			paramBuilder.append("&");
 		}
-		return paramString;
-	}
-}
-
-/**
- * A simple class used by Jackson for unmarshalling the JSON-encoded results from RegPrecise
- */
-class ElementSet {
-	private Collection<Element> glammElement;
-	
-	public ElementSet() { }
-	
-	public void setGlammElement(Collection<Element> glammElement) {
-		this.glammElement = glammElement;
+		paramBuilder.deleteCharAt(paramBuilder.length()-1);
+		
+		return paramBuilder.toString();
 	}
 	
-	public Collection<Element> getGlammElement() { return glammElement; }
-}		
-
-/**
- * A simple class used by Jackson for unmarshalling the JSON-encoded results from RegPrecise
- */
-class Element {
-	private String vimssId;
-	private String ecNumber;
-	private String groupId;
-	private String groupName;
-	private String callbackURL;
-
-	public Element() {
-		vimssId = "";
-		ecNumber = "";
-		groupId = "";
-		groupName = "";
-		callbackURL = "";
-	}
-	
-	public void setVimssId(String vimssId) {
-		this.vimssId = vimssId;
-	}
-	
-	public void setEcNumber(String ecNumber) {
-		this.ecNumber = ecNumber;
-	}
-	
-	public void setGroupId(String groupId) {
-		this.groupId = groupId;
-	}
-	
-	public void setGroupName(String groupName) {
-		this.groupName = groupName;
-	}
-	
-	public void setCallbackURL(String callbackURL) {
-		this.callbackURL = callbackURL;
-	}
-	
-	public String getVimssId() { return vimssId; }
-	
-	public String getEcNumber() { return ecNumber; }
-	
-	public String getGroupId() { return groupId; }
-	
-	public String getGroupName() { return groupName; }
-	
-	public String getCallbackURL() { return callbackURL; }
 }

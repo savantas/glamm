@@ -3,8 +3,9 @@ package gov.lbl.glamm.server.actions;
 import java.util.List;
 import java.util.Map;
 
-import gov.lbl.glamm.server.GroupDataServiceManager;
 import gov.lbl.glamm.server.GlammSession;
+import gov.lbl.glamm.server.externalservice.ExternalDataServiceManager;
+import gov.lbl.glamm.shared.ExternalDataService;
 
 /**
  * Service for fetching a set of external data services that GLAMM knows how to talk to.
@@ -19,8 +20,11 @@ public class PopulateDataServices {
 	 * @param sm the GlammSession
 	 * @return a Map where they key Strings are data service names and the values are lists of parameter name strings
 	 */
-	public static Map<String, List<String>> populateDataServices(GlammSession sm) {
-		return GroupDataServiceManager.getAvailableServiceInformation();
+	public static List<ExternalDataService> populateDataServices(GlammSession sm) {
+		return ExternalDataServiceManager.getAvailableServiceInformation();
 	}
+//	public static Map<String, List<String>> populateDataServices(GlammSession sm) {
+//		return GroupDataServiceManager.getAvailableServiceInformation();
+//	}
 
 }

@@ -46,7 +46,8 @@ public class OverlayDataGroup implements Serializable {
 	private String name = "";
 	private String source = "";
 	private String cssColor = "white";
-//	private Set<HasType> dataGroup;
+	private int taxId;
+	private String genomeName = "";
 	private Set<Gene> geneGroup;
 	private Set<Compound> compoundGroup;
 	private Set<Reaction> reactionGroup;
@@ -74,7 +75,6 @@ public class OverlayDataGroup implements Serializable {
 	public OverlayDataGroup(String id, String name) {
 		this.id = id;
 		this.name = name;
-//		dataGroup = new HashSet<HasType>();
 		geneGroup = new HashSet<Gene>();
 		compoundGroup = new HashSet<Compound>();
 		reactionGroup = new HashSet<Reaction>();
@@ -223,15 +223,6 @@ public class OverlayDataGroup implements Serializable {
 	 */
 	public Set<Reaction> getAllReactions() {
 		return reactionGroup;
-		
-//		Set<Reaction> rxns = new HashSet<Reaction>();
-//
-//		for (HasType element : dataGroup) {
-//			if (element.getType() == Reaction.TYPE)
-//				rxns.add((Reaction)element);
-//		}
-//		
-//		return rxns;
 	}
 
 	/**
@@ -242,14 +233,6 @@ public class OverlayDataGroup implements Serializable {
 	 */
 	public Set<Compound> getAllCompounds() {
 		return compoundGroup;
-//		Set<Compound> cpds = new HashSet<Compound>();
-//
-//		for (HasType element : dataGroup) {
-//			if (element.getType() == Compound.TYPE)
-//				cpds.add((Compound)element);
-//		}
-//		
-//		return cpds;
 	}
 	
 	
@@ -301,5 +284,16 @@ public class OverlayDataGroup implements Serializable {
 			}
 		}
 		return genes;
+	}
+
+	public String getGenomeName() {
+		return genomeName;
+	}
+	
+	public void setGenomeName(String genomeName) {
+		if (genomeName == null)
+			this.genomeName = "";
+		else
+			this.genomeName = genomeName;
 	}
 }
