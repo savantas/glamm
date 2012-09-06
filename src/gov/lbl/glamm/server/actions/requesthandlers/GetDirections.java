@@ -1,12 +1,5 @@
 package gov.lbl.glamm.server.actions.requesthandlers;
 
-import gov.lbl.glamm.client.model.Algorithm;
-import gov.lbl.glamm.client.model.Compound;
-import gov.lbl.glamm.client.model.MetabolicNetwork;
-import gov.lbl.glamm.client.model.Organism;
-import gov.lbl.glamm.client.model.Pathway;
-import gov.lbl.glamm.client.model.Reaction;
-import gov.lbl.glamm.client.model.util.Xref;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.RequestHandler;
 import gov.lbl.glamm.server.ResponseHandler;
@@ -22,6 +15,13 @@ import gov.lbl.glamm.server.retrosynthesis.Route;
 import gov.lbl.glamm.server.retrosynthesis.Route.Step;
 import gov.lbl.glamm.server.retrosynthesis.algorithms.RetrosynthesisAlgorithm;
 import gov.lbl.glamm.shared.RequestParameters;
+import gov.lbl.glamm.shared.model.Algorithm;
+import gov.lbl.glamm.shared.model.Compound;
+import gov.lbl.glamm.shared.model.MetabolicNetwork;
+import gov.lbl.glamm.shared.model.Organism;
+import gov.lbl.glamm.shared.model.Pathway;
+import gov.lbl.glamm.shared.model.Reaction;
+import gov.lbl.glamm.shared.model.util.Xref;
 
 import java.io.IOException;
 import java.util.ArrayList;

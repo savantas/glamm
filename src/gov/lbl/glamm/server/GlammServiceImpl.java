@@ -1,20 +1,6 @@
 package gov.lbl.glamm.server;
 
-import gov.lbl.glamm.client.model.Algorithm;
-import gov.lbl.glamm.client.model.AnnotatedMapDescriptor;
-import gov.lbl.glamm.client.model.Compound;
-import gov.lbl.glamm.client.model.FluxExperiment;
-import gov.lbl.glamm.client.model.Gene;
-import gov.lbl.glamm.client.model.GlammState;
-import gov.lbl.glamm.client.model.MetabolicModel;
-import gov.lbl.glamm.client.model.Organism;
-import gov.lbl.glamm.client.model.OverlayDataGroup;
-import gov.lbl.glamm.client.model.Pathway;
-import gov.lbl.glamm.client.model.Reaction;
-import gov.lbl.glamm.client.model.Sample;
-import gov.lbl.glamm.client.model.User;
-import gov.lbl.glamm.client.model.interfaces.HasMeasurements;
-import gov.lbl.glamm.client.rpc.GlammService;
+import gov.lbl.glamm.client.map.rpc.GlammService;
 import gov.lbl.glamm.server.actions.AuthenticateUser;
 import gov.lbl.glamm.server.actions.GenCpdPopup;
 import gov.lbl.glamm.server.actions.GenPwyPopup;
@@ -22,8 +8,8 @@ import gov.lbl.glamm.server.actions.GetAnnotatedMapDescriptors;
 import gov.lbl.glamm.server.actions.GetAvailableExperimentTypes;
 import gov.lbl.glamm.server.actions.GetFluxes;
 import gov.lbl.glamm.server.actions.GetGlammState;
-import gov.lbl.glamm.server.actions.GetMetabolicModel;
 import gov.lbl.glamm.server.actions.GetGroupData;
+import gov.lbl.glamm.server.actions.GetMetabolicModel;
 import gov.lbl.glamm.server.actions.GetOrganism;
 import gov.lbl.glamm.server.actions.GetPathways;
 import gov.lbl.glamm.server.actions.GetReactions;
@@ -38,14 +24,29 @@ import gov.lbl.glamm.server.actions.PopulateSamples;
 import gov.lbl.glamm.server.actions.requesthandlers.GetDirections;
 import gov.lbl.glamm.server.externalservice.ExternalDataServiceManager;
 import gov.lbl.glamm.shared.ExternalDataService;
+import gov.lbl.glamm.shared.model.Algorithm;
+import gov.lbl.glamm.shared.model.AnnotatedMapDescriptor;
+import gov.lbl.glamm.shared.model.Compound;
+import gov.lbl.glamm.shared.model.FluxExperiment;
+import gov.lbl.glamm.shared.model.Gene;
+import gov.lbl.glamm.shared.model.GlammState;
+import gov.lbl.glamm.shared.model.MetabolicModel;
+import gov.lbl.glamm.shared.model.Organism;
+import gov.lbl.glamm.shared.model.OverlayDataGroup;
+import gov.lbl.glamm.shared.model.Pathway;
+import gov.lbl.glamm.shared.model.Reaction;
+import gov.lbl.glamm.shared.model.Sample;
+import gov.lbl.glamm.shared.model.User;
+import gov.lbl.glamm.shared.model.interfaces.HasMeasurements;
 
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -61,13 +62,26 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	private static final String SERVER_CONFIG_XML_FILE_NAME		= "/config/server_config.xml";
 	private static final String EXTERNAL_SERVICES_XML_FILE_NAME = "/config/external_services.xml";
 	
+	private static Set<GlammSession> sessions;
+	
+	static {
+		sessions = new HashSet<GlammSession>();
+	}
+	
 	/**
 	 * Gets the single instance of the GlammSession object associated with this session
 	 * @return the GlammSession instance
 	 */
 	private GlammSession getGlammSession() {
 		HttpServletRequest request = this.getThreadLocalRequest();
-		return GlammSession.getGlammSession(request);
+		GlammSession glammSession = GlammSession.getGlammSession(request);
+		
+		sessions.add(glammSession);
+		
+		Set<GlammSession> localSessions = sessions;
+		int localSessionsCount = sessions.size();
+		
+		return glammSession;
 	}
 	
 	@Override

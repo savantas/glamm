@@ -1,13 +1,13 @@
 package gov.lbl.glamm.server.actions;
 
-import gov.lbl.glamm.client.model.Experiment;
-import gov.lbl.glamm.client.model.Organism;
-import gov.lbl.glamm.client.model.Pathway;
-import gov.lbl.glamm.client.model.Sample;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.PathwayDAO;
 import gov.lbl.glamm.server.dao.impl.KeggPathwayDAOImpl;
 import gov.lbl.glamm.server.util.GlammUtils;
+import gov.lbl.glamm.shared.model.Experiment;
+import gov.lbl.glamm.shared.model.Organism;
+import gov.lbl.glamm.shared.model.Pathway;
+import gov.lbl.glamm.shared.model.Sample;
 
 import java.util.Set;
 

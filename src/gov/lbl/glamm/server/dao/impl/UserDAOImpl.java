@@ -1,9 +1,9 @@
 package gov.lbl.glamm.server.dao.impl;
 
-import gov.lbl.glamm.client.model.User;
 import gov.lbl.glamm.server.GlammDbConnectionPool;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.UserDAO;
+import gov.lbl.glamm.shared.model.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

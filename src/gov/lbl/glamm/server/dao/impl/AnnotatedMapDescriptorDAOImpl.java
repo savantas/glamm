@@ -1,8 +1,8 @@
 package gov.lbl.glamm.server.dao.impl;
 
-import gov.lbl.glamm.client.model.AnnotatedMapDescriptor;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.AnnotatedMapDescriptorDAO;
+import gov.lbl.glamm.shared.model.AnnotatedMapDescriptor;
 import gov.lbl.glammdb.domain.PersistentAnnotatedMap;
 import gov.lbl.glammdb.util.HibernateUtil;
 

@@ -13,9 +13,6 @@ import java.net.URL;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import gov.lbl.glamm.client.model.Gene;
-import gov.lbl.glamm.client.model.OverlayDataGroup;
-import gov.lbl.glamm.client.model.Reaction;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.RequestHandler;
 import gov.lbl.glamm.server.dao.GeneDAO;
@@ -25,6 +22,9 @@ import gov.lbl.glamm.server.externalservice.ServiceJsonParser;
 import gov.lbl.glamm.server.externalservice.parsers.RegPreciseParser;
 import gov.lbl.glamm.shared.ExternalServiceParameter;
 import gov.lbl.glamm.shared.ExternalDataService;
+import gov.lbl.glamm.shared.model.Gene;
+import gov.lbl.glamm.shared.model.OverlayDataGroup;
+import gov.lbl.glamm.shared.model.Reaction;
 
 /**
  * Implementation of the Group Data DAO interface.

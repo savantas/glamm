@@ -1,6 +1,6 @@
 package gov.lbl.glamm.server.dao;
 
-import gov.lbl.glamm.client.model.User;
+import gov.lbl.glamm.shared.model.User;
 
 /**
  * Data access object interface for users.

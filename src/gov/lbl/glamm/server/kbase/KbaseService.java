@@ -1,6 +1,6 @@
 package gov.lbl.glamm.server.kbase;
 
-import gov.lbl.glamm.client.model.MetabolicModel;
+import gov.lbl.glamm.shared.model.MetabolicModel;
 
 import java.util.HashMap;
 import java.util.Map;

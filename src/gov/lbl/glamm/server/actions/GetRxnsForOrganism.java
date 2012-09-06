@@ -1,13 +1,13 @@
 package gov.lbl.glamm.server.actions;
 
-import gov.lbl.glamm.client.model.Gene;
-import gov.lbl.glamm.client.model.Organism;
-import gov.lbl.glamm.client.model.Reaction;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.GeneDAO;
 import gov.lbl.glamm.server.dao.ReactionDAO;
 import gov.lbl.glamm.server.dao.impl.GeneDAOImpl;
 import gov.lbl.glamm.server.dao.impl.ReactionGlammDAOImpl;
+import gov.lbl.glamm.shared.model.Gene;
+import gov.lbl.glamm.shared.model.Organism;
+import gov.lbl.glamm.shared.model.Reaction;
 
 import java.util.HashSet;
 import java.util.Set;

@@ -1,12 +1,12 @@
 package gov.lbl.glamm.server.actions;
 
-import gov.lbl.glamm.client.model.Compound;
-import gov.lbl.glamm.client.model.Organism;
-import gov.lbl.glamm.client.model.util.Xref;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.CompoundDAO;
 import gov.lbl.glamm.server.dao.impl.CompoundGlammDAOImpl;
 import gov.lbl.glamm.server.util.GlammUtils;
+import gov.lbl.glamm.shared.model.Compound;
+import gov.lbl.glamm.shared.model.Organism;
+import gov.lbl.glamm.shared.model.util.Xref;
 
 import java.util.HashSet;
 import java.util.Set;

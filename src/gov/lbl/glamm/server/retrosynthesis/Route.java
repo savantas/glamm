@@ -1,6 +1,6 @@
 package gov.lbl.glamm.server.retrosynthesis;
 
-import gov.lbl.glamm.client.model.MetabolicNetwork.MNNode;
+import gov.lbl.glamm.shared.model.MetabolicNetwork.MNNode;
 
 import java.util.ArrayList;
 import java.util.Comparator;

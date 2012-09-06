@@ -1,11 +1,11 @@
 package gov.lbl.glamm.server.dao.impl;
 
-import gov.lbl.glamm.client.model.Organism;
-import gov.lbl.glamm.client.model.Sample;
 import gov.lbl.glamm.server.GlammDbConnectionPool;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.OrganismDAO;
 import gov.lbl.glamm.server.util.GlammUtils;
+import gov.lbl.glamm.shared.model.Organism;
+import gov.lbl.glamm.shared.model.Sample;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

@@ -1,6 +1,6 @@
 package gov.lbl.glamm.server.dao;
 
-import gov.lbl.glamm.client.model.AnnotatedMapDescriptor;
+import gov.lbl.glamm.shared.model.AnnotatedMapDescriptor;
 
 import java.util.List;
 

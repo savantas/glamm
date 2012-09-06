@@ -1,6 +1,6 @@
 package gov.lbl.glamm.server.dao;
 
-import gov.lbl.glamm.client.model.Gene;
+import gov.lbl.glamm.shared.model.Gene;
 
 import java.util.Collection;
 import java.util.Set;

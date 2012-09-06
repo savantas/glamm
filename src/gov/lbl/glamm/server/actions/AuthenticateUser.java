@@ -1,10 +1,10 @@
 package gov.lbl.glamm.server.actions;
 
-import gov.lbl.glamm.client.model.User;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.UserDAO;
 import gov.lbl.glamm.server.dao.impl.UserDAOImpl;
 import gov.lbl.glamm.server.util.GlammUtils;
+import gov.lbl.glamm.shared.model.User;
 
 /**
  * Service class for authenticating a user.

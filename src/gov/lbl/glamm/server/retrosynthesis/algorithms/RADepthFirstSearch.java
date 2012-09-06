@@ -1,9 +1,9 @@
 package gov.lbl.glamm.server.retrosynthesis.algorithms;
 
-import gov.lbl.glamm.client.model.MetabolicNetwork;
-import gov.lbl.glamm.client.model.MetabolicNetwork.MNNode;
 import gov.lbl.glamm.server.retrosynthesis.Route;
 import gov.lbl.glamm.server.retrosynthesis.Route.Step;
+import gov.lbl.glamm.shared.model.MetabolicNetwork;
+import gov.lbl.glamm.shared.model.MetabolicNetwork.MNNode;
 
 import java.util.List;
 import java.util.Set;

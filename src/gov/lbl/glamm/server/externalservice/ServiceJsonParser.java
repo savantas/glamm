@@ -1,8 +1,8 @@
 package gov.lbl.glamm.server.externalservice;
 
-import gov.lbl.glamm.client.model.OverlayDataGroup;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.shared.ExternalDataService;
+import gov.lbl.glamm.shared.model.OverlayDataGroup;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,8 +1,8 @@
 package gov.lbl.glammdb.domain;
 
-import gov.lbl.glamm.client.model.AnnotatedMapDescriptor;
-import gov.lbl.glamm.client.model.MetabolicNetwork;
-import gov.lbl.glamm.client.model.MetabolicNetwork.MNNode;
+import gov.lbl.glamm.shared.model.AnnotatedMapDescriptor;
+import gov.lbl.glamm.shared.model.MetabolicNetwork;
+import gov.lbl.glamm.shared.model.MetabolicNetwork.MNNode;
 
 import java.io.Serializable;
 import java.util.LinkedHashSet;

@@ -1,10 +1,5 @@
 package gov.lbl.glamm.server.actions;
 
-import gov.lbl.glamm.client.model.Experiment;
-import gov.lbl.glamm.client.model.GlammState;
-import gov.lbl.glamm.client.model.MetabolicModel;
-import gov.lbl.glamm.client.model.Organism;
-import gov.lbl.glamm.client.model.OverlayDataGroup;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.GroupDataDAO;
 import gov.lbl.glamm.server.dao.OrganismDAO;
@@ -12,6 +7,11 @@ import gov.lbl.glamm.server.dao.impl.GroupDataDAOImpl;
 import gov.lbl.glamm.server.dao.impl.OrganismDAOImpl;
 import gov.lbl.glamm.server.externalservice.ExternalDataServiceManager;
 import gov.lbl.glamm.shared.ExternalDataService;
+import gov.lbl.glamm.shared.model.Experiment;
+import gov.lbl.glamm.shared.model.GlammState;
+import gov.lbl.glamm.shared.model.MetabolicModel;
+import gov.lbl.glamm.shared.model.Organism;
+import gov.lbl.glamm.shared.model.OverlayDataGroup;
 
 import java.util.HashMap;
 import java.util.HashSet;
