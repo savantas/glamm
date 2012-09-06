@@ -1,9 +1,9 @@
 package gov.lbl.glamm.server.actions;
 
-import gov.lbl.glamm.client.model.Sample;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.ExperimentDAO;
 import gov.lbl.glamm.server.dao.impl.ExperimentDAOImpl;
+import gov.lbl.glamm.shared.model.Sample;
 
 import java.util.List;
 

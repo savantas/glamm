@@ -3,11 +3,11 @@ package gov.lbl.glamm.server.dao;
 import java.util.Map;
 import java.util.Set;
 
-import gov.lbl.glamm.client.model.FluxExperiment;
-import gov.lbl.glamm.client.model.Measurement;
-import gov.lbl.glamm.client.model.MetabolicModel;
-import gov.lbl.glamm.client.model.Organism;
-import gov.lbl.glamm.client.model.Reaction;
+import gov.lbl.glamm.shared.model.FluxExperiment;
+import gov.lbl.glamm.shared.model.Measurement;
+import gov.lbl.glamm.shared.model.MetabolicModel;
+import gov.lbl.glamm.shared.model.Organism;
+import gov.lbl.glamm.shared.model.Reaction;
 
 /**
  * Data access object interface for Metabolic Models

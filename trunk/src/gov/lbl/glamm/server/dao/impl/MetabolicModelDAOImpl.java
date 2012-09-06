@@ -11,14 +11,14 @@ import java.util.Set;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import gov.lbl.glamm.client.model.FluxExperiment;
-import gov.lbl.glamm.client.model.Measurement;
-import gov.lbl.glamm.client.model.MetabolicModel;
-import gov.lbl.glamm.client.model.Organism;
-import gov.lbl.glamm.client.model.Reaction;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.MetabolicModelDAO;
 import gov.lbl.glamm.server.dao.ReactionDAO;
+import gov.lbl.glamm.shared.model.FluxExperiment;
+import gov.lbl.glamm.shared.model.Measurement;
+import gov.lbl.glamm.shared.model.MetabolicModel;
+import gov.lbl.glamm.shared.model.Organism;
+import gov.lbl.glamm.shared.model.Reaction;
 
 /**
  * Implementation of the Metabolic Model DAO.

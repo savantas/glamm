@@ -1,7 +1,7 @@
 package gov.lbl.glamm.server.retrosynthesis.algorithms;
 
-import gov.lbl.glamm.client.model.MetabolicNetwork;
-import gov.lbl.glamm.client.model.MetabolicNetwork.MNNode;
+import gov.lbl.glamm.shared.model.MetabolicNetwork;
+import gov.lbl.glamm.shared.model.MetabolicNetwork.MNNode;
 
 /**
  * Taxono - weighted depth first search.  Same as depth first search, but non-native reactions are more expensive than native reactions, and therefore 

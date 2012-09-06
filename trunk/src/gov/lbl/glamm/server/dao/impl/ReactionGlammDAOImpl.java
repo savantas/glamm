@@ -1,14 +1,14 @@
 package gov.lbl.glamm.server.dao.impl;
 
-import gov.lbl.glamm.client.model.Compound;
-import gov.lbl.glamm.client.model.Reaction;
-import gov.lbl.glamm.client.model.Reaction.Participant;
-import gov.lbl.glamm.client.model.Reaction.Participant.KeggRpairRole;
-import gov.lbl.glamm.client.model.util.Xref;
 import gov.lbl.glamm.server.GlammDbConnectionPool;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.ReactionDAO;
 import gov.lbl.glamm.server.util.GlammUtils;
+import gov.lbl.glamm.shared.model.Compound;
+import gov.lbl.glamm.shared.model.Reaction;
+import gov.lbl.glamm.shared.model.Reaction.Participant;
+import gov.lbl.glamm.shared.model.Reaction.Participant.KeggRpairRole;
+import gov.lbl.glamm.shared.model.util.Xref;
 import gov.lbl.glammdb.domain.PersistentPathway;
 import gov.lbl.glammdb.domain.PersistentPwyElement;
 import gov.lbl.glammdb.util.HibernateUtil;

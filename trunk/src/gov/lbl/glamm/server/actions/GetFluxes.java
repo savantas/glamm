@@ -1,11 +1,11 @@
 package gov.lbl.glamm.server.actions;
 
-import gov.lbl.glamm.client.model.FluxExperiment;
-import gov.lbl.glamm.client.model.Measurement;
-import gov.lbl.glamm.client.model.Reaction;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.MetabolicModelDAO;
 import gov.lbl.glamm.server.dao.impl.MetabolicModelDAOImpl;
+import gov.lbl.glamm.shared.model.FluxExperiment;
+import gov.lbl.glamm.shared.model.Measurement;
+import gov.lbl.glamm.shared.model.Reaction;
 
 import java.util.HashSet;
 import java.util.Map;

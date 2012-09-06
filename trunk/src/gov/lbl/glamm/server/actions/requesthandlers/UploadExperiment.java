@@ -1,12 +1,6 @@
 package gov.lbl.glamm.server.actions.requesthandlers;
 
-import gov.lbl.glamm.client.model.Experiment;
-import gov.lbl.glamm.client.model.Measurement;
-import gov.lbl.glamm.client.model.Organism;
-import gov.lbl.glamm.client.model.Sample;
-import gov.lbl.glamm.client.model.Sample.DataType;
-import gov.lbl.glamm.client.model.Sample.TargetType;
-import gov.lbl.glamm.client.presenter.ExperimentUploadPresenter;
+import gov.lbl.glamm.client.map.presenter.ExperimentUploadPresenter;
 import gov.lbl.glamm.server.FormRequestHandler;
 import gov.lbl.glamm.server.FormRequestHandler.LineParser;
 import gov.lbl.glamm.server.GlammSession;
@@ -14,6 +8,12 @@ import gov.lbl.glamm.server.RequestHandler;
 import gov.lbl.glamm.server.ResponseHandler;
 import gov.lbl.glamm.server.dao.OrganismDAO;
 import gov.lbl.glamm.server.dao.impl.OrganismDAOImpl;
+import gov.lbl.glamm.shared.model.Experiment;
+import gov.lbl.glamm.shared.model.Measurement;
+import gov.lbl.glamm.shared.model.Organism;
+import gov.lbl.glamm.shared.model.Sample;
+import gov.lbl.glamm.shared.model.Sample.DataType;
+import gov.lbl.glamm.shared.model.Sample.TargetType;
 
 import java.io.IOException;
 import java.util.HashMap;

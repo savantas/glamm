@@ -1,10 +1,10 @@
 package gov.lbl.glamm.server.retrosynthesis.algorithms;
 
-import gov.lbl.glamm.client.model.Algorithm;
-import gov.lbl.glamm.client.model.MetabolicNetwork;
-import gov.lbl.glamm.client.model.MetabolicNetwork.MNNode;
 import gov.lbl.glamm.server.retrosynthesis.Route;
 import gov.lbl.glamm.server.retrosynthesis.Route.RouteComparator;
+import gov.lbl.glamm.shared.model.Algorithm;
+import gov.lbl.glamm.shared.model.MetabolicNetwork;
+import gov.lbl.glamm.shared.model.MetabolicNetwork.MNNode;
 
 import java.util.ArrayList;
 import java.util.Collections;

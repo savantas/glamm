@@ -1,15 +1,15 @@
 package gov.lbl.glamm.server.actions.requesthandlers;
 
-import gov.lbl.glamm.client.model.Gene;
-import gov.lbl.glamm.client.model.Organism;
-import gov.lbl.glamm.client.model.util.Synonym;
-import gov.lbl.glamm.client.presenter.OrganismUploadPresenter;
+import gov.lbl.glamm.client.map.presenter.OrganismUploadPresenter;
 import gov.lbl.glamm.server.FormRequestHandler;
 import gov.lbl.glamm.server.FormRequestHandler.LineParser;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.RequestHandler;
 import gov.lbl.glamm.server.ResponseHandler;
 import gov.lbl.glamm.server.dao.impl.GeneMetaMolDAOImpl;
+import gov.lbl.glamm.shared.model.Gene;
+import gov.lbl.glamm.shared.model.Organism;
+import gov.lbl.glamm.shared.model.util.Synonym;
 
 import java.io.IOException;
 import java.util.HashMap;

@@ -1,14 +1,5 @@
 package gov.lbl.glamm.server.actions;
 
-import gov.lbl.glamm.client.model.Compound;
-import gov.lbl.glamm.client.model.Gene;
-import gov.lbl.glamm.client.model.Measurement;
-import gov.lbl.glamm.client.model.Reaction;
-import gov.lbl.glamm.client.model.Sample;
-import gov.lbl.glamm.client.model.interfaces.HasMeasurements;
-import gov.lbl.glamm.client.model.interfaces.HasSynonyms;
-import gov.lbl.glamm.client.model.util.Synonym;
-import gov.lbl.glamm.client.model.util.Xref;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.CompoundDAO;
 import gov.lbl.glamm.server.dao.ExperimentDAO;
@@ -18,6 +9,15 @@ import gov.lbl.glamm.server.dao.impl.CompoundGlammDAOImpl;
 import gov.lbl.glamm.server.dao.impl.ExperimentDAOImpl;
 import gov.lbl.glamm.server.dao.impl.GeneDAOImpl;
 import gov.lbl.glamm.server.dao.impl.ReactionGlammDAOImpl;
+import gov.lbl.glamm.shared.model.Compound;
+import gov.lbl.glamm.shared.model.Gene;
+import gov.lbl.glamm.shared.model.Measurement;
+import gov.lbl.glamm.shared.model.Reaction;
+import gov.lbl.glamm.shared.model.Sample;
+import gov.lbl.glamm.shared.model.interfaces.HasMeasurements;
+import gov.lbl.glamm.shared.model.interfaces.HasSynonyms;
+import gov.lbl.glamm.shared.model.util.Synonym;
+import gov.lbl.glamm.shared.model.util.Xref;
 
 import java.util.HashMap;
 import java.util.HashSet;

@@ -1,7 +1,7 @@
 package gov.lbl.glamm.server.dao;
 
-import gov.lbl.glamm.client.model.Organism;
-import gov.lbl.glamm.client.model.Sample;
+import gov.lbl.glamm.shared.model.Organism;
+import gov.lbl.glamm.shared.model.Sample;
 
 import java.util.List;
 import java.util.Map;

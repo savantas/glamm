@@ -1,9 +1,9 @@
 package gov.lbl.glamm.server.dao.impl;
 
-import gov.lbl.glamm.client.model.Gene;
-import gov.lbl.glamm.client.model.util.Synonym;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.GeneDAO;
+import gov.lbl.glamm.shared.model.Gene;
+import gov.lbl.glamm.shared.model.util.Synonym;
 
 import java.util.Collection;
 import java.util.HashSet;

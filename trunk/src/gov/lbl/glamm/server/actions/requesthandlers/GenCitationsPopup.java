@@ -1,11 +1,11 @@
 package gov.lbl.glamm.server.actions.requesthandlers;
 
-import gov.lbl.glamm.client.model.Citation;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.RequestHandler;
 import gov.lbl.glamm.server.ResponseHandler;
 import gov.lbl.glamm.server.dao.CitationsDAO;
 import gov.lbl.glamm.server.dao.impl.CitationsGlammDAOImpl;
+import gov.lbl.glamm.shared.model.Citation;
 
 import java.io.IOException;
 import java.util.ArrayList;

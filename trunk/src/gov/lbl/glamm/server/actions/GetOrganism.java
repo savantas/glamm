@@ -1,9 +1,9 @@
 package gov.lbl.glamm.server.actions;
 
-import gov.lbl.glamm.client.model.Organism;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.OrganismDAO;
 import gov.lbl.glamm.server.dao.impl.OrganismDAOImpl;
+import gov.lbl.glamm.shared.model.Organism;
 
 public class GetOrganism {
 

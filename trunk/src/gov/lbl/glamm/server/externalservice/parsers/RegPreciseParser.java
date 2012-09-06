@@ -12,9 +12,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import gov.lbl.glamm.client.model.Gene;
-import gov.lbl.glamm.client.model.OverlayDataGroup;
-import gov.lbl.glamm.client.model.Reaction;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.GeneDAO;
 import gov.lbl.glamm.server.dao.ReactionDAO;
@@ -22,6 +19,9 @@ import gov.lbl.glamm.server.dao.impl.GeneDAOImpl;
 import gov.lbl.glamm.server.dao.impl.ReactionGlammDAOImpl;
 import gov.lbl.glamm.server.externalservice.ServiceJsonParser;
 import gov.lbl.glamm.shared.ExternalDataService;
+import gov.lbl.glamm.shared.model.Gene;
+import gov.lbl.glamm.shared.model.OverlayDataGroup;
+import gov.lbl.glamm.shared.model.Reaction;
 
 public class RegPreciseParser implements ServiceJsonParser {
 

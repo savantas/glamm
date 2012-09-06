@@ -3,8 +3,8 @@ package gov.lbl.glamm.server.dao;
 import java.util.Map;
 import java.util.Set;
 
-import gov.lbl.glamm.client.model.OverlayDataGroup;
 import gov.lbl.glamm.shared.ExternalDataService;
+import gov.lbl.glamm.shared.model.OverlayDataGroup;
 
 /**
  * Interface for a data access object that deals with Group Data.

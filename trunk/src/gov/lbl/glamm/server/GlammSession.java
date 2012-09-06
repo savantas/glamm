@@ -1,11 +1,11 @@
 package gov.lbl.glamm.server;
 
-import gov.lbl.glamm.client.model.Experiment;
-import gov.lbl.glamm.client.model.Gene;
-import gov.lbl.glamm.client.model.Measurement;
-import gov.lbl.glamm.client.model.Organism;
-import gov.lbl.glamm.client.model.User;
 import gov.lbl.glamm.server.retrosynthesis.Route;
+import gov.lbl.glamm.shared.model.Experiment;
+import gov.lbl.glamm.shared.model.Gene;
+import gov.lbl.glamm.shared.model.Measurement;
+import gov.lbl.glamm.shared.model.Organism;
+import gov.lbl.glamm.shared.model.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;

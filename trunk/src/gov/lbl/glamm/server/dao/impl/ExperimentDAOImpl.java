@@ -1,10 +1,10 @@
 package gov.lbl.glamm.server.dao.impl;
 
-import gov.lbl.glamm.client.model.Experiment;
-import gov.lbl.glamm.client.model.Measurement;
-import gov.lbl.glamm.client.model.Sample;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.ExperimentDAO;
+import gov.lbl.glamm.shared.model.Experiment;
+import gov.lbl.glamm.shared.model.Measurement;
+import gov.lbl.glamm.shared.model.Sample;
 
 import java.util.ArrayList;
 import java.util.Collection;
