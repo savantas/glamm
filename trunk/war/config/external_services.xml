@@ -1,35 +1,60 @@
 <?xml version="1.0"?>
 <DataServices>
 	<Service name="RegPrecise Species Regulons"
-	    	 abbreviation="rpR" 
+	    	 abbreviation="rpS" 
 	    	 url="http://regprecise.lbl.gov/Services/rest/glammElements"
 	    	 parser="gov.lbl.glamm.server.externalservice.parsers.RegPreciseParser">
 		<Parameter displayName="MO taxonomy id" 
-		    	   extUrlName="taxonomyId" 
-		    	   stateUrlName="tId" />
+		    	   extUrlName="id" 
+		    	   stateUrlName="id"
+		    	   type="user" />
+		
+		<Parameter displayName="type"
+		    	   extUrlName="type"
+		    	   stateUrlName="t"
+		    	   type="hidden"
+		    	   default="taxonomy" />
 	</Service>
 	<Service name="RegPrecise TF Family" 
-	    	 abbreviation="rpTf"
-	         url="http://regprecise.lbl.gov/Services/rest/"
+	    	 abbreviation="rpF"
+	         url="http://regprecise.lbl.gov/Services/rest/glammElements"
 	    	 parser="gov.lbl.glamm.server.externalservice.parsers.RegPreciseParser">
 	    <Parameter displayName="TF Family id" 
-		    	   extUrlName="tfFamilyId" 
-		    	   stateUrlName="tfId" />
+		    	   extUrlName="id" 
+		    	   stateUrlName="id" 
+		    	   type="user" />
+		<Parameter displayName="type"
+		    	   extUrlName="type"
+		    	   stateUrlName="t"
+		    	   type="hidden"
+		    	   default="family" />
 	</Service>
 	<Service name="RegPrecise Regulog" 
-	    	 abbreviation="rpL"
-	    	 url="http://regprecise.lbl.gov/Services/rest/"
+	    	 abbreviation="rpG"
+	    	 url="http://regprecise.lbl.gov/Services/rest/glammElements"
 	    	 parser="gov.lbl.glamm.server.externalservice.parsers.RegPreciseParser">
 	    <Parameter displayName="Regulog id" 
-	        	   extUrlName="regulogId" 
-	        	   stateUrlName="rgId" />
+	        	   extUrlName="id" 
+	        	   stateUrlName="id" 
+	        	   type="user" />
+		<Parameter displayName="type"
+		    	   extUrlName="type"
+		    	   stateUrlName="t"
+		    	   type="hidden"
+		    	   default="regulog" />
 	</Service>
 	<Service name="RegPrecise Single Regulon" 
-	    	 abbreviation="rpS"
-	    	 url="http://regprecise.lbl.gov/Services/rest/"
+	    	 abbreviation="rpR"
+	    	 url="http://regprecise.lbl.gov/Services/rest/glammElements"
 	    	 parser="gov.lbl.glamm.server.externalservice.parsers.RegPreciseParser">
 		<Parameter displayName="Regulon id" 
-		    	   extUrlName="regId" 
-		    	   stateUrlName="rId" />
+		    	   extUrlName="id" 
+		    	   stateUrlName="id"
+		    	   type="user" />
+		<Parameter displayName="type"
+		    	   extUrlName="type"
+		    	   stateUrlName="t"
+		    	   type="hidden"
+		    	   default="regulon" />
 	</Service>
 </DataServices>

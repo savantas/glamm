@@ -1,30 +1,21 @@
 package gov.lbl.glamm.server.dao.impl;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import gov.lbl.glamm.server.GlammSession;
+import gov.lbl.glamm.server.dao.GroupDataDAO;
+import gov.lbl.glamm.server.dao.ReactionDAO;
+import gov.lbl.glamm.server.externalservice.ServiceJsonParser;
+import gov.lbl.glamm.shared.ExternalDataService;
+import gov.lbl.glamm.shared.ExternalServiceParameter;
+import gov.lbl.glamm.shared.model.OverlayDataGroup;
+import gov.lbl.glamm.shared.model.Reaction;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import gov.lbl.glamm.server.GlammSession;
-import gov.lbl.glamm.server.RequestHandler;
-import gov.lbl.glamm.server.dao.GeneDAO;
-import gov.lbl.glamm.server.dao.GroupDataDAO;
-import gov.lbl.glamm.server.dao.ReactionDAO;
-import gov.lbl.glamm.server.externalservice.ServiceJsonParser;
-import gov.lbl.glamm.server.externalservice.parsers.RegPreciseParser;
-import gov.lbl.glamm.shared.ExternalServiceParameter;
-import gov.lbl.glamm.shared.ExternalDataService;
-import gov.lbl.glamm.shared.model.Gene;
-import gov.lbl.glamm.shared.model.OverlayDataGroup;
-import gov.lbl.glamm.shared.model.Reaction;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Implementation of the Group Data DAO interface.

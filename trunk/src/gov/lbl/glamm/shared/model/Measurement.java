@@ -10,17 +10,51 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 public class Measurement implements Serializable {
 		
+	private String id;
 	private String expId;
 	private String sampleId;
-	private float value;
-	private float confidence;
+	private float value = 0.0f;
+	private float confidence = 0.0f;
 	
 	private String targetId;
 	
-	
-	@SuppressWarnings("unused")
-	private Measurement() {}
-	
+	public Measurement() {}
+
+	// Groupings
+	private Sample sample = null;
+
+	// Description methods
+	public String toHtml() {
+		return toHtml(false);
+	}
+
+	// Description methods
+	public String toHtml( boolean includeSampleAndExperiment ) {
+		StringBuilder builder = new StringBuilder();
+		if ( includeSampleAndExperiment ) {
+			builder.append("<span class='type'>Measurement</span>: ");
+		}
+		builder.append("<span class='title'>").append(id)
+			.append("</span><br/><span class='attributeName'>value</span>: <span class='attribute'>")
+			.append(value)
+			.append("</span><br/><span class='attributeName'>confidence</span>: <span class='attribute'>")
+			.append(confidence)
+			.append("</span>")
+		;
+		if ( includeSampleAndExperiment ) {
+			builder.append("<br/><div class='child'><span class='type'>Sample</span>: ")
+				.append(sample.toHtml());
+			if ( sample != null ) {
+				builder.append("<br/><span class='type'>Experiment</span>: ")
+					.append(sample.getExperiment().toHtml())
+					;
+			}
+			builder.append("</div>");
+		}
+
+		return builder.toString();
+	}
+
 	/**
 	 * Constructor
 	 * @param expId The experiment id.
@@ -61,6 +95,10 @@ public class Measurement implements Serializable {
 	public String getExpId() {
 		return expId;
 	}
+	
+	public void setExpId(String expId) {
+		this.expId = expId;
+	}
 
 	/**
 	 * Gets the sample id for this measurement.
@@ -68,6 +106,18 @@ public class Measurement implements Serializable {
 	 */
 	public String getSampleId() {
 		return sampleId;
+	}
+	
+	public void setSampleId(String sampleId) {
+		this.sampleId = sampleId;
+	}
+	
+	public Sample getSample() {
+		return sample;
+	}
+	
+	public void setSample(Sample sample) {
+		this.sample = sample;
 	}
 
 	/**
@@ -77,6 +127,10 @@ public class Measurement implements Serializable {
 	public float getValue() {
 		return value;
 	}
+	
+	public void setValue(float value) {
+		this.value = value;
+	}
 
 	/**
 	 * Gets the confidence of this measurement.
@@ -84,6 +138,10 @@ public class Measurement implements Serializable {
 	 */
 	public float getConfidence() {
 		return confidence;
+	}
+	
+	public void setConfidence(float confidence) {
+		this.confidence = confidence;
 	}
 
 	/**
@@ -94,5 +152,8 @@ public class Measurement implements Serializable {
 		return targetId;
 	}
 
+	public void setTargetId(String targetId) {
+		this.targetId = targetId;
+	}
 
 }

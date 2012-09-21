@@ -2,7 +2,6 @@ package gov.lbl.glamm.client.map.presenter;
 
 import gov.lbl.glamm.client.map.rpc.GlammServiceAsync;
 import gov.lbl.glamm.client.map.view.ReactionView;
-import gov.lbl.glamm.shared.model.Gene;
 import gov.lbl.glamm.shared.model.Organism;
 import gov.lbl.glamm.shared.model.OverlayDataGroup;
 import gov.lbl.glamm.shared.model.Reaction;

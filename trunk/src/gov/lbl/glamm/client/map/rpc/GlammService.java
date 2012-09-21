@@ -17,7 +17,6 @@ import gov.lbl.glamm.shared.model.User;
 import gov.lbl.glamm.shared.model.interfaces.HasMeasurements;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -31,6 +30,9 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("rpc")
 public interface GlammService extends RemoteService {
 	
+	public static String PATHWAY_SELECTION_COOKIE = "pathwaySelection";
+	public static String EXPERIMENT_SELECTION_COOKIE = "experimentSelection";
+
 	/**
 	 * Authenticates the user based on the user id and the contents of the MicrobesOnline "auth" cookie.
 	 * @param userId The user id.

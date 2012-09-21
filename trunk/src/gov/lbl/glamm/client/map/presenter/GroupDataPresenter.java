@@ -381,7 +381,7 @@ public class GroupDataPresenter {
 				if (g.getUrl() == null)
 					builder.appendHtmlConstant("No link available");
 				else {
-					builder.appendHtmlConstant("<a href=\"" + g.getUrl() + "\" target=\"_new\">");
+					builder.appendHtmlConstant("<a href=\"" + g.getUrl() + "\" target=\"_blank\">");
 					if (g.getSource().length() != 0)
 						builder.appendHtmlConstant(g.getSource());
 					builder.appendHtmlConstant("</a>");

@@ -1,0 +1,1358 @@
+<?xml version="1.0"?>
+<ReactionFunData>
+  <Compounds>
+    <Compound id="cpd8433" extId="8433" name="D-Ribose 5-phosphate" extIdName="guid" formula="C5H11O8P" mass="230.019" inchi="InChI=1S/C5H11O8P/c6-1-3(7)5(9)4(8)2-13-14(10,11)12/h1,3-5,7-9H,2H2,(H2,10,11,12)/p-2/t3-,4+,5?/m0/s1" smiles="C(C(C(C(C=O)O)O)O)OP([O-])(=O)[O-]">
+      <MeasurementReferences>
+        <MeasurementReference refId="dummyMeasurement10_0_0"/>
+        <MeasurementReference refId="dummyMeasurement9_1_0"/>
+        <MeasurementReference refId="dummyMeasurement11_0_0"/>
+        <MeasurementReference refId="dummyMeasurement11_1_0"/>
+        <MeasurementReference refId="dummyMeasurement9_0_0"/>
+        <MeasurementReference refId="dummyMeasurement10_1_0"/>
+      </MeasurementReferences>
+      <PathwayLinks>
+        <PathwayLink id="pl328750" extId="328750" name="Pentose phosphate pathway" extIdName="guid"/>
+      </PathwayLinks>
+    </Compound>
+    <Compound id="cpd3022" extId="3022" name="D-Ribulose 5-phosphate" extIdName="guid" formula="C5H11O8P" mass="230.019" inchi="InChI=1S/C5H11O8P/c6-1-3(7)5(9)4(8)2-13-14(10,11)12/h4-6,8-9H,1-2H2,(H2,10,11,12)/p-2/t4?,5-/m0/s1" smiles="C(O)C(C(C(COP([O-])([O-])=O)O)O)=O">
+      <MeasurementReferences>
+        <MeasurementReference refId="dummyMeasurement10_0_1"/>
+        <MeasurementReference refId="dummyMeasurement10_1_1"/>
+        <MeasurementReference refId="dummyMeasurement11_1_1"/>
+        <MeasurementReference refId="dummyMeasurement9_1_1"/>
+        <MeasurementReference refId="dummyMeasurement9_0_1"/>
+        <MeasurementReference refId="dummyMeasurement11_0_1"/>
+      </MeasurementReferences>
+      <PathwayLinks>
+        <PathwayLink id="pl328760" extId="328760" name="Pentose phosphate pathway" extIdName="guid"/>
+      </PathwayLinks>
+    </Compound>
+    <Compound id="cpd4254" extId="4254" name="6-Phospho-D-gluconate" extIdName="guid" formula="C6H13O10P" mass="276.025" inchi="InChI=1S/C6H13O10P/c7-2(1-16-17(13,14)15)3(8)4(9)5(10)6(11)12/h2-5,7-10H,1H2,(H,11,12)(H2,13,14,15)/p-3/t2-,3?,4?,5?/m1/s1" smiles="C(C(C(C(C(C([O-])=O)O)O)O)O)OP([O-])([O-])=O">
+      <MeasurementReferences>
+        <MeasurementReference refId="dummyMeasurement11_1_2"/>
+        <MeasurementReference refId="dummyMeasurement9_1_2"/>
+        <MeasurementReference refId="dummyMeasurement10_1_2"/>
+        <MeasurementReference refId="dummyMeasurement9_0_2"/>
+        <MeasurementReference refId="dummyMeasurement10_0_2"/>
+        <MeasurementReference refId="dummyMeasurement11_0_2"/>
+      </MeasurementReferences>
+      <PathwayLinks>
+        <PathwayLink id="pl328774" extId="328774" name="Pentose phosphate pathway" extIdName="guid"/>
+      </PathwayLinks>
+    </Compound>
+    <Compound id="cpd136" extId="136" name="NADP+" extIdName="guid" formula="C21H29N7O17P3" mass="744.083" inchi="InChI=1S/C21H28N7O17P3/c22-17-12-19(25-7-24-17)28(8-26-12)21-16(44-46(33,34)35)14(30)11(43-21)6-41-48(38,39)45-47(36,37)40-5-10-13(29)15(31)20(42-10)27-3-1-2-9(4-27)18(23)32/h1-4,7-8,10-11,13-16,20-21,29-31H,5-6H2,(H7-,22,23,24,25,32,33,34,35,36,37,38,39)/p-3/t10-,11-,13-,14-,15-,16-,20-,21-/m1/s1" smiles="C(C3(C(C(C(N2(C1(=C(C(=NC=N1)N)N=C2)))O3)OP([O-])([O-])=O)O))OP(OP(=O)([O-])OCC4(C(C(C(O4)[N+]5(=CC(=CC=C5)C(=O)N))O)O))([O-])=O">
+      <MeasurementReferences>
+        <MeasurementReference refId="dummyMeasurement10_1_3"/>
+        <MeasurementReference refId="dummyMeasurement11_1_3"/>
+        <MeasurementReference refId="dummyMeasurement9_1_3"/>
+        <MeasurementReference refId="dummyMeasurement9_0_3"/>
+        <MeasurementReference refId="dummyMeasurement11_0_3"/>
+        <MeasurementReference refId="dummyMeasurement10_0_3"/>
+      </MeasurementReferences>
+    </Compound>
+    <Compound id="cpd258" extId="258" name="CO2" extIdName="guid" formula="CO2" mass="43.9898" inchi="InChI=1S/CO2/c2-1-3" smiles="C(=O)=O">
+      <MeasurementReferences>
+        <MeasurementReference refId="dummyMeasurement10_1_4"/>
+        <MeasurementReference refId="dummyMeasurement9_0_4"/>
+        <MeasurementReference refId="dummyMeasurement9_1_4"/>
+        <MeasurementReference refId="dummyMeasurement11_1_4"/>
+        <MeasurementReference refId="dummyMeasurement10_0_4"/>
+        <MeasurementReference refId="dummyMeasurement11_0_4"/>
+      </MeasurementReferences>
+    </Compound>
+    <Compound id="cpd105" extId="105" name="NADPH" extIdName="guid" formula="C21H30N7O17P3" mass="745.091" inchi="InChI=1S/C21H30N7O17P3/c22-17-12-19(25-7-24-17)28(8-26-12)21-16(44-46(33,34)35)14(30)11(43-21)6-41-48(38,39)45-47(36,37)40-5-10-13(29)15(31)20(42-10)27-3-1-2-9(4-27)18(23)32/h1,3-4,7-8,10-11,13-16,20-21,29-31H,2,5-6H2,(H2,23,32)(H,36,37)(H,38,39)(H2,22,24,25)(H2,33,34,35)/p-4/t10-,11-,13-,14-,15-,16-,20-,21-/m1/s1" smiles="C(C3(C(C(C(N2(C1(=C(C(=NC=N1)N)N=C2)))O3)OP([O-])([O-])=O)O))OP(OP(=O)([O-])OCC4(C(C(C(O4)N5(C=C(CC=C5)C(=O)N))O)O))([O-])=O">
+      <MeasurementReferences>
+        <MeasurementReference refId="dummyMeasurement9_0_5"/>
+        <MeasurementReference refId="dummyMeasurement10_1_5"/>
+        <MeasurementReference refId="dummyMeasurement11_1_5"/>
+        <MeasurementReference refId="dummyMeasurement9_1_5"/>
+        <MeasurementReference refId="dummyMeasurement11_0_5"/>
+        <MeasurementReference refId="dummyMeasurement10_0_5"/>
+      </MeasurementReferences>
+    </Compound>
+    <Compound id="cpd1323" extId="1323" name="H+" extIdName="guid" formula="H" mass="1.0078" inchi="InChI=1S/p+1" smiles="[H+]">
+      <MeasurementReferences>
+        <MeasurementReference refId="dummyMeasurement9_0_6"/>
+        <MeasurementReference refId="dummyMeasurement11_1_6"/>
+        <MeasurementReference refId="dummyMeasurement9_1_6"/>
+        <MeasurementReference refId="dummyMeasurement10_1_6"/>
+        <MeasurementReference refId="dummyMeasurement10_0_6"/>
+        <MeasurementReference refId="dummyMeasurement11_0_6"/>
+      </MeasurementReferences>
+    </Compound>
+    <Compound id="cpd3172" extId="3172" name="D-Xylulose 5-phosphate" extIdName="guid" formula="C5H11O8P" mass="230.019" inchi="InChI=1S/C5H11O8P/c6-1-3(7)5(9)4(8)2-13-14(10,11)12/h4-6,8-9H,1-2H2,(H2,10,11,12)/p-2/t4-,5-/m1/s1" smiles="C(C(=O)C(O)C(O)COP([O-])(=O)[O-])O">
+      <MeasurementReferences>
+        <MeasurementReference refId="dummyMeasurement9_0_7"/>
+        <MeasurementReference refId="dummyMeasurement10_1_7"/>
+        <MeasurementReference refId="dummyMeasurement11_1_7"/>
+        <MeasurementReference refId="dummyMeasurement11_0_7"/>
+        <MeasurementReference refId="dummyMeasurement9_1_7"/>
+        <MeasurementReference refId="dummyMeasurement10_0_7"/>
+      </MeasurementReferences>
+      <PathwayLinks>
+        <PathwayLink id="pl328766" extId="328766" name="Pentose phosphate pathway" extIdName="guid"/>
+      </PathwayLinks>
+    </Compound>
+    <Compound id="cpd67428" extId="67428" name="Sedoheptulose 7-phosphate" extIdName="guid" formula="C7H15O10P" mass="290.04" inchi="" smiles="">
+      <MeasurementReferences>
+        <MeasurementReference refId="dummyMeasurement10_1_8"/>
+        <MeasurementReference refId="dummyMeasurement10_0_8"/>
+        <MeasurementReference refId="dummyMeasurement11_0_8"/>
+        <MeasurementReference refId="dummyMeasurement9_1_8"/>
+        <MeasurementReference refId="dummyMeasurement11_1_8"/>
+        <MeasurementReference refId="dummyMeasurement9_0_8"/>
+      </MeasurementReferences>
+      <PathwayLinks>
+        <PathwayLink id="pl328806" extId="328806" name="Pentose phosphate pathway" extIdName="guid"/>
+      </PathwayLinks>
+    </Compound>
+    <Compound id="cpd58017" extId="58017" name="D-Glyceraldehyde 3-phosphate" extIdName="guid" formula="C3H7O6P" mass="169.998" inchi="" smiles="">
+      <MeasurementReferences>
+        <MeasurementReference refId="dummyMeasurement11_0_9"/>
+        <MeasurementReference refId="dummyMeasurement10_0_9"/>
+        <MeasurementReference refId="dummyMeasurement9_1_9"/>
+        <MeasurementReference refId="dummyMeasurement11_1_9"/>
+        <MeasurementReference refId="dummyMeasurement10_1_9"/>
+        <MeasurementReference refId="dummyMeasurement9_0_9"/>
+      </MeasurementReferences>
+      <PathwayLinks>
+        <PathwayLink id="pl328524" extId="328524" name="Glycolysis / Gluconeogenesis" extIdName="guid"/>
+        <PathwayLink id="pl330358" extId="330358" name="Biosynthesis of steroids" extIdName="guid"/>
+        <PathwayLink id="pl328752" extId="328752" name="Pentose phosphate pathway" extIdName="guid"/>
+      </PathwayLinks>
+    </Compound>
+    <Compound id="cpd3741" extId="3741" name="D-Erythrose 4-phosphate" extIdName="guid" formula="C4H9O7P" mass="200.009" inchi="InChI=1S/C4H9O7P/c5-1-3(6)4(7)2-11-12(8,9)10/h1,3-4,6-7H,2H2,(H2,8,9,10)/p-2/t3?,4-/m1/s1" smiles="C(OP([O-])([O-])=O)C(C(C=O)O)O">
+      <MeasurementReferences>
+        <MeasurementReference refId="dummyMeasurement10_1_10"/>
+        <MeasurementReference refId="dummyMeasurement11_1_10"/>
+        <MeasurementReference refId="dummyMeasurement10_0_10"/>
+        <MeasurementReference refId="dummyMeasurement9_0_10"/>
+        <MeasurementReference refId="dummyMeasurement9_1_10"/>
+        <MeasurementReference refId="dummyMeasurement11_0_10"/>
+      </MeasurementReferences>
+      <PathwayLinks>
+        <PathwayLink id="pl328772" extId="328772" name="Pentose phosphate pathway" extIdName="guid"/>
+        <PathwayLink id="pl336162" extId="336162" name="Phenylalanine, tyrosine and tryptophan biosynthesis" extIdName="guid"/>
+      </PathwayLinks>
+    </Compound>
+    <Compound id="cpd67296" extId="67296" name="beta-D-Fructose 6-phosphate" extIdName="guid" formula="C6H13O9P" mass="260.03" inchi="" smiles="">
+      <MeasurementReferences>
+        <MeasurementReference refId="dummyMeasurement10_1_11"/>
+        <MeasurementReference refId="dummyMeasurement9_0_11"/>
+        <MeasurementReference refId="dummyMeasurement11_1_11"/>
+        <MeasurementReference refId="dummyMeasurement9_1_11"/>
+        <MeasurementReference refId="dummyMeasurement10_0_11"/>
+        <MeasurementReference refId="dummyMeasurement11_0_11"/>
+      </MeasurementReferences>
+      <PathwayLinks>
+        <PathwayLink id="pl328550" extId="328550" name="Glycolysis / Gluconeogenesis" extIdName="guid"/>
+        <PathwayLink id="pl328802" extId="328802" name="Pentose phosphate pathway" extIdName="guid"/>
+      </PathwayLinks>
+    </Compound>
+    <Compound id="cpd7177" extId="7177" name="D-Glucono-1,5-lactone 6-phosphate" extIdName="guid" formula="C6H11O9P" mass="258.014" inchi="InChI=1S/C6H11O9P/c7-3-2(1-14-16(11,12)13)15-6(10)5(9)4(3)8/h2-5,7-9H,1H2,(H2,11,12,13)/p-2/t2?,3-,4?,5-/m1/s1" smiles="C1(OC(C(C(C1O)O)O)COP([O-])([O-])=O)=O">
+      <MeasurementReferences>
+        <MeasurementReference refId="dummyMeasurement10_1_12"/>
+        <MeasurementReference refId="dummyMeasurement11_0_12"/>
+        <MeasurementReference refId="dummyMeasurement9_0_12"/>
+        <MeasurementReference refId="dummyMeasurement11_1_12"/>
+        <MeasurementReference refId="dummyMeasurement10_0_12"/>
+        <MeasurementReference refId="dummyMeasurement9_1_12"/>
+      </MeasurementReferences>
+      <PathwayLinks>
+        <PathwayLink id="pl328794" extId="328794" name="Pentose phosphate pathway" extIdName="guid"/>
+      </PathwayLinks>
+    </Compound>
+    <Compound id="cpd9" extId="9" name="H2O" extIdName="guid" formula="H2O" mass="18.0106" inchi="InChI=1S/H2O/h1H2" smiles="O">
+      <MeasurementReferences>
+        <MeasurementReference refId="dummyMeasurement10_1_13"/>
+        <MeasurementReference refId="dummyMeasurement11_0_13"/>
+        <MeasurementReference refId="dummyMeasurement11_1_13"/>
+        <MeasurementReference refId="dummyMeasurement9_1_13"/>
+        <MeasurementReference refId="dummyMeasurement9_0_13"/>
+        <MeasurementReference refId="dummyMeasurement10_0_13"/>
+      </MeasurementReferences>
+    </Compound>
+    <Compound id="cpd42935" extId="42935" name="beta-D-Glucose 6-phosphate" extIdName="guid" formula="C6H13O9P" mass="260.03" inchi="InChI=1S/C6H13O9P/c7-3-2(1-14-16(11,12)13)15-6(10)5(9)4(3)8/h2-10H,1H2,(H2,11,12,13)/p-2/t2-,3-,4+,5-,6?/m1/s1" smiles="C1(C(C(C(C(O1)COP([O-])([O-])=O)O)O)O)O">
+      <MeasurementReferences>
+        <MeasurementReference refId="dummyMeasurement10_1_14"/>
+        <MeasurementReference refId="dummyMeasurement9_1_14"/>
+        <MeasurementReference refId="dummyMeasurement11_0_14"/>
+        <MeasurementReference refId="dummyMeasurement11_1_14"/>
+        <MeasurementReference refId="dummyMeasurement10_0_14"/>
+        <MeasurementReference refId="dummyMeasurement9_0_14"/>
+      </MeasurementReferences>
+      <PathwayLinks>
+        <PathwayLink id="pl328790" extId="328790" name="Pentose phosphate pathway" extIdName="guid"/>
+        <PathwayLink id="pl328544" extId="328544" name="Glycolysis / Gluconeogenesis" extIdName="guid"/>
+      </PathwayLinks>
+    </Compound>
+    <Compound id="cpd42921" extId="42921" name="alpha-D-Glucose 6-phosphate" extIdName="guid" formula="C6H13O9P" mass="260.03" inchi="InChI=1S/C6H13O9P/c7-3-2(1-14-16(11,12)13)15-6(10)5(9)4(3)8/h2-10H,1H2,(H2,11,12,13)/p-2/t2-,3-,4+,5-,6+/m1/s1" smiles="C(OP(=O)([O-])[O-])C1(OC(O)C(O)C(O)C(O)1)">
+      <MeasurementReferences>
+        <MeasurementReference refId="dummyMeasurement10_1_15"/>
+        <MeasurementReference refId="dummyMeasurement9_1_15"/>
+        <MeasurementReference refId="dummyMeasurement10_0_15"/>
+        <MeasurementReference refId="dummyMeasurement11_0_15"/>
+        <MeasurementReference refId="dummyMeasurement9_0_15"/>
+        <MeasurementReference refId="dummyMeasurement11_1_15"/>
+      </MeasurementReferences>
+      <PathwayLinks>
+        <PathwayLink id="pl328782" extId="328782" name="Pentose phosphate pathway" extIdName="guid"/>
+        <PathwayLink id="pl328540" extId="328540" name="Glycolysis / Gluconeogenesis" extIdName="guid"/>
+      </PathwayLinks>
+    </Compound>
+  </Compounds>
+  <Experiments>
+    <Experiment id="46" extId="46" extIdName="experimentId" chipSource="currently, chip map is not imported when data is from GEO" chipType="geo" info="UV Exposure in Wild-Type and SOS-Deficient E. coli;Public on Jul 30 2001:GSM506,GSM507,GSM508,GSM509,GSM510,GSM511,GSM512,GSM542,GSM543,GSM544,GSM545,GSM546,GSM547,GSM548,GSM549" stress="UV exposure" source="GEO:GSE9" type="dual channel log ratio" updated="2008-09-08 19:51:57.0">
+      <Samples>
+        <Sample id="46_1" extId="583" extIdName="replicateId" cChannel="" cFactor="Control" cTime="" factorUnit="" setId="1" tChannel="" tFactor="5min after UVtreatment 1, 40J, MG1655 in Davis+0.4%glu" tTime="">
+          <Measurements>
+            <Measurement id="46_1_1832536" extId="1832536" value="1.42" confidence="1.42" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_1_1833234" extId="1833234" value="0.526" confidence="0.526" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_1_1834259" extId="1834259" value="0.74" confidence="0.74" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_1_1834412" extId="1834412" value="0.184" confidence="0.184" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_1_1834804" extId="1834804" value="0.561" confidence="0.561" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_1_1834805" extId="1834805" value="-0.127" confidence="-0.127" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_1_1835211" extId="1835211" value="0.926" confidence="0.926" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_1_1835630" extId="1835630" value="0.684" confidence="0.684" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_1_1836188" extId="1836188" value="1.189" confidence="1.189" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_1_1836248" extId="1836248" value="0.297" confidence="0.297" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_1_1836445" extId="1836445" value="0.321" confidence="0.321" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+          </Measurements>
+        </Sample>
+        <Sample id="46_2" extId="569" extIdName="replicateId" cChannel="" cFactor="Control" cTime="" factorUnit="" setId="2" tChannel="" tFactor="10min after UVtreatment 1&apos;, 40J, MG1655 in Davis+0.4%glu" tTime="">
+          <Measurements>
+            <Measurement id="46_2_1774477" extId="1774477" value="0.935" confidence="0.935" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_2_1775191" extId="1775191" value="-0.101" confidence="-0.101" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_2_1776208" extId="1776208" value="0.539" confidence="0.539" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_2_1776362" extId="1776362" value="0.0080" confidence="0.0080" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_2_1776756" extId="1776756" value="-0.016" confidence="-0.016" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_2_1776757" extId="1776757" value="-0.748" confidence="-0.748" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_2_1777164" extId="1777164" value="0.537" confidence="0.537" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_2_1777584" extId="1777584" value="0.811" confidence="0.811" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_2_1778146" extId="1778146" value="0.755" confidence="0.755" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_2_1778199" extId="1778199" value="0.215" confidence="0.215" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_2_1778395" extId="1778395" value="-0.405" confidence="-0.405" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+          </Measurements>
+        </Sample>
+        <Sample id="46_3" extId="570" extIdName="replicateId" cChannel="" cFactor="Control" cTime="" factorUnit="" setId="3" tChannel="" tFactor="20min after UVtreatment 1&apos;, 40J, MG1655 in Davis+0.4%glu" tTime="">
+          <Measurements>
+            <Measurement id="46_3_1778512" extId="1778512" value="0.979" confidence="0.979" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_3_1779205" extId="1779205" value="0.033" confidence="0.033" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_3_1780203" extId="1780203" value="0.093" confidence="0.093" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_3_1780351" extId="1780351" value="0.192" confidence="0.192" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_3_1780737" extId="1780737" value="0.541" confidence="0.541" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_3_1780738" extId="1780738" value="-0.021" confidence="-0.021" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_3_1781127" extId="1781127" value="0.321" confidence="0.321" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_3_1781544" extId="1781544" value="0.867" confidence="0.867" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_3_1782100" extId="1782100" value="0.729" confidence="0.729" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_3_1782156" extId="1782156" value="-0.298" confidence="-0.298" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_3_1782345" extId="1782345" value="-2.172" confidence="-2.172" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+          </Measurements>
+        </Sample>
+        <Sample id="46_4" extId="571" extIdName="replicateId" cChannel="" cFactor="Control" cTime="" factorUnit="" setId="4" tChannel="" tFactor="40min after UVtreatment 1, 40J, MG1655 in Davis+0.4%glu" tTime="">
+          <Measurements>
+            <Measurement id="46_4_1782457" extId="1782457" value="1.154" confidence="1.154" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_4_1783182" extId="1783182" value="-0.255" confidence="-0.255" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_4_1784232" extId="1784232" value="1.017" confidence="1.017" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_4_1784395" extId="1784395" value="0.282" confidence="0.282" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_4_1784810" extId="1784810" value="-0.086" confidence="-0.086" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_4_1784811" extId="1784811" value="-0.448" confidence="-0.448" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_4_1785227" extId="1785227" value="0.233" confidence="0.233" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_4_1785664" extId="1785664" value="0.678" confidence="0.678" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_4_1786237" extId="1786237" value="0.993" confidence="0.993" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_4_1786300" extId="1786300" value="-0.367" confidence="-0.367" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_4_1786502" extId="1786502" value="-1.327" confidence="-1.327" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+          </Measurements>
+        </Sample>
+        <Sample id="46_5" extId="572" extIdName="replicateId" cChannel="" cFactor="Control" cTime="" factorUnit="" setId="5" tChannel="" tFactor="60min after UVtreatment 1, 40J, MG1655 in Davis+0.4%glu" tTime="">
+          <Measurements>
+            <Measurement id="46_5_1786620" extId="1786620" value="0.827" confidence="0.827" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_5_1787337" extId="1787337" value="-0.066" confidence="-0.066" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_5_1788395" extId="1788395" value="1.102" confidence="1.102" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_5_1788558" extId="1788558" value="0.15" confidence="0.15" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_5_1788959" extId="1788959" value="0.069" confidence="0.069" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_5_1788960" extId="1788960" value="-0.649" confidence="-0.649" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_5_1789374" extId="1789374" value="0.0060" confidence="0.0060" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_5_1789807" extId="1789807" value="0.802" confidence="0.802" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_5_1790374" extId="1790374" value="1.128" confidence="1.128" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_5_1790438" extId="1790438" value="0.048" confidence="0.048" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_5_1790639" extId="1790639" value="-0.32" confidence="-0.32" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+          </Measurements>
+        </Sample>
+        <Sample id="46_6" extId="573" extIdName="replicateId" cChannel="" cFactor="Control" cTime="" factorUnit="" setId="6" tChannel="" tFactor="20min UVtreatment control, MG1655 in Davis+0.4%glu" tTime="">
+          <Measurements>
+            <Measurement id="46_6_1790756" extId="1790756" value="0.607" confidence="0.607" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_6_1791474" extId="1791474" value="0.254" confidence="0.254" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_6_1792508" extId="1792508" value="0.607" confidence="0.607" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_6_1792665" extId="1792665" value="0.141" confidence="0.141" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_6_1793062" extId="1793062" value="1.254" confidence="1.254" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_6_1793063" extId="1793063" value="0.445" confidence="0.445" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_6_1793469" extId="1793469" value="0.089" confidence="0.089" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_6_1793883" extId="1793883" value="0.846" confidence="0.846" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_6_1794429" extId="1794429" value="1.385" confidence="1.385" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_6_1794486" extId="1794486" value="-0.021" confidence="-0.021" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_6_1794685" extId="1794685" value="0.153" confidence="0.153" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+          </Measurements>
+        </Sample>
+        <Sample id="46_7" extId="574" extIdName="replicateId" cChannel="" cFactor="Control" cTime="" factorUnit="" setId="7" tChannel="" tFactor="60min UVtreatment control, MG1655 in Davis+0.4%glu" tTime="">
+          <Measurements>
+            <Measurement id="46_7_1794800" extId="1794800" value="0.741" confidence="0.741" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_7_1795512" extId="1795512" value="-0.245" confidence="-0.245" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_7_1796548" extId="1796548" value="0.318" confidence="0.318" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_7_1796706" extId="1796706" value="0.143" confidence="0.143" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_7_1797109" extId="1797109" value="1.036" confidence="1.036" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_7_1797110" extId="1797110" value="0.159" confidence="0.159" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_7_1797523" extId="1797523" value="0.308" confidence="0.308" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_7_1797947" extId="1797947" value="0.342" confidence="0.342" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_7_1798503" extId="1798503" value="1.104" confidence="1.104" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_7_1798560" extId="1798560" value="0.0040" confidence="0.0040" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_7_1798758" extId="1798758" value="-0.568" confidence="-0.568" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+          </Measurements>
+        </Sample>
+        <Sample id="46_8" extId="575" extIdName="replicateId" cChannel="" cFactor=" 0&apos;, MG1655" cTime="" factorUnit="" setId="8" tChannel="" tFactor="lexA 5&apos; after UV" tTime="">
+          <Measurements>
+            <Measurement id="46_8_1802599" extId="1802599" value="-0.028" confidence="-0.028" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_8_1799514" extId="1799514" value="0.012" confidence="0.012" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_8_1800433" extId="1800433" value="-0.096" confidence="-0.096" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_8_1800592" extId="1800592" value="-0.389" confidence="-0.389" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_8_1800969" extId="1800969" value="-0.296" confidence="-0.296" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_8_1800970" extId="1800970" value="0.022" confidence="0.022" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_8_1802928" extId="1802928" value="0.0365" confidence="0.0365" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_8_1801751" extId="1801751" value="0.118" confidence="0.118" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_8_1802257" extId="1802257" value="-0.263" confidence="-0.263" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_8_1802311" extId="1802311" value="-0.018" confidence="-0.018" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_8_1802506" extId="1802506" value="-0.026" confidence="-0.026" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+          </Measurements>
+        </Sample>
+        <Sample id="46_9" extId="576" extIdName="replicateId" cChannel="" cFactor=" 0&apos;, MG1655" cTime="" factorUnit="" setId="9" tChannel="" tFactor="lexA 10&apos; after UV" tTime="">
+          <Measurements>
+            <Measurement id="46_9_1806808" extId="1806808" value="1.219" confidence="1.219" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_9_1803725" extId="1803725" value="0.128" confidence="0.128" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_9_1804634" extId="1804634" value="-0.08" confidence="-0.08" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_9_1804793" extId="1804793" value="-0.346" confidence="-0.346" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_9_1805166" extId="1805166" value="-0.424" confidence="-0.424" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_9_1805167" extId="1805167" value="0.03" confidence="0.03" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_9_1807135" extId="1807135" value="0.156" confidence="0.156" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_9_1805953" extId="1805953" value="0.355" confidence="0.355" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_9_1806463" extId="1806463" value="-0.123" confidence="-0.123" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_9_1806519" extId="1806519" value="0.086" confidence="0.086" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_9_1806715" extId="1806715" value="0.098" confidence="0.098" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+          </Measurements>
+        </Sample>
+        <Sample id="46_10" extId="577" extIdName="replicateId" cChannel="" cFactor=" 0&apos;, MG1655" cTime="" factorUnit="" setId="10" tChannel="" tFactor="lexA 20&apos; after UV" tTime="">
+          <Measurements>
+            <Measurement id="46_10_1811057" extId="1811057" value="0.172" confidence="0.172" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_10_1807939" extId="1807939" value="0.017" confidence="0.017" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_10_1808859" extId="1808859" value="0.115" confidence="0.115" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_10_1809017" extId="1809017" value="-0.4" confidence="-0.4" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_10_1809394" extId="1809394" value="-0.0020" confidence="-0.0020" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_10_1809395" extId="1809395" value="0.228" confidence="0.228" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_10_1811373" extId="1811373" value="0.1075" confidence="0.1075" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_10_1810189" extId="1810189" value="0.356" confidence="0.356" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_10_1810709" extId="1810709" value="0.074" confidence="0.074" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_10_1810767" extId="1810767" value="-0.076" confidence="-0.076" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+            <Measurement id="46_10_1810964" extId="1810964" value="0.272" confidence="0.272" confidenceType="zScore" dataType="mRNA" extIdName="measurementId"/>
+          </Measurements>
+        </Sample>
+      </Samples>
+    </Experiment>
+    <Experiment id="dummyExp_0" extIdName="dummy">
+      <Samples>
+        <Sample id="dummySample0_0" extIdName="dummy">
+          <Measurements>
+            <Measurement id="dummyMeasurement0_0_0" value="0.8133042" confidence="0.070043266" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement0_0_1" value="0.77097297" confidence="0.6713517" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement0_0_2" value="-0.72267425" confidence="0.5582455" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement0_0_3" value="-0.66032445" confidence="0.4014188" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement0_0_4" value="-0.9616761" confidence="0.6688071" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement0_0_5" value="-0.23456132" confidence="0.36023134" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement0_0_6" value="0.5966165" confidence="0.84487146" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement0_0_7" value="-0.14255154" confidence="0.7964963" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement0_0_8" value="0.116479516" confidence="0.294639" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement0_0_9" value="-0.15458548" confidence="0.75099486" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement0_0_10" value="0.13995719" confidence="0.65932965" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement0_0_11" value="0.8401463" confidence="0.4799351" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+          </Measurements>
+        </Sample>
+        <Sample id="dummySample0_1" extIdName="dummy">
+          <Measurements>
+            <Measurement id="dummyMeasurement0_1_0" value="-0.9793632" confidence="0.034852386" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement0_1_1" value="-0.56955755" confidence="0.85049635" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement0_1_2" value="0.56554973" confidence="0.9784398" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement0_1_3" value="-0.62297547" confidence="0.51179963" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement0_1_4" value="-0.75898206" confidence="0.6197601" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement0_1_5" value="0.6592113" confidence="0.84290683" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement0_1_6" value="-0.6332767" confidence="0.6469331" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement0_1_7" value="-0.4279201" confidence="0.3632316" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement0_1_8" value="-0.20181847" confidence="0.21336228" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement0_1_9" value="0.85828006" confidence="0.4609145" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement0_1_10" value="-0.10595667" confidence="0.31389225" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement0_1_11" value="0.34295464" confidence="0.7178766" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+          </Measurements>
+        </Sample>
+      </Samples>
+    </Experiment>
+    <Experiment id="dummyExp_1" extIdName="dummy">
+      <Samples>
+        <Sample id="dummySample1_0" extIdName="dummy">
+          <Measurements>
+            <Measurement id="dummyMeasurement1_0_0" value="0.2003653" confidence="0.9016752" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement1_0_1" value="-0.26784575" confidence="0.56864196" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement1_0_2" value="-0.21541739" confidence="0.5940695" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement1_0_3" value="-0.6992763" confidence="0.5714678" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement1_0_4" value="0.94900787" confidence="0.7713084" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement1_0_5" value="0.45715034" confidence="0.7583121" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement1_0_6" value="0.9851793" confidence="0.8706164" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement1_0_7" value="0.6088158" confidence="0.6938072" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement1_0_8" value="0.44041574" confidence="0.7765644" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement1_0_9" value="0.4962473" confidence="0.35742253" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement1_0_10" value="0.20690322" confidence="0.10204846" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement1_0_11" value="0.010341406" confidence="0.37773454" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+          </Measurements>
+        </Sample>
+        <Sample id="dummySample1_1" extIdName="dummy">
+          <Measurements>
+            <Measurement id="dummyMeasurement1_1_0" value="-0.3318262" confidence="0.43024623" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement1_1_1" value="-0.60060894" confidence="0.6191635" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement1_1_2" value="-0.3891605" confidence="0.97380817" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement1_1_3" value="0.31661093" confidence="0.5412781" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement1_1_4" value="4.386902E-5" confidence="0.7215248" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement1_1_5" value="0.11348188" confidence="0.026042044" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement1_1_6" value="0.8006903" confidence="0.7435768" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement1_1_7" value="-0.43435407" confidence="0.6720297" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement1_1_8" value="0.4847349" confidence="0.5636304" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement1_1_9" value="-0.6014571" confidence="0.57515025" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement1_1_10" value="0.78558564" confidence="0.169527" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement1_1_11" value="-0.21200097" confidence="0.8068907" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+          </Measurements>
+        </Sample>
+      </Samples>
+    </Experiment>
+    <Experiment id="dummyExp_2" extIdName="dummy">
+      <Samples>
+        <Sample id="dummySample2_0" extIdName="dummy">
+          <Measurements>
+            <Measurement id="dummyMeasurement2_0_0" value="-0.361933" confidence="0.5047973" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement2_0_1" value="-0.16866982" confidence="0.63324416" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement2_0_2" value="0.47688496" confidence="0.98199457" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement2_0_3" value="0.85821664" confidence="0.7256867" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement2_0_4" value="0.46469593" confidence="0.39780462" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement2_0_5" value="0.5749136" confidence="0.45077348" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement2_0_6" value="0.4956423" confidence="0.4615894" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement2_0_7" value="-0.73620915" confidence="0.8037485" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement2_0_8" value="0.59070146" confidence="0.21662074" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement2_0_9" value="0.60252106" confidence="0.70623255" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement2_0_10" value="-0.40720296" confidence="0.8205526" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement2_0_11" value="-0.21053481" confidence="0.51641077" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+          </Measurements>
+        </Sample>
+        <Sample id="dummySample2_1" extIdName="dummy">
+          <Measurements>
+            <Measurement id="dummyMeasurement2_1_0" value="-0.18601346" confidence="0.2330718" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement2_1_1" value="0.3862058" confidence="0.5156755" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement2_1_2" value="-0.17795491" confidence="0.24920726" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement2_1_3" value="-0.90672576" confidence="0.41748065" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement2_1_4" value="-0.87642646" confidence="0.32212" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement2_1_5" value="0.19566059" confidence="0.18696868" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement2_1_6" value="-0.24426615" confidence="0.68563825" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement2_1_7" value="-0.05828929" confidence="0.52407867" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement2_1_8" value="0.295524" confidence="0.25125116" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement2_1_9" value="-0.90022945" confidence="0.62432754" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement2_1_10" value="0.49701595" confidence="0.5942771" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement2_1_11" value="-0.5250684" confidence="0.43185818" confidenceType="zScore" dataType="mRNA" extIdName="dummy"/>
+          </Measurements>
+        </Sample>
+      </Samples>
+    </Experiment>
+    <Experiment id="dummyExp_3" extIdName="dummy">
+      <Samples>
+        <Sample id="dummySample3_0" extIdName="dummy">
+          <Measurements>
+            <Measurement id="dummyMeasurement3_0_0" value="-0.45765018" confidence="0.42763376" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement3_0_1" value="0.5232593" confidence="0.6959132" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement3_0_2" value="-0.9831122" confidence="0.29785466" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement3_0_3" value="0.28892934" confidence="0.15745962" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement3_0_4" value="0.3744253" confidence="0.7261285" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement3_0_5" value="-0.21694982" confidence="0.06573933" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement3_0_6" value="-0.5673715" confidence="0.6972263" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement3_0_7" value="-0.6498897" confidence="0.6591579" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement3_0_8" value="-0.17395306" confidence="0.70188844" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement3_0_9" value="0.4137305" confidence="0.9608677" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement3_0_10" value="-0.7554543" confidence="0.53486043" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement3_0_11" value="0.7987374" confidence="0.22201246" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+          </Measurements>
+        </Sample>
+        <Sample id="dummySample3_1" extIdName="dummy">
+          <Measurements>
+            <Measurement id="dummyMeasurement3_1_0" value="0.5054318" confidence="0.70320565" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement3_1_1" value="-0.7112291" confidence="0.095846534" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement3_1_2" value="0.2608266" confidence="0.7103228" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement3_1_3" value="0.5512105" confidence="0.41043204" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement3_1_4" value="0.54708517" confidence="0.14342475" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement3_1_5" value="-0.44608104" confidence="0.5085724" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement3_1_6" value="0.9656813" confidence="0.5398759" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement3_1_7" value="-0.72282624" confidence="0.08891606" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement3_1_8" value="0.47660673" confidence="0.46515548" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement3_1_9" value="-0.7885499" confidence="0.3752333" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement3_1_10" value="0.42385733" confidence="0.26735425" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement3_1_11" value="-0.19404757" confidence="0.09083831" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+          </Measurements>
+        </Sample>
+      </Samples>
+    </Experiment>
+    <Experiment id="dummyExp_4" extIdName="dummy">
+      <Samples>
+        <Sample id="dummySample4_0" extIdName="dummy">
+          <Measurements>
+            <Measurement id="dummyMeasurement4_0_0" value="0.24214792" confidence="0.13568312" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement4_0_1" value="-0.17127359" confidence="0.96671695" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement4_0_2" value="-0.53500545" confidence="0.57976216" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement4_0_3" value="-0.69215786" confidence="0.47548825" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement4_0_4" value="-0.7766284" confidence="0.34938872" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement4_0_5" value="0.29177856" confidence="0.7848449" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement4_0_6" value="0.8541812" confidence="0.35858345" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement4_0_7" value="-0.30071628" confidence="0.95518744" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement4_0_8" value="0.89790845" confidence="0.9811534" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement4_0_9" value="0.784392" confidence="0.57401955" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement4_0_10" value="0.43045938" confidence="0.40657872" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement4_0_11" value="-0.36302423" confidence="0.997151" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+          </Measurements>
+        </Sample>
+        <Sample id="dummySample4_1" extIdName="dummy">
+          <Measurements>
+            <Measurement id="dummyMeasurement4_1_0" value="0.026940465" confidence="0.7341391" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement4_1_1" value="0.24544215" confidence="0.34234774" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement4_1_2" value="-0.21707642" confidence="0.4298855" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement4_1_3" value="0.1944927" confidence="0.30886424" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement4_1_4" value="-0.28431153" confidence="0.3559966" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement4_1_5" value="0.44199455" confidence="0.74603164" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement4_1_6" value="-0.06555736" confidence="0.12652713" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement4_1_7" value="-0.14401162" confidence="0.9010967" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement4_1_8" value="0.51121664" confidence="0.25947237" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement4_1_9" value="-0.5070565" confidence="0.19179267" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement4_1_10" value="0.71592724" confidence="0.8349734" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement4_1_11" value="0.8150871" confidence="0.68927836" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+          </Measurements>
+        </Sample>
+      </Samples>
+    </Experiment>
+    <Experiment id="dummyExp_5" extIdName="dummy">
+      <Samples>
+        <Sample id="dummySample5_0" extIdName="dummy">
+          <Measurements>
+            <Measurement id="dummyMeasurement5_0_0" value="-0.18089104" confidence="0.87654316" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement5_0_1" value="-0.8122642" confidence="0.7943237" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement5_0_2" value="0.03945732" confidence="0.8301855" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement5_0_3" value="-0.2669282" confidence="0.64181226" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement5_0_4" value="-0.64778566" confidence="0.5996264" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement5_0_5" value="-0.2330122" confidence="0.8892373" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement5_0_6" value="-0.8835288" confidence="0.019618511" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement5_0_7" value="0.08900213" confidence="0.81300133" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement5_0_8" value="-0.93120325" confidence="0.21907592" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement5_0_9" value="0.9665688" confidence="0.14670855" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement5_0_10" value="-0.18238795" confidence="0.48794085" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement5_0_11" value="0.04540515" confidence="0.20861793" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+          </Measurements>
+        </Sample>
+        <Sample id="dummySample5_1" extIdName="dummy">
+          <Measurements>
+            <Measurement id="dummyMeasurement5_1_0" value="0.11406624" confidence="0.35308748" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement5_1_1" value="-0.9260055" confidence="0.45698428" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement5_1_2" value="0.83371615" confidence="0.066771805" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement5_1_3" value="-0.64329946" confidence="0.32374573" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement5_1_4" value="0.6482099" confidence="0.48430216" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement5_1_5" value="0.50573313" confidence="0.66615874" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement5_1_6" value="0.07281828" confidence="0.86452585" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement5_1_7" value="-0.7364638" confidence="0.3653761" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement5_1_8" value="-0.87431896" confidence="0.8668103" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement5_1_9" value="0.9862976" confidence="0.92909205" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement5_1_10" value="-0.18405962" confidence="0.48149198" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement5_1_11" value="0.544726" confidence="0.6263426" confidenceType="zScore" dataType="protein" extIdName="dummy"/>
+          </Measurements>
+        </Sample>
+      </Samples>
+    </Experiment>
+    <Experiment id="dummyExp_6" extIdName="dummy">
+      <Samples>
+        <Sample id="dummySample6_0" extIdName="dummy">
+          <Measurements>
+            <Measurement id="dummyMeasurement6_0_0" value="-0.41535664" confidence="0.74792236" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement6_0_1" value="-0.2052393" confidence="0.916074" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement6_0_2" value="0.5548204" confidence="0.45656526" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement6_0_3" value="0.93949795" confidence="0.2125268" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement6_0_4" value="0.81211317" confidence="0.060986876" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement6_0_5" value="0.7415961" confidence="0.36081278" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement6_0_6" value="-0.8523716" confidence="0.3445872" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement6_0_7" value="0.006274104" confidence="0.3418743" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement6_0_8" value="-0.13052285" confidence="0.988701" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+          </Measurements>
+        </Sample>
+        <Sample id="dummySample6_1" extIdName="dummy">
+          <Measurements>
+            <Measurement id="dummyMeasurement6_1_0" value="-0.45148718" confidence="0.46955454" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement6_1_1" value="0.9541085" confidence="0.70703954" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement6_1_2" value="-0.8497764" confidence="0.7316061" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement6_1_3" value="0.3947065" confidence="0.570771" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement6_1_4" value="-0.87378085" confidence="0.52461576" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement6_1_5" value="-0.050525784" confidence="0.21387672" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement6_1_6" value="-0.96965885" confidence="0.16911775" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement6_1_7" value="-0.65826845" confidence="0.83544654" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement6_1_8" value="-0.12018728" confidence="0.6103381" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+          </Measurements>
+        </Sample>
+      </Samples>
+    </Experiment>
+    <Experiment id="dummyExp_7" extIdName="dummy">
+      <Samples>
+        <Sample id="dummySample7_0" extIdName="dummy">
+          <Measurements>
+            <Measurement id="dummyMeasurement7_0_0" value="-0.5332222" confidence="5.7035685E-4" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement7_0_1" value="-0.1521784" confidence="0.22240406" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement7_0_2" value="0.37407482" confidence="0.77136487" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement7_0_3" value="-0.3812338" confidence="0.76545095" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement7_0_4" value="-0.8196378" confidence="0.40197766" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement7_0_5" value="0.12101638" confidence="0.18745542" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement7_0_6" value="-0.0010107756" confidence="0.8243059" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement7_0_7" value="0.9082347" confidence="0.023054302" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement7_0_8" value="-0.7816032" confidence="0.19343603" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+          </Measurements>
+        </Sample>
+        <Sample id="dummySample7_1" extIdName="dummy">
+          <Measurements>
+            <Measurement id="dummyMeasurement7_1_0" value="0.4682734" confidence="0.79291725" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement7_1_1" value="-0.29001808" confidence="0.5028734" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement7_1_2" value="0.77068615" confidence="0.73790973" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement7_1_3" value="-0.11961186" confidence="0.5095245" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement7_1_4" value="0.6484761" confidence="0.88640964" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement7_1_5" value="-0.10025108" confidence="0.10778046" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement7_1_6" value="0.53161335" confidence="0.3204556" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement7_1_7" value="-0.6640532" confidence="0.6822215" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement7_1_8" value="0.65011644" confidence="0.31225407" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+          </Measurements>
+        </Sample>
+      </Samples>
+    </Experiment>
+    <Experiment id="dummyExp_8" extIdName="dummy">
+      <Samples>
+        <Sample id="dummySample8_0" extIdName="dummy">
+          <Measurements>
+            <Measurement id="dummyMeasurement8_0_0" value="-0.8878156" confidence="0.5613332" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement8_0_1" value="0.30035746" confidence="0.9979386" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement8_0_2" value="-0.106016874" confidence="0.34272718" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement8_0_3" value="-0.026753545" confidence="0.4569565" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement8_0_4" value="-0.67872846" confidence="0.8068691" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement8_0_5" value="-0.9131646" confidence="0.50527847" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement8_0_6" value="-0.043104887" confidence="0.26501012" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement8_0_7" value="-0.5853239" confidence="0.4866467" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement8_0_8" value="0.35629737" confidence="0.27232152" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+          </Measurements>
+        </Sample>
+        <Sample id="dummySample8_1" extIdName="dummy">
+          <Measurements>
+            <Measurement id="dummyMeasurement8_1_0" value="-0.12276888" confidence="0.6717629" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement8_1_1" value="-0.38779855" confidence="0.5941727" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement8_1_2" value="0.6452936" confidence="0.12977636" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement8_1_3" value="0.33698225" confidence="0.44774538" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement8_1_4" value="-0.873525" confidence="0.71439266" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement8_1_5" value="0.96446455" confidence="0.29902333" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement8_1_6" value="0.65940595" confidence="0.9687286" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement8_1_7" value="0.038747787" confidence="0.7135531" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement8_1_8" value="0.07260072" confidence="0.67467564" confidenceType="zScore" dataType="flux" extIdName="dummy"/>
+          </Measurements>
+        </Sample>
+      </Samples>
+    </Experiment>
+    <Experiment id="dummyExp_9" extIdName="dummy">
+      <Samples>
+        <Sample id="dummySample9_0" extIdName="dummy">
+          <Measurements>
+            <Measurement id="dummyMeasurement9_0_0" value="-0.22676241" confidence="0.915779" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement9_0_1" value="0.7795069" confidence="0.595596" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement9_0_2" value="-0.5225086" confidence="0.17437452" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement9_0_3" value="-0.962162" confidence="0.84289443" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement9_0_4" value="0.73816204" confidence="0.90861386" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement9_0_5" value="-0.6840968" confidence="0.66023105" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement9_0_6" value="0.684878" confidence="0.4028685" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement9_0_7" value="-0.54644024" confidence="0.20234871" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement9_0_8" value="0.86023164" confidence="0.26280504" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement9_0_9" value="-0.7908646" confidence="0.79277986" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement9_0_10" value="-0.3607055" confidence="0.6784763" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement9_0_11" value="-0.2690258" confidence="0.89579964" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement9_0_12" value="-0.29137194" confidence="0.24751985" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement9_0_13" value="-0.9758426" confidence="0.6182573" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement9_0_14" value="0.6242597" confidence="0.51802355" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement9_0_15" value="0.29671097" confidence="0.46732205" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+          </Measurements>
+        </Sample>
+        <Sample id="dummySample9_1" extIdName="dummy">
+          <Measurements>
+            <Measurement id="dummyMeasurement9_1_0" value="0.13542843" confidence="0.6378244" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement9_1_1" value="-0.4812591" confidence="0.59732556" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement9_1_2" value="-0.09478295" confidence="0.038240552" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement9_1_3" value="0.12222326" confidence="0.1649931" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement9_1_4" value="0.005869746" confidence="0.06928474" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement9_1_5" value="0.67459893" confidence="0.22528923" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement9_1_6" value="0.5472834" confidence="0.96468294" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement9_1_7" value="-0.101811886" confidence="0.9033275" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement9_1_8" value="0.8497511" confidence="0.613569" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement9_1_9" value="-0.4417696" confidence="0.2004208" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement9_1_10" value="0.44066393" confidence="0.907202" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement9_1_11" value="-0.36014545" confidence="0.5790909" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement9_1_12" value="0.9899411" confidence="0.10975063" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement9_1_13" value="-0.33049428" confidence="0.53308344" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement9_1_14" value="-0.8429153" confidence="0.85902613" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement9_1_15" value="0.95655537" confidence="0.31010354" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+          </Measurements>
+        </Sample>
+      </Samples>
+    </Experiment>
+    <Experiment id="dummyExp_10" extIdName="dummy">
+      <Samples>
+        <Sample id="dummySample10_0" extIdName="dummy">
+          <Measurements>
+            <Measurement id="dummyMeasurement10_0_0" value="0.6668525" confidence="0.26354814" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement10_0_1" value="-0.46046996" confidence="0.20871764" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement10_0_2" value="0.12973773" confidence="0.74467856" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement10_0_3" value="0.4783641" confidence="0.82387114" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement10_0_4" value="0.95313144" confidence="0.03553009" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement10_0_5" value="0.25533473" confidence="0.9406123" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement10_0_6" value="0.8308691" confidence="0.24137169" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement10_0_7" value="-0.9948573" confidence="0.66135615" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement10_0_8" value="0.84070647" confidence="0.3793496" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement10_0_9" value="0.31746364" confidence="0.7524797" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement10_0_10" value="-0.8847133" confidence="0.029182434" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement10_0_11" value="0.8279921" confidence="0.080930114" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement10_0_12" value="-0.21727526" confidence="0.9623635" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement10_0_13" value="-0.22246206" confidence="0.6162072" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement10_0_14" value="0.7046999" confidence="0.08722538" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement10_0_15" value="-0.62961507" confidence="0.548524" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+          </Measurements>
+        </Sample>
+        <Sample id="dummySample10_1" extIdName="dummy">
+          <Measurements>
+            <Measurement id="dummyMeasurement10_1_0" value="0.18580163" confidence="0.10352999" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement10_1_1" value="-0.04360354" confidence="0.13675988" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement10_1_2" value="0.9069475" confidence="0.6462075" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement10_1_3" value="0.8060217" confidence="0.48221964" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement10_1_4" value="-0.12660646" confidence="0.7972678" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement10_1_5" value="0.20942593" confidence="0.32405913" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement10_1_6" value="-0.9041902" confidence="0.932159" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement10_1_7" value="0.63272214" confidence="0.48300248" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement10_1_8" value="0.3790002" confidence="0.3569985" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement10_1_9" value="-0.81579006" confidence="0.8207639" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement10_1_10" value="-0.77875865" confidence="0.89180124" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement10_1_11" value="-0.6835768" confidence="0.62812215" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement10_1_12" value="-0.9217112" confidence="0.90838313" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement10_1_13" value="0.80664253" confidence="0.56523407" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement10_1_14" value="-0.3235004" confidence="0.67692626" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement10_1_15" value="0.06662738" confidence="0.52948356" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+          </Measurements>
+        </Sample>
+      </Samples>
+    </Experiment>
+    <Experiment id="dummyExp_11" extIdName="dummy">
+      <Samples>
+        <Sample id="dummySample11_0" extIdName="dummy">
+          <Measurements>
+            <Measurement id="dummyMeasurement11_0_0" value="-0.36787498" confidence="0.68980277" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement11_0_1" value="0.8351662" confidence="0.76055557" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement11_0_2" value="-0.7822093" confidence="0.7833257" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement11_0_3" value="0.56440496" confidence="0.7667193" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement11_0_4" value="-0.012111545" confidence="0.8764232" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement11_0_5" value="0.23881137" confidence="0.19335824" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement11_0_6" value="0.3136865" confidence="0.38922143" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement11_0_7" value="-0.96367764" confidence="0.9930676" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement11_0_8" value="0.27433515" confidence="0.4342206" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement11_0_9" value="0.8832282" confidence="0.40026152" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement11_0_10" value="-0.7042848" confidence="0.61881536" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement11_0_11" value="-0.54756546" confidence="0.48191118" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement11_0_12" value="0.32566738" confidence="0.33163625" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement11_0_13" value="-0.9500809" confidence="0.9151303" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement11_0_14" value="-0.01183641" confidence="0.16848737" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement11_0_15" value="0.8237436" confidence="0.13280362" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+          </Measurements>
+        </Sample>
+        <Sample id="dummySample11_1" extIdName="dummy">
+          <Measurements>
+            <Measurement id="dummyMeasurement11_1_0" value="0.28335547" confidence="0.2890663" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement11_1_1" value="-0.83260465" confidence="0.84693" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement11_1_2" value="0.11427081" confidence="0.97633743" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement11_1_3" value="-0.4157083" confidence="0.98804146" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement11_1_4" value="-0.2503488" confidence="0.1301822" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement11_1_5" value="-0.20100486" confidence="0.33581638" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement11_1_6" value="-0.29236495" confidence="0.3901794" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement11_1_7" value="-0.13467658" confidence="0.124313354" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement11_1_8" value="-0.6953794" confidence="0.7141158" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement11_1_9" value="0.41061902" confidence="0.014201164" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement11_1_10" value="0.0017950535" confidence="0.59476024" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement11_1_11" value="0.10371637" confidence="0.37868524" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement11_1_12" value="0.84891605" confidence="0.37383294" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement11_1_13" value="0.7326523" confidence="0.4598841" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement11_1_14" value="-0.17241311" confidence="0.8958905" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+            <Measurement id="dummyMeasurement11_1_15" value="-0.12585437" confidence="0.7441573" confidenceType="zScore" dataType="metabolite" extIdName="dummy"/>
+          </Measurements>
+        </Sample>
+      </Samples>
+    </Experiment>
+  </Experiments>
+  <Genes>
+    <Gene id="loc16993" extId="16993" name="b2914" extIdName="locusId" synonym="rpiA" ecNum="5.3.1.6">
+      <MeasurementReferences>
+        <MeasurementReference refId="46_3_1781127"/>
+        <MeasurementReference refId="46_8_1802928"/>
+        <MeasurementReference refId="dummyMeasurement1_0_0"/>
+        <MeasurementReference refId="46_7_1797523"/>
+        <MeasurementReference refId="dummyMeasurement4_0_0"/>
+        <MeasurementReference refId="dummyMeasurement1_1_0"/>
+        <MeasurementReference refId="dummyMeasurement4_1_0"/>
+        <MeasurementReference refId="dummyMeasurement5_0_0"/>
+        <MeasurementReference refId="dummyMeasurement2_1_0"/>
+        <MeasurementReference refId="46_1_1835211"/>
+        <MeasurementReference refId="46_9_1807135"/>
+        <MeasurementReference refId="46_10_1811373"/>
+        <MeasurementReference refId="dummyMeasurement3_1_0"/>
+        <MeasurementReference refId="dummyMeasurement0_1_0"/>
+        <MeasurementReference refId="46_2_1777164"/>
+        <MeasurementReference refId="dummyMeasurement3_0_0"/>
+        <MeasurementReference refId="46_5_1789374"/>
+        <MeasurementReference refId="dummyMeasurement0_0_0"/>
+        <MeasurementReference refId="46_4_1785227"/>
+        <MeasurementReference refId="46_6_1793469"/>
+        <MeasurementReference refId="dummyMeasurement5_1_0"/>
+        <MeasurementReference refId="dummyMeasurement2_0_0"/>
+      </MeasurementReferences>
+    </Gene>
+    <Gene id="loc18118" extId="18118" name="b4090" extIdName="locusId" synonym="rpiB" ecNum="5.3.1.6">
+      <MeasurementReferences>
+        <MeasurementReference refId="dummyMeasurement4_0_1"/>
+        <MeasurementReference refId="dummyMeasurement1_0_1"/>
+        <MeasurementReference refId="46_5_1790438"/>
+        <MeasurementReference refId="46_4_1786300"/>
+        <MeasurementReference refId="dummyMeasurement0_0_1"/>
+        <MeasurementReference refId="dummyMeasurement4_1_1"/>
+        <MeasurementReference refId="dummyMeasurement1_1_1"/>
+        <MeasurementReference refId="dummyMeasurement5_0_1"/>
+        <MeasurementReference refId="dummyMeasurement3_1_1"/>
+        <MeasurementReference refId="dummyMeasurement2_1_1"/>
+        <MeasurementReference refId="46_1_1836248"/>
+        <MeasurementReference refId="dummyMeasurement0_1_1"/>
+        <MeasurementReference refId="46_3_1782156"/>
+        <MeasurementReference refId="46_9_1806519"/>
+        <MeasurementReference refId="46_6_1794486"/>
+        <MeasurementReference refId="dummyMeasurement3_0_1"/>
+        <MeasurementReference refId="46_2_1778199"/>
+        <MeasurementReference refId="46_7_1798560"/>
+        <MeasurementReference refId="dummyMeasurement5_1_1"/>
+        <MeasurementReference refId="dummyMeasurement2_0_1"/>
+        <MeasurementReference refId="46_8_1802311"/>
+        <MeasurementReference refId="46_10_1810767"/>
+      </MeasurementReferences>
+    </Gene>
+    <Gene id="loc16137" extId="16137" name="b2029" extIdName="locusId" synonym="gnd" ecNum="1.1.1.44">
+      <MeasurementReferences>
+        <MeasurementReference refId="46_3_1780351"/>
+        <MeasurementReference refId="dummyMeasurement1_0_2"/>
+        <MeasurementReference refId="dummyMeasurement4_0_2"/>
+        <MeasurementReference refId="46_5_1788558"/>
+        <MeasurementReference refId="46_8_1800592"/>
+        <MeasurementReference refId="dummyMeasurement0_0_2"/>
+        <MeasurementReference refId="dummyMeasurement4_1_2"/>
+        <MeasurementReference refId="dummyMeasurement1_1_2"/>
+        <MeasurementReference refId="46_4_1784395"/>
+        <MeasurementReference refId="dummyMeasurement5_0_2"/>
+        <MeasurementReference refId="46_6_1792665"/>
+        <MeasurementReference refId="46_9_1804793"/>
+        <MeasurementReference refId="dummyMeasurement3_1_2"/>
+        <MeasurementReference refId="46_1_1834412"/>
+        <MeasurementReference refId="dummyMeasurement2_1_2"/>
+        <MeasurementReference refId="dummyMeasurement3_0_2"/>
+        <MeasurementReference refId="dummyMeasurement0_1_2"/>
+        <MeasurementReference refId="46_7_1796706"/>
+        <MeasurementReference refId="46_10_1809017"/>
+        <MeasurementReference refId="dummyMeasurement5_1_2"/>
+        <MeasurementReference refId="dummyMeasurement2_0_2"/>
+        <MeasurementReference refId="46_2_1776362"/>
+      </MeasurementReferences>
+    </Gene>
+    <Gene id="loc17449" extId="17449" name="b3386" extIdName="locusId" synonym="rpe" ecNum="5.1.3.1">
+      <MeasurementReferences>
+        <MeasurementReference refId="dummyMeasurement4_0_3"/>
+        <MeasurementReference refId="dummyMeasurement1_1_3"/>
+        <MeasurementReference refId="dummyMeasurement1_0_3"/>
+        <MeasurementReference refId="46_3_1781544"/>
+        <MeasurementReference refId="dummyMeasurement4_1_3"/>
+        <MeasurementReference refId="46_9_1805953"/>
+        <MeasurementReference refId="dummyMeasurement0_0_3"/>
+        <MeasurementReference refId="dummyMeasurement3_1_3"/>
+        <MeasurementReference refId="46_1_1835630"/>
+        <MeasurementReference refId="dummyMeasurement5_0_3"/>
+        <MeasurementReference refId="dummyMeasurement2_1_3"/>
+        <MeasurementReference refId="46_5_1789807"/>
+        <MeasurementReference refId="46_7_1797947"/>
+        <MeasurementReference refId="46_2_1777584"/>
+        <MeasurementReference refId="dummyMeasurement3_0_3"/>
+        <MeasurementReference refId="46_8_1801751"/>
+        <MeasurementReference refId="dummyMeasurement0_1_3"/>
+        <MeasurementReference refId="dummyMeasurement5_1_3"/>
+        <MeasurementReference refId="46_4_1785664"/>
+        <MeasurementReference refId="46_6_1793883"/>
+        <MeasurementReference refId="dummyMeasurement2_0_3"/>
+        <MeasurementReference refId="46_10_1810189"/>
+      </MeasurementReferences>
+    </Gene>
+    <Gene id="loc18325" extId="18325" name="b4301" extIdName="locusId" synonym="sgcE" ecNum="5.1.3.1">
+      <MeasurementReferences>
+        <MeasurementReference refId="dummyMeasurement4_0_4"/>
+        <MeasurementReference refId="dummyMeasurement1_1_4"/>
+        <MeasurementReference refId="46_1_1836445"/>
+        <MeasurementReference refId="dummyMeasurement5_0_4"/>
+        <MeasurementReference refId="dummyMeasurement0_0_4"/>
+        <MeasurementReference refId="46_10_1810964"/>
+        <MeasurementReference refId="dummyMeasurement1_0_4"/>
+        <MeasurementReference refId="46_9_1806715"/>
+        <MeasurementReference refId="dummyMeasurement3_1_4"/>
+        <MeasurementReference refId="dummyMeasurement4_1_4"/>
+        <MeasurementReference refId="46_8_1802506"/>
+        <MeasurementReference refId="46_2_1778395"/>
+        <MeasurementReference refId="dummyMeasurement2_1_4"/>
+        <MeasurementReference refId="46_7_1798758"/>
+        <MeasurementReference refId="dummyMeasurement5_1_4"/>
+        <MeasurementReference refId="dummyMeasurement3_0_4"/>
+        <MeasurementReference refId="46_5_1790639"/>
+        <MeasurementReference refId="dummyMeasurement0_1_4"/>
+        <MeasurementReference refId="46_4_1786502"/>
+        <MeasurementReference refId="dummyMeasurement2_0_4"/>
+        <MeasurementReference refId="46_6_1794685"/>
+        <MeasurementReference refId="46_3_1782345"/>
+      </MeasurementReferences>
+    </Gene>
+    <Gene id="loc16564" extId="16564" name="b2465" extIdName="locusId" synonym="tktB" ecNum="2.2.1.1">
+      <MeasurementReferences>
+        <MeasurementReference refId="46_2_1776757"/>
+        <MeasurementReference refId="46_4_1784811"/>
+        <MeasurementReference refId="dummyMeasurement0_0_5"/>
+        <MeasurementReference refId="dummyMeasurement1_1_5"/>
+        <MeasurementReference refId="dummyMeasurement5_0_5"/>
+        <MeasurementReference refId="dummyMeasurement3_1_5"/>
+        <MeasurementReference refId="46_8_1800970"/>
+        <MeasurementReference refId="dummyMeasurement1_0_5"/>
+        <MeasurementReference refId="46_3_1780738"/>
+        <MeasurementReference refId="46_9_1805167"/>
+        <MeasurementReference refId="dummyMeasurement4_1_5"/>
+        <MeasurementReference refId="dummyMeasurement4_0_5"/>
+        <MeasurementReference refId="dummyMeasurement2_1_5"/>
+        <MeasurementReference refId="dummyMeasurement5_1_5"/>
+        <MeasurementReference refId="dummyMeasurement3_0_5"/>
+        <MeasurementReference refId="dummyMeasurement0_1_5"/>
+        <MeasurementReference refId="46_10_1809395"/>
+        <MeasurementReference refId="46_1_1834805"/>
+        <MeasurementReference refId="46_6_1793063"/>
+        <MeasurementReference refId="46_7_1797110"/>
+        <MeasurementReference refId="dummyMeasurement2_0_5"/>
+        <MeasurementReference refId="46_5_1788960"/>
+      </MeasurementReferences>
+    </Gene>
+    <Gene id="loc1936890" extId="1936890" name="b2935" extIdName="locusId" synonym="tktA" ecNum="2.2.1.1">
+      <MeasurementReferences>
+        <MeasurementReference refId="dummyMeasurement5_1_6"/>
+        <MeasurementReference refId="dummyMeasurement0_0_6"/>
+        <MeasurementReference refId="dummyMeasurement2_1_6"/>
+        <MeasurementReference refId="dummyMeasurement1_1_6"/>
+        <MeasurementReference refId="dummyMeasurement1_0_6"/>
+        <MeasurementReference refId="dummyMeasurement5_0_6"/>
+        <MeasurementReference refId="dummyMeasurement3_1_6"/>
+        <MeasurementReference refId="dummyMeasurement0_1_6"/>
+        <MeasurementReference refId="dummyMeasurement2_0_6"/>
+        <MeasurementReference refId="dummyMeasurement4_1_6"/>
+        <MeasurementReference refId="dummyMeasurement3_0_6"/>
+        <MeasurementReference refId="dummyMeasurement4_0_6"/>
+      </MeasurementReferences>
+    </Gene>
+    <Gene id="loc14153" extId="14153" name="b0008" extIdName="locusId" synonym="talB" ecNum="2.2.1.2">
+      <MeasurementReferences>
+        <MeasurementReference refId="dummyMeasurement2_1_7"/>
+        <MeasurementReference refId="46_4_1782457"/>
+        <MeasurementReference refId="dummyMeasurement0_0_7"/>
+        <MeasurementReference refId="dummyMeasurement3_1_7"/>
+        <MeasurementReference refId="dummyMeasurement1_0_7"/>
+        <MeasurementReference refId="46_9_1806808"/>
+        <MeasurementReference refId="dummyMeasurement5_0_7"/>
+        <MeasurementReference refId="dummyMeasurement4_1_7"/>
+        <MeasurementReference refId="dummyMeasurement4_0_7"/>
+        <MeasurementReference refId="dummyMeasurement1_1_7"/>
+        <MeasurementReference refId="46_8_1802599"/>
+        <MeasurementReference refId="46_10_1811057"/>
+        <MeasurementReference refId="46_1_1832536"/>
+        <MeasurementReference refId="46_5_1786620"/>
+        <MeasurementReference refId="46_6_1790756"/>
+        <MeasurementReference refId="dummyMeasurement0_1_7"/>
+        <MeasurementReference refId="dummyMeasurement5_1_7"/>
+        <MeasurementReference refId="dummyMeasurement2_0_7"/>
+        <MeasurementReference refId="46_3_1778512"/>
+        <MeasurementReference refId="46_7_1794800"/>
+        <MeasurementReference refId="dummyMeasurement3_0_7"/>
+        <MeasurementReference refId="46_2_1774477"/>
+      </MeasurementReferences>
+    </Gene>
+    <Gene id="loc16563" extId="16563" name="b2464" extIdName="locusId" synonym="talA" ecNum="2.2.1.2">
+      <MeasurementReferences>
+        <MeasurementReference refId="dummyMeasurement5_0_8"/>
+        <MeasurementReference refId="46_2_1776756"/>
+        <MeasurementReference refId="46_4_1784810"/>
+        <MeasurementReference refId="46_5_1788959"/>
+        <MeasurementReference refId="dummyMeasurement0_0_8"/>
+        <MeasurementReference refId="dummyMeasurement2_1_8"/>
+        <MeasurementReference refId="dummyMeasurement3_1_8"/>
+        <MeasurementReference refId="46_3_1780737"/>
+        <MeasurementReference refId="dummyMeasurement1_0_8"/>
+        <MeasurementReference refId="dummyMeasurement4_0_8"/>
+        <MeasurementReference refId="dummyMeasurement1_1_8"/>
+        <MeasurementReference refId="46_9_1805166"/>
+        <MeasurementReference refId="dummyMeasurement4_1_8"/>
+        <MeasurementReference refId="46_10_1809394"/>
+        <MeasurementReference refId="46_7_1797109"/>
+        <MeasurementReference refId="dummyMeasurement5_1_8"/>
+        <MeasurementReference refId="dummyMeasurement2_0_8"/>
+        <MeasurementReference refId="46_1_1834804"/>
+        <MeasurementReference refId="46_6_1793062"/>
+        <MeasurementReference refId="dummyMeasurement0_1_8"/>
+        <MeasurementReference refId="46_8_1800969"/>
+        <MeasurementReference refId="dummyMeasurement3_0_8"/>
+      </MeasurementReferences>
+    </Gene>
+    <Gene id="loc14892" extId="14892" name="b0767" extIdName="locusId" synonym="ybhE" ecNum="3.1.1.31">
+      <MeasurementReferences>
+        <MeasurementReference refId="dummyMeasurement5_0_9"/>
+        <MeasurementReference refId="dummyMeasurement3_1_9"/>
+        <MeasurementReference refId="dummyMeasurement2_1_9"/>
+        <MeasurementReference refId="46_2_1775191"/>
+        <MeasurementReference refId="46_5_1787337"/>
+        <MeasurementReference refId="46_10_1807939"/>
+        <MeasurementReference refId="dummyMeasurement4_0_9"/>
+        <MeasurementReference refId="dummyMeasurement1_0_9"/>
+        <MeasurementReference refId="dummyMeasurement0_0_9"/>
+        <MeasurementReference refId="dummyMeasurement4_1_9"/>
+        <MeasurementReference refId="dummyMeasurement1_1_9"/>
+        <MeasurementReference refId="46_8_1799514"/>
+        <MeasurementReference refId="46_3_1779205"/>
+        <MeasurementReference refId="46_1_1833234"/>
+        <MeasurementReference refId="46_6_1791474"/>
+        <MeasurementReference refId="dummyMeasurement5_1_9"/>
+        <MeasurementReference refId="dummyMeasurement2_0_9"/>
+        <MeasurementReference refId="dummyMeasurement0_1_9"/>
+        <MeasurementReference refId="46_7_1795512"/>
+        <MeasurementReference refId="46_4_1783182"/>
+        <MeasurementReference refId="46_9_1803725"/>
+        <MeasurementReference refId="dummyMeasurement3_0_9"/>
+      </MeasurementReferences>
+    </Gene>
+    <Gene id="loc15970" extId="15970" name="b1852" extIdName="locusId" synonym="zwf" ecNum="1.1.1.49">
+      <MeasurementReferences>
+        <MeasurementReference refId="dummyMeasurement5_1_10"/>
+        <MeasurementReference refId="dummyMeasurement3_1_10"/>
+        <MeasurementReference refId="dummyMeasurement3_0_10"/>
+        <MeasurementReference refId="46_6_1792508"/>
+        <MeasurementReference refId="dummyMeasurement5_0_10"/>
+        <MeasurementReference refId="dummyMeasurement0_1_10"/>
+        <MeasurementReference refId="46_4_1784232"/>
+        <MeasurementReference refId="46_5_1788395"/>
+        <MeasurementReference refId="46_10_1808859"/>
+        <MeasurementReference refId="dummyMeasurement2_0_10"/>
+        <MeasurementReference refId="46_2_1776208"/>
+        <MeasurementReference refId="46_9_1804634"/>
+        <MeasurementReference refId="dummyMeasurement4_1_10"/>
+        <MeasurementReference refId="46_1_1834259"/>
+        <MeasurementReference refId="46_3_1780203"/>
+        <MeasurementReference refId="dummyMeasurement0_0_10"/>
+        <MeasurementReference refId="dummyMeasurement4_0_10"/>
+        <MeasurementReference refId="dummyMeasurement1_0_10"/>
+        <MeasurementReference refId="dummyMeasurement2_1_10"/>
+        <MeasurementReference refId="46_8_1800433"/>
+        <MeasurementReference refId="dummyMeasurement1_1_10"/>
+        <MeasurementReference refId="46_7_1796548"/>
+      </MeasurementReferences>
+    </Gene>
+    <Gene id="loc18053" extId="18053" name="b4025" extIdName="locusId" synonym="pgi" ecNum="5.3.1.9">
+      <MeasurementReferences>
+        <MeasurementReference refId="46_8_1802257"/>
+        <MeasurementReference refId="dummyMeasurement5_1_11"/>
+        <MeasurementReference refId="dummyMeasurement3_1_11"/>
+        <MeasurementReference refId="46_2_1778146"/>
+        <MeasurementReference refId="46_7_1798503"/>
+        <MeasurementReference refId="46_10_1810709"/>
+        <MeasurementReference refId="dummyMeasurement2_1_11"/>
+        <MeasurementReference refId="46_1_1836188"/>
+        <MeasurementReference refId="dummyMeasurement0_1_11"/>
+        <MeasurementReference refId="dummyMeasurement5_0_11"/>
+        <MeasurementReference refId="46_5_1790374"/>
+        <MeasurementReference refId="46_3_1782100"/>
+        <MeasurementReference refId="46_9_1806463"/>
+        <MeasurementReference refId="dummyMeasurement4_1_11"/>
+        <MeasurementReference refId="dummyMeasurement2_0_11"/>
+        <MeasurementReference refId="46_4_1786237"/>
+        <MeasurementReference refId="dummyMeasurement0_0_11"/>
+        <MeasurementReference refId="dummyMeasurement1_0_11"/>
+        <MeasurementReference refId="dummyMeasurement4_0_11"/>
+        <MeasurementReference refId="dummyMeasurement3_0_11"/>
+        <MeasurementReference refId="dummyMeasurement1_1_11"/>
+        <MeasurementReference refId="46_6_1794429"/>
+      </MeasurementReferences>
+    </Gene>
+  </Genes>
+  <Organisms>
+    <Organism id="org511145" extId="511145" name="Escherichia coli str. K-12 substr. MG1655" extIdName="taxonomyId"/>
+  </Organisms>
+  <Pathways>
+    <Pathway name="Pentose Phosphate" order="0" extIdName="guid">
+      <PathwayStep order="0" reactionRef="rxn209751" direction="both"/>
+      <PathwayStep order="1" reactionRef="rxn209715" direction="both"/>
+      <PathwayStep order="2" reactionRef="rxn202179" direction="both"/>
+      <PathwayStep order="3" reactionRef="rxn197077" direction="both"/>
+      <PathwayStep order="4" reactionRef="rxn191973" direction="both"/>
+      <PathwayStep order="5" reactionRef="rxn197091" direction="both"/>
+      <PathwayStep order="6" reactionRef="rxn198206" direction="both"/>
+      <PathwayStep order="7" reactionRef="rxn200039" direction="both"/>
+      <PathwayStep order="8" reactionRef="rxn200062" direction="both"/>
+    </Pathway>
+    <Pathway name="Pentose Phosphate 2" order="1" extIdName="guid">
+      <PathwayStep order="0" reactionRef="rxn209751" direction="forward"/>
+      <PathwayStep order="1" reactionRef="rxn209715" direction="reverse"/>
+      <PathwayStep order="2" reactionRef="rxn202179" direction="unspecified"/>
+      <PathwayStep order="3" reactionRef="rxn197077" direction="both"/>
+      <PathwayStep order="4" reactionRef="rxn191973" direction="reverse"/>
+      <PathwayStep order="5" reactionRef="rxn197091" direction="forward"/>
+      <PathwayStep order="6" reactionRef="rxn198206" direction="both"/>
+      <PathwayStep order="7" reactionRef="rxn200039mod" direction="both"/>
+      <PathwayStep order="8" reactionRef="rxn200062" direction="both"/>
+    </Pathway>	
+  </Pathways>
+  <Reactions>
+    <Reaction id="rxn191973" extId="191973" extIdName="guid" ecNum="5.3.1.6" definition="D-Ribose 5-phosphate &lt;=&gt; D-Ribulose 5-phosphate">
+      <MeasurementReferences>
+        <MeasurementReference refId="dummyMeasurement8_0_0"/>
+        <MeasurementReference refId="dummyMeasurement7_0_0"/>
+        <MeasurementReference refId="dummyMeasurement6_1_0"/>
+        <MeasurementReference refId="dummyMeasurement7_1_0"/>
+        <MeasurementReference refId="dummyMeasurement6_0_0"/>
+        <MeasurementReference refId="dummyMeasurement8_1_0"/>
+      </MeasurementReferences>
+      <Products>
+        <Product compoundRef="cpd8433" coefficient="1" role="main"/>
+      </Products>
+      <Reactants>
+        <Reactant compoundRef="cpd3022" coefficient="1" role="main"/>
+      </Reactants>
+      <GeneReferences>
+        <GeneReference refId="loc18118"/>
+        <GeneReference refId="loc16993"/>
+      </GeneReferences>
+    </Reaction>
+    <Reaction id="rxn197077" extId="197077" extIdName="guid" ecNum="1.1.1.44" definition="6-Phospho-D-gluconate + NADP+ &lt;=&gt; D-Ribulose 5-phosphate + CO2 + NADPH + H+">
+      <MeasurementReferences>
+        <MeasurementReference refId="dummyMeasurement7_1_1"/>
+        <MeasurementReference refId="dummyMeasurement7_0_1"/>
+        <MeasurementReference refId="dummyMeasurement8_0_1"/>
+        <MeasurementReference refId="dummyMeasurement6_1_1"/>
+        <MeasurementReference refId="dummyMeasurement8_1_1"/>
+        <MeasurementReference refId="dummyMeasurement6_0_1"/>
+      </MeasurementReferences>
+      <Products>
+        <Product compoundRef="cpd3022" coefficient="1" role="main"/>
+        <Product compoundRef="cpd258" coefficient="1" role="other"/>
+        <Product compoundRef="cpd105" coefficient="1" role="other"/>
+        <Product compoundRef="cpd1323" coefficient="1" role="other"/>
+      </Products>
+      <Reactants>
+        <Reactant compoundRef="cpd4254" coefficient="1" role="main"/>
+        <Reactant compoundRef="cpd136" coefficient="1" role="other"/>
+      </Reactants>
+      <GeneReferences>
+        <GeneReference refId="loc16137"/>
+      </GeneReferences>
+    </Reaction>
+    <Reaction id="rxn197091" extId="197091" extIdName="guid" ecNum="5.1.3.1" definition="D-Ribulose 5-phosphate &lt;=&gt; D-Xylulose 5-phosphate">
+      <MeasurementReferences>
+        <MeasurementReference refId="dummyMeasurement6_1_2"/>
+        <MeasurementReference refId="dummyMeasurement7_1_2"/>
+        <MeasurementReference refId="dummyMeasurement7_0_2"/>
+        <MeasurementReference refId="dummyMeasurement8_0_2"/>
+        <MeasurementReference refId="dummyMeasurement8_1_2"/>
+        <MeasurementReference refId="dummyMeasurement6_0_2"/>
+      </MeasurementReferences>
+      <Products>
+        <Product compoundRef="cpd3172" coefficient="1" role="main"/>
+      </Products>
+      <Reactants>
+        <Reactant compoundRef="cpd3022" coefficient="1" role="main"/>
+      </Reactants>
+      <GeneReferences>
+        <GeneReference refId="loc18325"/>
+        <GeneReference refId="loc17449"/>
+      </GeneReferences>
+    </Reaction>
+    <Reaction id="rxn198206" extId="198206" extIdName="guid" ecNum="2.2.1.1" definition="Sedoheptulose 7-phosphate + D-Glyceraldehyde 3-phosphate &lt;=&gt; D-Ribose 5-phosphate + D-Xylulose 5-phosphate">
+      <MeasurementReferences>
+        <MeasurementReference refId="dummyMeasurement6_0_3"/>
+        <MeasurementReference refId="dummyMeasurement6_1_3"/>
+        <MeasurementReference refId="dummyMeasurement7_1_3"/>
+        <MeasurementReference refId="dummyMeasurement7_0_3"/>
+        <MeasurementReference refId="dummyMeasurement8_0_3"/>
+        <MeasurementReference refId="dummyMeasurement8_1_3"/>
+      </MeasurementReferences>
+      <Products>
+        <Product compoundRef="cpd67428" coefficient="1" role="main"/>
+        <Product compoundRef="cpd58017" coefficient="1" role="main"/>
+      </Products>
+      <Reactants>
+        <Reactant compoundRef="cpd8433" coefficient="1" role="main"/>
+        <Reactant compoundRef="cpd3172" coefficient="1" role="main"/>
+      </Reactants>
+      <GeneReferences>
+        <GeneReference refId="loc1936890"/>
+        <GeneReference refId="loc16564"/>
+      </GeneReferences>
+    </Reaction>
+    <Reaction id="rxn200039mod" extId="200039" extIdName="guid" ecNum="2.2.1.2mod" definition="Sedoheptulose 7-phosphate + D-Glyceraldehyde 3-phosphate &lt;=&gt; D-Erythrose 4-phosphate + beta-D-Fructose 6-phosphate">
+      <MeasurementReferences>
+        <MeasurementReference refId="dummyMeasurement6_0_4"/>
+        <MeasurementReference refId="dummyMeasurement8_3_4"/>
+        <MeasurementReference refId="dummyMeasurement7_4_4"/>
+        <MeasurementReference refId="dummyMeasurement6_1_4"/>
+        <MeasurementReference refId="dummyMeasurement7_1_4"/>
+        <MeasurementReference refId="dummyMeasurement8_0_4"/>
+        <MeasurementReference refId="dummyMeasurement8_1_4"/>
+        <MeasurementReference refId="dummyMeasurement6_3_4"/>
+        <MeasurementReference refId="dummyMeasurement6_4_4"/>
+        <MeasurementReference refId="dummyMeasurement7_0_4"/>
+        <MeasurementReference refId="dummyMeasurement8_2_4"/>
+        <MeasurementReference refId="dummyMeasurement7_3_4"/>
+        <MeasurementReference refId="dummyMeasurement6_2_4"/>
+        <MeasurementReference refId="dummyMeasurement7_2_4"/>
+        <MeasurementReference refId="dummyMeasurement8_4_4"/>
+      </MeasurementReferences>
+      <Products>
+        <Product compoundRef="cpd3741" coefficient="1" role="main"/>
+        <Product compoundRef="cpd67296" coefficient="1" role="main"/>
+        <Product compoundRef="cpd3172" coefficient="1" role="main"/>
+      </Products>
+      <Reactants>
+        <Reactant compoundRef="cpd3172" coefficient="1" role="main"/>
+        <Reactant compoundRef="cpd67428" coefficient="1" role="main"/>
+        <Reactant compoundRef="cpd58017" coefficient="1" role="main"/>
+      </Reactants>
+      <GeneReferences>
+        <GeneReference refId="loc16563"/>
+        <GeneReference refId="loc14153"/>
+        <GeneReference refId="loc16563"/>
+        <GeneReference refId="loc14153"/>
+        <GeneReference refId="loc16563"/>
+        <GeneReference refId="loc14153"/>
+        <GeneReference refId="loc16563"/>
+        <GeneReference refId="loc14153"/>
+        <GeneReference refId="loc16563"/>
+        <GeneReference refId="loc14153"/>
+      </GeneReferences>
+    </Reaction>
+    <Reaction id="rxn200039" extId="200039" extIdName="guid" ecNum="2.2.1.2" definition="Sedoheptulose 7-phosphate + D-Glyceraldehyde 3-phosphate &lt;=&gt; D-Erythrose 4-phosphate + beta-D-Fructose 6-phosphate">
+      <MeasurementReferences>
+        <MeasurementReference refId="dummyMeasurement6_0_4"/>
+        <MeasurementReference refId="dummyMeasurement7_0_4"/>
+        <MeasurementReference refId="dummyMeasurement6_1_4"/>
+        <MeasurementReference refId="dummyMeasurement7_1_4"/>
+        <MeasurementReference refId="dummyMeasurement8_0_4"/>
+        <MeasurementReference refId="dummyMeasurement8_1_4"/>
+      </MeasurementReferences>
+      <Products>
+        <Product compoundRef="cpd3741" coefficient="1" role="main"/>
+        <Product compoundRef="cpd67296" coefficient="1" role="main"/>
+      </Products>
+      <Reactants>
+        <Reactant compoundRef="cpd67428" coefficient="1" role="main"/>
+        <Reactant compoundRef="cpd58017" coefficient="1" role="main"/>
+      </Reactants>
+      <GeneReferences>
+        <GeneReference refId="loc16563"/>
+        <GeneReference refId="loc14153"/>
+      </GeneReferences>
+    </Reaction>
+    <Reaction id="rxn200062" extId="200062" extIdName="guid" ecNum="2.2.1.1" definition="beta-D-Fructose 6-phosphate + D-Glyceraldehyde 3-phosphate &lt;=&gt; D-Erythrose 4-phosphate + D-Xylulose 5-phosphate">
+      <MeasurementReferences>
+        <MeasurementReference refId="dummyMeasurement7_1_5"/>
+        <MeasurementReference refId="dummyMeasurement6_0_5"/>
+        <MeasurementReference refId="dummyMeasurement7_0_5"/>
+        <MeasurementReference refId="dummyMeasurement6_1_5"/>
+        <MeasurementReference refId="dummyMeasurement8_1_5"/>
+        <MeasurementReference refId="dummyMeasurement8_0_5"/>
+      </MeasurementReferences>
+      <Products>
+        <Product compoundRef="cpd67296" coefficient="1" role="main"/>
+        <Product compoundRef="cpd58017" coefficient="1" role="main"/>
+      </Products>
+      <Reactants>
+        <Reactant compoundRef="cpd3741" coefficient="1" role="main"/>
+        <Reactant compoundRef="cpd3172" coefficient="1" role="main"/>
+      </Reactants>
+    </Reaction>
+    <Reaction id="rxn202179" extId="202179" extIdName="guid" ecNum="3.1.1.31" definition="D-Glucono-1,5-lactone 6-phosphate + H2O &lt;=&gt; 6-Phospho-D-gluconate">
+      <MeasurementReferences>
+        <MeasurementReference refId="dummyMeasurement6_1_6"/>
+        <MeasurementReference refId="dummyMeasurement7_1_6"/>
+        <MeasurementReference refId="dummyMeasurement6_0_6"/>
+        <MeasurementReference refId="dummyMeasurement7_0_6"/>
+        <MeasurementReference refId="dummyMeasurement8_1_6"/>
+        <MeasurementReference refId="dummyMeasurement8_0_6"/>
+      </MeasurementReferences>
+      <Products>
+        <Product compoundRef="cpd4254" coefficient="1" role="main"/>
+      </Products>
+      <Reactants>
+        <Reactant compoundRef="cpd7177" coefficient="1" role="main"/>
+        <Reactant compoundRef="cpd9" coefficient="1" role="other"/>
+      </Reactants>
+      <GeneReferences>
+        <GeneReference refId="loc14892"/>
+      </GeneReferences>
+    </Reaction>
+    <Reaction id="rxn209715" extId="209715" extIdName="guid" ecNum="1.1.1.49" definition="beta-D-Glucose 6-phosphate + NADP+ &lt;=&gt; D-Glucono-1,5-lactone 6-phosphate + NADPH + H+">
+      <MeasurementReferences>
+        <MeasurementReference refId="dummyMeasurement6_1_7"/>
+        <MeasurementReference refId="dummyMeasurement7_1_7"/>
+        <MeasurementReference refId="dummyMeasurement7_0_7"/>
+        <MeasurementReference refId="dummyMeasurement6_0_7"/>
+        <MeasurementReference refId="dummyMeasurement8_1_7"/>
+        <MeasurementReference refId="dummyMeasurement8_0_7"/>
+      </MeasurementReferences>
+      <Products>
+        <Product compoundRef="cpd7177" coefficient="1" role="main"/>
+        <Product compoundRef="cpd105" coefficient="1" role="other"/>
+        <Product compoundRef="cpd1323" coefficient="1" role="other"/>
+      </Products>
+      <Reactants>
+        <Reactant compoundRef="cpd42935" coefficient="1" role="main"/>
+        <Reactant compoundRef="cpd136" coefficient="1" role="other"/>
+      </Reactants>
+      <GeneReferences>
+        <GeneReference refId="loc15970"/>
+      </GeneReferences>
+    </Reaction>
+    <Reaction id="rxn209751" extId="209751" extIdName="guid" ecNum="5.1.3.15" definition="alpha-D-Glucose 6-phosphate &lt;=&gt; beta-D-Glucose 6-phosphate">
+      <MeasurementReferences>
+        <MeasurementReference refId="dummyMeasurement7_0_8"/>
+        <MeasurementReference refId="dummyMeasurement6_1_8"/>
+        <MeasurementReference refId="dummyMeasurement7_1_8"/>
+        <MeasurementReference refId="dummyMeasurement6_0_8"/>
+        <MeasurementReference refId="dummyMeasurement8_1_8"/>
+        <MeasurementReference refId="dummyMeasurement8_0_8"/>
+      </MeasurementReferences>
+      <Products>
+        <Product compoundRef="cpd42935" coefficient="1" role="main"/>
+      </Products>
+      <Reactants>
+        <Reactant compoundRef="cpd42921" coefficient="1" role="main"/>
+      </Reactants>
+      <GeneReferences>
+        <GeneReference refId="loc18053"/>
+      </GeneReferences>
+    </Reaction>
+  </Reactions>
+</ReactionFunData>

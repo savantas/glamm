@@ -16,10 +16,13 @@ public class GlammState implements Serializable {
 	private Experiment exp = null;
 	private Set<OverlayDataGroup> groupData = null;
 	
+	private boolean uiState = true;
+	
 	private GlammState() {
 		setOrganism(Organism.globalMap());
 		amdId = "map01100"; 
 		viewport = "";
+		uiState = true;
 	}
 	
 	public void setOrganism(Organism organism) {
@@ -86,5 +89,13 @@ public class GlammState implements Serializable {
 	
 	public Set<OverlayDataGroup> getGroupData() {
 		return groupData;
+	}
+
+	public void setUIState(boolean uiState) {
+		this.uiState = uiState;
+	}
+	
+	public boolean getUIState() {
+		return uiState;
 	}
 }

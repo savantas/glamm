@@ -215,3 +215,7 @@
 .rxn[pathway=true]					{ stroke: #FFFFFF; stroke-width: 12; }
 .rxn[pathway=false]					{ stroke: #222222; stroke-width: 4.5; }
 .rxn[pathway=true][absent=true] 	{ stroke: #888888; stroke-width: 8.5; }
+
+.rxn[strength=low] 		{ stroke-width: 6; }
+.rxn[strength=medium]	{ stroke-width: 10; }
+.rxn[strength=high]		{ stroke-width: 14; }

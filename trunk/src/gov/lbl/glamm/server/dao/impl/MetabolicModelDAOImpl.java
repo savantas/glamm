@@ -1,16 +1,5 @@
 package gov.lbl.glamm.server.dao.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.MetabolicModelDAO;
 import gov.lbl.glamm.server.dao.ReactionDAO;
@@ -19,6 +8,11 @@ import gov.lbl.glamm.shared.model.Measurement;
 import gov.lbl.glamm.shared.model.MetabolicModel;
 import gov.lbl.glamm.shared.model.Organism;
 import gov.lbl.glamm.shared.model.Reaction;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Implementation of the Metabolic Model DAO.

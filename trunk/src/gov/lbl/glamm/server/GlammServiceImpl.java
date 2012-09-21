@@ -1,11 +1,14 @@
 package gov.lbl.glamm.server;
 
+import gov.lbl.glamm.client.experiment.model.PathwayExperimentData;
+import gov.lbl.glamm.client.experiment.rpc.PathwayExperimentService;
 import gov.lbl.glamm.client.map.rpc.GlammService;
 import gov.lbl.glamm.server.actions.AuthenticateUser;
 import gov.lbl.glamm.server.actions.GenCpdPopup;
 import gov.lbl.glamm.server.actions.GenPwyPopup;
 import gov.lbl.glamm.server.actions.GetAnnotatedMapDescriptors;
 import gov.lbl.glamm.server.actions.GetAvailableExperimentTypes;
+import gov.lbl.glamm.server.actions.GetExperimentPathwayData;
 import gov.lbl.glamm.server.actions.GetFluxes;
 import gov.lbl.glamm.server.actions.GetGlammState;
 import gov.lbl.glamm.server.actions.GetGroupData;
@@ -46,8 +49,8 @@ import java.util.Set;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
+import com.google.gwt.http.client.RequestException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
@@ -57,7 +60,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  */
 @SuppressWarnings("serial")
 public class GlammServiceImpl extends RemoteServiceServlet 
-	implements GlammService {
+	implements GlammService, PathwayExperimentService {
 	
 	private static final String SERVER_CONFIG_XML_FILE_NAME		= "/config/server_config.xml";
 	private static final String EXTERNAL_SERVICES_XML_FILE_NAME = "/config/external_services.xml";
@@ -77,9 +80,7 @@ public class GlammServiceImpl extends RemoteServiceServlet
 		GlammSession glammSession = GlammSession.getGlammSession(request);
 		
 		sessions.add(glammSession);
-		
-		Set<GlammSession> localSessions = sessions;
-		int localSessionsCount = sessions.size();
+		System.out.println(glammSession);
 		
 		return glammSession;
 	}
@@ -249,8 +250,15 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	
 	@Override
 	public GlammState getStateFromHistoryToken(String token) {
-		GlammState state = GetGlammState.getStateFromHistoryToken(getGlammSession(), token);
-//		return GetGlammState.getStateFromHistoryToken(getGlammSession(), token);
-		return state;
+		return GetGlammState.getStateFromHistoryToken(getGlammSession(), token);
+	}
+
+	@Override
+	public PathwayExperimentData getPathwayData(String pathwayIds, String experimentIds) throws IllegalArgumentException,
+																								RequestException {
+		GlammSession sm = getGlammSession();
+//		String fileName = this.getServletContext().getRealPath( "/data/pathway.xml" );
+//		return GetExperimentPathwayData.getPathwayData(pathwayIds, experimentIds, fileName);
+		return GetExperimentPathwayData.getDummyPathwayData(sm);
 	}
 }

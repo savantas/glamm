@@ -57,6 +57,8 @@ public class AnnotatedMapData implements Serializable {
 		public static final String SEARCH_TARGET	= "searchtarget";
 		public static final String STATE			= "state";
 		public static final String WIDTH			= "width";
+		public static final String GROUP		    = "group";
+		public static final String STRENGTH			= "strength";
 	}
 
 	/**

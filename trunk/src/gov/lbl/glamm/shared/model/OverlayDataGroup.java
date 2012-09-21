@@ -46,11 +46,13 @@ public class OverlayDataGroup implements Serializable {
 	private String name = "";
 	private String source = "";
 	private String cssColor = "white";
-	private int taxId;
 	private String genomeName = "";
+	private float strength;
 	private Set<Gene> geneGroup;
 	private Set<Compound> compoundGroup;
 	private Set<Reaction> reactionGroup;
+	private Map<HasType, Float> element2Strength;
+	private Map<HasType, String> element2Url;
 	
 	private Map<String, Reaction> def2Reaction; // reaction definition --> reaction. should be 1 to 1, right?
 	private String url;
@@ -79,6 +81,8 @@ public class OverlayDataGroup implements Serializable {
 		compoundGroup = new HashSet<Compound>();
 		reactionGroup = new HashSet<Reaction>();
 		def2Reaction = new HashMap<String, Reaction>();
+		element2Strength = new HashMap<HasType, Float>();
+		element2Url = new HashMap<HasType, String>();
 		cssColor = cssColors.get(colorPointer++ % cssColors.size());
 		url = null;
 	}
@@ -143,13 +147,24 @@ public class OverlayDataGroup implements Serializable {
 	 * @param element the element to add to the group
 	 */
 	public void addElement(HasType element) {
+		addElement(element, 0);
+//		dataGroup.add(element);
+	}
+	
+	public void addElement(HasType element, float strength) {
+		addElement(element, "", strength);
+	}
+	
+	public void addElement(HasType element, String url, float strength) {
 		if (element.getType() == Reaction.TYPE)
 			addReaction((Reaction)element);
 		else if (element.getType() == Compound.TYPE)
 			addCompound((Compound)element);
 		else if (element.getType() == Gene.TYPE)
 			addGene((Gene)element);
-//		dataGroup.add(element);
+		
+		element2Strength.put(element, strength);
+		element2Url.put(element, url);
 	}
 	
 	public void addReaction(Reaction rxn) {
@@ -286,6 +301,29 @@ public class OverlayDataGroup implements Serializable {
 		return genes;
 	}
 
+	public float getStrengthForElement(HasType element) {
+		if (element2Strength.containsKey(element))
+			return element2Strength.get(element);
+		
+		return 0;
+	}
+	
+	public float getMaxStrengthForReactionGenes(Reaction reaction) {
+		float maxStrength = 0;
+		if (def2Reaction.containsKey(reaction.getDefinition())) {
+			Reaction rxn = def2Reaction.get(reaction.getDefinition());
+			for (Gene gene : rxn.getGenes()) {
+				if (element2Strength.containsKey(gene)) {
+					float geneStrength = element2Strength.get(gene);
+					if (geneStrength > maxStrength)
+						maxStrength = geneStrength;
+				}
+			}
+		}
+		
+		return maxStrength;
+	}
+	
 	public String getGenomeName() {
 		return genomeName;
 	}
@@ -295,5 +333,13 @@ public class OverlayDataGroup implements Serializable {
 			this.genomeName = "";
 		else
 			this.genomeName = genomeName;
+	}
+	
+	public float getStrength() {
+		return strength;
+	}
+	
+	public void setStrength(float strength) {
+		this.strength = strength;
 	}
 }
