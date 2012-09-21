@@ -11,7 +11,9 @@ import gov.lbl.glamm.shared.model.util.Type;
 import gov.lbl.glamm.shared.model.util.XrefSet;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -32,6 +34,8 @@ implements HasMeasurements, HasSynonyms, Serializable, HasXrefs, HasType {
 	private Set<Synonym> synonyms;
 	private MeasurementSet measurementSet;
 	private XrefSet xrefSet;
+	
+	private List<Pathway> pathwayLinks;
 	
 	/**
 	 * The Type associated with this object.
@@ -177,6 +181,10 @@ implements HasMeasurements, HasSynonyms, Serializable, HasXrefs, HasType {
 		return xrefSet;
 	}
 	
-
-	
+	public List<Pathway> getPathwayLinks() {
+		if (pathwayLinks == null) {
+			pathwayLinks = new ArrayList<Pathway>();
+		}
+		return pathwayLinks;
+	}
 }

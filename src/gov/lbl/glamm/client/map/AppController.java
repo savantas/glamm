@@ -1,7 +1,5 @@
 package gov.lbl.glamm.client.map;
 
-import java.util.Set;
-
 import gov.lbl.glamm.client.map.events.AMDPickedEvent;
 import gov.lbl.glamm.client.map.events.AnnotatedMapDataLoadedEvent;
 import gov.lbl.glamm.client.map.events.CpdDstDisambiguatedEvent;
@@ -78,14 +76,11 @@ import gov.lbl.glamm.shared.model.OverlayDataGroup;
 import gov.lbl.glamm.shared.model.Sample;
 import gov.lbl.glamm.shared.model.User;
 
+import java.util.Set;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.SimpleEventBus;
@@ -95,7 +90,6 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
@@ -110,7 +104,7 @@ public class AppController {
 	private static AppController instance;
 	
 	private boolean showUI = true;
-
+	
 	private GlammServiceAsync rpc;
 	private SimpleEventBus eventBus;
 	private AbsolutePanel mainPanel = null;
@@ -335,14 +329,14 @@ public class AppController {
 		experimentUploadPresenter.setOrganism(state.getOrganism());
 		mapPresenter.setOrganism(state.getOrganism());
 		
-		loadMapPanel(); // always load first
+		loadMapPanel(state); // always load first
 		
-		loadAnnotatedMapPicker(state.getAMDId());
+		loadAnnotatedMapPicker(state);
 		loadCpdDisambiguation();
 		loadInterpolator();
 		loadLoadingPanel();
 		loadMapElementPopup();
-		loadRxnElementPopup();
+		loadRxnElementPopup(state);
 		loadPwyElementPopup();
 		loadMiniMapPanel();
 		loadPanZoomControl();
@@ -354,8 +348,8 @@ public class AppController {
 		loadHelp();
 		loadRetrosynthesis();
 
-/**/	loadMetabolicModelPicker();
-/**/	loadDataOverlayControl(state.getGroupData());
+/**/	loadMetabolicModelPicker(state);
+/**/	loadDataOverlayControl(state);
 		loadDataOverlayUpload();
 /**/	loadDataOverlayService();
 
@@ -377,7 +371,8 @@ public class AppController {
 				setUIVisible(event.getValue());
 			}
 		});
-		uiCheckBox.setValue(showUI);
+		uiCheckBox.setValue(state.getUIState());
+		setUIVisible(state.getUIState());
 		
 		mainPanel.add(uiCheckBox, 0, 0);
 
@@ -456,23 +451,23 @@ public class AppController {
 
 	private void setUIVisible(boolean show) {
 		showUI = show;
-		organismView.setVisible(showUI);
-		experimentView.setVisible(showUI);
-		loginView.setVisible(showUI);
-		amdView.setVisible(showUI);
-		metabolicModelView.setVisible(showUI);
-		dataOverlayView.setVisible(showUI);
-		retrosynthesisView.setVisible(showUI);
-		miniMapView.setVisible(showUI);
-		panZoomView.setVisible(showUI);
+		organismView.setVisible(show);
+		experimentView.setVisible(show);
+		loginView.setVisible(show);
+		amdView.setVisible(show);
+		metabolicModelView.setVisible(show);
+		dataOverlayView.setVisible(show);
+		retrosynthesisView.setVisible(show);
+		miniMapView.setVisible(show);
+		panZoomView.setVisible(show);
 		
 		onResize();
 	}
 	
-	private void loadDataOverlayControl(Set<OverlayDataGroup> data) {
+	private void loadDataOverlayControl(GlammState state) {
 		mainPanel.add(dataOverlayView, 0, 0);
 		
-		dataOverlayPresenter.setDataGroups(data);
+		dataOverlayPresenter.setDataGroups(state.getGroupData());
 		
 		eventBus.addHandler(GroupDataLoadedEvent.TYPE, new GroupDataLoadedEvent.Handler() {
 			@Override
@@ -512,14 +507,14 @@ public class AppController {
 		});
 	}
 	
-	private void loadMetabolicModelPicker() {
+	private void loadMetabolicModelPicker(GlammState state) {
 		mainPanel.add(metabolicModelView, 0, 0);
 		metabolicModelPresenter.populate("0");
 	}
 	
-	private void loadAnnotatedMapPicker(String amdId) {
+	private void loadAnnotatedMapPicker(GlammState state) {
 		mainPanel.add(amdView, 0, 0);
-		amdPresenter.populate(amdId);
+		amdPresenter.populate(state.getAMDId());
 	}
 
 	private void loadCpdDisambiguation() {
@@ -611,7 +606,7 @@ public class AppController {
 		});
 	}
 
-	private void loadRxnElementPopup() {
+	private void loadRxnElementPopup(GlammState state) {
 
 		eventBus.addHandler(AnnotatedMapDataLoadedEvent.TYPE, new AnnotatedMapDataLoadedEvent.Handler() {
 			@Override
@@ -684,6 +679,9 @@ public class AppController {
 				rxnElementPresenter.setDataGroups(event.getData());
 			}
 		});
+		
+		if (state.getGroupData() != null && state.getGroupData().size() > 0)
+			rxnElementPresenter.setDataGroups(state.getGroupData());
 
 	}
 
@@ -755,7 +753,7 @@ public class AppController {
 		});
 	}
 	
-	private void loadMapPanel() {
+	private void loadMapPanel(GlammState state) {
 
 		mainPanel.add(mapView, 0, 0);
 
@@ -874,6 +872,9 @@ public class AppController {
 				mapPresenter.updateMapForGroupData(event.getData());
 			}
 		});
+		
+		if (state.getGroupData() != null && state.getGroupData().size() > 0)
+			mapPresenter.updateMapForGroupData(state.getGroupData());
 		
 	}
 

@@ -545,5 +545,27 @@ implements Serializable, HasOptions, HasMeasurements, HasType, HasXrefs, HasSyno
 	public Set<Synonym> getSynonyms() {
 		return synonyms;
 	}
+	
+	/**
+	 * Very shallow clone. Sets and arrays and maps are the original reaction's sets and arrays, not copies.
+	 * @param source
+	 * @return
+	 */
+	public Reaction shallowClone() {
+		Reaction reaction = new Reaction();
+		reaction.setDefinition( this.getDefinition() );
+		reaction.setDirection( this.getDirection() );
+		reaction.setGuid( this.getGuid() );
+		reaction.setNative( this.isNative() );
+		reaction.substrates = this.substrates;
+		reaction.products = this.products;
+		reaction.genes = this.genes;
+		reaction.transgenicCandidates = this.transgenicCandidates;
+		reaction.transgenicCandidate2EcNums = this.transgenicCandidate2EcNums;
+		reaction.name2TransgenicCandidate = this.name2TransgenicCandidate;
+		reaction.ecNums = this.ecNums;
+
+		return reaction;
+	}
 
 }

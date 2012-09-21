@@ -27,6 +27,7 @@ implements Serializable, HasSynonyms, HasMeasurements, HasType {
 	public static transient final String SYNONYM_TYPE_NAME		= "0";
 	public static transient final String SYNONYM_TYPE_NCBI		= "1";
 	public static transient final String SYNONYM_TYPE_SESSION	= "S";
+	public static transient final String SYNONYM_TYPE_SYNONYM   = "synonym";
 	public static transient final String SYNONYM_TYPE_VIMSS		= "VIMSS";
 
 	private Set<String> ecNums;

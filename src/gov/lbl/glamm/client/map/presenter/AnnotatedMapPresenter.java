@@ -769,6 +769,7 @@ public class AnnotatedMapPresenter {
 							element.removeAttribute(AnnotatedMapData.Attribute.ROUTE);
 							element.removeAttribute(AnnotatedMapData.Attribute.SEARCH_TARGET);
 							element.removeAttribute(AnnotatedMapData.Attribute.PATHWAY);
+							element.removeAttribute(AnnotatedMapData.Attribute.STRENGTH);
 							element.setAttribute(AnnotatedMapData.Attribute.HAS_DATA, "false");
 							if(element.getTagName().equals(SVGConstants.SVG_ELLIPSE_TAG)) {
 								element.removeAttribute(AnnotatedMapData.Attribute.CPD_DST);
@@ -831,6 +832,7 @@ public class AnnotatedMapPresenter {
 					element.removeAttribute(AnnotatedMapData.Attribute.SEARCH_TARGET);
 					element.removeAttribute(AnnotatedMapData.Attribute.ROUTE);
 					element.removeAttribute(AnnotatedMapData.Attribute.PATHWAY);
+					element.removeAttribute(AnnotatedMapData.Attribute.STRENGTH);
 					element.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, defaultColor);
 					if(element.getTagName().equals(SVGConstants.SVG_ELLIPSE_TAG)) {
 						element.setAttribute(SVGConstants.SVG_FILL_ATTRIBUTE, defaultColor);
@@ -927,6 +929,7 @@ public class AnnotatedMapPresenter {
 					element.removeAttribute(AnnotatedMapData.Attribute.SEARCH_TARGET);
 					element.removeAttribute(AnnotatedMapData.Attribute.ROUTE);
 					element.removeAttribute(AnnotatedMapData.Attribute.PATHWAY);
+					element.removeAttribute(AnnotatedMapData.Attribute.STRENGTH);
 					element.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, defaultColor);
 					if(element.getTagName().equals(SVGConstants.SVG_ELLIPSE_TAG)) {
 						element.setAttribute(SVGConstants.SVG_FILL_ATTRIBUTE, defaultColor);
@@ -967,6 +970,7 @@ public class AnnotatedMapPresenter {
 						element.removeAttribute(AnnotatedMapData.Attribute.SEARCH_TARGET);
 						element.removeAttribute(AnnotatedMapData.Attribute.ROUTE);
 						element.removeAttribute(AnnotatedMapData.Attribute.PATHWAY);
+						element.removeAttribute(AnnotatedMapData.Attribute.STRENGTH);
 						element.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, defaultColor);
 						if(element.getTagName().equals(SVGConstants.SVG_ELLIPSE_TAG)) {
 							element.setAttribute(SVGConstants.SVG_FILL_ATTRIBUTE, defaultColor);
@@ -1054,6 +1058,7 @@ public class AnnotatedMapPresenter {
 				element.removeAttribute(AnnotatedMapData.Attribute.HAS_DATA);
 				element.removeAttribute(AnnotatedMapData.Attribute.SEARCH_TARGET);
 				element.removeAttribute(AnnotatedMapData.Attribute.ROUTE);
+				element.removeAttribute(AnnotatedMapData.Attribute.STRENGTH);
 				element.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, defaultColor);
 				if(element.getTagName().equals(SVGConstants.SVG_ELLIPSE_TAG)) {
 					element.setAttribute(SVGConstants.SVG_FILL_ATTRIBUTE, defaultColor);
@@ -1076,6 +1081,18 @@ public class AnnotatedMapPresenter {
 				for(OMSVGElement svgElement : svgElements) {						
 					svgElement.removeAttribute(AnnotatedMapData.Attribute.ABSENT);
 					svgElement.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, cssColor);
+					
+					if (element.getType() == Reaction.TYPE) {
+						float value = group.getMaxStrengthForReactionGenes((Reaction)element);
+						
+						String strength = "low";
+						if (value >= 0.3 && value < 0.6)
+							strength = "medium";
+						else if (value >= 0.6)
+							strength = "high";
+						
+						svgElement.setAttribute(AnnotatedMapData.Attribute.STRENGTH, strength);
+					}
 				}
 				
 			}
@@ -1102,6 +1119,7 @@ public class AnnotatedMapPresenter {
 					element.removeAttribute(AnnotatedMapData.Attribute.SEARCH_TARGET);
 					element.removeAttribute(AnnotatedMapData.Attribute.ROUTE);
 					element.removeAttribute(AnnotatedMapData.Attribute.PATHWAY);
+					element.removeAttribute(AnnotatedMapData.Attribute.STRENGTH);
 					element.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, defaultColor);
 					if(element.getTagName().equals(SVGConstants.SVG_ELLIPSE_TAG)) {
 						element.setAttribute(SVGConstants.SVG_FILL_ATTRIBUTE, defaultColor);
@@ -1132,6 +1150,7 @@ public class AnnotatedMapPresenter {
 							element.removeAttribute(AnnotatedMapData.Attribute.HAS_DATA);
 							element.removeAttribute(AnnotatedMapData.Attribute.SEARCH_TARGET);
 							element.removeAttribute(AnnotatedMapData.Attribute.ROUTE);
+							element.removeAttribute(AnnotatedMapData.Attribute.STRENGTH);
 							element.setAttribute(AnnotatedMapData.Attribute.PATHWAY, "false");
 							if(organism == null || organism.isGlobalMap())
 								element.setAttribute(AnnotatedMapData.Attribute.ABSENT, "false");
@@ -1217,6 +1236,7 @@ public class AnnotatedMapPresenter {
 					element.removeAttribute(AnnotatedMapData.Attribute.HAS_DATA);
 					element.removeAttribute(AnnotatedMapData.Attribute.SEARCH_TARGET);
 					element.removeAttribute(AnnotatedMapData.Attribute.ROUTE);
+					element.removeAttribute(AnnotatedMapData.Attribute.STRENGTH);
 					element.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, defaultColor);
 					if(element.getTagName().equals(SVGConstants.SVG_ELLIPSE_TAG)) {
 						element.setAttribute(SVGConstants.SVG_FILL_ATTRIBUTE, defaultColor);
@@ -1235,6 +1255,7 @@ public class AnnotatedMapPresenter {
 				String defaultColor = element.getAttribute(AnnotatedMapData.Attribute.DEFAULT_COLOR);
 				element.removeAttribute(AnnotatedMapData.Attribute.HAS_DATA);
 				element.removeAttribute(AnnotatedMapData.Attribute.SEARCH_TARGET);
+				element.removeAttribute(AnnotatedMapData.Attribute.STRENGTH);
 				element.setAttribute(AnnotatedMapData.Attribute.ROUTE, "none");
 				if(organism == null || organism.isGlobalMap())
 					element.setAttribute(AnnotatedMapData.Attribute.ABSENT, "false");
@@ -1301,6 +1322,7 @@ public class AnnotatedMapPresenter {
 					element.removeAttribute(AnnotatedMapData.Attribute.SEARCH_TARGET);
 					element.removeAttribute(AnnotatedMapData.Attribute.ROUTE);
 					element.removeAttribute(AnnotatedMapData.Attribute.PATHWAY);
+					element.removeAttribute(AnnotatedMapData.Attribute.STRENGTH);
 					element.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, defaultColor);
 					if(element.getTagName().equals(SVGConstants.SVG_ELLIPSE_TAG)) {
 						element.setAttribute(SVGConstants.SVG_FILL_ATTRIBUTE, defaultColor);

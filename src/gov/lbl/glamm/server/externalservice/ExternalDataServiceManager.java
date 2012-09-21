@@ -54,6 +54,8 @@ public class ExternalDataServiceManager {
 	private static final String ATTR_PARAM_NAME 	  = "displayName";  // Human-readable name of a parameter
 	private static final String ATTR_PARAM_URL_NAME   = "extUrlName";	// External URL id of the parameter
 	private static final String ATTR_PARAM_STATE_NAME = "stateUrlName"; // GLAMM state URl id of the parameter.
+	private static final String ATTR_PARAM_TYPE	      = "type";
+	private static final String ATTR_PARAM_DEFAULT	  = "default";
 	
 	private static Map<String, ExternalDataService> name2DataService;
 	private static List<ExternalDataService> dataServices;
@@ -96,6 +98,11 @@ public class ExternalDataServiceManager {
 				param.setHumanReadableName(paramElem.getAttribute(ATTR_PARAM_NAME));
 				param.setExternalUrlName(paramElem.getAttribute(ATTR_PARAM_URL_NAME));
 				param.setStateUrlName(paramElem.getAttribute(ATTR_PARAM_STATE_NAME));
+				param.setTypeFromString(paramElem.getAttribute(ATTR_PARAM_TYPE));
+				
+				String value = paramElem.getAttribute(ATTR_PARAM_DEFAULT);
+				if (value != null)
+					param.setValue(value);
 
 				parameters.add(param);
 			}

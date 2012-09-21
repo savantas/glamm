@@ -1,13 +1,12 @@
 package gov.lbl.glamm.server.actions;
 
-import java.util.Map;
-import java.util.Set;
-
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.GroupDataDAO;
 import gov.lbl.glamm.server.dao.impl.GroupDataDAOImpl;
 import gov.lbl.glamm.shared.ExternalDataService;
 import gov.lbl.glamm.shared.model.OverlayDataGroup;
+
+import java.util.Set;
 
 /**
  * Service class for retrieving OverlayDataGroups from either the database or an external service.

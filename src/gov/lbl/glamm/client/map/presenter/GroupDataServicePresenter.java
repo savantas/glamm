@@ -1,16 +1,16 @@
 package gov.lbl.glamm.client.map.presenter;
 
+import gov.lbl.glamm.client.map.events.GroupDataLoadedEvent;
+import gov.lbl.glamm.client.map.events.LoadingEvent;
+import gov.lbl.glamm.client.map.rpc.GlammServiceAsync;
+import gov.lbl.glamm.shared.ExternalDataService;
+import gov.lbl.glamm.shared.ExternalServiceParameter;
+import gov.lbl.glamm.shared.model.OverlayDataGroup;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import gov.lbl.glamm.client.map.events.GroupDataLoadedEvent;
-import gov.lbl.glamm.client.map.events.LoadingEvent;
-import gov.lbl.glamm.client.map.rpc.GlammServiceAsync;
-import gov.lbl.glamm.shared.ExternalServiceParameter;
-import gov.lbl.glamm.shared.ExternalDataService;
-import gov.lbl.glamm.shared.model.OverlayDataGroup;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -111,7 +111,7 @@ public class GroupDataServicePresenter {
 				view.removeParameters();
 				String serviceName = view.getServiceListBox().getItemText(view.getServiceListBox().getSelectedIndex());
 				if (name2DataService.containsKey(serviceName)) {
-					view.setParameters(name2DataService.get(serviceName).getParameterNames());
+					view.setParameters(name2DataService.get(serviceName).getUserParameterNames());
 				}
 			}
 		});
@@ -133,7 +133,8 @@ public class GroupDataServicePresenter {
 			view.getServiceListBox().addItem(name);
 		}
 		view.getServiceListBox().setSelectedIndex(0);
-		view.setParameters(name2DataService.get(view.getServiceListBox().getValue(0)).getParameterNames());
+		
+		view.setParameters(name2DataService.get(view.getServiceListBox().getValue(0)).getUserParameterNames());
 	}
 	
 	/**
@@ -144,8 +145,8 @@ public class GroupDataServicePresenter {
 	 */
 	protected void doServiceCall() {
 		final ExternalDataService service = name2DataService.get(
-											view.getServiceListBox().getItemText(
-												view.getServiceListBox().getSelectedIndex()));
+												view.getServiceListBox().getItemText(
+														view.getServiceListBox().getSelectedIndex()));
 		Map<String, TextBox> paramMap = view.getParameters();
 
 		for (String paramName : paramMap.keySet()) {

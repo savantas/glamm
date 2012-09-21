@@ -26,7 +26,8 @@ public class ExternalDataService implements Serializable {
 	private String serviceParser;
 	private Set<ExternalServiceParameter> parameters;
 	private Map<String, ExternalServiceParameter> name2Parameter;
-	private List<String> parameterNames;
+	private List<String> allParameterNames;
+	private List<String> userParameterNames;
 	
 	@SuppressWarnings("unused")
 	private ExternalDataService() { }
@@ -39,15 +40,17 @@ public class ExternalDataService implements Serializable {
 		this.parameters = parameters;
 		
 		name2Parameter = new HashMap<String, ExternalServiceParameter>();
-		parameterNames = new ArrayList<String>();
+		allParameterNames = new ArrayList<String>();
+		userParameterNames = new ArrayList<String>();
 		for (ExternalServiceParameter p : this.parameters) {
 			name2Parameter.put(p.getHumanReadableName(), p);
 			name2Parameter.put(p.getExternalUrlName(), p);
 			name2Parameter.put(p.getStateUrlName(), p);
 
-			parameterNames.add(p.getHumanReadableName());
+			allParameterNames.add(p.getHumanReadableName());
+			if (p.getParameterType() != ExternalServiceParameter.ParameterType.HIDDEN)
+				userParameterNames.add(p.getHumanReadableName());
 		}
-		
 	}
 	
 	public String getServiceName() {
@@ -75,8 +78,12 @@ public class ExternalDataService implements Serializable {
 			name2Parameter.get(name).setValue(value);
 	}
 
-	public List<String> getParameterNames() {
-		return parameterNames;
+	public List<String> getAllParameterNames() {
+		return allParameterNames;
+	}
+	
+	public List<String> getUserParameterNames() {
+		return userParameterNames;
 	}
 	
 	public boolean hasParameter(String name) {

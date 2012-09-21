@@ -14,10 +14,8 @@ import gov.lbl.glamm.shared.model.Organism;
 import gov.lbl.glamm.shared.model.OverlayDataGroup;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 /**
  * glamm/#taxId=XXX&ext=rpOperon|taxonomyId=YYY&...
@@ -28,12 +26,13 @@ import java.util.regex.Pattern;
 public class GetGlammState {
 	
 	private enum StateParam {
-		ORGANISM("taxId"),
-		MAP("mapId"),
-		ZOOM("v"),
-		MODEL("modelId"),
-		EXPERIMENT("expId"),
-		GROUP("ext");			//external service
+		ORGANISM("taxId"),		// taxonomy ID
+		MAP("mapId"),			// kegg map id
+		ZOOM("v"),				// zoom viewport TODO
+		MODEL("modelId"),		// metabolic model ID TODO
+		EXPERIMENT("expId"),	// experiment / sample ID TODO
+		GROUP("ext"),			// external service
+		UI("i");				// show UI or not (i=0 or i=1, default i=1) (might be more stateful, tailored for different views later)
 
 		private static final Map<String, StateParam> string2State = new HashMap<String, StateParam>();
 		static{
@@ -81,8 +80,10 @@ public class GetGlammState {
 					state.setViewport(tokenMap.get(p));
 					break;
 				
+					//TODO - finish these cases.
 				case MODEL :
 					// look up the model using its id and send it out.
+					@SuppressWarnings("unused")
 					String modelInfo = tokenMap.get(p);
 					MetabolicModel model = null; // = look up model using data in p
 					state.setModel(model);
@@ -90,6 +91,7 @@ public class GetGlammState {
 					
 				case EXPERIMENT :
 					// get the experiment from its id and append it to the state.
+					@SuppressWarnings("unused")
 					String expInfo = tokenMap.get(p);
 					// use expInfo to get the Experiment data.
 					Experiment exp = null;
@@ -107,6 +109,13 @@ public class GetGlammState {
 					Set<OverlayDataGroup> groupData = dataDao.getGroupDataFromService(service);
 					state.setGroupData(groupData);
 					break;
+					
+				case UI:
+					boolean uiState = true;
+					if (tokenMap.get(p).equals("0"))
+						uiState = false;
+					
+					state.setUIState(uiState);
 					
 				default :
 					// throw an error?

@@ -95,7 +95,6 @@ public class ReactionPresenter {
 	private String host;
 	private Organism organism;
 	private Set<OverlayDataGroup> dataGroups = null;
-	@SuppressWarnings("unused")
 	private Reaction reaction;
 
 	private ListDataProvider<Gene> geneDataProvider;
@@ -206,11 +205,21 @@ public class ReactionPresenter {
 			}
 		};
 		
+		Column<OverlayDataGroup, SafeHtml> valueColumn = new Column<OverlayDataGroup, SafeHtml>(new SafeHtmlCell()) {
+
+			@Override
+			public SafeHtml getValue(OverlayDataGroup group) {
+				SafeHtmlBuilder builder = new SafeHtmlBuilder();
+				builder.appendHtmlConstant(String.valueOf(group.getMaxStrengthForReactionGenes(reaction)));
+				return builder.toSafeHtml();
+			}
+		};
+		
 		Column<OverlayDataGroup, SafeHtml> groupUrlColumn = new Column<OverlayDataGroup, SafeHtml>(new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(OverlayDataGroup group) {
 				SafeHtmlBuilder builder = new SafeHtmlBuilder();
-				builder.appendHtmlConstant("<a href=\"" + group.getUrl() + "\">" + group.getSource() + "</a>");
+				builder.appendHtmlConstant("<a href=\"" + group.getUrl() + "\" target=\"_blank\">" + group.getSource() + "</a>");
 				return builder.toSafeHtml();
 			}
 		};
@@ -218,6 +227,7 @@ public class ReactionPresenter {
 		// add columns to table
 		table.addColumn(groupNameColumn, "Group Name");
 		table.addColumn(genomeNameColumn, "Source Genome");
+		table.addColumn(valueColumn, "Value");
 		table.addColumn(groupUrlColumn, "Link");
 
 		// set the data provider

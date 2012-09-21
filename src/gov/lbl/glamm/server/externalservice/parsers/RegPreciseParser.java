@@ -1,5 +1,17 @@
 package gov.lbl.glamm.server.externalservice.parsers;
 
+import gov.lbl.glamm.server.GlammSession;
+import gov.lbl.glamm.server.dao.GeneDAO;
+import gov.lbl.glamm.server.dao.ReactionDAO;
+import gov.lbl.glamm.server.dao.impl.GeneDAOImpl;
+import gov.lbl.glamm.server.dao.impl.ReactionGlammDAOImpl;
+import gov.lbl.glamm.server.externalservice.ServiceJsonParser;
+import gov.lbl.glamm.shared.ExternalDataService;
+import gov.lbl.glamm.shared.model.DataGroupElement;
+import gov.lbl.glamm.shared.model.Gene;
+import gov.lbl.glamm.shared.model.OverlayDataGroup;
+import gov.lbl.glamm.shared.model.Reaction;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
@@ -11,17 +23,6 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import gov.lbl.glamm.server.GlammSession;
-import gov.lbl.glamm.server.dao.GeneDAO;
-import gov.lbl.glamm.server.dao.ReactionDAO;
-import gov.lbl.glamm.server.dao.impl.GeneDAOImpl;
-import gov.lbl.glamm.server.dao.impl.ReactionGlammDAOImpl;
-import gov.lbl.glamm.server.externalservice.ServiceJsonParser;
-import gov.lbl.glamm.shared.ExternalDataService;
-import gov.lbl.glamm.shared.model.Gene;
-import gov.lbl.glamm.shared.model.OverlayDataGroup;
-import gov.lbl.glamm.shared.model.Reaction;
 
 public class RegPreciseParser implements ServiceJsonParser {
 
@@ -76,7 +77,7 @@ public class RegPreciseParser implements ServiceJsonParser {
 		/**
 		 *  Shuffle around elements and restructure into a Set<OverlayDataGroup>
 		 *  
-		 *  OverlayData works on a set of reactions or compounds.
+		 *  OverlayData works on a set of reactions, compounds, or genes.
 		 *  In this case, we're dealing with reactions (not always, though).
 		 *  So we want to go from either VIMSS ids (if that's the only option) to reactions
 		 *  Or form EC nums to reactions.
@@ -95,16 +96,14 @@ public class RegPreciseParser implements ServiceJsonParser {
 
 		// Map of all data groups by their group id.
 		Map<String, OverlayDataGroup> id2DataGroup = new HashMap<String, OverlayDataGroup>();
-		
-		Map<String, Set<String>> locus2GroupId = new HashMap<String, Set<String>>();
-		
-		Map<String, Set<String>> ecNum2GroupId = new HashMap<String, Set<String>>();
-		
+		Map<String, Set<String>> locus2GroupIds = new HashMap<String, Set<String>>();
+		Map<String, Set<String>> ecNum2GroupIds = new HashMap<String, Set<String>>();
 		Map<String, Set<Gene>> ecNum2Genes = new HashMap<String, Set<Gene>>();
 		
+		Map<String, Map<String, Element>> id2Metadata = new HashMap<String, Map<String, Element>>();
 		
 		/** Initial setup - parse info that was downloaded **/
-		for (Element elem : dataElements.getGlammElement()) {
+		for (Element elem : dataElements.getGlammElements()) {
 			
 			// Check the groupId for format (if no group Id, move on to the next Element)
 			String groupId = elem.getGroupId();
@@ -113,46 +112,66 @@ public class RegPreciseParser implements ServiceJsonParser {
 
 			String ecNum = elem.getEcNumber();
 			String locusId = elem.getVimssId();
+			String genomeName = elem.getGenomeName();
+			
+			if (ecNum != null && ecNum.length() > 0) {
+				if (!id2Metadata.containsKey(ecNum))
+					id2Metadata.put(ecNum, new HashMap<String, Element>());
+				id2Metadata.get(ecNum).put(groupId, elem);
+			}
+			
+			if (locusId != null && locusId.length() > 0) {
+				if (!id2Metadata.containsKey(locusId))
+					id2Metadata.put(locusId, new HashMap<String, Element>());
+				id2Metadata.get(locusId).put(groupId, elem);
+			}
 			
 			// If there's no OverlayDataGroup yet, make one.
-			if (!id2DataGroup.containsKey(groupId))
-				id2DataGroup.put(groupId, new OverlayDataGroup(groupId, elem.getGroupName(), elem.getCallbackURL(), service.getServiceName()));
+			if (!id2DataGroup.containsKey(groupId)) {
+				OverlayDataGroup newGroup = new OverlayDataGroup(groupId, elem.getGroupName(), elem.getCallbackURL(), service.getServiceName());
+				newGroup.setGenomeName(genomeName);
+				id2DataGroup.put(groupId, newGroup);
+			}
 			
 			// Put the EC num in that group.
 			if (ecNum != null && !ecNum.isEmpty()) {
-				if (!ecNum2GroupId.containsKey(ecNum))
-					ecNum2GroupId.put(ecNum, new HashSet<String>());
-				ecNum2GroupId.get(ecNum).add(groupId);
+				if (!ecNum2GroupIds.containsKey(ecNum))
+					ecNum2GroupIds.put(ecNum, new HashSet<String>());
+				ecNum2GroupIds.get(ecNum).add(groupId);
 			}
 			
 			// Put the locusId in that group.
 			if (locusId != null && !locusId.isEmpty()) {
-				if (!locus2GroupId.containsKey(locusId))
-					locus2GroupId.put(locusId, new HashSet<String>());
-				locus2GroupId.get(locusId).add(groupId);
+				if (!locus2GroupIds.containsKey(locusId))
+					locus2GroupIds.put(locusId, new HashSet<String>());
+				locus2GroupIds.get(locusId).add(groupId);
 			}
-			
 		}
 
 		// Get all genes from VIMSS locus IDs.
 		GeneDAO geneDao = new GeneDAOImpl(sm);
 		
-//		String taxId = "381666";
-		Set<Gene> genes = geneDao.getGenesForVimssIds(locus2GroupId.keySet());
+		Set<Gene> genes = geneDao.getGenesForVimssIds(locus2GroupIds.keySet());
 		
 		// Shuffle them around to be in the right groups.
 		for (Gene gene : genes) {
-			if (!locus2GroupId.containsKey(gene.getVimssId()))
+			String locusId = gene.getVimssId();
+			if (!locus2GroupIds.containsKey(locusId))
 				continue;
 			
-			for (String groupId : locus2GroupId.get(gene.getVimssId())) {
-				id2DataGroup.get(groupId).addElement(gene);
+			for (String groupId : locus2GroupIds.get(locusId)) {
+				if (id2Metadata.containsKey(locusId) && id2Metadata.get(locusId).containsKey(groupId)) {
+					Element elem = id2Metadata.get(locusId).get(groupId);
+					id2DataGroup.get(groupId).addElement(gene, elem.getCallbackURL(), elem.getStrength());
+				} else {
+					id2DataGroup.get(groupId).addElement(gene);
+				}
 			}
 			
 			for (String ecNum : gene.getEcNums()) {
-				if (!ecNum2GroupId.containsKey(ecNum))
-					ecNum2GroupId.put(ecNum, new HashSet<String>());
-				ecNum2GroupId.get(ecNum).addAll(locus2GroupId.get(gene.getVimssId()));
+				if (!ecNum2GroupIds.containsKey(ecNum))
+					ecNum2GroupIds.put(ecNum, new HashSet<String>());
+				ecNum2GroupIds.get(ecNum).addAll(locus2GroupIds.get(gene.getVimssId()));
 				
 				if (!ecNum2Genes.containsKey(ecNum))
 					ecNum2Genes.put(ecNum, new HashSet<Gene>());
@@ -167,7 +186,7 @@ public class RegPreciseParser implements ServiceJsonParser {
 		
 		ReactionDAO rxnDao = new ReactionGlammDAOImpl(sm);
 		Set<Reaction> reactions = rxnDao.getReactions(
-										rxnDao.getRxnIdsForEcNums(ecNum2GroupId.keySet()));
+										rxnDao.getRxnIdsForEcNums(ecNum2GroupIds.keySet()));
 
 		for (Reaction rxn : reactions) {
 			for (String ecNum : rxn.getEcNums()) {
@@ -178,7 +197,7 @@ public class RegPreciseParser implements ServiceJsonParser {
 					}
 				}
 				
-				Set<String> groupIds = ecNum2GroupId.get(ecNum);
+				Set<String> groupIds = ecNum2GroupIds.get(ecNum);
 				if (groupIds == null || groupIds.isEmpty())
 					continue;
 				
@@ -193,6 +212,39 @@ public class RegPreciseParser implements ServiceJsonParser {
 		return dataSet;
 	
 	}
+	
+	public Set<OverlayDataGroup> parse(ExternalDataService service, InputStream dataStream, GlammSession sm) 
+			throws JsonMappingException, IOException {
+
+		Set<OverlayDataGroup> dataSet = new HashSet<OverlayDataGroup>();
+		
+		ObjectMapper mapper = new ObjectMapper();
+		ElementSet dataElements = mapper.readValue(dataStream, ElementSet.class);
+		
+		Map<String, OverlayDataGroup> id2DataGroup = new HashMap<String, OverlayDataGroup>();
+		Map<String, DataGroupElement> groupId2Element = new HashMap<String, DataGroupElement>();
+		
+		for (Element elem : dataElements.getGlammElements()) {
+			
+			// Make a new Data Group if we don't have one yet.
+			if (!id2DataGroup.containsKey(elem.getGroupId())) {
+				id2DataGroup.put(elem.getGroupId(), new OverlayDataGroup(elem.getGroupId(), elem.getGroupName(), elem.getCallbackURL(), service.getServiceName()));
+			}
+			
+			// Build some incomplete DataGroupElements, linked to their data group
+			DataGroupElement groupElem = new DataGroupElement(elem.getVimssId());
+			groupElem.setCallbackUrl(elem.getCallbackURL());
+			groupElem.setGenomeName(elem.getGenomeName());
+			groupElem.setTaxonomyId(elem.getTaxonomyId());
+			groupElem.setStrength(elem.getStrength());
+			
+			groupId2Element.put(elem.getGroupId(), groupElem);
+		}
+		
+		return null;
+	}
+		
+		
 
 }
 
@@ -200,17 +252,17 @@ public class RegPreciseParser implements ServiceJsonParser {
  * A simple class used by Jackson for unmarshalling the JSON-encoded results from RegPrecise
  */
 class ElementSet {
-	private Collection<Element> glammElement;
+	private Collection<Element> glammElements;
 	
 	public ElementSet() { }
 	
 	@JsonProperty("glammElement")
-	public void setGlammElement(Collection<Element> glammElement) {
-		this.glammElement = glammElement;
+	public void setGlammElements(Collection<Element> glammElement) {
+		this.glammElements = glammElement;
 	}
 	
 	@JsonProperty("glammElement")
-	public Collection<Element> getGlammElement() { return glammElement; }
+	public Collection<Element> getGlammElements() { return glammElements; }
 }		
 
 /**

@@ -14,10 +14,24 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 public class ExternalServiceParameter implements Serializable {
 
+	public enum ParameterType {
+		USER,					// parameters set by the user
+		HIDDEN;					// hidden parameter set programmatically
+		
+		public static ParameterType fromString(String s) {
+			for (ParameterType type : ParameterType.values()) {
+				if (type.toString().equalsIgnoreCase(s))
+					return type;
+			}
+			return HIDDEN;
+		}
+	}
+	
 	private String hrName,
 				   extName,
 				   stateName,
 				   value;
+	private ParameterType type;
 	
 	public ExternalServiceParameter(String hrName, String extName, String stateName) {
 		this();
@@ -67,5 +81,17 @@ public class ExternalServiceParameter implements Serializable {
 	
 	public String getValue() {
 		return value;
+	}
+	
+	public ParameterType getParameterType() {
+		return type;
+	}
+	
+	public void setParameterType(ParameterType type) {
+		this.type = type;
+	}
+	
+	public void setTypeFromString(String s) {
+		this.type = ParameterType.fromString(s);
 	}
 }
