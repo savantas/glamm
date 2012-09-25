@@ -34,10 +34,13 @@ public class GlammDbConnectionPool {
 				dataSource.setDriverClass(dbConfig.getDriver());
 				dataSource.setJdbcUrl(dbConfig.getUri());
 				dataSource.setUser(dbConfig.getUser());
-				dataSource.setPassword(dbConfig.getPasswd());
-				dataSource.setMaxConnectionAge(18000);
-				dataSource.setMaxIdleTime(3600);
-				dataSource.setMaxPoolSize(5);
+				dataSource.setPassword(dbConfig.getPasswd());  
+				dataSource.setMaxConnectionAge(36000);          
+				dataSource.setMaxIdleTime(18000);               
+				dataSource.setMaxPoolSize(10);
+				dataSource.setMinPoolSize(3);
+				dataSource.setIdleConnectionTestPeriod(3600);
+				dataSource.setTestConnectionOnCheckout(true);
 				
 				map.put(dbConfig, dataSource);
 			} catch(Exception e) {

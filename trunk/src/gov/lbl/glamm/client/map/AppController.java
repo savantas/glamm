@@ -72,11 +72,8 @@ import gov.lbl.glamm.client.map.view.RetrosynthesisView;
 import gov.lbl.glamm.client.map.view.RxnPopupView;
 import gov.lbl.glamm.shared.model.AnnotatedMapData;
 import gov.lbl.glamm.shared.model.GlammState;
-import gov.lbl.glamm.shared.model.OverlayDataGroup;
 import gov.lbl.glamm.shared.model.Sample;
 import gov.lbl.glamm.shared.model.User;
-
-import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -103,6 +100,7 @@ public class AppController {
 
 	private static AppController instance;
 	
+	@SuppressWarnings("unused")
 	private boolean showUI = true;
 	
 	private GlammServiceAsync rpc;
