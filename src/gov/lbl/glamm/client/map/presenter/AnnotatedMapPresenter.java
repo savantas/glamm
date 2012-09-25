@@ -108,6 +108,14 @@ public class AnnotatedMapPresenter {
 		PAN,
 		ZOOM;
 	}
+	
+	private enum ViewState {
+		ORGANISM,
+		EXPERIMENT,
+		METABOLIC_MODEL,
+		GROUP,
+		ROUTE
+	}
 
 	private OMSVGPoint			p0;
 	private OMSVGMatrix			ctm0;
@@ -126,6 +134,10 @@ public class AnnotatedMapPresenter {
 
 	private Organism organism = null;
 	private MetabolicModel model = null;
+	private Sample sample = null;
+	private Set<OverlayDataGroup> groupData = null;
+	
+	private ViewState viewState;
 	
 	private int dyThreshold;
 
@@ -140,6 +152,7 @@ public class AnnotatedMapPresenter {
 		this.rpc = rpc;
 		this.view = view;
 		this.eventBus = eventBus;
+		viewState = ViewState.ORGANISM;
 		organism = Organism.globalMap();
 
 		dyThreshold = 3;
@@ -149,6 +162,34 @@ public class AnnotatedMapPresenter {
 		bindView();
 	}
 
+	private void updateView() {
+		switch (viewState) {
+			case ORGANISM:
+				updateMapForOrganism(organism);
+				break;
+			
+			case EXPERIMENT:
+				updateMapForSample(sample);
+				break;
+			
+			case METABOLIC_MODEL:
+				updateMapForMetabolicModel(model);
+				break;
+			
+			case GROUP:
+				updateMapForGroupData(groupData);
+				break;
+			
+			case ROUTE:
+//TODO				updateMapForRoute();
+				break;
+				
+			default:
+				updateMapForOrganism(organism);
+				break;
+		}
+	}
+	
 	/**
 	 * Adds MouseOverHandlers and MouseOutHandlers to every SVG element of note - those with CPD, RXN, and MAP
 	 * classes. These each trigger (or turn off) their attribute states to toggle between DEFAULT and SELECTED.
@@ -622,7 +663,8 @@ public class AnnotatedMapPresenter {
 		// bind map events
 		bindMapEvents();
 		
-		updateMapForOrganism(this.organism);
+		updateView();
+//		updateMapForOrganism(this.organism);
 
 		eventBus.fireEvent(new LoadingEvent(true));
 
@@ -816,6 +858,7 @@ public class AnnotatedMapPresenter {
 	
 	public void updateMapForMetabolicModel(final MetabolicModel model) {
 		this.model = model;
+		this.viewState = ViewState.METABOLIC_MODEL;
 		
 		if (model == null || model.getReactions().size() == 0) {
 			mapData.removeUserElement();
@@ -918,6 +961,7 @@ public class AnnotatedMapPresenter {
 	public void updateMapForOrganism(final Organism organism) {
 
 		this.organism = organism;
+		this.viewState = ViewState.ORGANISM;
 
 		if(organism.isGlobalMap()) {
 			executeOnMapElements(new MapElementCommand() {
@@ -1034,6 +1078,9 @@ public class AnnotatedMapPresenter {
 	}
 	
 	public void updateMapForGroupData(final Set<OverlayDataGroup> dataSet) {
+		this.groupData = dataSet;
+		this.viewState = ViewState.GROUP;
+		
 		if (mapData == null)
 			return;
 		
@@ -1312,6 +1359,9 @@ public class AnnotatedMapPresenter {
 	 */
 	public void updateMapForSample(final Sample sample) {
 
+		this.sample = sample;
+		this.viewState = ViewState.EXPERIMENT;
+		
 		// if the sample is null, reset to default state
 		if(sample == null) {
 			executeOnMapElements(new MapElementCommand() {

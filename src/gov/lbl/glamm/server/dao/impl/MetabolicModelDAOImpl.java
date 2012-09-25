@@ -8,11 +8,20 @@ import gov.lbl.glamm.shared.model.Measurement;
 import gov.lbl.glamm.shared.model.MetabolicModel;
 import gov.lbl.glamm.shared.model.Organism;
 import gov.lbl.glamm.shared.model.Reaction;
+import gov.lbl.glamm.shared.model.metabolism.KBaseMetabolicModel;
+import gov.lbl.glamm.shared.model.metabolism.flux.FbaExperiment;
+import gov.lbl.glamm.shared.model.metabolism.visualization.ModelVisualization;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Implementation of the Metabolic Model DAO.
@@ -98,29 +107,91 @@ public class MetabolicModelDAOImpl implements MetabolicModelDAO {
 		return resultSet;
 	}
 	
-	public MetabolicModel getMetabolicModelFromService(String serviceUrl) {
+	@Override
+	public MetabolicModel getMetabolicModelFromService(String source) {
 		
-//		if (serviceUrl == null)
-//			return null;
-//		
-//		String uri = serviceUrl + buildParameterString(parameters);
-//
-//		try {
-//			URL url = new URL(uri);
-//			
-//			ObjectMapper mapper = new ObjectMapper();
-//			
-//			InputStream stream = url.openStream();
-//			KBaseMetabolicModel kbaseModel = mapper.readValue(stream, KBaseMetabolicModel.class);
-//			stream.close();
-//		}
-//		catch (MalformedURLException e) {
-//			System.out.println(e.getLocalizedMessage());
-//		} catch (IOException e) {
-//			System.out.println(e.getLocalizedMessage());
-//		}
+		if (source == null)
+			return null;
 		
-		return new MetabolicModel("");
+		String uri = source;
+
+		try {
+			URL url = new URL(uri);
+			
+			ObjectMapper mapper = new ObjectMapper();
+			
+			InputStream stream = url.openStream();
+			KBaseMetabolicModel kbaseModel = mapper.readValue(stream, KBaseMetabolicModel.class);
+			stream.close();
+			
+			kbaseModel.process();
+			return kbase2GlammModel(kbaseModel);
+
+		} catch (MalformedURLException e) {
+			System.out.println(e.getLocalizedMessage());
+		} catch (IOException e) {
+			System.out.println(e.getLocalizedMessage());
+		}
+		
+		return null;
 	}
+
+	@Override
+	public FbaExperiment getFbaExperimentFromService(String source) {
+
+		if (source == null)
+			return null;
 		
+		String uri = source;
+		
+		try {
+			URL url = new URL(uri);
+			
+			ObjectMapper mapper = new ObjectMapper();
+			InputStream stream = url.openStream();
+			FbaExperiment exp = mapper.readValue(stream, FbaExperiment.class);
+			stream.close();
+			
+			exp.process();			
+			return exp;
+			
+		} catch (MalformedURLException e) {
+			System.out.println(e.getLocalizedMessage());
+		} catch (IOException e) {
+			System.out.println(e.getLocalizedMessage());
+		}
+		
+		return null;
+	}
+	
+	@Override
+	public ModelVisualization getModelVisualizationFromService(String source) {
+		
+		if (source == null)
+			return null;
+		
+		String uri = source;
+		
+		try {
+			URL url = new URL(uri);
+			
+			ObjectMapper mapper = new ObjectMapper();
+			InputStream stream = url.openStream();
+			ModelVisualization modelViz = mapper.readValue(stream, ModelVisualization.class);
+			stream.close();
+			
+			return modelViz;
+			
+		} catch (MalformedURLException e) {
+			System.err.println(e.getLocalizedMessage());
+		} catch (IOException e) {
+			System.err.println(e.getLocalizedMessage());
+		}
+		return null;
+		
+	}		
+	
+	private MetabolicModel kbase2GlammModel(KBaseMetabolicModel model) {
+		return null;
+	}
 }

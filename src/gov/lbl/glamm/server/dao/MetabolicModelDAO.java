@@ -1,13 +1,15 @@
 package gov.lbl.glamm.server.dao;
 
-import java.util.Map;
-import java.util.Set;
-
 import gov.lbl.glamm.shared.model.FluxExperiment;
 import gov.lbl.glamm.shared.model.Measurement;
 import gov.lbl.glamm.shared.model.MetabolicModel;
 import gov.lbl.glamm.shared.model.Organism;
 import gov.lbl.glamm.shared.model.Reaction;
+import gov.lbl.glamm.shared.model.metabolism.flux.FbaExperiment;
+import gov.lbl.glamm.shared.model.metabolism.visualization.ModelVisualization;
+
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Data access object interface for Metabolic Models
@@ -37,4 +39,10 @@ public interface MetabolicModelDAO {
 	 * @return a Map of Reaction to Measurement set for the given FluxExperiment
 	 */
 	public Map<Reaction, Set<Measurement>> getFluxes(FluxExperiment exp); 
+	
+	public MetabolicModel getMetabolicModelFromService(String source);
+	
+	public FbaExperiment getFbaExperimentFromService(String source);
+	
+	public ModelVisualization getModelVisualizationFromService(String source);
 }
