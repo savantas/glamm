@@ -35,6 +35,9 @@ public class RegPreciseParser implements ServiceJsonParser {
 		ObjectMapper mapper = new ObjectMapper();
 		ElementSet dataElements = mapper.readValue(dataStream, ElementSet.class);
 		
+		if (dataElements == null)
+			return dataSet;
+		
 /** Maybe this structure would work better?
 * 			{
 			[

@@ -507,7 +507,7 @@ public class AppController {
 	
 	private void loadMetabolicModelPicker(GlammState state) {
 		mainPanel.add(metabolicModelView, 0, 0);
-		metabolicModelPresenter.populate("0");
+//		metabolicModelPresenter.populate("0");
 	}
 	
 	private void loadAnnotatedMapPicker(GlammState state) {
@@ -860,7 +860,7 @@ public class AppController {
 		eventBus.addHandler(MetabolicModelLoadedEvent.TYPE, new MetabolicModelLoadedEvent.Handler() {
 			@Override
 			public void onLoaded(MetabolicModelLoadedEvent event) {
-				mapPresenter.updateMapForMetabolicModel(event.getModel());
+				mapPresenter.updateMapForMetabolicModel(event.getModel(), event.showAllReactions());
 			}			
 		});
 		

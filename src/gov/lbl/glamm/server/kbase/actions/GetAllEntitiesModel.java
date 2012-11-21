@@ -1,7 +1,5 @@
 package gov.lbl.glamm.server.kbase.actions;
 
-import gov.lbl.glamm.server.kbase.KbaseServiceCall;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
@@ -11,7 +9,8 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
-public class GetAllEntitiesModel implements KbaseServiceCall {
+
+public class GetAllEntitiesModel {
 	
 	private String version = "1.1";
 	private String method = "CDMI_EntityAPI.all_entities_Model";
@@ -25,7 +24,6 @@ public class GetAllEntitiesModel implements KbaseServiceCall {
 		this.fields = fields;
 	}
 
-	@Override
 	public void doJsonCall(OutputStream out) throws JsonGenerationException,
 													JsonMappingException, IOException {
 		JsonGenerator g = new JsonFactory().createJsonGenerator(out);
@@ -56,12 +54,10 @@ public class GetAllEntitiesModel implements KbaseServiceCall {
 		g.close();
 	}
 
-	@Override
 	public String getMethod() {
 		return method;
 	}
 
-	@Override
 	public String getVersion() {
 		return version;
 	}

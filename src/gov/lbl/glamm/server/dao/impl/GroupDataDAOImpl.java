@@ -792,6 +792,7 @@ public class GroupDataDAOImpl implements GroupDataDAO {
 			dataSet = parser.parseJson(service, stream, sm);
 			stream.close();
 			
+			
 		} catch (MalformedURLException e) {
 			System.out.println(e.getLocalizedMessage());
 		} catch (IOException e) {
@@ -799,10 +800,8 @@ public class GroupDataDAOImpl implements GroupDataDAO {
 		} catch (ClassNotFoundException e) {
 			System.out.println(e.getLocalizedMessage());
 		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return dataSet;

@@ -114,8 +114,9 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 				String sampleId		= rs.getString("setId");
 				String expType		= rs.getString("expType");
 
+				if (experiment == null)
+					experiment = new Experiment(experimentId);
 
-				experiment = new Experiment(experimentId);
 				Sample sample = new Sample(experimentId, sampleId, Sample.DataType.dataTypeForMolExpType(expType));
 
 				sample.setStress(stress);

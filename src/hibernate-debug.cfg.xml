@@ -12,14 +12,15 @@
         <property name="connection.url">jdbc:mysql://127.0.0.1:3307/glamm</property>
         <property name="connection.username">test</property>
         <property name="connection.password">test</property>
-        <property name="hibernate.c3p0.min_size">3</property>
+		<property name="hibernate.connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</property>
+		<property name="hibernate.c3p0.min_size">3</property>
         <property name="hibernate.c3p0.max_size">15</property>
         <property name="hibernate.c3p0.timeout">20</property>
         <property name="hibernate.c3p0.max_statements">10</property>
         <property name="hibernate.c3p0.max_connection_age">36000</property>
         <property name="hibernate.c3p0.max_idle_time">18000</property>
         <property name="hibernate.c3p0.acquire_increment">1</property>
-        <property name="hibernate.c3p0.idle_test_period">3600</property>
+        <property name="hibernate.c3p0.idle_test_period">100</property>
 		<property name="hibernate.c3p0.test_connection_on_checkout">true</property>
 
         <!-- SQL dialect -->

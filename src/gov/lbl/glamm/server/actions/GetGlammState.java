@@ -2,8 +2,10 @@ package gov.lbl.glamm.server.actions;
 
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.GroupDataDAO;
+import gov.lbl.glamm.server.dao.MetabolicModelDAO;
 import gov.lbl.glamm.server.dao.OrganismDAO;
 import gov.lbl.glamm.server.dao.impl.GroupDataDAOImpl;
+import gov.lbl.glamm.server.dao.impl.MetabolicModelDAOImpl;
 import gov.lbl.glamm.server.dao.impl.OrganismDAOImpl;
 import gov.lbl.glamm.server.externalservice.ExternalDataServiceManager;
 import gov.lbl.glamm.shared.ExternalDataService;
@@ -83,9 +85,10 @@ public class GetGlammState {
 					//TODO - finish these cases.
 				case MODEL :
 					// look up the model using its id and send it out.
-					@SuppressWarnings("unused")
-					String modelInfo = tokenMap.get(p);
-					MetabolicModel model = null; // = look up model using data in p
+					MetabolicModelDAO modelDao = new MetabolicModelDAOImpl(sm);
+					
+					MetabolicModel model = modelDao.getMetabolicModelFromService("kbase", tokenMap.get(p));
+					
 					state.setModel(model);
 					break;
 					

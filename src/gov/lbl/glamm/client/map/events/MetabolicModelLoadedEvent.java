@@ -27,6 +27,7 @@ public class MetabolicModelLoadedEvent extends GwtEvent<MetabolicModelLoadedEven
 	public static final Type<Handler> TYPE = new Type<Handler>();
 	
 	private MetabolicModel model;
+	private boolean displayAllRxns;
 	
 	/**
 	 * Gets the Type associated with this event.
@@ -50,14 +51,23 @@ public class MetabolicModelLoadedEvent extends GwtEvent<MetabolicModelLoadedEven
 	 * @param model the MetabolicModel
 	 */
 	public MetabolicModelLoadedEvent(MetabolicModel model) {
-		this.model = model;
+		this(model, false);
 	}
 	
+	public MetabolicModelLoadedEvent(MetabolicModel model, boolean displayAllRxns) {
+		this.model = model;
+		this.displayAllRxns = displayAllRxns;
+	}
+
 	/**
 	 * Gets the MetabolicModel associated with this event.
 	 * @return the MetabolicModel associated with this event.
 	 */
 	public MetabolicModel getModel() {
 		return model;
+	}
+	
+	public boolean showAllReactions() {
+		return displayAllRxns;
 	}
 }

@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" output="test-classes" path="test"/>
-	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/c3p0-0.9.1.2.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-fileupload-1.2.2.jar"/>
@@ -21,9 +20,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/log4j-1.2.15.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/slf4j-api-1.5.8.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/slf4j-log4j12-1.5.8.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/jackson-annotations-2.0.0.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/jackson-core-2.0.0.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/jackson-databind-2.0.0.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jsr173_1.0_api.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/resolver.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/xbean_xpath.jar"/>
@@ -32,5 +28,11 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/xmlpublic.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/reaction-fun-data-xmltypes.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/lib-gwt-svg-0.5.6.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/bcpkix-jdk15on-147.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/bcprov-ext-jdk15on-147.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/jackson-annotations-2.1.1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/jackson-core-2.1.1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/jackson-databind-2.1.1.jar"/>
+	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

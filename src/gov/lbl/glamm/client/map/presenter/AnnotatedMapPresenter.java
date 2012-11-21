@@ -173,7 +173,7 @@ public class AnnotatedMapPresenter {
 				break;
 			
 			case METABOLIC_MODEL:
-				updateMapForMetabolicModel(model);
+				updateMapForMetabolicModel(model, true);
 				break;
 			
 			case GROUP:
@@ -795,7 +795,7 @@ public class AnnotatedMapPresenter {
 		else {
 			eventBus.fireEvent(new LoadingEvent(false));
 			
-			rpc.getFluxes(exp, new AsyncCallback<Set<Reaction>>() {
+			rpc.getReactionFluxes(exp, new AsyncCallback<Set<Reaction>>() {
 				
 				@Override
 				public void onFailure(Throwable caught) {
@@ -856,7 +856,7 @@ public class AnnotatedMapPresenter {
 		
 	}
 	
-	public void updateMapForMetabolicModel(final MetabolicModel model) {
+	public void updateMapForMetabolicModel(final MetabolicModel model, boolean showAllRxns) {
 		this.model = model;
 		this.viewState = ViewState.METABOLIC_MODEL;
 		
@@ -940,7 +940,7 @@ public class AnnotatedMapPresenter {
 				
 			}
 			// Build SVG elements for the new reactions and append them to the current map.
-			if (!extraReactions.isEmpty()) {
+			if (!extraReactions.isEmpty() && showAllRxns) {
 				OMElement newGroup = ReactionSvgBuilder.buildReactionSvg(extraReactions, mapData, mapData.getSvgWidth(), 0, 500, mapData.getSvgHeight());
 				mapData.setUserElement(newGroup);
 			}
@@ -1101,6 +1101,7 @@ public class AnnotatedMapPresenter {
 			public void execute(OMSVGElement element) {
 				String defaultColor = element.getAttribute(AnnotatedMapData.Attribute.DEFAULT_COLOR);
 				element.setAttribute(AnnotatedMapData.Attribute.ABSENT, "true");
+				element.removeAttribute(AnnotatedMapData.Attribute.STRENGTH);
 				element.removeAttribute(AnnotatedMapData.Attribute.PATHWAY);
 				element.removeAttribute(AnnotatedMapData.Attribute.HAS_DATA);
 				element.removeAttribute(AnnotatedMapData.Attribute.SEARCH_TARGET);
@@ -1125,10 +1126,11 @@ public class AnnotatedMapPresenter {
 				if(svgElements == null)
 					continue;
 				
-				for(OMSVGElement svgElement : svgElements) {						
+				for(OMSVGElement svgElement : svgElements) {
 					svgElement.removeAttribute(AnnotatedMapData.Attribute.ABSENT);
 					svgElement.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, cssColor);
 					
+					System.out.println(element.getType() == Reaction.TYPE ? "Reaction" : element.getType() == Gene.TYPE ? "Gene" : "Compound?");
 					if (element.getType() == Reaction.TYPE) {
 						float value = group.getMaxStrengthForReactionGenes((Reaction)element);
 						

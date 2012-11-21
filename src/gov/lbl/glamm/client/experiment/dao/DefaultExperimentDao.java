@@ -30,12 +30,12 @@ public class DefaultExperimentDao implements ExperimentDao {
 			, PathwayExperimentData sharedData
 			, ObjectCount objCount ) {
 		int dataTypeOrder = 0;
-		for ( gov.lbl.glamm.shared.model.Experiment sharedExperiment : sharedData.getExperiments() ) {
+		for ( Experiment sharedExperiment : sharedData.getExperiments() ) {
 			Experiment experiment = new Experiment();
 			objCount.expObjCount++;
 			experiment.setExperimentId( sharedExperiment.getExperimentId() );
 
-			for ( gov.lbl.glamm.shared.model.Sample sharedSample : sharedExperiment.getSamples() ) {
+			for ( Sample sharedSample : sharedExperiment.getSamples() ) {
 				Sample sample = createSample( sharedSample, experiment, objCount );
 				experiment.getSamples().add( sample );
 

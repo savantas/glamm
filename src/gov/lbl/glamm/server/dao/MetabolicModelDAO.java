@@ -5,9 +5,12 @@ import gov.lbl.glamm.shared.model.Measurement;
 import gov.lbl.glamm.shared.model.MetabolicModel;
 import gov.lbl.glamm.shared.model.Organism;
 import gov.lbl.glamm.shared.model.Reaction;
-import gov.lbl.glamm.shared.model.metabolism.flux.FbaExperiment;
-import gov.lbl.glamm.shared.model.metabolism.visualization.ModelVisualization;
+import gov.lbl.glamm.shared.model.Media;
+import gov.lbl.glamm.shared.model.kbase.fba.FBA;
+import gov.lbl.glamm.shared.model.metabolism.deprecated.FbaExperiment;
+import gov.lbl.glamm.shared.model.metabolism.deprecated.ModelVisualization;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -23,14 +26,14 @@ public interface MetabolicModelDAO {
 	 * @param id the MetabolicModel id
 	 * @return a MetabolicModel or null
 	 */
-	public MetabolicModel getMetabolicModel(String id);
+	public MetabolicModel getMetabolicModel(final String id);
 	
 	/**
 	 * Gets the set of ids that correspond to all MetabolicModels built for an organism.
 	 * @param organism the Organism for which we want all MetabolicModel ids
 	 * @return a Set of id Strings for all MetabolicModels involving the given organism.
 	 */
-	public Set<String> getIdsForOrganism(Organism organism);
+	public Set<String> getIdsForOrganism(final Organism organism);
 	
 	/**
 	 * TODO - gonna be obsolete soon.
@@ -38,11 +41,23 @@ public interface MetabolicModelDAO {
 	 * @param exp the FluxExperiment
 	 * @return a Map of Reaction to Measurement set for the given FluxExperiment
 	 */
-	public Map<Reaction, Set<Measurement>> getFluxes(FluxExperiment exp); 
+	public Map<Reaction, Set<Measurement>> getReactionFluxes(final FluxExperiment exp); 
 	
-	public MetabolicModel getMetabolicModelFromService(String source);
+	public Set<Reaction> getReactionFluxes(final FBA fba);
 	
-	public FbaExperiment getFbaExperimentFromService(String source);
+	public MetabolicModel getMetabolicModelFromService(final String source, String id);
 	
-	public ModelVisualization getModelVisualizationFromService(String source);
+	public FbaExperiment getFbaExperimentFromService(final String source);
+	
+	public ModelVisualization getModelVisualizationFromService(final String source);
+	
+	public List<MetabolicModel> getAllMetabolicModels();
+
+	public List<String> getFbaResultsForModel(final String modelId);
+
+	public FBA getFbaResults(final String fbaId);
+
+	public Media getMedia(final String mediaId, final String biochemistryId);
+
+	Set<Reaction> getReactionFluxesFromKBase(final String fbaId);
 }

@@ -7,6 +7,7 @@ import gov.lbl.glamm.shared.model.Compound;
 import gov.lbl.glamm.shared.model.FluxExperiment;
 import gov.lbl.glamm.shared.model.Gene;
 import gov.lbl.glamm.shared.model.GlammState;
+import gov.lbl.glamm.shared.model.Media;
 import gov.lbl.glamm.shared.model.MetabolicModel;
 import gov.lbl.glamm.shared.model.Organism;
 import gov.lbl.glamm.shared.model.OverlayDataGroup;
@@ -183,15 +184,8 @@ public interface GlammService extends RemoteService {
 	 * @param modelId The model id
 	 * @return The metabolic model
 	 */
-	public MetabolicModel getMetabolicModel(String modelId);
-	
-	/**
-	 * Gets a set of Reactions with associated Samples representing flux data, corresponding to the given FluxExperiment.
-	 * @param exp
-	 * @return a Set of Reactions with data.
-	 */
-	public Set<Reaction> getFluxes(FluxExperiment exp);
-	
+	public MetabolicModel getMetabolicModel(final String modelId);
+		
 	/**
 	 * //TODO
 	 * This is kind of a dummy rpc call for now that will return an OverlayData based on the given String.
@@ -201,7 +195,7 @@ public interface GlammService extends RemoteService {
 	 * @param text
 	 * @return The OverlayData
 	 */
-	public Set<OverlayDataGroup> getOverlayData(String text);
+	public Set<OverlayDataGroup> getOverlayData(final String text);
 	
 	/**
 	 * Retrieves a set of OverlayDataGroups from the named service, with the given parameters. If there is a failure somewhere, then it
@@ -210,7 +204,7 @@ public interface GlammService extends RemoteService {
 	 * @param parameters the Map of parameters (key = parameter name, value = parameter value)
 	 * @return a Set of OverlayDataGroup, which might be empty if no data is found.
 	 */
-	public Set<OverlayDataGroup> getOverlayDataFromService(ExternalDataService service);
+	public Set<OverlayDataGroup> getOverlayDataFromService(final ExternalDataService service);
 	
 	/**
 	 * Gets a Map containing information about available data services.
@@ -218,13 +212,28 @@ public interface GlammService extends RemoteService {
 	 */
 	public List<ExternalDataService> populateDataServices();
 	
-	public Organism getOrganismForTaxId(String taxId);
+	public Organism getOrganismForTaxId(final String taxId);
 	
-	public GlammState getStateFromHistoryToken(String token);
+	public GlammState getStateFromHistoryToken(final String token);
+	
+	public List<MetabolicModel> populateMetabolicModels();
+	
+	public List<String> populateFbaResults(final String modelId);
+	
+//	public FBA getFbaResults(final String fbaId);
+	
+	public FluxExperiment getFbaResults(final String expId);
+	
+	public Media getMetabolicModelMedia(final String mediaId, final String biochemistryId);
+	
+//	public Set<Reaction> getReactionFluxes(final FBA fba);
+	public Set<Reaction> getReactionFluxes(final FluxExperiment exp);
 	
 	/**
 	 * A debug rpc call that contacts the server without invoking the database.
 	 * @return a success or fail String.
 	 */
 	public String nonDBTest();
+
+	public FluxExperiment getFluxExperiment(final String expId);
 }

@@ -24,8 +24,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.sun.corba.se.spi.orbutil.threadpool.Work;
-
 /**
  * Service class for getting the primitives (genes, reactions, or compounds) along with their measurements for a given sample.
  * @author jtbates
