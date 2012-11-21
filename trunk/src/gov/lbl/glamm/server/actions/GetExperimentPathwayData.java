@@ -16,6 +16,7 @@ import gov.lbl.glamm.shared.model.Measurement;
 import gov.lbl.glamm.shared.model.Organism;
 import gov.lbl.glamm.shared.model.Pathway;
 import gov.lbl.glamm.shared.model.Reaction;
+import gov.lbl.glamm.shared.model.Reaction.Participant;
 import gov.lbl.glamm.shared.model.Sample;
 import gov.lbl.glamm.shared.model.interfaces.HasMeasurements;
 
@@ -81,9 +82,13 @@ public class GetExperimentPathwayData {
 	
 	public static PathwayExperimentData getDummyPathwayData(GlammSession sm) {
 		
-		String expId = "2956",			// an experiment in Brucella melitensis 16M
-			   taxId = "224914",		// Brucella melitensis 16M
-			   pathId = "map00010";		// Glycolysis
+//		String expId = "2956",			// an experiment in Brucella melitensis 16M
+//			   taxId = "224914",		// Brucella melitensis 16M
+//			   pathId = "map00010";		// Glycolysis
+		
+		String expId = "46",
+			   taxId = "511145",
+			   pathId = "map00010";
 		
 		PathwayExperimentData peData = new PathwayExperimentData();
 		
@@ -97,12 +102,14 @@ public class GetExperimentPathwayData {
 		List<Pathway> pathways = new ArrayList<Pathway>();
 		Map<String, Compound> idCompoundMap = new HashMap<String, Compound>();
 		Map<String, Gene> idGeneMap = new HashMap<String, Gene>();
+		Map<String, Organism> idOrganismMap = new HashMap<String, Organism>();
 
 		ExperimentDAO experimentDao = new ExperimentDAOImpl(sm);
 		PathwayDAO pathwayDao = new KeggPathwayDAOImpl(sm);
 		
 		OrganismDAO organismDao = new OrganismDAOImpl(sm);
 		Organism org = organismDao.getOrganismForTaxonomyId(taxId);
+		idOrganismMap.put(org.getTaxonomyId(), org);
 		
 		Experiment exp = experimentDao.getExperiment(expId);
 		List<Sample> samples = exp.getSamples();
@@ -110,32 +117,62 @@ public class GetExperimentPathwayData {
 		Pathway pathway = pathwayDao.getPathway(pathId, org);
 		pathways.add(pathway);
 		
+		for (Reaction reaction : pathway.getReactions()) {
+			for (Participant participant : reaction.getSubstrates()) {
+				Compound compound = participant.getCompound();
+				idCompoundMap.put(compound.getGuid(), compound);
+			}
+			for (Participant participant : reaction.getProducts()) {
+				Compound compound = participant.getCompound();
+				idCompoundMap.put(compound.getGuid(), compound);
+			}
+			for (Gene gene : reaction.getGenes()) {
+				idGeneMap.put(gene.getVimssId(), gene);
+			}
+		}
+		
 		for (Sample sample : samples) {
 			Set<? extends HasMeasurements> measurements = GetSample.getMeasurementsForSample(sm, sample);
+			Map<String, Measurement> elementIdDataTypeMeasurementMap = sample.getElementIdDataTypeMeasurementMap();
+			
+			Sample.DataType dataType = sample.getDataType();
+
 			switch (sample.getTargetType()) {
 				case COMPOUND :
-					for (HasMeasurements compound : measurements) {
-
+					for (HasMeasurements element : measurements) {
+						Compound cpd = (Compound)element;
+						for (Measurement measurement : cpd.getMeasurementSet().getMeasurements())
+							elementIdDataTypeMeasurementMap.put(cpd.getGuid() + dataType, measurement);
+						idCompoundMap.put(cpd.getGuid(), cpd);
 					}
 					break;
 				
 				case REACTION :
-					for (HasMeasurements reaction : measurements) {
-						
+					for (HasMeasurements element : measurements) {
+						Reaction rxn = (Reaction)element;
+						for (Measurement measurement : rxn.getMeasurementSet().getMeasurements())
+							elementIdDataTypeMeasurementMap.put(rxn.getGuid() + dataType, measurement);
 					}
 					break;
 				
 				case GENE :
-					for (HasMeasurements gene : measurements) {
-						
+					for (HasMeasurements element : measurements) {
+						for (Gene gene : ((Reaction)element).getGenes()) {
+							for (Measurement measurement : gene.getMeasurementSet().getMeasurements()) {
+								elementIdDataTypeMeasurementMap.put(gene.getVimssId() + dataType, measurement);
+							}
+							idGeneMap.put(gene.getVimssId(), gene);
+						}
 					}
-					break;
 			}
 		}
 		
 		//224914 = taxonomyID for Brucella melitensis 16M
 		peData.setExperiments(experiments);
 		peData.setPathways(pathways);
+		peData.setIdCompoundMap(idCompoundMap);
+		peData.setIdGeneMap(idGeneMap);
+		peData.setIdOrganismMap(idOrganismMap);
 		
 		return peData;
 	}

@@ -8,16 +8,20 @@ import gov.lbl.glamm.shared.model.Measurement;
 import gov.lbl.glamm.shared.model.MetabolicModel;
 import gov.lbl.glamm.shared.model.Organism;
 import gov.lbl.glamm.shared.model.Reaction;
-import gov.lbl.glamm.shared.model.metabolism.KBaseMetabolicModel;
-import gov.lbl.glamm.shared.model.metabolism.flux.FbaExperiment;
-import gov.lbl.glamm.shared.model.metabolism.visualization.ModelVisualization;
+import gov.lbl.glamm.shared.model.Media;
+import gov.lbl.glamm.shared.model.kbase.fba.FBA;
+import gov.lbl.glamm.shared.model.metabolism.deprecated.FbaExperiment;
+import gov.lbl.glamm.shared.model.metabolism.deprecated.KBaseMetabolicModel;
+import gov.lbl.glamm.shared.model.metabolism.deprecated.ModelVisualization;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -38,12 +42,12 @@ public class MetabolicModelDAOImpl implements MetabolicModelDAO {
 	
 	private GlammSession sm;
 	
-	public MetabolicModelDAOImpl(GlammSession sm) {
+	public MetabolicModelDAOImpl(final GlammSession sm) {
 		this.sm = sm;
 	}
 	
 	@Override
-	public MetabolicModel getMetabolicModel(String id) {
+	public MetabolicModel getMetabolicModel(final String id) {
 		
 		// TODO make this actually do something real.
 		// right now, it's just kinda dummy stand-in information.
@@ -54,8 +58,8 @@ public class MetabolicModelDAOImpl implements MetabolicModelDAO {
 		return null;
 	}
 	
-	private MetabolicModel dummyModel(String id) {
-		final MetabolicModel model = new MetabolicModel(id);
+	private MetabolicModel dummyModel(final String id) {
+		final MetabolicModel model = new MetabolicModel(id, "Test Model");
 		Set<String> ids = new HashSet<String>();
 		ids.add("R09204");
 		ids.add("R09175");
@@ -84,16 +88,16 @@ public class MetabolicModelDAOImpl implements MetabolicModelDAO {
 	}
 	
 	@Override
-	public Set<String> getIdsForOrganism(Organism organism) {
+	public Set<String> getIdsForOrganism(final Organism organism) {
 		return null;
 	}
 
-	public Set<Reaction> getReactionsForModel(String modelId) {
+	public Set<Reaction> getReactionsForModel(final String modelId) {
 		return null;
 	}
 	
 	@Override
-	public Map<Reaction, Set<Measurement>> getFluxes(FluxExperiment exp) {
+	public Map<Reaction, Set<Measurement>> getReactionFluxes(final FluxExperiment exp) {
 		Map<Reaction, Set<Measurement>> resultSet = new HashMap<Reaction, Set<Measurement>>();
 		MetabolicModel model = getMetabolicModel(exp.getModelId());
 		Set<Reaction> reactions = model.getReactions();
@@ -106,12 +110,37 @@ public class MetabolicModelDAOImpl implements MetabolicModelDAO {
 		}
 		return resultSet;
 	}
+
+	@Override
+	public Set<Reaction> getReactionFluxes(final FBA fba) {
+		return new HashSet<Reaction>();
+	}
+	
+	//TODO
+	public List<MetabolicModel> getAllMetabolicModels() {
+		// make service call. process results. return 'em.
+		return new ArrayList<MetabolicModel>();
+	}
+	
+	//TODO
+	public List<String> getFbaResultsForModel(final String modelId) {
+		return new ArrayList<String>();
+	}
+	
+	//TODO
+	public FBA getFbaResults(final String fbaId) {
+		return new FBA();
+	}
 	
 	@Override
-	public MetabolicModel getMetabolicModelFromService(String source) {
+	public MetabolicModel getMetabolicModelFromService(String source, String id) {
 		
-		if (source == null)
+		if (source == null || id == null)
 			return null;
+		
+		if (source.equalsIgnoreCase("kbase")) {
+			return getKBaseMetabolicModel(id);
+		}
 		
 		String uri = source;
 
@@ -164,6 +193,12 @@ public class MetabolicModelDAOImpl implements MetabolicModelDAO {
 		return null;
 	}
 	
+	//TODO
+	@Override
+	public Media getMedia(String mediaId, String biochemistryId) {
+		return new Media(mediaId, "dummy media set");
+	}
+	
 	@Override
 	public ModelVisualization getModelVisualizationFromService(String source) {
 		
@@ -188,10 +223,38 @@ public class MetabolicModelDAOImpl implements MetabolicModelDAO {
 			System.err.println(e.getLocalizedMessage());
 		}
 		return null;
-		
 	}		
 	
-	private MetabolicModel kbase2GlammModel(KBaseMetabolicModel model) {
+	@Override
+	public Set<Reaction> getReactionFluxesFromKBase(String fbaId) {
+		return new HashSet<Reaction>();
+	}
+	
+	private MetabolicModel kbase2GlammModel(KBaseMetabolicModel kbModel) {
+		MetabolicModel model = new MetabolicModel(kbModel.getID(), kbModel.getName());
+		
+		//TODO need typespec to do the rest...
+		return model;
+	}
+
+	private MetabolicModel getKBaseMetabolicModel(String id) {
+		String uri = "kbase yadda yadda";  // make and invoke a KBase service, maybe? Not sure how this'll get done.
+		
+		try {
+			URL url = new URL(uri);
+			ObjectMapper mapper = new ObjectMapper();
+			InputStream stream = url.openStream();
+			
+			KBaseMetabolicModel model = mapper.readValue(stream, KBaseMetabolicModel.class);
+			stream.close();
+			
+			return kbase2GlammModel(model);
+		} catch (MalformedURLException e) {
+			System.err.println(e.getLocalizedMessage());
+		} catch (IOException e) {
+			System.err.println(e.getLocalizedMessage());
+		}
+		
 		return null;
 	}
 }

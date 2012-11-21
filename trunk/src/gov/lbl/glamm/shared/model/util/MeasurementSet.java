@@ -48,7 +48,7 @@ public class MeasurementSet implements Serializable {
 		if(measurements != null && !measurements.isEmpty())
 			this.measurements.addAll(measurements);
 	}
-
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

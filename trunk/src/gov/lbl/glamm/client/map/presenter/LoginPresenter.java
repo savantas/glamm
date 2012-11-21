@@ -128,7 +128,7 @@ public class LoginPresenter {
 		
 	}
 
-	private static final String ACTION_LOGIN = "login";
+	private static final String ACTION_LOGIN = "loginKBase";
 
 	public static final String COOKIE_AUTH = "auth";
 	public static final String COOKIE_USERID = "userId";
@@ -331,7 +331,7 @@ public class LoginPresenter {
 			view.getButtonPanel().setVisible(false);
 			break;
 		case LOGGED_IN:
-			view.getStatusLabel().setText(MSG_LOGGED_IN_PREFIX + user.getEmail());
+			view.getStatusLabel().setText(MSG_LOGGED_IN_PREFIX + user.getUserId());
 			view.getButtonPanel().setVisible(true);
 			break;
 		}

@@ -92,7 +92,7 @@ public class MetabolicModel implements Serializable, HasType {
 	
 	// this should probably be in some kind of configuration file, or from the DB as an Xref or something.
 	public enum ModelSource {
-		KBASE("Kbase"),
+		KBASE("KBase"),
 		SEED("ModelSEED"),
 		GLAMM("GLAMM"),
 		SESSION("Session");		// user uploaded
@@ -245,7 +245,8 @@ public class MetabolicModel implements Serializable, HasType {
 	private Map<String, Compound> id2Compound;
 	private Map<Compound, MMCompound> cpd2MMCpd;
 	private Reaction biomass;
-	private String modelId = null;
+	private String modelId = "";
+	private String name = "";
 
 	// biomass is a common objective, but it could be a linear combination of several reactions
 	// So add something to represent that. A Map of reaction-float?
@@ -259,13 +260,14 @@ public class MetabolicModel implements Serializable, HasType {
 	 * Constructor. Initializes an empty MetabolicModel (no reactions or compounds) with the given model ID
 	 * @param modelId the model ID string to be used for this model.
 	 */
-	public MetabolicModel(String modelId) {
+	public MetabolicModel(String modelId, String name) {
 		rxn2MMRxn = new HashMap<Reaction, MMReaction>();
 		id2Reaction = new HashMap<String, Reaction>();
 		cpd2MMCpd = new HashMap<Compound, MMCompound>();
 		id2Compound = new HashMap<String, Compound>();
 		biomass = null;
 		this.modelId = modelId;
+		this.name = name;
 	}
 	
 	/**
@@ -471,6 +473,14 @@ public class MetabolicModel implements Serializable, HasType {
 	 */
 	public String getModelId() {
 		return modelId;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }

@@ -1,15 +1,16 @@
 package gov.lbl.glamm.client.experiment.dao;
 
-import gov.lbl.glamm.client.experiment.model.ViewPathway;
 import gov.lbl.glamm.client.experiment.model.PathwayExperimentData;
 import gov.lbl.glamm.client.experiment.model.Reaction;
 import gov.lbl.glamm.client.experiment.model.ViewCompound;
 import gov.lbl.glamm.client.experiment.model.ViewGene;
+import gov.lbl.glamm.client.experiment.model.ViewPathway;
 import gov.lbl.glamm.client.experiment.model.ViewReaction;
 import gov.lbl.glamm.client.experiment.util.BinarySortedSet;
 import gov.lbl.glamm.client.experiment.util.ObjectCount;
 import gov.lbl.glamm.shared.model.Compound;
 import gov.lbl.glamm.shared.model.Gene;
+import gov.lbl.glamm.shared.model.Pathway;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -40,7 +41,7 @@ public class DefaultPathwayDao implements PathwayDao {
 
 		objCount.primaryObjCount += sharedData.getIdGeneMap().size();
 
-		for ( gov.lbl.glamm.shared.model.Pathway sharedPathway : sharedData.getPathways() ) {
+		for ( Pathway sharedPathway : sharedData.getPathways() ) {
 			ViewPathway pathway = new ViewPathway();
 			objCount.primaryObjCount++;
 			pathway.setId( sharedPathway.getMapId() );

@@ -1,5 +1,7 @@
 package gov.lbl.glamm.shared.model;
 
+import gov.lbl.glamm.server.kbase.auth.AuthToken;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,6 +17,7 @@ public class User implements Serializable {
 	private static final String MOL_ACL_GROUPID_PUBLIC	= "1";
 
 	private String auth;
+	private String sessionId;
 	private String userId;
 	private Set<String> groupIds;
 	private String email;
@@ -57,7 +60,17 @@ public class User implements Serializable {
 		this.groupIds.add(MOL_ACL_GROUPID_PUBLIC);  // ensure the public group id is always in the set
 		this.email = email;
 	}
+	
+	public String getSessionId() {
+		if (sessionId == null)
+			return auth;
+		return sessionId;
+	}
 
+	public void setSessionId(String sessionId) {
+		this.sessionId = sessionId;
+	}
+	
 	/**
 	 * Gets the auth token for the user.
 	 * @return The auth token.

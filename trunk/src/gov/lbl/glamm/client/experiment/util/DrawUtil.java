@@ -868,7 +868,7 @@ public class DrawUtil {
 		String id = null;
 		if ( gene != null ) {
 			relY = gene.getRelY();
-			synonym = gene.getBaseObject().getSynonymWithType( Gene.SYNONYM_TYPE_SYNONYM );
+			synonym = gene.getBaseObject().getSynonymWithType( Gene.SYNONYM_TYPE_NAME ); //Gene.SYNONYM_TYPE_SYNONYM );
 			for ( String molTaxonomyId : gene.getBaseObject().getMolTaxonomyIds() ) {
 				name =  molTaxonomyId;
 				break;

@@ -13,6 +13,7 @@ import gov.lbl.glamm.server.actions.GetFluxes;
 import gov.lbl.glamm.server.actions.GetGlammState;
 import gov.lbl.glamm.server.actions.GetGroupData;
 import gov.lbl.glamm.server.actions.GetMetabolicModel;
+import gov.lbl.glamm.server.actions.GetMetabolicModelMedia;
 import gov.lbl.glamm.server.actions.GetOrganism;
 import gov.lbl.glamm.server.actions.GetPathways;
 import gov.lbl.glamm.server.actions.GetReactions;
@@ -20,7 +21,9 @@ import gov.lbl.glamm.server.actions.GetRxnsForOrganism;
 import gov.lbl.glamm.server.actions.GetSample;
 import gov.lbl.glamm.server.actions.PopulateCompoundSearch;
 import gov.lbl.glamm.server.actions.PopulateDataServices;
+import gov.lbl.glamm.server.actions.PopulateFbaResults;
 import gov.lbl.glamm.server.actions.PopulateLocusSearch;
+import gov.lbl.glamm.server.actions.PopulateMetabolicModels;
 import gov.lbl.glamm.server.actions.PopulateOrganisms;
 import gov.lbl.glamm.server.actions.PopulateReactionSearch;
 import gov.lbl.glamm.server.actions.PopulateSamples;
@@ -41,6 +44,7 @@ import gov.lbl.glamm.shared.model.Reaction;
 import gov.lbl.glamm.shared.model.Sample;
 import gov.lbl.glamm.shared.model.User;
 import gov.lbl.glamm.shared.model.interfaces.HasMeasurements;
+import gov.lbl.glamm.shared.model.Media;
 
 import java.util.HashSet;
 import java.util.List;
@@ -80,7 +84,7 @@ public class GlammServiceImpl extends RemoteServiceServlet
 		GlammSession glammSession = GlammSession.getGlammSession(request);
 		
 		sessions.add(glammSession);
-		System.out.println(glammSession);
+//		System.out.println(glammSession);
 		
 		return glammSession;
 	}
@@ -224,7 +228,7 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	}
 	
 	@Override
-	public Set<Reaction> getFluxes(FluxExperiment exp) {
+	public Set<Reaction> getReactionFluxes(final FluxExperiment exp) {
 		return GetFluxes.getFluxes(getGlammSession(), exp);
 	}
 
@@ -257,8 +261,45 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	public PathwayExperimentData getPathwayData(String pathwayIds, String experimentIds) throws IllegalArgumentException,
 																								RequestException {
 		GlammSession sm = getGlammSession();
-//		String fileName = this.getServletContext().getRealPath( "/data/pathway.xml" );
-//		return GetExperimentPathwayData.getPathwayData(pathwayIds, experimentIds, fileName);
-		return GetExperimentPathwayData.getDummyPathwayData(sm);
+		String fileName = this.getServletContext().getRealPath( "/data/pathway.xml" );
+		return GetExperimentPathwayData.getPathwayData(pathwayIds, experimentIds, fileName);
+//		return GetExperimentPathwayData.getDummyPathwayData(sm);
 	}
+
+	@Override
+	public List<MetabolicModel> populateMetabolicModels() {
+		return PopulateMetabolicModels.populateMetabolicModels(getGlammSession());
+	}
+
+	@Override
+	public List<String> populateFbaResults(String modelId) {
+		return PopulateFbaResults.populateFbaResults(getGlammSession(), modelId);
+	}
+
+//	@Override
+//	public FBA getFbaResults(String fbaId) {
+//		return GetFbaResults.getFbaResults(getGlammSession(), fbaId);
+//	}
+
+	@Override
+	public Media getMetabolicModelMedia(String mediaId, String biochemistryId) {
+		return GetMetabolicModelMedia.getMetabolicModelMedia(getGlammSession(), mediaId, biochemistryId);
+	}
+
+	@Override
+	public FluxExperiment getFluxExperiment(String expId) {
+		return GetFluxes.getFluxExperiment(getGlammSession(), expId);
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public FluxExperiment getFbaResults(String expId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+//	@Override
+//	public Set<Reaction> getReactionFluxes(final FBA fba) {
+//		return GetFluxes.getFluxes(getGlammSession(), fba);
+//	}
 }

@@ -15,6 +15,7 @@ import gov.lbl.glamm.shared.model.Reaction;
 import gov.lbl.glamm.shared.model.Sample;
 import gov.lbl.glamm.shared.model.User;
 import gov.lbl.glamm.shared.model.interfaces.HasMeasurements;
+import gov.lbl.glamm.shared.model.Media;
 
 import java.util.List;
 import java.util.Set;
@@ -35,27 +36,33 @@ public interface GlammServiceAsync {
 	public void getAnnotatedMapDescriptors(AsyncCallback<List<AnnotatedMapDescriptor>> callback);
 	public void getAvailableSampleTypes(AsyncCallback<List<Sample.DataType>> callback);
 	public void getDirections(final Organism organism, final Compound cpdSrc, final Compound cpdDst, final String mapTitle, final Algorithm algorithm, AsyncCallback<List<Pathway>> callback);
+	public void getFbaResults(final String fbaId, AsyncCallback<FluxExperiment> callback);
 	public void getIsolateHost(AsyncCallback<String> callback);
+	public void getMetabolicModel(final String modelId, AsyncCallback<MetabolicModel> callback);
 	public void getSample(final Sample sample, AsyncCallback<Set<? extends HasMeasurements>> callback);
 	public void getMetagenomeHost(AsyncCallback<String> callback);
 	public void getLoggedInUser(AsyncCallback<User> user);
+	public void getOrganismForTaxId(final String taxId, AsyncCallback<Organism> callback);
+	public void getOverlayData(String text, AsyncCallback<Set<OverlayDataGroup>> callback);
+	public void getOverlayDataFromService(ExternalDataService service, AsyncCallback<Set<OverlayDataGroup>> callback);
 	public void getReactions(final Set<String> ids, final Organism organism, final Sample sample, AsyncCallback<Set<Reaction>> callback);
 	public void getPathways(final Set<String> ids, final Organism organism, final Sample sample, AsyncCallback<Set<Pathway>> callback);
 	public void getRxnsForOrganism(final Organism organism, AsyncCallback<Set<Reaction>> callback);
 	public void logOutUser(AsyncCallback<Void> callback);
 	public void populateCompoundSearch(String mapId, AsyncCallback<Set<Compound>> callback);
+	public void populateDataServices(AsyncCallback<List<ExternalDataService>> callback);
+	public void populateFbaResults(final String modelId, AsyncCallback<List<String>> callback);
 	public void populateLocusSearch(final Organism organism, AsyncCallback<Set<Gene>> callback);
+	public void populateMetabolicModels(AsyncCallback<List<MetabolicModel>> callback);
 	public void populateOrganisms(final Sample.DataType dataType, AsyncCallback<List<Organism>> callback);
 	public void populateReactionSearch(final String mapId, AsyncCallback<Set<Reaction>> callback);
 	public void populateSamples(final Organism organism, AsyncCallback<List<Sample>> callback);
-	public void getMetabolicModel(String modelId, AsyncCallback<MetabolicModel> callback);
-	public void getFluxes(FluxExperiment exp, AsyncCallback<Set<Reaction>> callback);
-	public void getOverlayData(String text, AsyncCallback<Set<OverlayDataGroup>> callback);
-	public void getOverlayDataFromService(ExternalDataService service, AsyncCallback<Set<OverlayDataGroup>> callback);
-	public void populateDataServices(AsyncCallback<List<ExternalDataService>> asyncCallback);
-	public void getOrganismForTaxId(final String taxId, AsyncCallback<Organism> callback);
+	
+	public void getFluxExperiment(final String expId, AsyncCallback<FluxExperiment> callback);
+	public void getMetabolicModelMedia(final String mediaId, final String biochemistryId, AsyncCallback<Media> callback);
+	public void getReactionFluxes(final FluxExperiment exp, AsyncCallback<Set<Reaction>> callback);
 	
 	public void nonDBTest(AsyncCallback<String> callback);
-	public void getStateFromHistoryToken(String token, AsyncCallback<GlammState> asyncCallback);
+	public void getStateFromHistoryToken(String token, AsyncCallback<GlammState> callback);
 	
 }

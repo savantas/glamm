@@ -464,6 +464,7 @@ public class GroupDataPresenter {
 		List<OverlayDataGroup> dpList = groupDataProvider.getList();
 		dpList.clear();
 		name2DataGroup.clear();
+		selectionModel.clear();
 		
 		for (OverlayDataGroup g : dataGroups) {
 			dpList.add(g);
