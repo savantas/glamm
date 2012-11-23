@@ -408,7 +408,7 @@ public class ExperimentPresenter {
 
 					UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
 					urlBuilder.setParameter("action", ACTION_DOWNLOAD_EXPERIMENT);
-					urlBuilder.setPath("glammServlet");
+					urlBuilder.setPath("glamm/glammServlet");
 					urlBuilder.setParameter(RequestParameters.EXPERIMENT, experimentTableSelection.getExperimentId());
 					urlBuilder.setParameter(RequestParameters.SAMPLE, experimentTableSelection.getSampleId());
 					Window.open(urlBuilder.buildString(), "", "menubar=no,location=no,resizable=no,scrollbars=no,status=no,toolbar=false,width=0,height=0");

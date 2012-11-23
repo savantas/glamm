@@ -24,7 +24,7 @@
 
 	<servlet-mapping>
 		<servlet-name>glammServlet</servlet-name>
-		<url-pattern>/glammServlet</url-pattern>
+		<url-pattern>/glamm/glammServlet</url-pattern>
 	</servlet-mapping>
 
 	<!-- Default page to serve -->
