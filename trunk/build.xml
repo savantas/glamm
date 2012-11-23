@@ -20,6 +20,8 @@
         <pathelement location="war/WEB-INF/classes"/>
         <pathelement location="test-classes"/>
         <path refid="GWT SDK [GWT - 2.4.0].libraryclasspath"/>
+        <pathelement location="war/WEB-INF/lib/bcpkix-jdk15on-147.jar"/>
+        <pathelement location="war/WEB-INF/lib/bcprov-ext-jdk15on-147.jar"/>
         <pathelement location="war/WEB-INF/lib/c3p0-0.9.1.2.jar"/>
         <pathelement location="war/WEB-INF/lib/commons-fileupload-1.2.2.jar"/>
         <pathelement location="war/WEB-INF/lib/commons-io-2.0.1.jar"/>
@@ -37,9 +39,9 @@
         <pathelement location="war/WEB-INF/lib/log4j-1.2.15.jar"/>
         <pathelement location="war/WEB-INF/lib/slf4j-api-1.5.8.jar"/>
         <pathelement location="war/WEB-INF/lib/slf4j-log4j12-1.5.8.jar"/>
-        <pathelement location="war/WEB-INF/lib/jackson-annotations-2.0.0.jar"/>
-        <pathelement location="war/WEB-INF/lib/jackson-core-2.0.0.jar"/>
-        <pathelement location="war/WEB-INF/lib/jackson-databind-2.0.0.jar"/>
+        <pathelement location="war/WEB-INF/lib/jackson-annotations-2.1.1.jar"/>
+        <pathelement location="war/WEB-INF/lib/jackson-core-2.1.1.jar"/>
+        <pathelement location="war/WEB-INF/lib/jackson-databind-2.1.1.jar"/>
         <pathelement location="war/WEB-INF/lib/jsr173_1.0_api.jar"/>
         <pathelement location="war/WEB-INF/lib/resolver.jar"/>
         <pathelement location="war/WEB-INF/lib/xbean_xpath.jar"/>

@@ -1109,7 +1109,7 @@ public class AppController {
 
 		final String ACTION_GEN_CITATIONS = "genCitationsPopup";
 		UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
-		urlBuilder.setPath("glammServlet");
+		urlBuilder.setPath("glamm/glammServlet");
 		urlBuilder.setParameter("action", ACTION_GEN_CITATIONS);
 
 		citationsPresenter.setDefaultImageUrl(GlammClientBundle.INSTANCE
