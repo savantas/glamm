@@ -1,13 +1,12 @@
 package gov.lbl.glamm.shared.model;
 
-import gov.lbl.glamm.server.kbase.auth.AuthToken;
-
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
  * Model class for users.  Users may log in and log out of GLAMM via their MicrobesOnline login credentials.
+ * dummy u/p for kbase - glamm / GlammUser@KBase
  * @author jtbates
  *
  */

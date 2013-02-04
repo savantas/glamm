@@ -378,7 +378,7 @@ public class RetrosynthesisPresenter {
 
 				UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
 				urlBuilder.setParameter("action", ACTION_GET_DIRECTIONS);
-				urlBuilder.setPath("glamm/glammServlet");
+				urlBuilder.setPath("glammServlet");
 				urlBuilder.setParameter(RequestParameters.CPD_SRC, cpdSrcXref.getXrefId());
 				urlBuilder.setParameter(RequestParameters.CPD_DST, cpdDstXref.getXrefId());
 				for(String dbName : mapData.getCpdDbNames()) 

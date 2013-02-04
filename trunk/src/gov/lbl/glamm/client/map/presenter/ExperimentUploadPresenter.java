@@ -206,7 +206,7 @@ public class ExperimentUploadPresenter {
 		});
 
 		UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
-		urlBuilder.setPath("glamm/glammServlet");
+		urlBuilder.setPath("glammServlet");
 		urlBuilder.setParameter("action", ACTION_UPLOAD_EXPERIMENT);
 		
 		view.getForm().setAction(urlBuilder.buildString());

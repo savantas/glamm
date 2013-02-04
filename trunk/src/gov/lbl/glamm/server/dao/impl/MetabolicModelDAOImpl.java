@@ -3,13 +3,14 @@ package gov.lbl.glamm.server.dao.impl;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.MetabolicModelDAO;
 import gov.lbl.glamm.server.dao.ReactionDAO;
+import gov.lbl.glamm.server.kbase.MetabolismService;
 import gov.lbl.glamm.shared.model.FluxExperiment;
 import gov.lbl.glamm.shared.model.Measurement;
+import gov.lbl.glamm.shared.model.Media;
 import gov.lbl.glamm.shared.model.MetabolicModel;
 import gov.lbl.glamm.shared.model.Organism;
 import gov.lbl.glamm.shared.model.Reaction;
-import gov.lbl.glamm.shared.model.Media;
-import gov.lbl.glamm.shared.model.kbase.fba.FBA;
+import gov.lbl.glamm.shared.model.kbase.fba.KBFBA;
 import gov.lbl.glamm.shared.model.metabolism.deprecated.FbaExperiment;
 import gov.lbl.glamm.shared.model.metabolism.deprecated.KBaseMetabolicModel;
 import gov.lbl.glamm.shared.model.metabolism.deprecated.ModelVisualization;
@@ -40,10 +41,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class MetabolicModelDAOImpl implements MetabolicModelDAO {
 	
+	private static final String SERVICE_URL = "http://www.kbase.us/services/fba";
+	private static final String SERVICE_VERSION = "1.1";
 	private GlammSession sm;
+	private MetabolismService metService;
 	
 	public MetabolicModelDAOImpl(final GlammSession sm) {
 		this.sm = sm;
+		
+		metService = new MetabolismService(SERVICE_URL, SERVICE_VERSION);
 	}
 	
 	@Override
@@ -55,6 +61,9 @@ public class MetabolicModelDAOImpl implements MetabolicModelDAO {
 		
 		if (id.equals("1"))
 			return dummyModel(id);
+		else {
+//			KB
+		}
 		return null;
 	}
 	
@@ -112,7 +121,7 @@ public class MetabolicModelDAOImpl implements MetabolicModelDAO {
 	}
 
 	@Override
-	public Set<Reaction> getReactionFluxes(final FBA fba) {
+	public Set<Reaction> getReactionFluxes(final KBFBA fba) {
 		return new HashSet<Reaction>();
 	}
 	
@@ -128,8 +137,8 @@ public class MetabolicModelDAOImpl implements MetabolicModelDAO {
 	}
 	
 	//TODO
-	public FBA getFbaResults(final String fbaId) {
-		return new FBA();
+	public KBFBA getFbaResults(final String fbaId) {
+		return new KBFBA();
 	}
 	
 	@Override

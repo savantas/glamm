@@ -1,6 +1,6 @@
 package gov.lbl.glamm.client.map.events;
 
-import gov.lbl.glamm.shared.model.MetabolicModel;
+import gov.lbl.glamm.shared.model.kbase.fba.model.KBMetabolicModel;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
@@ -26,7 +26,7 @@ public class MetabolicModelLoadedEvent extends GwtEvent<MetabolicModelLoadedEven
 	 */
 	public static final Type<Handler> TYPE = new Type<Handler>();
 	
-	private MetabolicModel model;
+	private KBMetabolicModel model;
 	private boolean displayAllRxns;
 	
 	/**
@@ -50,11 +50,11 @@ public class MetabolicModelLoadedEvent extends GwtEvent<MetabolicModelLoadedEven
 	 * Constructor
 	 * @param model the MetabolicModel
 	 */
-	public MetabolicModelLoadedEvent(MetabolicModel model) {
+	public MetabolicModelLoadedEvent(KBMetabolicModel model) {
 		this(model, false);
 	}
 	
-	public MetabolicModelLoadedEvent(MetabolicModel model, boolean displayAllRxns) {
+	public MetabolicModelLoadedEvent(KBMetabolicModel model, boolean displayAllRxns) {
 		this.model = model;
 		this.displayAllRxns = displayAllRxns;
 	}
@@ -63,7 +63,7 @@ public class MetabolicModelLoadedEvent extends GwtEvent<MetabolicModelLoadedEven
 	 * Gets the MetabolicModel associated with this event.
 	 * @return the MetabolicModel associated with this event.
 	 */
-	public MetabolicModel getModel() {
+	public KBMetabolicModel getModel() {
 		return model;
 	}
 	

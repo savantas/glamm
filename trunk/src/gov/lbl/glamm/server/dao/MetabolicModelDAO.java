@@ -6,7 +6,7 @@ import gov.lbl.glamm.shared.model.MetabolicModel;
 import gov.lbl.glamm.shared.model.Organism;
 import gov.lbl.glamm.shared.model.Reaction;
 import gov.lbl.glamm.shared.model.Media;
-import gov.lbl.glamm.shared.model.kbase.fba.FBA;
+import gov.lbl.glamm.shared.model.kbase.fba.KBFBA;
 import gov.lbl.glamm.shared.model.metabolism.deprecated.FbaExperiment;
 import gov.lbl.glamm.shared.model.metabolism.deprecated.ModelVisualization;
 
@@ -43,7 +43,7 @@ public interface MetabolicModelDAO {
 	 */
 	public Map<Reaction, Set<Measurement>> getReactionFluxes(final FluxExperiment exp); 
 	
-	public Set<Reaction> getReactionFluxes(final FBA fba);
+	public Set<Reaction> getReactionFluxes(final KBFBA fba);
 	
 	public MetabolicModel getMetabolicModelFromService(final String source, String id);
 	
@@ -55,7 +55,7 @@ public interface MetabolicModelDAO {
 
 	public List<String> getFbaResultsForModel(final String modelId);
 
-	public FBA getFbaResults(final String fbaId);
+	public KBFBA getFbaResults(final String fbaId);
 
 	public Media getMedia(final String mediaId, final String biochemistryId);
 

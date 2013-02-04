@@ -7,6 +7,7 @@ import gov.lbl.glamm.shared.model.OverlayDataGroup;
 import gov.lbl.glamm.shared.model.Reaction;
 import gov.lbl.glamm.shared.model.Sample;
 import gov.lbl.glamm.shared.model.User;
+import gov.lbl.glamm.shared.model.kbase.fba.KBFBAResult;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -75,6 +76,7 @@ public class RxnPopupPresenter {
 	private Set<Reaction> reactions;
 	private Sample sample;
 	private Set<OverlayDataGroup> dataGroups;
+	private KBFBAResult fba;
 	
 	private String isolateHost;
 	private String metagenomeHost;
@@ -117,8 +119,12 @@ public class RxnPopupPresenter {
 						memberGroups.add(g);
 					}
 				}
-				System.out.println();
 				rp.setDataGroups(memberGroups);
+			}
+			
+			if (fba != null) {
+				if (fba.hasReaction(reaction.getGuid()))
+					rp.setFluxValue(fba.getFluxForReaction(reaction));
 			}
 			
 			rp.setOrganism(organism);
@@ -214,6 +220,10 @@ public class RxnPopupPresenter {
 	 */
 	public void setSample(final Sample sample) {
 		this.sample = sample;
+	}
+	
+	public void setFBAResult(final KBFBAResult fba) {
+		this.fba = fba;
 	}
 
 	/**

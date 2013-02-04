@@ -1,12 +1,12 @@
 package gov.lbl.glamm.server.actions.requesthandlers;
 
+import gov.doe.kbase.auth.AuthService;
+import gov.doe.kbase.auth.AuthUser;
 import gov.lbl.glamm.client.map.presenter.LoginPresenter;
 import gov.lbl.glamm.server.FormRequestHandler;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.RequestHandler;
 import gov.lbl.glamm.server.ResponseHandler;
-import gov.lbl.glamm.server.kbase.auth.AuthService;
-import gov.lbl.glamm.server.kbase.auth.AuthUser;
 import gov.lbl.glamm.shared.model.User;
 
 import java.io.IOException;
@@ -23,8 +23,12 @@ import javax.servlet.http.HttpServletResponse;
 public class LoginKBase implements RequestHandler {
 
 	private static final String LOGIN_ERROR_MSG = "Login incorrect - please try again.";
-	private static final String kbaseLoginURL = "https://kbase.us/services/authorization/Sessions/Login";
+	private static final String KBASE_AUTH_URL = "http://140.221.92.231/services/authorization";
 
+	static {
+		AuthService.setServiceUrl(KBASE_AUTH_URL);
+	}
+	
 	@Override
 	public void handleRequest(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
@@ -40,12 +44,13 @@ public class LoginKBase implements RequestHandler {
 			return;
 		}
 
-		AuthService authService = new AuthService(kbaseLoginURL);
+//		AuthService.setServiceUrl(KBASE_AUTH_URL);
+//		AuthService authService = new AuthService(kbaseLoginURL);
 		
 		try {
-			AuthUser kbUser = authService.login(email, password);
-			final User user = new User(kbUser.getUserName(), new HashSet<String>(), kbUser.getEmail());
-			user.setAuth(kbUser.getTokenString());
+			AuthUser kbUser = AuthService.login(email, password);
+			final User user = new User(kbUser.getUserId(), new HashSet<String>(), kbUser.getEmail());
+			user.setAuth(kbUser.getToken().toString());
 			user.setSessionId(kbUser.getToken().getSignature());
 			sm.setUser(user);
 		} catch (Exception e) {

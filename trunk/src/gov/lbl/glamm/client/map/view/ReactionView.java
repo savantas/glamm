@@ -9,6 +9,8 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -21,6 +23,8 @@ public class ReactionView extends Composite
 implements ReactionPresenter.View {
 	
 	private final String ADD_TO_CART = "Add to cart";
+	private final String FLUX = "Flux value:";
+	private final String FLUX_DEFAULT = "No fluxes loaded";
 	private VerticalPanel mainPanel;
 	private HTML definitionHtml;
 	private HTML ecNumHtml;
@@ -29,6 +33,10 @@ implements ReactionPresenter.View {
 	private ScrollPanel geneTableScrollPanel;
 	private CellTable<OverlayDataGroup> groupTable;
 	private ScrollPanel groupTableScrollPanel;
+	
+	private HorizontalPanel fluxPanel;
+	private Label fluxNameLabel;
+	private Label fluxValueLabel;
 
 	/**
 	 * Constructor
@@ -44,6 +52,10 @@ implements ReactionPresenter.View {
 		groupTable = new CellTable<OverlayDataGroup>();
 		groupTableScrollPanel = new ScrollPanel();
 		
+		fluxPanel = new HorizontalPanel();
+		fluxNameLabel = new Label(FLUX);
+		fluxValueLabel = new Label(FLUX_DEFAULT);
+		
 		mainPanel.add(definitionHtml);
 		mainPanel.add(ecNumHtml);
 //		mainPanel.add(addToCart);
@@ -52,12 +64,18 @@ implements ReactionPresenter.View {
 		
 		mainPanel.add(groupTableScrollPanel);
 		groupTableScrollPanel.add(groupTable);
+
+		fluxPanel.add(fluxNameLabel);
+		fluxPanel.add(fluxValueLabel);
+		mainPanel.add(fluxPanel);
 		
 		geneTableScrollPanel.setSize("100%", "10em");
 		geneTable.setWidth("100%");
 		
 		groupTableScrollPanel.setSize("100%", "10em");
 		groupTable.setWidth("100%");
+
+		
 		
 		mainPanel.setWidth("30em");
 		mainPanel.setStylePrimaryName("glamm-picker");
@@ -101,13 +119,31 @@ implements ReactionPresenter.View {
 		geneTableScrollPanel.setVisible(true);
 	}
 	
+	@Override
 	public void hideGroupTable() {
 		groupTable.setVisible(false);
 		groupTableScrollPanel.setVisible(false);
 	}
 	
+	@Override
 	public void showGroupTable() {
 		groupTable.setVisible(true);
 		groupTableScrollPanel.setVisible(true);
 	}
+	
+	@Override
+	public void hideFluxPanel() {
+		fluxPanel.setVisible(false);
+	}
+
+	@Override
+	public void showFluxPanel() {
+		fluxPanel.setVisible(true);
+	}
+	
+	@Override
+	public Label getFluxValueLabel() {
+		return fluxValueLabel;
+	}
+
 }

@@ -6,7 +6,6 @@ import gov.lbl.glamm.server.dao.impl.MetabolicModelDAOImpl;
 import gov.lbl.glamm.shared.model.FluxExperiment;
 import gov.lbl.glamm.shared.model.Measurement;
 import gov.lbl.glamm.shared.model.Reaction;
-import gov.lbl.glamm.shared.model.kbase.fba.FBA;
 
 import java.util.HashSet;
 import java.util.Map;

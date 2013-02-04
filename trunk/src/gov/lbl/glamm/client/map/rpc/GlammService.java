@@ -16,6 +16,10 @@ import gov.lbl.glamm.shared.model.Reaction;
 import gov.lbl.glamm.shared.model.Sample;
 import gov.lbl.glamm.shared.model.User;
 import gov.lbl.glamm.shared.model.interfaces.HasMeasurements;
+import gov.lbl.glamm.shared.model.kbase.fba.KBFBAResult;
+import gov.lbl.glamm.shared.model.kbase.fba.model.KBMetabolicModel;
+import gov.lbl.glamm.shared.model.kbase.workspace.KBWorkspaceData;
+import gov.lbl.glamm.shared.model.kbase.workspace.KBWorkspaceObjectData;
 
 import java.util.List;
 import java.util.Set;
@@ -220,14 +224,18 @@ public interface GlammService extends RemoteService {
 	
 	public List<String> populateFbaResults(final String modelId);
 	
-//	public FBA getFbaResults(final String fbaId);
-	
 	public FluxExperiment getFbaResults(final String expId);
 	
 	public Media getMetabolicModelMedia(final String mediaId, final String biochemistryId);
 	
-//	public Set<Reaction> getReactionFluxes(final FBA fba);
 	public Set<Reaction> getReactionFluxes(final FluxExperiment exp);
+	
+	public List<KBWorkspaceData> populateWorkspaces();
+	public List<KBWorkspaceObjectData> populateWorkspaceModels(final String workspace);
+	public List<KBWorkspaceObjectData> populateWorkspaceFbas(final String workspace);
+	
+	public KBMetabolicModel getKBaseMetabolicModel(final String modelId, final String workspaceId);
+	public KBFBAResult getKBaseFBAResult(final String fbaId, final String workspaceId);
 	
 	/**
 	 * A debug rpc call that contacts the server without invoking the database.
