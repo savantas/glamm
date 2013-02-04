@@ -1,17 +1,28 @@
 package gov.lbl.glamm.server.kbase;
+/**
+ * A service class that invokes the methods in the KBase FBA service, 
+ * and returns biochemistry and metabolic model objects.
+ * 
+ * It's intended to be used like this:
+ * 
+ * MetabolismService service = new MetabolismService(serviceURL, version);
+ * KBBiochemistry chem = service.getBiochemistry(chemId);
+ * 
+ * ...etc.
+ */
 
-import gov.lbl.glamm.shared.model.kbase.biochemistry.Biochemistry;
-import gov.lbl.glamm.shared.model.kbase.biochemistry.Compound;
-import gov.lbl.glamm.shared.model.kbase.biochemistry.Media;
-import gov.lbl.glamm.shared.model.kbase.biochemistry.Reaction;
-import gov.lbl.glamm.shared.model.kbase.fba.FBA;
-import gov.lbl.glamm.shared.model.kbase.fba.FBAFormulation;
-import gov.lbl.glamm.shared.model.kbase.fba.gapfill.GapFill;
-import gov.lbl.glamm.shared.model.kbase.fba.gapfill.GapFillingFormulation;
-import gov.lbl.glamm.shared.model.kbase.fba.gapgen.GapGen;
-import gov.lbl.glamm.shared.model.kbase.fba.gapgen.GapGenFormulation;
-import gov.lbl.glamm.shared.model.kbase.fba.model.FBAModel;
-import gov.lbl.glamm.shared.model.kbase.genome.Genome;
+import gov.lbl.glamm.shared.model.kbase.biochemistry.KBBiochemistry;
+import gov.lbl.glamm.shared.model.kbase.biochemistry.KBCompound;
+import gov.lbl.glamm.shared.model.kbase.biochemistry.KBMedia;
+import gov.lbl.glamm.shared.model.kbase.biochemistry.KBReaction;
+import gov.lbl.glamm.shared.model.kbase.fba.KBFBA;
+import gov.lbl.glamm.shared.model.kbase.fba.KBFBAFormulation;
+import gov.lbl.glamm.shared.model.kbase.fba.gapfill.KBGapFill;
+import gov.lbl.glamm.shared.model.kbase.fba.gapfill.KBGapFillingFormulation;
+import gov.lbl.glamm.shared.model.kbase.fba.gapgen.KBGapGen;
+import gov.lbl.glamm.shared.model.kbase.fba.gapgen.KBGapGenFormulation;
+import gov.lbl.glamm.shared.model.kbase.fba.model.KBFBAModel;
+import gov.lbl.glamm.shared.model.kbase.genome.KBGenomeObject;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -225,7 +236,7 @@ public class MetabolismService {
 	}
 	
 	/* This command accepts a KBase genome ID and returns the requested genome typed object */
-	public Genome getGenomeObject(String genomeId, boolean asNewGenome) throws IOException {
+	public KBGenomeObject getGenomeObject(String genomeId, boolean asNewGenome) throws IOException {
 //		typedef structure {
 //		    bool as_new_genome;
 //		} Get_GenomeObject_Opts;
@@ -271,7 +282,7 @@ public class MetabolismService {
 	}
 
 	/* This function runs flux balance analysis on the input FBAModel and produces HTML as output */
-	public String runFba(String fbaModelId, FBAFormulation formulation) throws IOException {
+	public String runFba(String fbaModelId, KBFBAFormulation formulation) throws IOException {
 //		funcdef runfba (fbamodel_id in_model,FBAFormulation formulation) returns (fba_id out_fba);
 		List<Object> params = new ArrayList<Object>();
 		ObjectMapper mapper = new ObjectMapper();
@@ -304,7 +315,7 @@ public class MetabolismService {
 	}
 	
 	/* These functions run gapfilling on the input FBAModel and produce gapfill objects as output */
-	public String gapFillModel(String fbaModelId, GapFillingFormulation formulation) throws IOException {
+	public String gapFillModel(String fbaModelId, KBGapFillingFormulation formulation) throws IOException {
 //		funcdef gapfill_model (fbamodel_id in_model, GapfillingFormulation formulation) returns (gapfill_id out_gapfill);
 		List<Object> params = new ArrayList<Object>();
 		ObjectMapper mapper = new ObjectMapper();
@@ -350,7 +361,7 @@ public class MetabolismService {
 	
 
 	/* These functions run gapgeneration on the input FBAModel and produce gapgen objects as output */
-	public String gapGenModel(String fbaModelId, GapGenFormulation formulation) throws IOException {
+	public String gapGenModel(String fbaModelId, KBGapGenFormulation formulation) throws IOException {
 //		funcdef gapgen_model (fbamodel_id in_model, GapgenFormulation formulation) returns (gapgen_id out_gapgen);
 		
 		List<Object> params = new ArrayList<Object>();
@@ -395,30 +406,30 @@ public class MetabolismService {
 	}
 	
 	/* This function returns model data for input ids */
-	public List<FBAModel> getModels(List<String> modelIds) throws IOException {
+	public List<KBFBAModel> getModels(List<String> modelIds) throws IOException {
 //		funcdef get_models(list<fbamodel_id> in_model_ids) returns (list<FBAModel> out_models);
 		List<Object> params = new ArrayList<Object>();
 		ObjectMapper mapper = new ObjectMapper();
 		
 		params.add(modelIds);
 		String response = doServiceCall(params, servicePrefix + ".get_models");
-		return mapper.readValue(response, new TypeReference<List<FBAModel>>() { } );
+		return mapper.readValue(response, new TypeReference<List<KBFBAModel>>() { } );
 		
 	}
 
 	/* This function returns fba data for input ids */
-	public List<FBA> getFbas(List<String> fbaIds) throws IOException {
+	public List<KBFBA> getFbas(List<String> fbaIds) throws IOException {
 //	funcdef get_fbas(list<fba_id> in_fba_ids) returns (list<FBA> out_fbas);
 		List<Object> params = new ArrayList<Object>();
 		ObjectMapper mapper = new ObjectMapper();
 		
 		params.add(fbaIds);
 		String response = doServiceCall(params, servicePrefix + ".get_fbas");
-		return mapper.readValue(response, new TypeReference<List<FBA>>() { } );
+		return mapper.readValue(response, new TypeReference<List<KBFBA>>() { } );
 	}
 	
 	/* This function returns gapfill data for input ids */
-	public List<GapFill> getGapFills(List<String> gapFillIds) throws IOException {
+	public List<KBGapFill> getGapFills(List<String> gapFillIds) throws IOException {
 //	funcdef get_gapfills(list<gapfill_id> in_gapfill_ids) returns (list<GapFill> out_gapfills);
 		List<Object> params = new ArrayList<Object>();
 		params.add(gapFillIds);
@@ -426,11 +437,11 @@ public class MetabolismService {
 		String response = doServiceCall(params, servicePrefix + ".get_gapfills");
 		
 		ObjectMapper mapper = new ObjectMapper();
-		return mapper.readValue(response, new TypeReference<List<GapFill>>() { });
+		return mapper.readValue(response, new TypeReference<List<KBGapFill>>() { });
 	}
 	
 	/* This function returns gapgen data for input ids */
-	public List<GapGen> getGapGens(List<String> gapGenIds) throws IOException {
+	public List<KBGapGen> getGapGens(List<String> gapGenIds) throws IOException {
 //	funcdef get_gapgens(list<gapgen_id> in_gapgen_ids) returns (list<GapGen> out_gapgens);
 		List<Object> params = new ArrayList<Object>();
 		params.add(gapGenIds);
@@ -438,11 +449,11 @@ public class MetabolismService {
 		String response = doServiceCall(params, servicePrefix + ".get_gapgens");
 		
 		ObjectMapper mapper = new ObjectMapper();
-		return mapper.readValue(response, new TypeReference<List<GapGen>>() { } );
+		return mapper.readValue(response, new TypeReference<List<KBGapGen>>() { } );
 	}
 	
 	/* This function returns reaction data for input ids */
-	public List<Reaction> getReactions(List<String> reactionIds, String biochemistryId) throws IOException {
+	public List<KBReaction> getReactions(List<String> reactionIds, String biochemistryId) throws IOException {
 //	funcdef get_reactions(list<reaction_id> in_reaction_ids,biochemistry_id biochemistry) returns (list<Reaction> out_reactions);
 		List<Object> params = new ArrayList<Object>();
 		params.add(reactionIds);
@@ -450,12 +461,12 @@ public class MetabolismService {
 		String response = doServiceCall(params, servicePrefix + ".get_reactions");
 		
 		ObjectMapper mapper = new ObjectMapper();
-		return mapper.readValue(response, new TypeReference<List<Reaction>>() { });
+		return mapper.readValue(response, new TypeReference<List<KBReaction>>() { });
 		
 	}
 	
 	/* This function returns compound data for input ids */
-	public List<Compound> getCompounds(List<String> compoundIds, String biochemistryId) throws IOException {
+	public List<KBCompound> getCompounds(List<String> compoundIds, String biochemistryId) throws IOException {
 //	funcdef get_compounds(list<compound_id> in_compound_ids,biochemistry_id biochemistry) returns (list<Compound> out_compounds);
 		List<Object> params = new ArrayList<Object>();
 		params.add(compoundIds);
@@ -463,12 +474,12 @@ public class MetabolismService {
 		
 		String response = doServiceCall(params, servicePrefix + ".get_compounds");
 		ObjectMapper mapper = new ObjectMapper();
-		List<Compound> compoundList = mapper.readValue(response, new TypeReference<List<Compound>>() { });
+		List<KBCompound> compoundList = mapper.readValue(response, new TypeReference<List<KBCompound>>() { });
 		return compoundList;
 	}
 	
 	/* This function returns media data for input ids */
-	public List<Media> getMedia(List<String> mediaIds, String biochemistryId) throws IOException {
+	public List<KBMedia> getMedia(List<String> mediaIds, String biochemistryId) throws IOException {
 //		funcdef get_media(list<media_id> in_media_ids,biochemistry_id biochemistry) returns (list<Media> out_media);
 		
 		List<Object> params = new ArrayList<Object>();
@@ -477,18 +488,18 @@ public class MetabolismService {
 		String response = doServiceCall(params, servicePrefix + ".get_media");
 
 		ObjectMapper mapper = new ObjectMapper();
-		List<Media> mediaList = mapper.readValue(response, new TypeReference<List<Media>>() { });
+		List<KBMedia> mediaList = mapper.readValue(response, new TypeReference<List<KBMedia>>() { });
 		return mediaList;
 	}
 
 	/* This function returns biochemistry object */
-	public Biochemistry getBiochemistry(String biochemistryId) throws IOException {
+	public KBBiochemistry getBiochemistry(String biochemistryId) throws IOException {
 		//	funcdef get_biochemistry(biochemistry_id biochemistry) returns (Biochemistry out_biochemistry);
 		List<Object> params = new ArrayList<Object>();
 		params.add(biochemistryId);
 		String response = stripArray(doServiceCall(params, servicePrefix + ".get_biochemistry"));
 		
-		Biochemistry biochemistry = new ObjectMapper().readValue(response, Biochemistry.class);
+		KBBiochemistry biochemistry = new ObjectMapper().readValue(response, KBBiochemistry.class);
 		return biochemistry;
 	}
 	

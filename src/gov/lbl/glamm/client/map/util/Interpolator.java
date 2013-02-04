@@ -1,6 +1,7 @@
 package gov.lbl.glamm.client.map.util;
 
 import gov.lbl.glamm.shared.model.Sample;
+import gov.lbl.glamm.shared.model.kbase.fba.KBFBAResult;
 
 import java.util.HashMap;
 
@@ -27,6 +28,10 @@ public class Interpolator {
 		return sample.getUnits() + Float.toString(sample.getClampMin()) + Float.toString(sample.getClampMid()) + Float.toString(sample.getClampMax());
 	}
 	
+	private static final String genKeyForFBA(final KBFBAResult fba) {
+		return "mmol/gDW*h" + fba.getMinFluxValue().toString() + fba.getMaxFluxValue().toString();
+	}
+	
 	/**
 	 * Access cached Interpolator for a Sample with a given set of clamping values and units
 	 * @param sample 
@@ -38,6 +43,18 @@ public class Interpolator {
 		
 		if(interpolator == null) {
 			interpolator = new Interpolator(sample);
+			theInterpolators.put(key, interpolator);
+		}
+		
+		return interpolator;
+	}
+	
+	public static final Interpolator getInterpolatorForFBA(final KBFBAResult fba) {
+		String key = genKeyForFBA(fba);
+		Interpolator interpolator = theInterpolators.get(key);
+		
+		if (interpolator == null) {
+			interpolator = new Interpolator("mmol/gDW*h", fba.getMinFluxValue(), 0, fba.getMaxFluxValue());
 			theInterpolators.put(key, interpolator);
 		}
 		

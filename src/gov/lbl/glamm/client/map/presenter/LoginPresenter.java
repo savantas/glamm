@@ -228,7 +228,7 @@ public class LoginPresenter {
 		});
 
 		UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
-		urlBuilder.setPath("glamm/glammServlet");
+		urlBuilder.setPath("glammServlet");
 		urlBuilder.setParameter("action", ACTION_LOGIN);
 
 		view.getForm().setAction(urlBuilder.buildString());

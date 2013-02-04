@@ -10,21 +10,22 @@ import gov.lbl.glamm.client.map.rpc.GlammServiceAsync;
 import gov.lbl.glamm.client.map.util.Interpolator;
 import gov.lbl.glamm.client.map.util.ReactionSvgBuilder;
 import gov.lbl.glamm.shared.model.AnnotatedMapData;
+import gov.lbl.glamm.shared.model.AnnotatedMapData.State;
 import gov.lbl.glamm.shared.model.AnnotatedMapDescriptor;
 import gov.lbl.glamm.shared.model.Compound;
 import gov.lbl.glamm.shared.model.FluxExperiment;
 import gov.lbl.glamm.shared.model.Gene;
 import gov.lbl.glamm.shared.model.Measurement;
-import gov.lbl.glamm.shared.model.MetabolicModel;
+import gov.lbl.glamm.shared.model.MetabolicNetwork.MNNode;
 import gov.lbl.glamm.shared.model.Organism;
 import gov.lbl.glamm.shared.model.OverlayDataGroup;
 import gov.lbl.glamm.shared.model.Pathway;
 import gov.lbl.glamm.shared.model.Reaction;
 import gov.lbl.glamm.shared.model.Sample;
-import gov.lbl.glamm.shared.model.AnnotatedMapData.State;
-import gov.lbl.glamm.shared.model.MetabolicNetwork.MNNode;
 import gov.lbl.glamm.shared.model.interfaces.HasMeasurements;
 import gov.lbl.glamm.shared.model.interfaces.HasType;
+import gov.lbl.glamm.shared.model.kbase.fba.KBFBAResult;
+import gov.lbl.glamm.shared.model.kbase.fba.model.KBMetabolicModel;
 import gov.lbl.glamm.shared.model.util.Xref;
 
 import java.util.HashSet;
@@ -133,7 +134,7 @@ public class AnnotatedMapPresenter {
 	private Mode mode = Mode.INITIAL;
 
 	private Organism organism = null;
-	private MetabolicModel model = null;
+	private KBMetabolicModel model = null;
 	private Sample sample = null;
 	private Set<OverlayDataGroup> groupData = null;
 	
@@ -853,15 +854,74 @@ public class AnnotatedMapPresenter {
 				}
 			});
 		}
-		
 	}
+
+	/**
+	 * Overlays metabolic flux data on the current reactions.
+	 * @param exp
+	 */
+	public void updateMapForFBAResult(final KBFBAResult fba, final boolean showAllReactions) {
+		if (fba == null) {
+			updateMapForOrganism(this.organism);
+		}
+		else {
+			eventBus.fireEvent(new LoadingEvent(false));
+			
+			executeOnMapElements(new MapElementCommand() {
+				@Override
+				public void execute(OMSVGElement element) {
+					element.removeAttribute(AnnotatedMapData.Attribute.ROUTE);
+					element.removeAttribute(AnnotatedMapData.Attribute.SEARCH_TARGET);
+					element.removeAttribute(AnnotatedMapData.Attribute.PATHWAY);
+					element.removeAttribute(AnnotatedMapData.Attribute.STRENGTH);
+					element.setAttribute(AnnotatedMapData.Attribute.HAS_DATA, "false");
+					if(element.getTagName().equals(SVGConstants.SVG_ELLIPSE_TAG)) {
+						element.removeAttribute(AnnotatedMapData.Attribute.CPD_DST);
+						element.removeAttribute(AnnotatedMapData.Attribute.CPD_SRC);
+					}
+				}
+			});
+
+			Interpolator interpolator = new Interpolator("mmol/(gDW*h)", fba.getMinFluxValue(), 0, fba.getMaxFluxValue());
+			for (Reaction rxn : fba.getReactionValues()) {
+				// we only deal with Genes associated with Reactions right now
+				int numMeasurements = 0;
+				float mean = 0.0f;
+
+
+				for(Measurement measurement : rxn.getMeasurementSet().getMeasurements()) {
+					mean += measurement.getValue();
+					numMeasurements++;
+				}
+
+				mean /= (float) numMeasurements;
+
+				// calculate the css color for the mean
+				String cssColor = interpolator.calcCssColor(mean);
+
+				// set the css color on all SVG elements associated with id
+				Set<OMSVGElement> elements = mapData.getSvgElements((HasType) rxn);
+				if(elements == null)
+					continue;
+				for(OMSVGElement element : elements) {
+					if(element.hasAttribute(AnnotatedMapData.Attribute.ABSENT) && 
+							element.getAttribute(AnnotatedMapData.Attribute.ABSENT).equals("true"))
+						continue;
+					element.setAttribute(AnnotatedMapData.Attribute.HAS_DATA, "true");
+					element.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, cssColor);
+				}
+			}
+			eventBus.fireEvent(new LoadingEvent(true));
+		}
+	}	
 	
-	public void updateMapForMetabolicModel(final MetabolicModel model, boolean showAllRxns) {
-		this.model = model;
+	public void updateMapForMetabolicModel(final KBMetabolicModel kbMetabolicModel, boolean showAllRxns) {
+		this.model = kbMetabolicModel;
 		this.viewState = ViewState.METABOLIC_MODEL;
 		
-		if (model == null || model.getReactions().size() == 0) {
-			mapData.removeUserElement();
+		mapData.removeUserElement();
+		
+		if (kbMetabolicModel == null || kbMetabolicModel.getReactions().size() == 0) {
 			updateMapForOrganism(this.organism);
 		}
 		else {
@@ -886,7 +946,7 @@ public class AnnotatedMapPresenter {
 			});
 			
 			Set<Reaction> extraReactions = new HashSet<Reaction>();
-			Set<Reaction> modelReactions = model.getReactions();
+			Set<Reaction> modelReactions = kbMetabolicModel.getReactions();
 
 			// Light up all the model reactions that are in the global map.
 			for(final Reaction rxn : modelReactions) {
@@ -947,7 +1007,7 @@ public class AnnotatedMapPresenter {
 
 			fitMapToWindow();
 			eventBus.fireEvent(new LoadingEvent(true));		
-			updateMapForFluxes(new FluxExperiment(model.getModelId(), "1"));
+//			updateMapForFluxes(new FluxExperiment(kbMetabolicMoldel.getId(), "1"));
 		}
 		
 	}

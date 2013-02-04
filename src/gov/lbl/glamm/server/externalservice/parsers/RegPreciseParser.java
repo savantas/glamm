@@ -219,7 +219,7 @@ public class RegPreciseParser implements ServiceJsonParser {
 	public Set<OverlayDataGroup> parse(ExternalDataService service, InputStream dataStream, GlammSession sm) 
 			throws JsonMappingException, IOException {
 
-		Set<OverlayDataGroup> dataSet = new HashSet<OverlayDataGroup>();
+//		Set<OverlayDataGroup> dataSet = new HashSet<OverlayDataGroup>();
 		
 		ObjectMapper mapper = new ObjectMapper();
 		ElementSet dataElements = mapper.readValue(dataStream, ElementSet.class);

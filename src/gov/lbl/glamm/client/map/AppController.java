@@ -7,6 +7,8 @@ import gov.lbl.glamm.client.map.events.CpdDstPickedEvent;
 import gov.lbl.glamm.client.map.events.CpdSrcDisambiguatedEvent;
 import gov.lbl.glamm.client.map.events.CpdSrcPickedEvent;
 import gov.lbl.glamm.client.map.events.ExperimentUploadEvent;
+import gov.lbl.glamm.client.map.events.FBAChooserEvent;
+import gov.lbl.glamm.client.map.events.FBAResultLoadedEvent;
 import gov.lbl.glamm.client.map.events.GroupDataLoadedEvent;
 import gov.lbl.glamm.client.map.events.GroupDataPickedEvent;
 import gov.lbl.glamm.client.map.events.GroupDataServiceEvent;
@@ -16,6 +18,7 @@ import gov.lbl.glamm.client.map.events.LogInEvent;
 import gov.lbl.glamm.client.map.events.LogOutEvent;
 import gov.lbl.glamm.client.map.events.MapElementClickEvent;
 import gov.lbl.glamm.client.map.events.MapUpdateEvent;
+import gov.lbl.glamm.client.map.events.MetabolicModelChooserEvent;
 import gov.lbl.glamm.client.map.events.MetabolicModelLoadedEvent;
 import gov.lbl.glamm.client.map.events.OrganismPickedEvent;
 import gov.lbl.glamm.client.map.events.OrganismUploadEvent;
@@ -30,6 +33,7 @@ import gov.lbl.glamm.client.map.presenter.AnnotatedMapPresenter;
 import gov.lbl.glamm.client.map.presenter.CpdDisambiguationPresenter;
 import gov.lbl.glamm.client.map.presenter.ExperimentPresenter;
 import gov.lbl.glamm.client.map.presenter.ExperimentUploadPresenter;
+import gov.lbl.glamm.client.map.presenter.FBAChooserPresenter;
 import gov.lbl.glamm.client.map.presenter.GroupDataPresenter;
 import gov.lbl.glamm.client.map.presenter.GroupDataServicePresenter;
 import gov.lbl.glamm.client.map.presenter.GroupDataUploadPresenter;
@@ -38,6 +42,7 @@ import gov.lbl.glamm.client.map.presenter.InterpolatorPresenter;
 import gov.lbl.glamm.client.map.presenter.LoadingPresenter;
 import gov.lbl.glamm.client.map.presenter.LoginPresenter;
 import gov.lbl.glamm.client.map.presenter.MapElementPresenter;
+import gov.lbl.glamm.client.map.presenter.MetabolicModelChooserPresenter;
 import gov.lbl.glamm.client.map.presenter.MetabolicModelPresenter;
 import gov.lbl.glamm.client.map.presenter.MiniMapPresenter;
 import gov.lbl.glamm.client.map.presenter.OrganismPresenter;
@@ -54,6 +59,7 @@ import gov.lbl.glamm.client.map.view.AnnotatedMapView;
 import gov.lbl.glamm.client.map.view.CpdDisambiguationView;
 import gov.lbl.glamm.client.map.view.ExperimentUploadView;
 import gov.lbl.glamm.client.map.view.ExperimentView;
+import gov.lbl.glamm.client.map.view.FBAChooserView;
 import gov.lbl.glamm.client.map.view.GroupDataServiceView;
 import gov.lbl.glamm.client.map.view.GroupDataUploadView;
 import gov.lbl.glamm.client.map.view.GroupDataView;
@@ -62,6 +68,7 @@ import gov.lbl.glamm.client.map.view.InterpolatorView;
 import gov.lbl.glamm.client.map.view.LoadingView;
 import gov.lbl.glamm.client.map.view.LoginView;
 import gov.lbl.glamm.client.map.view.MapElementView;
+import gov.lbl.glamm.client.map.view.MetabolicModelChooserView;
 import gov.lbl.glamm.client.map.view.MetabolicModelView;
 import gov.lbl.glamm.client.map.view.MiniMapView;
 import gov.lbl.glamm.client.map.view.OrganismUploadView;
@@ -74,6 +81,7 @@ import gov.lbl.glamm.shared.model.AnnotatedMapData;
 import gov.lbl.glamm.shared.model.GlammState;
 import gov.lbl.glamm.shared.model.Sample;
 import gov.lbl.glamm.shared.model.User;
+import gov.lbl.glamm.shared.model.kbase.fba.KBFBAResult;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -165,6 +173,12 @@ public class AppController {
 	
 	private MetabolicModelPresenter metabolicModelPresenter;
 	private MetabolicModelView metabolicModelView;
+	
+	private MetabolicModelChooserPresenter metabolicModelChooserPresenter;
+	private MetabolicModelChooserView metabolicModelChooserView;
+	
+	private FBAChooserPresenter fbaChooserPresenter;
+	private FBAChooserView fbaChooserView;
 	
 	private GroupDataPresenter dataOverlayPresenter;
 	private GroupDataView dataOverlayView;
@@ -261,6 +275,12 @@ public class AppController {
 		
 		metabolicModelView = new MetabolicModelView();
 		metabolicModelPresenter = new MetabolicModelPresenter(rpc, metabolicModelView, eventBus);
+		
+		metabolicModelChooserView = new MetabolicModelChooserView();
+		metabolicModelChooserPresenter = new MetabolicModelChooserPresenter(rpc, metabolicModelChooserView, eventBus);
+		
+		fbaChooserView = new FBAChooserView();
+		fbaChooserPresenter = new FBAChooserPresenter(rpc, fbaChooserView, eventBus);
 		
 		dataOverlayView = new GroupDataView();
 		dataOverlayPresenter = new GroupDataPresenter(rpc, dataOverlayView, eventBus);
@@ -507,7 +527,33 @@ public class AppController {
 	
 	private void loadMetabolicModelPicker(GlammState state) {
 		mainPanel.add(metabolicModelView, 0, 0);
-//		metabolicModelPresenter.populate("0");
+		metabolicModelChooserPresenter.populateWorkspaceList();
+		fbaChooserPresenter.populateWorkspaceList();
+
+		eventBus.addHandler(MetabolicModelChooserEvent.TYPE, new MetabolicModelChooserEvent.Handler() {
+			@Override
+			public void onRequest(MetabolicModelChooserEvent event) {
+				metabolicModelChooserPresenter.showChooser();
+			}
+
+			@Override
+			public void onSelected(MetabolicModelChooserEvent event) {
+				metabolicModelPresenter.populateModels(event.getModelInfo());
+			}
+		});
+		
+		eventBus.addHandler(FBAChooserEvent.TYPE, new FBAChooserEvent.Handler() {
+			@Override
+			public void onRequest(FBAChooserEvent event) {
+				fbaChooserPresenter.showChooser();
+			}
+
+			@Override
+			public void onSelected(FBAChooserEvent event) {
+				metabolicModelPresenter.populateFbaResults(event.getFbaInfo());
+				
+			}
+		});
 	}
 	
 	private void loadAnnotatedMapPicker(GlammState state) {
@@ -653,6 +699,13 @@ public class AppController {
 			@Override
 			public void onSamplePicked(final SamplePickedEvent event) {
 				rxnElementPresenter.setSample(event.getSample());
+			}
+		});
+		
+		eventBus.addHandler(FBAResultLoadedEvent.TYPE, new FBAResultLoadedEvent.Handler() {
+			@Override
+			public void onLoaded(FBAResultLoadedEvent event) {
+				rxnElementPresenter.setFBAResult(event.getFBAResult());
 			}
 		});
 
@@ -862,6 +915,14 @@ public class AppController {
 			public void onLoaded(MetabolicModelLoadedEvent event) {
 				mapPresenter.updateMapForMetabolicModel(event.getModel(), event.showAllReactions());
 			}			
+		});
+		
+		eventBus.addHandler(FBAResultLoadedEvent.TYPE, new FBAResultLoadedEvent.Handler() {
+			
+			@Override
+			public void onLoaded(FBAResultLoadedEvent event) {
+				mapPresenter.updateMapForFBAResult(event.getFBAResult(), event.showAllReactions());
+			}
 		});
 		
 		eventBus.addHandler(GroupDataPickedEvent.TYPE, new GroupDataPickedEvent.Handler() {
@@ -1075,6 +1136,21 @@ public class AppController {
 				}
 			}
 		});
+		
+		eventBus.addHandler(FBAResultLoadedEvent.TYPE, new FBAResultLoadedEvent.Handler() {
+			@Override
+			public void onLoaded(FBAResultLoadedEvent event) {
+				KBFBAResult result = event.getFBAResult();
+				if (result == null)
+					interpolatorView.hide();
+				else {
+					Interpolator interpolator = Interpolator.getInterpolatorForFBA(result);
+					interpolatorPresenter.setInterpolator(interpolator);
+					interpolatorView.show();
+					onResize();
+				}
+			}
+		});
 	}
 
 	private void loadLogin() {
@@ -1109,7 +1185,7 @@ public class AppController {
 
 		final String ACTION_GEN_CITATIONS = "genCitationsPopup";
 		UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
-		urlBuilder.setPath("glamm/glammServlet");
+		urlBuilder.setPath("glammServlet");
 		urlBuilder.setParameter("action", ACTION_GEN_CITATIONS);
 
 		citationsPresenter.setDefaultImageUrl(GlammClientBundle.INSTANCE

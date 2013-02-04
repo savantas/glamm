@@ -257,7 +257,7 @@ public class OrganismPresenter {
 
 					UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
 					urlBuilder.setParameter("action", ACTION_DOWNLOAD_ORGANISM);
-					urlBuilder.setPath("glamm/glammServlet");
+					urlBuilder.setPath("glammServlet");
 					urlBuilder.setParameter(RequestParameters.TAXONOMY_ID, organism.getTaxonomyId());
 
 					view.minimize();

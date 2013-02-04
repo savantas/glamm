@@ -24,6 +24,7 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HasHTML;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SingleSelectionModel;
 
@@ -67,6 +68,10 @@ public class ReactionPresenter {
 		 */
 		public CellTable<Gene> getGeneTable();
 		
+		/**
+		 * Gets the group table.
+		 * @return The group table.
+		 */
 		public CellTable<OverlayDataGroup> getGroupTable();
 		
 		/**
@@ -89,12 +94,16 @@ public class ReactionPresenter {
 		 */
 		public void showGroupTable();
 		
+		public void hideFluxPanel();
+		public void showFluxPanel();
+		public Label getFluxValueLabel();
 
 	}
 
 	private String host;
 	private Organism organism;
 	private Set<OverlayDataGroup> dataGroups = null;
+	private Float flux = null;
 	private Reaction reaction;
 
 	private ListDataProvider<Gene> geneDataProvider;
@@ -327,6 +336,18 @@ public class ReactionPresenter {
 		table.setSelectionModel(selectionModel);
 	}
 
+	/**
+	 * Sets a flux value for this reaction, and signals that it should be displayed in the view.
+	 * @param flux
+	 */
+	public void setFluxValue(final Float flux) {
+		this.flux = flux;
+	}
+	
+	/**
+	 * Sets the set of arbitrary groups to which this reaction (or genes that drive it) belongs.
+	 * @param dataGroups
+	 */
 	public void setDataGroups(final Set<OverlayDataGroup> dataGroups) {
 		this.dataGroups = dataGroups;
 	}
@@ -362,9 +383,14 @@ public class ReactionPresenter {
 		Set<String> ecNums = reaction.getEcNums();
 		Set<Gene> genes = reaction.getGenes();
 
-
 		view.hideGeneTable();
 		view.hideGroupTable();
+		view.hideFluxPanel();
+
+		if (flux != null) {
+			view.getFluxValueLabel().setText(flux.toString());
+			view.showFluxPanel();
+		}
 
 		if(ecNums == null || ecNums.size() == 0)
 			view.getEcNumHtml().setHTML("<b>No EC</b>");

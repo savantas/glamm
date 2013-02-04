@@ -123,7 +123,7 @@ public class OrganismUploadPresenter {
 		
 		// set up form
 		UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
-		urlBuilder.setPath("glamm/glammServlet");
+		urlBuilder.setPath("glammServlet");
 		urlBuilder.setParameter("action", ACTION_UPLOAD_ORGANISM);
 		view.getForm().setAction(urlBuilder.buildString());
 		view.getForm().setEncoding(FormPanel.ENCODING_MULTIPART);

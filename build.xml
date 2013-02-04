@@ -22,7 +22,7 @@
         <path refid="GWT SDK [GWT - 2.4.0].libraryclasspath"/>
         <pathelement location="war/WEB-INF/lib/bcpkix-jdk15on-147.jar"/>
         <pathelement location="war/WEB-INF/lib/bcprov-ext-jdk15on-147.jar"/>
-        <pathelement location="war/WEB-INF/lib/c3p0-0.9.1.2.jar"/>
+        <pathelement location="war/WEB-INF/lib/c3p0-0.9.2.jar"/>
         <pathelement location="war/WEB-INF/lib/commons-fileupload-1.2.2.jar"/>
         <pathelement location="war/WEB-INF/lib/commons-io-2.0.1.jar"/>
         <pathelement location="war/WEB-INF/lib/gwt-servlet.jar"/>
@@ -50,6 +50,12 @@
         <pathelement location="war/WEB-INF/lib/xmlpublic.jar"/>
         <pathelement location="war/WEB-INF/lib/reaction-fun-data-xmltypes.jar"/>
         <pathelement location="war/WEB-INF/lib/lib-gwt-svg-0.5.6.jar"/>
+        <pathelement location="war/WEB-INF/lib/jackson-all-1.9.11.jar"/>
+        <pathelement location="war/WEB-INF/lib/kb-auth.jar"/>
+        <pathelement location="war/WEB-INF/lib/kb-fba.jar"/>
+        <pathelement location="war/WEB-INF/lib/kb-workspace-service.jar"/>
+        <pathelement location="war/WEB-INF/lib/kb-rpc.jar"/>
+        
     </path>
     <target name="init">
         <mkdir dir="war/WEB-INF/classes"/>

@@ -12,7 +12,6 @@ import gov.lbl.glamm.server.actions.GetExperimentPathwayData;
 import gov.lbl.glamm.server.actions.GetFluxes;
 import gov.lbl.glamm.server.actions.GetGlammState;
 import gov.lbl.glamm.server.actions.GetGroupData;
-import gov.lbl.glamm.server.actions.GetMetabolicModel;
 import gov.lbl.glamm.server.actions.GetMetabolicModelMedia;
 import gov.lbl.glamm.server.actions.GetOrganism;
 import gov.lbl.glamm.server.actions.GetPathways;
@@ -29,6 +28,8 @@ import gov.lbl.glamm.server.actions.PopulateReactionSearch;
 import gov.lbl.glamm.server.actions.PopulateSamples;
 import gov.lbl.glamm.server.actions.requesthandlers.GetDirections;
 import gov.lbl.glamm.server.externalservice.ExternalDataServiceManager;
+import gov.lbl.glamm.server.kbase.actions.GetMetabolicModel;
+import gov.lbl.glamm.server.kbase.actions.GetWorkspaceData;
 import gov.lbl.glamm.shared.ExternalDataService;
 import gov.lbl.glamm.shared.model.Algorithm;
 import gov.lbl.glamm.shared.model.AnnotatedMapDescriptor;
@@ -36,6 +37,7 @@ import gov.lbl.glamm.shared.model.Compound;
 import gov.lbl.glamm.shared.model.FluxExperiment;
 import gov.lbl.glamm.shared.model.Gene;
 import gov.lbl.glamm.shared.model.GlammState;
+import gov.lbl.glamm.shared.model.Media;
 import gov.lbl.glamm.shared.model.MetabolicModel;
 import gov.lbl.glamm.shared.model.Organism;
 import gov.lbl.glamm.shared.model.OverlayDataGroup;
@@ -44,7 +46,10 @@ import gov.lbl.glamm.shared.model.Reaction;
 import gov.lbl.glamm.shared.model.Sample;
 import gov.lbl.glamm.shared.model.User;
 import gov.lbl.glamm.shared.model.interfaces.HasMeasurements;
-import gov.lbl.glamm.shared.model.Media;
+import gov.lbl.glamm.shared.model.kbase.fba.KBFBAResult;
+import gov.lbl.glamm.shared.model.kbase.fba.model.KBMetabolicModel;
+import gov.lbl.glamm.shared.model.kbase.workspace.KBWorkspaceData;
+import gov.lbl.glamm.shared.model.kbase.workspace.KBWorkspaceObjectData;
 
 import java.util.HashSet;
 import java.util.List;
@@ -171,7 +176,7 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	}
 	
 	@Override
-	public Set<Compound> populateCompoundSearch(String mapId) {
+	public Set<Compound> populateCompoundSearch(final String mapId) {
 		return PopulateCompoundSearch.populateCompoundSearch(getGlammSession(), mapId);
 	}
 	
@@ -223,8 +228,9 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	}
 
 	@Override
-	public MetabolicModel getMetabolicModel(String modelId) {
-		return GetMetabolicModel.getMetabolicModel(getGlammSession(), modelId);
+	public MetabolicModel getMetabolicModel(final String modelId) {
+		return null;
+//		return GetMetabolicModel.getMetabolicModel(getGlammSession(), modelId);
 	}
 	
 	@Override
@@ -233,12 +239,12 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	}
 
 	@Override
-	public Set<OverlayDataGroup> getOverlayData(String text) {
+	public Set<OverlayDataGroup> getOverlayData(final String text) {
 		return GetGroupData.getOverlayData(getGlammSession(), text);
 	}
 
 	@Override
-	public Set<OverlayDataGroup> getOverlayDataFromService(ExternalDataService service) {
+	public Set<OverlayDataGroup> getOverlayDataFromService(final ExternalDataService service) {
 		return GetGroupData.getOverlayDataFromService(getGlammSession(), service);
 	}
 
@@ -248,22 +254,20 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	}
 
 	@Override
-	public Organism getOrganismForTaxId(String taxId) {
+	public Organism getOrganismForTaxId(final String taxId) {
 		return GetOrganism.getOrganismForTaxId(getGlammSession(), taxId);
 	}
 	
 	@Override
-	public GlammState getStateFromHistoryToken(String token) {
+	public GlammState getStateFromHistoryToken(final String token) {
 		return GetGlammState.getStateFromHistoryToken(getGlammSession(), token);
 	}
 
 	@Override
-	public PathwayExperimentData getPathwayData(String pathwayIds, String experimentIds) throws IllegalArgumentException,
+	public PathwayExperimentData getPathwayData(final String pathwayIds, final String experimentIds) throws IllegalArgumentException,
 																								RequestException {
-		GlammSession sm = getGlammSession();
 		String fileName = this.getServletContext().getRealPath( "/data/pathway.xml" );
 		return GetExperimentPathwayData.getPathwayData(pathwayIds, experimentIds, fileName);
-//		return GetExperimentPathwayData.getDummyPathwayData(sm);
 	}
 
 	@Override
@@ -272,34 +276,49 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	}
 
 	@Override
-	public List<String> populateFbaResults(String modelId) {
+	public List<String> populateFbaResults(final String modelId) {
 		return PopulateFbaResults.populateFbaResults(getGlammSession(), modelId);
 	}
 
-//	@Override
-//	public FBA getFbaResults(String fbaId) {
-//		return GetFbaResults.getFbaResults(getGlammSession(), fbaId);
-//	}
-
 	@Override
-	public Media getMetabolicModelMedia(String mediaId, String biochemistryId) {
+	public Media getMetabolicModelMedia(final String mediaId, final String biochemistryId) {
 		return GetMetabolicModelMedia.getMetabolicModelMedia(getGlammSession(), mediaId, biochemistryId);
 	}
 
 	@Override
-	public FluxExperiment getFluxExperiment(String expId) {
+	public FluxExperiment getFluxExperiment(final String expId) {
 		return GetFluxes.getFluxExperiment(getGlammSession(), expId);
 		// TODO Auto-generated method stub
 	}
 
 	@Override
-	public FluxExperiment getFbaResults(String expId) {
+	public FluxExperiment getFbaResults(final String expId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
-//	@Override
-//	public Set<Reaction> getReactionFluxes(final FBA fba) {
-//		return GetFluxes.getFluxes(getGlammSession(), fba);
-//	}
+	@Override
+	public List<KBWorkspaceData> populateWorkspaces() {
+		return GetWorkspaceData.getWorkspaceList(getGlammSession());
+	}
+	
+	@Override
+	public List<KBWorkspaceObjectData> populateWorkspaceModels(final String workspace) {
+		return GetWorkspaceData.getWorkspaceModelList(getGlammSession(), workspace);
+	}
+	
+	@Override
+	public KBMetabolicModel getKBaseMetabolicModel(final String modelId, final String workspaceId) {
+		return GetMetabolicModel.getMetabolicModel(getGlammSession(), modelId, workspaceId);
+	}
+	
+	@Override
+	public KBFBAResult getKBaseFBAResult(final String fbaId, final String workspaceId) {
+		return GetMetabolicModel.getFBAResult(getGlammSession(), fbaId, workspaceId);
+	}
+	
+	@Override
+	public List<KBWorkspaceObjectData> populateWorkspaceFbas(final String workspace) {
+		return GetWorkspaceData.getWorkspaceFbaList(getGlammSession(), workspace);
+	}
 }

@@ -7,6 +7,7 @@ import gov.lbl.glamm.shared.model.Compound;
 import gov.lbl.glamm.shared.model.FluxExperiment;
 import gov.lbl.glamm.shared.model.Gene;
 import gov.lbl.glamm.shared.model.GlammState;
+import gov.lbl.glamm.shared.model.Media;
 import gov.lbl.glamm.shared.model.MetabolicModel;
 import gov.lbl.glamm.shared.model.Organism;
 import gov.lbl.glamm.shared.model.OverlayDataGroup;
@@ -15,7 +16,10 @@ import gov.lbl.glamm.shared.model.Reaction;
 import gov.lbl.glamm.shared.model.Sample;
 import gov.lbl.glamm.shared.model.User;
 import gov.lbl.glamm.shared.model.interfaces.HasMeasurements;
-import gov.lbl.glamm.shared.model.Media;
+import gov.lbl.glamm.shared.model.kbase.fba.KBFBAResult;
+import gov.lbl.glamm.shared.model.kbase.fba.model.KBMetabolicModel;
+import gov.lbl.glamm.shared.model.kbase.workspace.KBWorkspaceData;
+import gov.lbl.glamm.shared.model.kbase.workspace.KBWorkspaceObjectData;
 
 import java.util.List;
 import java.util.Set;
@@ -57,11 +61,15 @@ public interface GlammServiceAsync {
 	public void populateOrganisms(final Sample.DataType dataType, AsyncCallback<List<Organism>> callback);
 	public void populateReactionSearch(final String mapId, AsyncCallback<Set<Reaction>> callback);
 	public void populateSamples(final Organism organism, AsyncCallback<List<Sample>> callback);
+	public void populateWorkspaces(AsyncCallback<List<KBWorkspaceData>> workspaceList);
+	public void populateWorkspaceModels(final String workspace, AsyncCallback<List<KBWorkspaceObjectData>> modelList);
+	public void populateWorkspaceFbas(final String workspace, AsyncCallback<List<KBWorkspaceObjectData>> fbaList);
 	
 	public void getFluxExperiment(final String expId, AsyncCallback<FluxExperiment> callback);
 	public void getMetabolicModelMedia(final String mediaId, final String biochemistryId, AsyncCallback<Media> callback);
 	public void getReactionFluxes(final FluxExperiment exp, AsyncCallback<Set<Reaction>> callback);
-	
+	public void getKBaseMetabolicModel(final String modelId, final String workspaceId, AsyncCallback<KBMetabolicModel> callback);
+	public void getKBaseFBAResult(final String fbaId, final String workspaceId, AsyncCallback<KBFBAResult> callback);
 	public void nonDBTest(AsyncCallback<String> callback);
 	public void getStateFromHistoryToken(String token, AsyncCallback<GlammState> callback);
 	
