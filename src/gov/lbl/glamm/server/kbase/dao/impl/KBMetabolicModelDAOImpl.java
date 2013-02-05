@@ -152,14 +152,6 @@ public class KBMetabolicModelDAOImpl implements KBMetabolicModelDAO {
 		model.setStatus(kbModel.status);
 		model.setType(kbModel.type);
 		
-//		System.out.println("PROCESSING MODEL\n----------------");
-//		System.out.println("id: " + kbModel.id);
-//		System.out.println("genome: " + kbModel.genome);
-//		System.out.println("name: " + kbModel.name);
-//		System.out.println("num reactions: " + kbModel.reactions.size());
-//		System.out.println("num compounds: " + kbModel.compounds.size());
-//		System.out.println("num biomasses: " + kbModel.biomasses.size());
-		
 		Map<String, String> biochem = getBiochemistryMap(kbModel);
 
 		Set<String> cpdIds = new HashSet<String>();
@@ -170,7 +162,7 @@ public class KBMetabolicModelDAOImpl implements KBMetabolicModelDAO {
 		List<String> rxnIds = new ArrayList<String>();
 		for(ModelReaction mRxn : kbModel.reactions) {
 			rxnIds.add(biochem.get(mRxn.reaction));
-			System.out.println(mRxn.id + "\t" + mRxn.name + "\t" + mRxn.reaction);
+//			System.out.println(mRxn.id + "\t" + mRxn.name + "\t" + mRxn.reaction);
 		}
 	
 		ReactionDAO reactionDao = new ReactionGlammDAOImpl(sm);
@@ -216,11 +208,11 @@ public class KBMetabolicModelDAOImpl implements KBMetabolicModelDAO {
 	}
 	
 	private KBFBAResult processFBA(FBA fba) {
-		System.out.println("PROCESSING FBA RESULTS");
-		System.out.println(fba.id);
-		System.out.println(fba.model);
-		System.out.println(fba.workspace);
-		System.out.println(fba.objective);
+//		System.out.println("PROCESSING FBA RESULTS");
+//		System.out.println(fba.id);
+//		System.out.println(fba.model);
+//		System.out.println(fba.workspace);
+//		System.out.println(fba.objective);
 		
 		KBFBAResult result = new KBFBAResult();
 		
@@ -440,7 +432,7 @@ public class KBMetabolicModelDAOImpl implements KBMetabolicModelDAO {
 			Xref xref = rxn.getXrefSet().getXrefForDbName("LIGAND-RXN");
 			if (xref != null) {
 				String keggId = rxn.getXrefSet().getXrefForDbName("LIGAND-RXN").getXrefId();
-				System.out.println(rxn.getGuid() + " - " + keggId);
+//				System.out.println(rxn.getGuid() + " - " + keggId);
 				Measurement m = new Measurement(fba.id, "", kegg2ReactionFlux.get(keggId).getValue(), 1, rxn.getGuid());
 				measurements.add(m);
 				rxn.getMeasurementSet().setMeasurements(measurements);
@@ -449,8 +441,8 @@ public class KBMetabolicModelDAOImpl implements KBMetabolicModelDAO {
 		result.setReactionValues(reactions);
 		
 
-		System.out.println("-----------------");
-	    System.out.println("done processing!!");
+//		System.out.println("-----------------");
+//	    System.out.println("done processing!!");
 
 		
 		

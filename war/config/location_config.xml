@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<Location>
+    <Deployment domain="kbase" />
+    
+    <Server
+    	name="lbl"
+    	baseurl="http://glamm.lbl.gov/"
+    	authentication="http://www.kbase.us/services/authorization"
+    	workspace="http://www.kbase.us/services/workspace"
+    	fba="http://www.kbase.us/services/fbaServices" 
+    	servlet="" 
+    	rpc="" />
+    <Server
+        name="kbase"
+        baseurl=""
+    	authentication="http://www.kbase.us/services/authorization"
+    	workspace="http://www.kbase.us/services/workspace"
+    	fba="http://www.kbase.us/services/fbaServices" 
+    	servlet=""
+    	rpc="" />
+    <Server
+        name="kbase-labs"
+        baseurl=""
+    	authentication="http://www.kbase.us/services/authorization"
+    	workspace="http://www.kbase.us/services/workspace"
+    	fba="http://www.kbase.us/services/fbaServices"
+    	servlet=""
+    	rpc="" />
+</Location>

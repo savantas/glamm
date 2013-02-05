@@ -6,6 +6,7 @@ import gov.lbl.glamm.client.map.events.ViewResizedEvent;
 import gov.lbl.glamm.client.map.rpc.GlammServiceAsync;
 import gov.lbl.glamm.shared.model.User;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -228,7 +229,10 @@ public class LoginPresenter {
 		});
 
 		UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
-		urlBuilder.setPath("glammServlet");
+		if (GWT.isProdMode()) 
+			urlBuilder.setPath(Window.Location.getPath() + "glamm/glammServlet");
+		else
+			urlBuilder.setPath("glamm/glammServlet");
 		urlBuilder.setParameter("action", ACTION_LOGIN);
 
 		view.getForm().setAction(urlBuilder.buildString());
