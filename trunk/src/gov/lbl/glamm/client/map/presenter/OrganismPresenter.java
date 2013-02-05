@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -257,7 +258,10 @@ public class OrganismPresenter {
 
 					UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
 					urlBuilder.setParameter("action", ACTION_DOWNLOAD_ORGANISM);
-					urlBuilder.setPath("glammServlet");
+					if (GWT.isProdMode()) 
+						urlBuilder.setPath(Window.Location.getPath() + "glamm/glammServlet");
+					else
+						urlBuilder.setPath("glamm/glammServlet");
 					urlBuilder.setParameter(RequestParameters.TAXONOMY_ID, organism.getTaxonomyId());
 
 					view.minimize();

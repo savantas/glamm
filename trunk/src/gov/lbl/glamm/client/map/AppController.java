@@ -1185,9 +1185,12 @@ public class AppController {
 
 		final String ACTION_GEN_CITATIONS = "genCitationsPopup";
 		UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
-		urlBuilder.setPath("glammServlet");
+		if (GWT.isProdMode()) 
+			urlBuilder.setPath(Window.Location.getPath() + "glamm/glammServlet");
+		else
+			urlBuilder.setPath("glamm/glammServlet");
 		urlBuilder.setParameter("action", ACTION_GEN_CITATIONS);
-
+		
 		citationsPresenter.setDefaultImageUrl(GlammClientBundle.INSTANCE
 				.glammLogoDefault().getSafeUri().asString());
 		citationsPresenter.setMouseOverImageUrl(GlammClientBundle.INSTANCE
@@ -1203,11 +1206,15 @@ public class AppController {
 	private void loadHelp() {
 
 		UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
-		urlBuilder.setPath("tutorial/index.html");
-
+		if (GWT.isProdMode())
+			urlBuilder.setPath(Window.Location.getPath() + "tutorial/index.html");
+		else
+			urlBuilder.setPath("tutorial/index.html");
+		
 		helpPresenter.setDefaultImageUrl(GlammClientBundle.INSTANCE
 				.helpIconDefault().getSafeUri().asString());
 		helpPresenter.setPopupContentUrl(urlBuilder.buildString());
+		helpPresenter.setLinkTarget(ImagePopupPresenter.LinkTarget.NEW_WINDOW);
 
 		helpView.setImageSize("32px", "32px");
 		helpView.setPopupSize("90em", "50em");

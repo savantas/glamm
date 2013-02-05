@@ -8,6 +8,7 @@ import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.user.client.Window;
 
 /**
  * Presenter for an image that displays a popup when clicked.  The image may change depending on whether or not the
@@ -56,12 +57,20 @@ public class ImagePopupPresenter {
 		public void 				showPopup(String url);
 	}
 
+	public enum LinkTarget {
+		POPUP,
+		NEW_WINDOW
+	}
+	
+	
 	private View view = null;
 
 	private String defaultImageUrl = null;
 	private String mouseOverImageUrl = null;
 	private String popupContentUrl = null;
 
+	private LinkTarget linkTarget;
+	
 	/**
 	 * Constructor
 	 * @param view The View object for this presenter.
@@ -70,15 +79,16 @@ public class ImagePopupPresenter {
 
 		this.view = view;
 
+		linkTarget = LinkTarget.POPUP;
 		bindView();
 	}
-
+	
 	private void bindView() {
 
 		((HasClickHandlers) view.getImageMouseHandlers()).addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {				
-				view.showPopup(popupContentUrl);
+				activatePopup(popupContentUrl);
 			}
 		});
 
@@ -99,6 +109,26 @@ public class ImagePopupPresenter {
 
 	}
 
+	public void setLinkTarget(LinkTarget target) {
+		this.linkTarget = target;
+	}
+	
+	public void activatePopup(String url) {
+		System.out.println("here!");
+		switch (linkTarget) {
+			case NEW_WINDOW :
+				Window.open(url, "_blank", "");
+				// open in new window
+				break;
+			case POPUP :
+				view.showPopup(url);
+				break;
+			default :
+				view.showPopup(url);
+				break;
+		}
+	}
+	
 	/**
 	 * Sets the default image url, i.e. the image that is displayed when the mouse cursor is not over the image.
 	 * @param url The url.

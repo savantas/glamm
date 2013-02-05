@@ -3,6 +3,7 @@ package gov.lbl.glamm.client.map.presenter;
 import gov.lbl.glamm.client.map.events.OrganismUploadEvent;
 import gov.lbl.glamm.client.map.view.OrganismUploadView;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -123,7 +124,10 @@ public class OrganismUploadPresenter {
 		
 		// set up form
 		UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
-		urlBuilder.setPath("glammServlet");
+		if (GWT.isProdMode()) 
+			urlBuilder.setPath(Window.Location.getPath() + "glamm/glammServlet");
+		else
+			urlBuilder.setPath("glamm/glammServlet");
 		urlBuilder.setParameter("action", ACTION_UPLOAD_ORGANISM);
 		view.getForm().setAction(urlBuilder.buildString());
 		view.getForm().setEncoding(FormPanel.ENCODING_MULTIPART);

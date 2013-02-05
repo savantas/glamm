@@ -97,39 +97,6 @@ public class KBWorkspaceDAOImpl implements KBWorkspaceDAO {
 	@Override
 	public List<KBWorkspaceObjectData> getWorkspaceModelList(final String workspaceName) {
 		return getWorkspaceObjectData(workspaceName, ObjectType.MODEL);
-//		List<KBWorkspaceObjectData> modelList = new ArrayList<KBWorkspaceObjectData>();
-//		
-//		list_workspace_objects_params params = new list_workspace_objects_params();
-//		params.showDeletedObject = 0;
-//		params.workspace = workspaceName;
-//		params.type = "Model";
-//		
-//		if (sm.getUser() != User.guestUser())
-//			params.auth = sm.getUser().getAuth();
-//		
-//		try {
-//			List<object_metadata> objDataList = wsClient.list_workspace_objects(params);
-//			for (object_metadata metadata : objDataList) {
-//				KBWorkspaceObjectData data = new KBWorkspaceObjectData();
-//				data.setId(metadata.id);
-//				data.setOwner(metadata.owner);
-//				data.setCommand(metadata.command);
-//				data.setChecksum(metadata.chsum);
-//				data.setModDate(metadata.moddate);
-//				data.setWorkspace(metadata.workspace);
-//				data.setMetadataMap(metadata.metadata);
-//				data.setRef(metadata.ref);
-//				data.setLastModifier(metadata.lastmodifier);
-//				data.setType(metadata.type);
-//				data.setInstance(metadata.instance);
-//				
-//				modelList.add(data);
-//			}
-//			return modelList;
-//		} catch (Exception e) {
-//			modelList.clear();
-//		}
-//		return modelList;
 	}
 	
 	@Override

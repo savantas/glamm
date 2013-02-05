@@ -18,6 +18,7 @@ import org.vectomatic.dom.svg.OMSVGGElement;
 import org.vectomatic.dom.svg.OMSVGSVGElement;
 import org.vectomatic.dom.svg.utils.SVGConstants;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.user.client.Window;
@@ -209,9 +210,15 @@ public class AnnotatedMapData implements Serializable {
 	public void setDescriptor(final AnnotatedMapDescriptor descriptor) {
 		this.descriptor = descriptor;
 		UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
+		if (GWT.isProdMode()) {
+			iconUrl = urlBuilder.setPath(Window.Location.getPath() + PATH_ICON + descriptor.getIcon()).buildString();
+			svgUrl = urlBuilder.setPath(Window.Location.getPath() + PATH_SVG + descriptor.getSvg()).buildString();	
+		}
+		else {
+			iconUrl = urlBuilder.setPath(PATH_ICON + descriptor.getIcon()).buildString();
+			svgUrl = urlBuilder.setPath(PATH_SVG + descriptor.getSvg()).buildString();	
+		}
 
-		iconUrl = urlBuilder.setPath(PATH_ICON + descriptor.getIcon()).buildString();
-		svgUrl = urlBuilder.setPath(PATH_SVG + descriptor.getSvg()).buildString();	
 	}
 
 

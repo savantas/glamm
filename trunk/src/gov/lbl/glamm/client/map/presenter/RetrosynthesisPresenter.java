@@ -32,6 +32,7 @@ import java.util.Set;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.ImageResourceCell;
 import com.google.gwt.cell.client.SafeHtmlCell;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -378,7 +379,10 @@ public class RetrosynthesisPresenter {
 
 				UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
 				urlBuilder.setParameter("action", ACTION_GET_DIRECTIONS);
-				urlBuilder.setPath("glammServlet");
+				if (GWT.isProdMode()) 
+					urlBuilder.setPath(Window.Location.getPath() + "glamm/glammServlet");
+				else
+					urlBuilder.setPath("glamm/glammServlet");
 				urlBuilder.setParameter(RequestParameters.CPD_SRC, cpdSrcXref.getXrefId());
 				urlBuilder.setParameter(RequestParameters.CPD_DST, cpdDstXref.getXrefId());
 				for(String dbName : mapData.getCpdDbNames()) 
