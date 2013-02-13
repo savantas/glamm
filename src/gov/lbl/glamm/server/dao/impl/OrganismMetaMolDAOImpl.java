@@ -1,5 +1,6 @@
 package gov.lbl.glamm.server.dao.impl;
 
+import gov.lbl.glamm.server.ConfigurationManager;
 import gov.lbl.glamm.server.GlammDbConnectionPool;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.OrganismDAO;
@@ -42,6 +43,8 @@ public class OrganismMetaMolDAOImpl implements OrganismDAO {
 
 	@Override
 	public List<Organism> getAllOrganismsWithDataForType(Sample.DataType dataType) {
+		if (ConfigurationManager.getDeploymentDomain() == ConfigurationManager.DeploymentDomain.KBASE)
+			return null;
 		
 		ArrayList<Organism> organisms = null;
 		
@@ -89,7 +92,9 @@ public class OrganismMetaMolDAOImpl implements OrganismDAO {
 
 	@Override
 	public Map<String, Set<Organism>> getTransgenicCandidatesForEcNums(Set<String> ecNums) {
-
+		if (ConfigurationManager.getDeploymentDomain() == ConfigurationManager.DeploymentDomain.KBASE)
+			return null;
+		
 		Map<String, Set<Organism>> ecNum2Organisms = null;
 
 		if(!sm.getServerConfig().hasMetagenomeHost() || ecNums == null || ecNums.isEmpty())
@@ -145,6 +150,8 @@ public class OrganismMetaMolDAOImpl implements OrganismDAO {
 
 	@Override
 	public Organism getOrganismForTaxonomyId(final String taxonomyId) {
+		if (ConfigurationManager.getDeploymentDomain() == ConfigurationManager.DeploymentDomain.KBASE)
+			return null;
 		
 		Organism organism = null;
 

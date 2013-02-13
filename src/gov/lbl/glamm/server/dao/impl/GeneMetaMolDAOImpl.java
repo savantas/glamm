@@ -1,5 +1,6 @@
 package gov.lbl.glamm.server.dao.impl;
 
+import gov.lbl.glamm.server.ConfigurationManager;
 import gov.lbl.glamm.server.GlammDbConnectionPool;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.GeneDAO;
@@ -38,6 +39,9 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 	@Override
 	public Set<String> getEcNumsForOrganism(String taxonomyId) {
 		Set<String> ecNums = null;
+		
+		if (ConfigurationManager.getDeploymentDomain() == ConfigurationManager.DeploymentDomain.KBASE)
+			return ecNums;
 
 		if(!sm.getServerConfig().hasMetagenomeHost())
 			return ecNums;
@@ -84,6 +88,9 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 	public Set<Gene> getGenesForEcNums(String taxonomyId, Collection<String> ecNums) {
 
 		Set<Gene> genes = null;
+		
+		if (ConfigurationManager.getDeploymentDomain() == ConfigurationManager.DeploymentDomain.KBASE)
+			return genes;
 
 		if(!sm.getServerConfig().hasMetagenomeHost())
 			return new HashSet<Gene>();
@@ -123,6 +130,9 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 	@Override
 	public Set<Gene> getGenesForVimssIds(String taxonomyId, Collection<String> extIds) {
 		Set<Gene> genes = null;
+		
+		if (ConfigurationManager.getDeploymentDomain() == ConfigurationManager.DeploymentDomain.KBASE)
+			return null;
 
 		if(!sm.getServerConfig().hasMetagenomeHost())
 			return new HashSet<Gene>();
@@ -161,6 +171,9 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 	
 	@Override
 	public Set<Gene> getGenesForVimssIds(Collection<String> ids) {
+		if (ConfigurationManager.getDeploymentDomain() == ConfigurationManager.DeploymentDomain.KBASE)
+			return new HashSet<Gene>();
+		
 		if (!sm.getServerConfig().hasMetagenomeHost() || ids == null || ids.size() == 0)
 			return new HashSet<Gene>();
 		
@@ -194,6 +207,9 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 	@Override
 	public Set<Gene> getGenesForOrganism(String taxonomyId) {
 
+		if (ConfigurationManager.getDeploymentDomain() == ConfigurationManager.DeploymentDomain.KBASE)
+			return new HashSet<Gene>();
+		
 		Set<Gene> genes = null;
 
 		if(!sm.getServerConfig().hasMetagenomeHost())
@@ -231,6 +247,8 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 
 	@Override
 	public Set<Gene> getGenesForRxnIds(String taxonomyId, String[] rxnIds) {
+		if (ConfigurationManager.getDeploymentDomain() == ConfigurationManager.DeploymentDomain.KBASE)
+			return new HashSet<Gene>();
 
 		Set<Gene> genes = null;
 
@@ -315,6 +333,9 @@ public class GeneMetaMolDAOImpl implements GeneDAO {
 	 * @return The set of taxonomy ids.
 	 */
 	public Set<String> getTaxonomyIdsForVimssIds(Collection<String> vimssIds) {
+		if (ConfigurationManager.getDeploymentDomain() == ConfigurationManager.DeploymentDomain.KBASE)
+			return null;
+		
 		if(vimssIds == null || vimssIds.isEmpty())
 			return null;
 

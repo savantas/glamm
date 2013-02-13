@@ -1,5 +1,6 @@
 package gov.lbl.glamm.server.dao.impl;
 
+import gov.lbl.glamm.server.ConfigurationManager;
 import gov.lbl.glamm.server.GlammDbConnectionPool;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.ExperimentDAO;
@@ -50,6 +51,9 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 
 	@Override
 	public List<Sample.DataType> getAvailableSampleDataTypes() {
+		if (ConfigurationManager.getDeploymentDomain() == ConfigurationManager.DeploymentDomain.KBASE)
+			return new ArrayList<Sample.DataType>();
+		
 
 		List<Sample.DataType> types = null;
 		String sql = "select distinct(e.expType) " +
@@ -84,6 +88,8 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 
 	@Override
 	public Experiment getExperiment(String experimentId) {
+		if (ConfigurationManager.getDeploymentDomain() == ConfigurationManager.DeploymentDomain.KBASE)
+			return null;
 
 		Experiment experiment = null;
 
@@ -145,6 +151,8 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 
 	@Override
 	public List<Experiment> getAllExperimentsForTaxonomyId(String taxonomyId) {
+		if (ConfigurationManager.getDeploymentDomain() == ConfigurationManager.DeploymentDomain.KBASE)
+			return new ArrayList<Experiment>();
 
 		List<Experiment> experiments = null;
 
@@ -215,6 +223,9 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 
 	@Override
 	public List<Sample> getAllSamplesForTaxonomyId(String taxonomyId) {
+		
+		if (ConfigurationManager.getDeploymentDomain() == ConfigurationManager.DeploymentDomain.KBASE)
+			return new ArrayList<Sample>();
 
 		List<Sample> samples = null;
 
@@ -277,9 +288,11 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 
 	@Override
 	public Map<String, Set<Measurement>> getMeasurements(String experimentId, String sampleId) {
-
 		Map<String, Set<Measurement>> id2Measurement = new HashMap<String, Set<Measurement>>();
 
+		if (ConfigurationManager.getDeploymentDomain() == ConfigurationManager.DeploymentDomain.KBASE)
+			return id2Measurement;
+		
 		if(experimentId == null || sampleId == null)
 			return id2Measurement;
 
@@ -326,6 +339,9 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 	public Map<String, Set<Measurement>> getMeasurementsForIds(String experimentId, String sampleId, Collection<String> ids) {
 
 		Map<String, Set<Measurement>> id2Measurement = new HashMap<String, Set<Measurement>>();
+		
+		if (ConfigurationManager.getDeploymentDomain() == ConfigurationManager.DeploymentDomain.KBASE)
+			return id2Measurement;
 
 		if(experimentId == null || sampleId == null || ids == null || ids.isEmpty())
 			return id2Measurement;
@@ -376,6 +392,9 @@ public class ExperimentMicroarrayDAOImpl implements ExperimentDAO {
 	public String getTaxonomyIdForExperimentId(String experimentId) {
 		String taxonomyId = null;
 
+		if (ConfigurationManager.getDeploymentDomain() == ConfigurationManager.DeploymentDomain.KBASE)
+			return taxonomyId;
+		
 		String sql = "select C.taxonomyId from microarray.Exp E join microarray.Chip C on (C.id=E.chipId) where E.id=?;";
 
 		try {

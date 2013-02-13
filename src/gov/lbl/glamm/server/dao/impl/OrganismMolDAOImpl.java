@@ -1,5 +1,6 @@
 package gov.lbl.glamm.server.dao.impl;
 
+import gov.lbl.glamm.server.ConfigurationManager;
 import gov.lbl.glamm.server.GlammDbConnectionPool;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.OrganismDAO;
@@ -42,7 +43,7 @@ public class OrganismMolDAOImpl implements OrganismDAO {
 
 	@Override
 	public List<Organism> getAllOrganismsWithDataForType(Sample.DataType dataType) {
-
+		
 		List<Organism> organisms = null;
 
 		String sql = "";
@@ -56,7 +57,8 @@ public class OrganismMolDAOImpl implements OrganismDAO {
 			"and a.requesterId in (" + (sm != null ? GlammUtils.joinCollection(sm.getUser().getGroupIds()) : "1") + ") and a.requesterType='group' and a.read=1 " +
 			"order by t.name;";
 		}
-		else if(dataType != Sample.DataType.SESSION) {
+		else if(dataType != Sample.DataType.SESSION &&
+				ConfigurationManager.getDeploymentDomain() == ConfigurationManager.DeploymentDomain.LBL) {
 			sql = "select distinct(c.taxonomyId), t.name " + 
 			"from microarray.Exp e " +
 			"join microarray.ExpType et on (e.expType=et.expType) " +

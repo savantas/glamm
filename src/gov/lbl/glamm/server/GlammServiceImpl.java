@@ -73,6 +73,7 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	
 	private static final String SERVER_CONFIG_XML_FILE_NAME		= "/config/server_config.xml";
 	private static final String EXTERNAL_SERVICES_XML_FILE_NAME = "/config/external_services.xml";
+	private static final String LOCATION_CONFIG_XML_FILE_NAME	= "/config/location_config.xml";
 	
 	private static Set<GlammSession> sessions;
 	
@@ -213,7 +214,7 @@ public class GlammServiceImpl extends RemoteServiceServlet
 		try {
 			ServletContext sc = this.getServletContext();
 			ExternalDataServiceManager.init(sc.getResource(EXTERNAL_SERVICES_XML_FILE_NAME).toString());
-			ConfigurationManager.init(sc.getResource(SERVER_CONFIG_XML_FILE_NAME).toString());
+			ConfigurationManager.init(sc.getResource(SERVER_CONFIG_XML_FILE_NAME).toString(), sc.getResource(LOCATION_CONFIG_XML_FILE_NAME).toString());
 		} catch(Exception e) {
 			e.printStackTrace();
 		}

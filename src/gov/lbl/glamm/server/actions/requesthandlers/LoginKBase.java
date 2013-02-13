@@ -3,6 +3,7 @@ package gov.lbl.glamm.server.actions.requesthandlers;
 import gov.doe.kbase.auth.AuthService;
 import gov.doe.kbase.auth.AuthUser;
 import gov.lbl.glamm.client.map.presenter.LoginPresenter;
+import gov.lbl.glamm.server.ConfigurationManager;
 import gov.lbl.glamm.server.FormRequestHandler;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.RequestHandler;
@@ -23,7 +24,8 @@ import javax.servlet.http.HttpServletResponse;
 public class LoginKBase implements RequestHandler {
 
 	private static final String LOGIN_ERROR_MSG = "Login incorrect - please try again.";
-	private static final String KBASE_AUTH_URL = "http://140.221.92.231/services/authorization";
+	private static final String KBASE_AUTH_URL = ConfigurationManager.getKBaseServiceURL("authentication"); 
+	//"http://140.221.92.231/services/authorization";
 
 	static {
 		AuthService.setServiceUrl(KBASE_AUTH_URL);
@@ -44,9 +46,6 @@ public class LoginKBase implements RequestHandler {
 			return;
 		}
 
-//		AuthService.setServiceUrl(KBASE_AUTH_URL);
-//		AuthService authService = new AuthService(kbaseLoginURL);
-		
 		try {
 			AuthUser kbUser = AuthService.login(email, password);
 			final User user = new User(kbUser.getUserId(), new HashSet<String>(), kbUser.getEmail());

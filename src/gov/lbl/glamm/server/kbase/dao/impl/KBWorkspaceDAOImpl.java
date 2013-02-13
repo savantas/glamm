@@ -5,6 +5,7 @@ import gov.doe.kbase.workspaceservice.list_workspaces_params;
 import gov.doe.kbase.workspaceservice.object_metadata;
 import gov.doe.kbase.workspaceservice.workspaceService;
 import gov.doe.kbase.workspaceservice.workspace_metadata;
+import gov.lbl.glamm.server.ConfigurationManager;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.kbase.dao.KBWorkspaceDAO;
 import gov.lbl.glamm.shared.model.User;
@@ -49,8 +50,8 @@ public class KBWorkspaceDAOImpl implements KBWorkspaceDAO {
 
 	}
 	
-	// TODO: get this in the config.
-	private static final String workspaceURL = "http://bio-data-1.mcs.anl.gov/services/fba_gapfill";
+	private static final String workspaceURL = ConfigurationManager.getKBaseServiceURL("workspace"); 
+	//"http://bio-data-1.mcs.anl.gov/services/fba_gapfill";
 	private GlammSession sm;
 	private static workspaceService wsClient;
 	
