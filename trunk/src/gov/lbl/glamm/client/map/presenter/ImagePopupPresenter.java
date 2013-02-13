@@ -114,11 +114,9 @@ public class ImagePopupPresenter {
 	}
 	
 	public void activatePopup(String url) {
-		System.out.println("here!");
 		switch (linkTarget) {
 			case NEW_WINDOW :
 				Window.open(url, "_blank", "");
-				// open in new window
 				break;
 			case POPUP :
 				view.showPopup(url);

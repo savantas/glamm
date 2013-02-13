@@ -19,6 +19,7 @@ public class GlammServlet extends HttpServlet {
 
 	private static final String REQUEST_HANDLERS_XML_FILE_NAME	= "/config/request_handlers.xml";
 	private static final String SERVER_CONFIG_XML_FILE_NAME		= "/config/server_config.xml";
+	private static final String LOCATION_CONFIG_XML_FILE_NAME	= "/config/location_config.xml";
 
 	private RequestHandlerFactory rhFactory = null;
 
@@ -55,7 +56,7 @@ public class GlammServlet extends HttpServlet {
 		try {
 			ServletContext sc = this.getServletContext();
 			rhFactory = new RequestHandlerFactory(sc.getResource(REQUEST_HANDLERS_XML_FILE_NAME).toString());
-			ConfigurationManager.init(sc.getResource(SERVER_CONFIG_XML_FILE_NAME).toString());
+			ConfigurationManager.init(sc.getResource(SERVER_CONFIG_XML_FILE_NAME).toString(), sc.getResource(LOCATION_CONFIG_XML_FILE_NAME).toString());
 		} catch(Exception e) {
 			e.printStackTrace();
 		}

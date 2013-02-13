@@ -23,14 +23,41 @@ import org.xml.sax.SAXException;
  */
 public class ConfigurationManager {
 
+	public enum DeploymentDomain {
+		LBL("lbl"),
+		KBASE("kbase");
+		
+		private String name;
+		private DeploymentDomain(String name) {
+			this.name = name;
+		}
+		
+		public String getName() {
+			return name;
+		}
+		
+		public static DeploymentDomain fromString(String name) {
+			name = name.toLowerCase();
+			for (DeploymentDomain domain : DeploymentDomain.values()) {
+				if (domain.getName().equals(name))
+					return domain;
+			}
+			return null;	// returns null if we give it an unknown name
+		}
+	}
+	
 	public static final String DEFAULT_DOMAIN = "default";
 	
 	private static Map<String, ServerConfig> serverDomain2ServerConfig;
 	private static Map<String, DbConfig> name2DbConfig;
+	private static Map<String, String> kbaseServiceName2URL;
+	private static DeploymentDomain glammDomain;
 	
 	static {
 		serverDomain2ServerConfig = new HashMap<String, ServerConfig>();
 		name2DbConfig = new HashMap<String, DbConfig>();
+		kbaseServiceName2URL = new HashMap<String, String>();
+		glammDomain = DeploymentDomain.LBL;
 	}
 	
 	private ConfigurationManager() {};
@@ -67,27 +94,51 @@ public class ConfigurationManager {
 		return ServerConfig.create(map);
 	}
 	
+	private static DeploymentDomain parseGlammLocationElement(final Element element) {
+		String attribute = "domain";
+		if (!element.hasAttribute(attribute))
+			throw new RuntimeException("GLAMM location configuration missing required attribute '" + attribute + "'");
+		
+		DeploymentDomain domain = DeploymentDomain.fromString(element.getAttribute(attribute));
+		if (domain == null)
+			throw new RuntimeException("Unknown GLAMM deployment location '" + element.getAttribute(attribute) + "'");
+		
+		return domain;
+	}
+	
+	private static void parseKBaseServiceLocation(final Element element) {
+		String nameAttribute = "name";
+		String urlAttribute = "url";
+		
+		if (!element.hasAttribute(nameAttribute) || !element.hasAttribute(urlAttribute))
+			throw new RuntimeException("KBase service location configuration must have two attributes: 'name' and 'url'");
+		
+		String serviceName = element.getAttribute(nameAttribute).toLowerCase();
+		String serviceUrl = element.getAttribute(urlAttribute);
+		
+		kbaseServiceName2URL.put(serviceName, serviceUrl);
+	}
 	
 	/**
 	 * Initializes server-to-configuration mapping - should be called during servlet initialization.
-	 * @param uri The uri of the server_config.xml file.
+	 * @param serverConfigURI The uri of the server_config.xml file.
 	 * @throws ParserConfigurationException
 	 * @throws IOException
 	 * @throws SAXException
 	 */
-	public static void init(final String uri) 
+	public static void init(final String serverConfigURI, final String kbaseServiceConfigURI) 
 	throws ParserConfigurationException, IOException, SAXException {
 		
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
-		Document doc = builder.parse(uri);
+		Document doc = builder.parse(serverConfigURI);
 		
 		// parse the database configurations
 		{
 			String tagName = DbConfig.TAG_NAME;
 			NodeList nodeList = doc.getElementsByTagName(tagName);
 			if(nodeList == null || nodeList.getLength() == 0)
-				throw new RuntimeException("No instances of " + tagName + " specified in " + uri);
+				throw new RuntimeException("No instances of " + tagName + " specified in " + serverConfigURI);
 			for(int i = 0; i < nodeList.getLength(); i++) {
 				DbConfig dbConfig = parseDbConfigElement((Element) nodeList.item(i));
 				name2DbConfig.put(dbConfig.getName(), dbConfig);
@@ -99,12 +150,32 @@ public class ConfigurationManager {
 			String tagName = ServerConfig.TAG_NAME;
 			NodeList nodeList = doc.getElementsByTagName(tagName);
 			if(nodeList == null || nodeList.getLength() == 0)
-				throw new RuntimeException("No instances of " + tagName + " specified in " + uri);
+				throw new RuntimeException("No instances of " + tagName + " specified in " + serverConfigURI);
 			for(int i = 0; i < nodeList.getLength(); i++) {
 				ServerConfig serverConfig = parseServerConfigElement((Element) nodeList.item(i));
 				serverDomain2ServerConfig.put(serverConfig.getServerDomain(), serverConfig);
 			}
-		}	
+		}
+		
+		doc = builder.parse(kbaseServiceConfigURI);
+		
+		// parse the KBase service URL locations
+		{
+			String deploymentTagName = "Deployment";
+			NodeList nodeList = doc.getElementsByTagName(deploymentTagName);
+			if (nodeList == null || nodeList.getLength() == 0)
+				throw new RuntimeException("No instances of " + deploymentTagName + " specified in " + kbaseServiceConfigURI);
+			if (nodeList.getLength() > 1)
+				throw new RuntimeException("More than one instance of " + deploymentTagName + " specified in " + kbaseServiceConfigURI);
+			glammDomain = parseGlammLocationElement((Element) nodeList.item(0));
+
+		
+			String serviceTagName = "Service";
+			nodeList = doc.getElementsByTagName(serviceTagName);
+			for (int i=0; i<nodeList.getLength(); i++) {
+				parseKBaseServiceLocation((Element) nodeList.item(i));
+			}
+		}
 	}
 	
 	/**
@@ -127,5 +198,22 @@ public class ConfigurationManager {
 		if(defaultConfig == null)
 			throw new RuntimeException("Could not find server configuration for " + serverName);
 		return defaultConfig;
+	}
+	
+	/**
+	 * Gets the URL location for a given KBase service name.
+	 * (Not to be confused with an External Service - those are http (e.g. JSON-RPC or REST) -based data sources)
+	 * @param 
+	 */
+	public static String getKBaseServiceURL(final String serviceName) {
+		return (kbaseServiceName2URL.get(serviceName.toLowerCase()));
+	}
+	
+	/**
+	 * Gets the deployment domain for GLAMM.
+	 * As of February 2013, should be either 'lbl' or 'kbase'
+	 */
+	public static DeploymentDomain getDeploymentDomain() {
+		return glammDomain;
 	}
 }

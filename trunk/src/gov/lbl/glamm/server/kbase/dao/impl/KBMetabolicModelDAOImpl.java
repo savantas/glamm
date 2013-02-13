@@ -18,6 +18,7 @@ import gov.doe.kbase.fba.get_biochemistry_params;
 import gov.doe.kbase.fba.get_fbas_params;
 import gov.doe.kbase.fba.get_models_params;
 import gov.doe.kbase.fba.term;
+import gov.lbl.glamm.server.ConfigurationManager;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.CompoundDAO;
 import gov.lbl.glamm.server.dao.ReactionDAO;
@@ -51,7 +52,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class KBMetabolicModelDAOImpl implements KBMetabolicModelDAO {
-	private static final String fbaURL = "http://bio-data-1.mcs.anl.gov/services/fba";
+	private static final String fbaURL = ConfigurationManager.getKBaseServiceURL("fba"); //"http://bio-data-1.mcs.anl.gov/services/fba";
 	private GlammSession sm;
 	private static fbaModelServices fbaClient;
 
