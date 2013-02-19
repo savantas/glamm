@@ -29,6 +29,7 @@ implements Serializable, HasSynonyms, HasMeasurements, HasType {
 	public static transient final String SYNONYM_TYPE_SESSION	= "S";
 	public static transient final String SYNONYM_TYPE_SYNONYM   = "synonym";
 	public static transient final String SYNONYM_TYPE_VIMSS		= "VIMSS";
+	public static transient final String SYNONYM_TYPE_KBASE		= "KBase";
 
 	private Set<String> ecNums;
 	private Set<String> molTaxonomyIds;

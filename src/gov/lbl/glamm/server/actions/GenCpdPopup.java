@@ -1,9 +1,11 @@
 package gov.lbl.glamm.server.actions;
 
+import gov.lbl.glamm.server.ConfigurationManager;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.CompoundDAO;
 import gov.lbl.glamm.server.dao.impl.CompoundGlammDAOImpl;
 import gov.lbl.glamm.server.util.GlammUtils;
+import gov.lbl.glamm.shared.DeploymentDomain;
 import gov.lbl.glamm.shared.model.Compound;
 import gov.lbl.glamm.shared.model.Organism;
 import gov.lbl.glamm.shared.model.util.Xref;
@@ -123,16 +125,25 @@ public class GenCpdPopup {
 		
 		if(keggId == null)
 			return linkText;
+
+		if (ConfigurationManager.getDeploymentDomain() == DeploymentDomain.LBL) { 
 		
-		String cpdLink = "<a href=http://" + sm.getServerConfig().getIsolateHost() + "/cgi-bin/fetchCompound.cgi?keggCid=" + keggId;
-		cpdLink += 	
-			taxonomyId != null && 
-			!taxonomyId.isEmpty() && 
-			!taxonomyId.equals(Organism.GLOBAL_MAP_TAXONOMY_ID) && 
-			!sm.isSessionOrganism(taxonomyId) &&
-			!taxonomyId.equals("undefined") ? "&taxId=" + taxonomyId : "";
-		cpdLink += " target=\"_new\">" + linkText + "</a>";
-		return cpdLink;
+			String cpdLink = "<a href=http://" + sm.getServerConfig().getIsolateHost() + "/cgi-bin/fetchCompound.cgi?keggCid=" + keggId;
+			cpdLink += 	
+				taxonomyId != null && 
+				!taxonomyId.isEmpty() && 
+				!taxonomyId.equals(Organism.GLOBAL_MAP_TAXONOMY_ID) && 
+				!sm.isSessionOrganism(taxonomyId) &&
+				!taxonomyId.equals("undefined") ? "&taxId=" + taxonomyId : "";
+			cpdLink += " target=\"_new\">" + linkText + "</a>";
+			return cpdLink;
+		}
+		else if (ConfigurationManager.getDeploymentDomain() == DeploymentDomain.KBASE) {
+			return linkText;
+		}
+		else {
+			return linkText;
+		}
 	}
 
 }

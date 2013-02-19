@@ -4,6 +4,7 @@ import gov.lbl.glamm.client.map.events.LogInEvent;
 import gov.lbl.glamm.client.map.events.LogOutEvent;
 import gov.lbl.glamm.client.map.events.ViewResizedEvent;
 import gov.lbl.glamm.client.map.rpc.GlammServiceAsync;
+import gov.lbl.glamm.shared.DeploymentDomain;
 import gov.lbl.glamm.shared.model.User;
 
 import com.google.gwt.core.client.GWT;
@@ -126,6 +127,7 @@ public class LoginPresenter {
 		 */
 		public HasClickHandlers getViewCartButton();
 		
+		public void setDomain(DeploymentDomain domain);
 		
 	}
 
@@ -141,7 +143,8 @@ public class LoginPresenter {
 	private GlammServiceAsync rpc;
 	private View view;
 	private SimpleEventBus eventBus;
-
+	private DeploymentDomain domain;
+	
 	private User user;
 	private State state;
 
@@ -160,10 +163,30 @@ public class LoginPresenter {
 		user = User.guestUser();
 		setState(State.LOGGED_OUT);
 
+		loadDeploymentDomain();
+		
 		bindView();
 		authenticateUser();
 	}
 
+	private void loadDeploymentDomain() {
+		rpc.getDeploymentDomain(new AsyncCallback<DeploymentDomain>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				domain = DeploymentDomain.KBASE;
+				view.setDomain(domain);
+			}
+
+			@Override
+			public void onSuccess(DeploymentDomain domain) {
+				LoginPresenter.this.domain = domain;
+				view.setDomain(domain);
+			}
+			
+		});
+	}
+	
 	private void authenticateUser() {
 		if(Cookies.isCookieEnabled()) {
 

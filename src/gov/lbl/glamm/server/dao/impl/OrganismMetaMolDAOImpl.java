@@ -5,6 +5,7 @@ import gov.lbl.glamm.server.GlammDbConnectionPool;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.OrganismDAO;
 import gov.lbl.glamm.server.util.GlammUtils;
+import gov.lbl.glamm.shared.DeploymentDomain;
 import gov.lbl.glamm.shared.model.Organism;
 import gov.lbl.glamm.shared.model.Sample;
 
@@ -43,7 +44,7 @@ public class OrganismMetaMolDAOImpl implements OrganismDAO {
 
 	@Override
 	public List<Organism> getAllOrganismsWithDataForType(Sample.DataType dataType) {
-		if (ConfigurationManager.getDeploymentDomain() == ConfigurationManager.DeploymentDomain.KBASE)
+		if (ConfigurationManager.getDeploymentDomain() == DeploymentDomain.KBASE)
 			return null;
 		
 		ArrayList<Organism> organisms = null;
@@ -92,7 +93,7 @@ public class OrganismMetaMolDAOImpl implements OrganismDAO {
 
 	@Override
 	public Map<String, Set<Organism>> getTransgenicCandidatesForEcNums(Set<String> ecNums) {
-		if (ConfigurationManager.getDeploymentDomain() == ConfigurationManager.DeploymentDomain.KBASE)
+		if (ConfigurationManager.getDeploymentDomain() == DeploymentDomain.KBASE)
 			return null;
 		
 		Map<String, Set<Organism>> ecNum2Organisms = null;
@@ -150,7 +151,7 @@ public class OrganismMetaMolDAOImpl implements OrganismDAO {
 
 	@Override
 	public Organism getOrganismForTaxonomyId(final String taxonomyId) {
-		if (ConfigurationManager.getDeploymentDomain() == ConfigurationManager.DeploymentDomain.KBASE)
+		if (ConfigurationManager.getDeploymentDomain() == DeploymentDomain.KBASE)
 			return null;
 		
 		Organism organism = null;

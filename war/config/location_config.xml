@@ -10,4 +10,7 @@
 
 	<Service name="fba"
 	    	 url="http://bio-data-1.mcs.anl.gov/services/fba" />
+	
+	<Service name="translation"
+	    	 url="http://www.kbase.us/services/translation" />
 </Location>

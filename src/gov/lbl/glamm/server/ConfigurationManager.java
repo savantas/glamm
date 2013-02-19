@@ -1,6 +1,7 @@
 package gov.lbl.glamm.server;
 
 import gov.lbl.glamm.server.ServerConfig.DbConfig;
+import gov.lbl.glamm.shared.DeploymentDomain;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -23,29 +24,6 @@ import org.xml.sax.SAXException;
  */
 public class ConfigurationManager {
 
-	public enum DeploymentDomain {
-		LBL("lbl"),
-		KBASE("kbase");
-		
-		private String name;
-		private DeploymentDomain(String name) {
-			this.name = name;
-		}
-		
-		public String getName() {
-			return name;
-		}
-		
-		public static DeploymentDomain fromString(String name) {
-			name = name.toLowerCase();
-			for (DeploymentDomain domain : DeploymentDomain.values()) {
-				if (domain.getName().equals(name))
-					return domain;
-			}
-			return null;	// returns null if we give it an unknown name
-		}
-	}
-	
 	public static final String DEFAULT_DOMAIN = "default";
 	
 	private static Map<String, ServerConfig> serverDomain2ServerConfig;

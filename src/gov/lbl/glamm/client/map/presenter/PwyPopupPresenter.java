@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import gov.lbl.glamm.client.map.rpc.GlammServiceAsync;
+import gov.lbl.glamm.shared.DeploymentDomain;
 import gov.lbl.glamm.shared.model.Experiment;
 import gov.lbl.glamm.shared.model.Gene;
 import gov.lbl.glamm.shared.model.Organism;
@@ -150,6 +151,7 @@ public class PwyPopupPresenter {
 	private User user;
 	private ListDataProvider<Reaction> pwyDataProvider = null;
 	private String host;
+	private DeploymentDomain domain;
 	private Column<Reaction, SafeHtml> geneColumn;
 	
 	/**
@@ -170,9 +172,26 @@ public class PwyPopupPresenter {
 		this.pwyDataProvider = new ListDataProvider<Reaction>(); 
 		setUser(User.guestUser());
 		
+		loadDeploymentDomain();
 		loadHost();
 		initTable(view.getPwyTable(), pwyDataProvider);
 		bindView();
+	}
+	
+	private void loadDeploymentDomain() {
+		rpc.getDeploymentDomain(new AsyncCallback<DeploymentDomain>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				domain = DeploymentDomain.KBASE;
+			}
+
+			@Override
+			public void onSuccess(DeploymentDomain domain) {
+				PwyPopupPresenter.this.domain = domain;
+			}
+			
+		});
 	}
 	
 	/**
@@ -207,14 +226,19 @@ public class PwyPopupPresenter {
 	 */
 	private String genEcNumLink(final String ecNum) {
 
-		StringBuilder builder = new StringBuilder();
-
-		builder.append("<a href=\"");
-		builder.append(genEcNumUrl(ecNum));
-		builder.append("\" target=\"_new\">");
-		builder.append("<b>" + ecNum + "</b></a>");
-
-		return builder.toString();
+		if (domain == DeploymentDomain.LBL) { 
+			StringBuilder builder = new StringBuilder();
+	
+			builder.append("<a href=\"");
+			builder.append(genEcNumUrl(ecNum));
+			builder.append("\" target=\"_new\">");
+			builder.append("<b>" + ecNum + "</b></a>");
+	
+			return builder.toString();
+		}
+		else {
+			return ecNum;
+		}
 	}
 
 	/**
@@ -224,17 +248,22 @@ public class PwyPopupPresenter {
 	 */
 	private String genEcNumUrl(final String ecNum) {
 
-		UrlBuilder urlBuilder = new UrlBuilder();
-
-		urlBuilder.setProtocol("http");
-		urlBuilder.setHost(host);
-		urlBuilder.setPath("/cgi-bin/fetchEC2.cgi");
-		urlBuilder.setParameter("ec", ecNum);
-		
-		if (organism != null && !organism.isGlobalMap())
-			urlBuilder.setParameter("taxId", organism.getTaxonomyId());
-
-		return urlBuilder.buildString();
+		if (domain == DeploymentDomain.LBL){ 
+			UrlBuilder urlBuilder = new UrlBuilder();
+	
+			urlBuilder.setProtocol("http");
+			urlBuilder.setHost(host);
+			urlBuilder.setPath("/cgi-bin/fetchEC2.cgi");
+			urlBuilder.setParameter("ec", ecNum);
+			
+			if (organism != null && !organism.isGlobalMap())
+				urlBuilder.setParameter("taxId", organism.getTaxonomyId());
+	
+			return urlBuilder.buildString();
+		}
+		else {
+			return ecNum;
+		}
 	}
 
 	/**
@@ -257,7 +286,7 @@ public class PwyPopupPresenter {
 		textLinkBuilder.append(session == null ? "" : session + " ");
 
 		String textLink = textLinkBuilder.toString();
-		if (gene.getVimssId().isEmpty() || host == null)
+		if (gene.getVimssId().isEmpty() || host == null || domain != DeploymentDomain.LBL)
 			return textLink;
 		
 		StringBuilder builder = new StringBuilder();
@@ -277,15 +306,24 @@ public class PwyPopupPresenter {
 	 */
 	private String genLocusUrl(final String vimssId) {
 
-		UrlBuilder urlBuilder = new UrlBuilder();
-
-		urlBuilder.setProtocol("http");
-		urlBuilder.setHost(host);
-		urlBuilder.setPath("/cgi-bin/fetchLocus.cgi");
-		urlBuilder.setParameter("locus", vimssId);
-		urlBuilder.setParameter("disp", "0");
-
-		return urlBuilder.buildString();
+		if (domain == DeploymentDomain.LBL) {
+			UrlBuilder urlBuilder = new UrlBuilder();
+	
+			urlBuilder.setProtocol("http");
+			urlBuilder.setHost(host);
+			urlBuilder.setPath("/cgi-bin/fetchLocus.cgi");
+			urlBuilder.setParameter("locus", vimssId);
+			urlBuilder.setParameter("disp", "0");
+	
+			return urlBuilder.buildString();
+		}
+		else if (domain == DeploymentDomain.KBASE) {
+			// look up the KBase fid!
+			return vimssId;
+		}
+		else {
+			return vimssId;
+		}
 	}
 
 	/**
@@ -551,12 +589,15 @@ public class PwyPopupPresenter {
 		String link = "";
 		String mapTitle = pwy.getName();
 
-		if(mapTitle != null && !mapTitle.isEmpty()) {
+		if(mapTitle != null && !mapTitle.isEmpty() && domain == DeploymentDomain.LBL) {
 			link = "<a href=\"" + 
 			genKeggMapUrl(pwy, taxonomyId, experimentId, sampleId) + 
 			"\" target = \"_new\">" + 
 			mapTitle + 
 			"</a>";
+		}
+		else {
+			link = mapTitle;
 		}
 		return link;
 	}
