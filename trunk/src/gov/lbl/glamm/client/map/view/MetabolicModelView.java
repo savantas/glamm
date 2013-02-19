@@ -11,6 +11,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DecoratorPanel;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
@@ -225,6 +226,7 @@ public class MetabolicModelView extends Composite implements MetabolicModelPrese
 		fbaPanel.add(fbaTablePanel);
 		
 		disclosureContentPanel.add(modelPanel);
+		disclosureContentPanel.add(new HTML("<hr style=\"width: 100%\" />"));
 		disclosureContentPanel.add(fbaPanel);
 		disclosurePanel.add(disclosureContentPanel);
 
@@ -232,8 +234,11 @@ public class MetabolicModelView extends Composite implements MetabolicModelPrese
 		mainPanel.add(disclosurePanel);
 		decoratorPanel.add(mainPanel);
 
-		modelTable.setSize("60em", "7em");
-		fbaTable.setSize("60em", "7em");
+		modelTable.setSize("45em", "7em");
+		fbaTable.setSize("45em", "7em");
+		
+		modelTextBox.setWidth("25em");
+		fbaTextBox.setWidth("25em");
 		
 		mainPanel.setSpacing(1);
 		mainPanel.setStylePrimaryName("glamm-picker");

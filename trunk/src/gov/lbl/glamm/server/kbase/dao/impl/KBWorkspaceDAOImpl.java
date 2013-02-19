@@ -14,6 +14,8 @@ import gov.lbl.glamm.shared.model.kbase.workspace.KBWorkspaceObjectData;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class KBWorkspaceDAOImpl implements KBWorkspaceDAO {
@@ -50,14 +52,14 @@ public class KBWorkspaceDAOImpl implements KBWorkspaceDAO {
 
 	}
 	
-	private static final String workspaceURL = ConfigurationManager.getKBaseServiceURL("workspace"); 
+	private static final String WORKSPACE_URL = ConfigurationManager.getKBaseServiceURL("workspace"); 
 	//"http://bio-data-1.mcs.anl.gov/services/fba_gapfill";
 	private GlammSession sm;
 	private static workspaceService wsClient;
 	
 	static {
 		try {
-			wsClient = new workspaceService(workspaceURL);
+			wsClient = new workspaceService(WORKSPACE_URL);
 		} catch (MalformedURLException e) {
 			wsClient = null;
 		}
@@ -87,6 +89,13 @@ public class KBWorkspaceDAOImpl implements KBWorkspaceDAO {
 				data.setUserPermission(metadata.user_permission);
 				workspaceList.add(data);
 			}
+			
+			Collections.sort(workspaceList, new Comparator<KBWorkspaceData>() {
+				@Override
+				public int compare(KBWorkspaceData ws0, KBWorkspaceData ws1) {
+					return ws0.getId().compareToIgnoreCase(ws1.getId());
+				}
+			});
 		} catch (Exception e) {
 			workspaceList.clear();
 			return workspaceList;

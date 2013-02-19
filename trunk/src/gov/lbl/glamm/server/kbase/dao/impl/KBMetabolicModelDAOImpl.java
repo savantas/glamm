@@ -52,7 +52,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class KBMetabolicModelDAOImpl implements KBMetabolicModelDAO {
-	private static final String fbaURL = ConfigurationManager.getKBaseServiceURL("fba"); //"http://bio-data-1.mcs.anl.gov/services/fba";
+	private static final String FBA_URL = ConfigurationManager.getKBaseServiceURL("fba"); //"http://bio-data-1.mcs.anl.gov/services/fba";
 	private GlammSession sm;
 	private static fbaModelServices fbaClient;
 
@@ -76,7 +76,7 @@ public class KBMetabolicModelDAOImpl implements KBMetabolicModelDAO {
 		model2Biochemistry = new HashMap<String, String>();
 		
 		try {
-			fbaClient = new fbaModelServices(fbaURL);
+			fbaClient = new fbaModelServices(FBA_URL);
 		} catch (MalformedURLException e) {
 			fbaClient = null;
 		}

@@ -5,6 +5,7 @@ import gov.lbl.glamm.server.GlammDbConnectionPool;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.OrganismDAO;
 import gov.lbl.glamm.server.util.GlammUtils;
+import gov.lbl.glamm.shared.DeploymentDomain;
 import gov.lbl.glamm.shared.model.Organism;
 import gov.lbl.glamm.shared.model.Sample;
 
@@ -58,7 +59,7 @@ public class OrganismMolDAOImpl implements OrganismDAO {
 			"order by t.name;";
 		}
 		else if(dataType != Sample.DataType.SESSION &&
-				ConfigurationManager.getDeploymentDomain() == ConfigurationManager.DeploymentDomain.LBL) {
+				ConfigurationManager.getDeploymentDomain() == DeploymentDomain.LBL) {
 			sql = "select distinct(c.taxonomyId), t.name " + 
 			"from microarray.Exp e " +
 			"join microarray.ExpType et on (e.expType=et.expType) " +

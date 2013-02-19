@@ -1,6 +1,7 @@
 package gov.lbl.glamm.client.map.presenter;
 
 import gov.lbl.glamm.client.map.rpc.GlammServiceAsync;
+import gov.lbl.glamm.shared.DeploymentDomain;
 import gov.lbl.glamm.shared.model.Gene;
 import gov.lbl.glamm.shared.model.Measurement;
 import gov.lbl.glamm.shared.model.Organism;
@@ -101,6 +102,7 @@ public class ReactionPresenter {
 	}
 
 	private String host;
+	private DeploymentDomain domain;
 	private Organism organism;
 	private Set<OverlayDataGroup> dataGroups = null;
 	private Float flux = null;
@@ -108,6 +110,7 @@ public class ReactionPresenter {
 
 	private ListDataProvider<Gene> geneDataProvider;
 	private ListDataProvider<OverlayDataGroup> groupDataProvider;
+	
 
 	@SuppressWarnings("unused")
 	private GlammServiceAsync rpc;
@@ -137,14 +140,22 @@ public class ReactionPresenter {
 		if(numGenes == 0 || host == null || organism == null || organism.isGlobalMap())
 			return "<b>" + ecNum + "</b>";
 
-		StringBuilder builder = new StringBuilder();
-
-		builder.append("<a href=\"");
-		builder.append(genEcNumUrl(ecNum));
-		builder.append("\" target=\"_new\">");
-		builder.append("<b>" + ecNum + "</b></a>");
-
-		return builder.toString();
+		if (domain == DeploymentDomain.LBL) {
+			StringBuilder builder = new StringBuilder();
+	
+			builder.append("<a href=\"");
+			builder.append(genEcNumUrl(ecNum));
+			builder.append("\" target=\"_new\">");
+			builder.append("<b>" + ecNum + "</b></a>");
+	
+			return builder.toString();
+		}
+		else if (domain == DeploymentDomain.KBASE) {
+			return "<b>" + ecNum + "</b>";
+		}
+		else {
+			return "<b>" + ecNum + "</b>";
+		}
 	}
 
 	private String genEcNumUrl(final String ecNum) {
@@ -160,32 +171,67 @@ public class ReactionPresenter {
 		return urlBuilder.buildString();
 	}
 
-	private String genLocusLink(final String vimssId) {
+	private String genLocusLink(final Gene gene) {
 
-		if(vimssId == null || vimssId.isEmpty() || host == null)
-			return vimssId;
+		if(gene == null || gene.getVimssId().isEmpty() || host == null) {
+			return gene.getVimssId();
+		}
+		
+		if (domain == DeploymentDomain.LBL) {
+			StringBuilder builder = new StringBuilder();
 
-		StringBuilder builder = new StringBuilder();
+			builder.append("<a href=\"");
+			builder.append(genLocusUrl(gene));
+			builder.append("\" target=\"_new\">");
+			builder.append("<b>" + gene.getVimssId() + "</b></a>");
 
-		builder.append("<a href=\"");
-		builder.append(genLocusUrl(vimssId));
-		builder.append("\" target=\"_new\">");
-		builder.append("<b>" + vimssId + "</b></a>");
-
-		return builder.toString();
+			return builder.toString();			
+		} 
+		else if (domain == DeploymentDomain.KBASE) {
+			StringBuilder builder = new StringBuilder();
+			
+			String fid = gene.getSynonymWithType(Gene.SYNONYM_TYPE_KBASE);
+			if (fid != null) {
+				builder.append("<a href=\"http://140.221.92.12/feature_info/feature.html?id=");
+				builder.append(fid);
+				builder.append("\" target=\"_new\">");
+				builder.append("<b>" + fid + "</b></a>");
+				
+				return builder.toString();
+			}
+			else {
+				return gene.getVimssId();
+			}
+		}
+		else {
+			return gene.getVimssId();
+		}
 	}
 
-	private String genLocusUrl(final String vimssId) {
+	private String genLocusUrl(final Gene gene) {
 
 		UrlBuilder urlBuilder = new UrlBuilder();
 
 		urlBuilder.setProtocol("http");
+
 		urlBuilder.setHost(host);
 		urlBuilder.setPath("/cgi-bin/fetchLocus.cgi");
-		urlBuilder.setParameter("locus", vimssId);
+		urlBuilder.setParameter("locus", gene.getVimssId());
 		urlBuilder.setParameter("disp", "0");
 
 		return urlBuilder.buildString();
+	}
+	
+	private String genGroupLink(final OverlayDataGroup group) {
+
+		StringBuilder builder = new StringBuilder();
+		builder.append("<a href=\"");
+		builder.append(group.getUrl());
+		builder.append("\" target=\"_new\">");
+		builder.append(group.getSource());
+		builder.append("</a>");
+		
+		return builder.toString();
 	}
 
 	private void initGroupTable(CellTable<OverlayDataGroup> table, ListDataProvider<OverlayDataGroup> dataProvider) {
@@ -228,7 +274,7 @@ public class ReactionPresenter {
 			@Override
 			public SafeHtml getValue(OverlayDataGroup group) {
 				SafeHtmlBuilder builder = new SafeHtmlBuilder();
-				builder.appendHtmlConstant("<a href=\"" + group.getUrl() + "\" target=\"_blank\">" + group.getSource() + "</a>");
+				builder.appendHtmlConstant(genGroupLink(group));
 				return builder.toSafeHtml();
 			}
 		};
@@ -270,7 +316,7 @@ public class ReactionPresenter {
 				SafeHtmlBuilder builder = new SafeHtmlBuilder();
 				String vimssId = gene.getVimssId();
 				if(vimssId != null)
-					builder.appendHtmlConstant(genLocusLink(vimssId));
+					builder.appendHtmlConstant(genLocusLink(gene));
 				else
 					builder.appendHtmlConstant("N/A");
 				return builder.toSafeHtml();
@@ -321,7 +367,7 @@ public class ReactionPresenter {
 		}
 
 		// add columns to table
-		table.addColumn(vimssIdColumn, "VIMSS Id");
+		table.addColumn(vimssIdColumn, "Id");
 		table.addColumn(ecNumsColumn, "EC");
 		table.addColumn(synonymsColumn, "Synonyms");
 		if(measurementColumn != null)
@@ -448,5 +494,9 @@ public class ReactionPresenter {
 			view.getAddToCartButton().setVisible(false);
 		else
 			view.getAddToCartButton().setVisible(true);
+	}
+
+	public void setDomain(DeploymentDomain domain) {
+		this.domain = domain;
 	}
 }

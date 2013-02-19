@@ -96,6 +96,8 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 
@@ -192,6 +194,7 @@ public class AppController {
 	private GroupDataServiceView dataOverlayServiceView;
 
 	private CheckBox uiCheckBox;
+	private HTML showUILabel;
 	
 	private LayoutPanel layout = new LayoutPanel() {
 
@@ -291,7 +294,9 @@ public class AppController {
 		dataOverlayServiceView = new GroupDataServiceView();
 		dataOverlayServicePresenter = new GroupDataServicePresenter(rpc, eventBus, dataOverlayServiceView);
 		
+		showUILabel = new HTML("<span style=\"font-family: Arial Unicode MS, Arial, sans-serif; font-size: 11px; color:white\">Show UI</span>");
 		uiCheckBox = new CheckBox();
+		
 	}
 
 	/**
@@ -393,6 +398,7 @@ public class AppController {
 		setUIVisible(state.getUIState());
 		
 		mainPanel.add(uiCheckBox, 0, 0);
+		mainPanel.add(showUILabel, 0, 0);
 
 		initHistory();
 	}
@@ -440,13 +446,14 @@ public class AppController {
 			@Override
 			public void execute() {
 				int minWidth = retrosynthesisView.getOffsetWidth() + 
-				organismView.getOffsetWidth() + 
-				experimentView.getOffsetWidth() + 
-				loginView.getOffsetWidth() + 
-				helpView.getOffsetWidth() + 
-				20;
+							   organismView.getOffsetWidth() + 
+							   experimentView.getOffsetWidth() + 
+							   loginView.getOffsetWidth() + 
+							   helpView.getOffsetWidth() + 
+							   20;
 
 				mainPanel.setWidgetPosition(organismView, retrosynthesisView.getOffsetWidth() + 5, 0);
+				
 				if(Window.getClientWidth() > minWidth) 
 					mainPanel.setWidgetPosition(experimentView, retrosynthesisView.getOffsetWidth() + organismView.getOffsetWidth() + 10, 0);
 				else
@@ -459,10 +466,16 @@ public class AppController {
 				mainPanel.setWidgetPosition(interpolatorView, Window.getClientWidth() - interpolatorView.getOffsetWidth(), Window.getClientHeight() - citationsView.getOffsetHeight() - interpolatorView.getOffsetHeight() - 5);
 				mainPanel.setWidgetPosition(helpView, Window.getClientWidth() - helpView.getOffsetWidth(), 0);
 				mainPanel.setWidgetPosition(loginView, Window.getClientWidth() - loginView.getOffsetWidth() - helpView.getOffsetWidth() - 5, 0);
-				mainPanel.setWidgetPosition(metabolicModelView, 0, Window.getClientHeight() - miniMapView.getOffsetHeight() - amdView.getOffsetHeight() - metabolicModelView.getOffsetHeight() - 10);
-				mainPanel.setWidgetPosition(dataOverlayView, panZoomView.getOffsetWidth() + miniMapView.getOffsetWidth() + 10, Window.getClientHeight() - dataOverlayView.getOffsetHeight());
+//				mainPanel.setWidgetPosition(metabolicModelView, 0, Window.getClientHeight() - miniMapView.getOffsetHeight() - amdView.getOffsetHeight() - metabolicModelView.getOffsetHeight() - 10);
+				mainPanel.setWidgetPosition(metabolicModelView, panZoomView.getOffsetWidth() + miniMapView.getOffsetWidth() + 5, Window.getClientHeight() - metabolicModelView.getOffsetHeight());
+
+				if (Window.getClientWidth() > minWidth)
+					mainPanel.setWidgetPosition(dataOverlayView, panZoomView.getOffsetWidth() + miniMapView.getOffsetWidth() + metabolicModelView.getOffsetWidth() + 10, Window.getClientHeight() - dataOverlayView.getOffsetHeight());
+				else
+					mainPanel.setWidgetPosition(dataOverlayView, panZoomView.getOffsetWidth() + miniMapView.getOffsetWidth() + 5, Window.getClientHeight() - dataOverlayView.getOffsetHeight() - metabolicModelView.getOffsetHeight() - 5);;
 
 				mainPanel.setWidgetPosition(uiCheckBox, Window.getClientWidth() - uiCheckBox.getOffsetWidth(), helpView.getOffsetHeight());
+				mainPanel.setWidgetPosition(showUILabel, Window.getClientWidth() - 60, helpView.getOffsetHeight());
 			}
 		});
 	}
@@ -478,6 +491,7 @@ public class AppController {
 		retrosynthesisView.setVisible(show);
 		miniMapView.setVisible(show);
 		panZoomView.setVisible(show);
+		showUILabel.setVisible(show);
 		
 		onResize();
 	}

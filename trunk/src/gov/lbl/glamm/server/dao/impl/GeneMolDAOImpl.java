@@ -1,9 +1,13 @@
 package gov.lbl.glamm.server.dao.impl;
 
+import gov.lbl.glamm.server.ConfigurationManager;
 import gov.lbl.glamm.server.GlammDbConnectionPool;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.GeneDAO;
+import gov.lbl.glamm.server.kbase.dao.KBTranslationDAO;
+import gov.lbl.glamm.server.kbase.dao.impl.KBTranslationDAOImpl;
 import gov.lbl.glamm.server.util.GlammUtils;
+import gov.lbl.glamm.shared.DeploymentDomain;
 import gov.lbl.glamm.shared.model.Gene;
 import gov.lbl.glamm.shared.model.util.Synonym;
 
@@ -12,9 +16,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -225,6 +231,23 @@ public class GeneMolDAOImpl implements GeneDAO {
 			gene.addEcNum(ecNum);
 			gene.addSynonym(new Synonym(synName, synType));
 			
+		}
+
+		if (ConfigurationManager.getDeploymentDomain() == DeploymentDomain.KBASE) {
+			// get the set of KBase fids and put them in all the genes as synonyms
+			
+			KBTranslationDAO translator = new KBTranslationDAOImpl(sm);
+			
+			List<String> locusIds = new ArrayList<String>();
+			locusIds.addAll(locusId2Gene.keySet());
+			Map<String, List<String>> locus2Fids = translator.locusIds2Fids(locusIds);
+			if (locus2Fids != null) {
+				for (String locusId : locus2Fids.keySet()) {
+					for (String fid : locus2Fids.get(locusId)) {
+						locusId2Gene.get(locusId).addSynonym(new Synonym(fid, Gene.SYNONYM_TYPE_KBASE));
+					}
+				}
+			}
 		}
 
 		genes.addAll(locusId2Gene.values());

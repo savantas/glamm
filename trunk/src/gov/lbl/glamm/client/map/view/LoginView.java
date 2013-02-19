@@ -1,6 +1,7 @@
 package gov.lbl.glamm.client.map.view;
 
 import gov.lbl.glamm.client.map.presenter.LoginPresenter;
+import gov.lbl.glamm.shared.DeploymentDomain;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Button;
@@ -38,13 +39,17 @@ implements LoginPresenter.View {
 	
 	
 	
-	private static final String HTML_REGISTER_TITLE	= "Register for an account.";
-	private static final String HTML_REGISTER_URL 	= "http://microbesonline.org/cgi-bin/register";
-	private static final String HTML_REGISTER_LINK 	= "<a href=\"" + HTML_REGISTER_URL + "\" target=\"_new\">" + HTML_REGISTER_TITLE + "</a>";
+	private static final String HTML_REGISTER_TITLE		= "Register for an account.";
+	private static final String HTML_REGISTER_URL_MO 	= "http://microbesonline.org/cgi-bin/register";
+	private static String HTML_REGISTER_LINK_MO 		= "<a href=\"" + HTML_REGISTER_URL_MO + "\" target=\"_new\">" + HTML_REGISTER_TITLE + "</a>";
+	private static final String HTML_REGISTER_URL_KBASE = "https://gologin.kbase.us/SignUp";
+	private static String HTML_REGISTER_LINK_KBASE 		= "<a href=\"" + HTML_REGISTER_URL_KBASE + "\" target=\"_new\">" + HTML_REGISTER_TITLE + "</a>";
 	
-	private static final String HTML_RESET_TITLE	= "Forgot your password?";
-	private static final String HTML_RESET_URL 		= "http://microbesonline.org/cgi-bin/resetPassword";
-	private static final String HTML_RESET_LINK 	= "<a href=\"" + HTML_RESET_URL + "\" target=\"_new\">" + HTML_RESET_TITLE + "</a>";
+	private static final String HTML_RESET_TITLE		= "Forgot your password?";
+	private static final String HTML_RESET_URL_MO 		= "http://microbesonline.org/cgi-bin/resetPassword";
+	private static String HTML_RESET_LINK_MO 			= "<a href=\"" + HTML_RESET_URL_MO + "\" target=\"_new\">" + HTML_RESET_TITLE + "</a>";
+	private static final String HTML_RESET_URL_KBASE 	= "https://gologin.kbase.us/ResetPassword";
+	private static String HTML_RESET_LINK_KBASE 		= "<a href=\"" + HTML_RESET_URL_KBASE + "\" target=\"_new\">" + HTML_RESET_TITLE + "</a>";
 	
 	// the status window
 	private DecoratorPanel decoratorPanel;
@@ -65,6 +70,9 @@ implements LoginPresenter.View {
 	private HorizontalPanel formButtonPanel;
 	private Button logInButton;
 	private Button cancelButton;
+	
+	private HTML registerLink;
+	private HTML resetLink;
 	
 	
 	/**
@@ -87,6 +95,9 @@ implements LoginPresenter.View {
 		formButtonPanel = new HorizontalPanel();
 		logInButton = new Button(BUTTON_LOG_IN);
 		cancelButton = new Button(BUTTON_CANCEL);
+		
+		registerLink = new HTML(HTML_REGISTER_LINK_KBASE);
+		resetLink = new HTML(HTML_RESET_LINK_KBASE);
 		
 		init();
 	}
@@ -111,13 +122,13 @@ implements LoginPresenter.View {
 		grid.setWidget(0, 1, userNameTextBox);
 		grid.setWidget(1, 0, new Label(LABEL_PASSWORD));
 		grid.setWidget(1, 1, passwordTextBox);
-		grid.setWidget(2, 1, new HTML(HTML_RESET_LINK));
+		grid.setWidget(2, 1, resetLink);
 		
 		formButtonPanel.setSpacing(5);
 		formButtonPanel.add(logInButton);
 		formButtonPanel.add(cancelButton);
 		
-		wrapperPanel.add(new HTML(HTML_REGISTER_LINK));
+		wrapperPanel.add(registerLink);
 		wrapperPanel.add(grid);
 		wrapperPanel.add(formButtonPanel);
 		
@@ -181,6 +192,18 @@ implements LoginPresenter.View {
 	@Override
 	public Button getViewCartButton() {
 		return viewCartButton;
+	}
+	
+	@Override
+	public void setDomain(DeploymentDomain domain) {
+		if (domain == DeploymentDomain.LBL) {
+			registerLink.setHTML(HTML_REGISTER_LINK_MO);
+			resetLink.setHTML(HTML_RESET_LINK_MO);
+		}
+		else {
+			registerLink.setHTML(HTML_REGISTER_LINK_KBASE);
+			resetLink.setHTML(HTML_RESET_LINK_KBASE);
+		}
 	}
 }
 

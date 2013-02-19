@@ -1,5 +1,6 @@
 package gov.lbl.glamm.client.map.rpc;
 
+import gov.lbl.glamm.shared.DeploymentDomain;
 import gov.lbl.glamm.shared.ExternalDataService;
 import gov.lbl.glamm.shared.model.Algorithm;
 import gov.lbl.glamm.shared.model.AnnotatedMapDescriptor;
@@ -236,6 +237,8 @@ public interface GlammService extends RemoteService {
 	
 	public KBMetabolicModel getKBaseMetabolicModel(final String modelId, final String workspaceId);
 	public KBFBAResult getKBaseFBAResult(final String fbaId, final String workspaceId);
+	
+	public DeploymentDomain getDeploymentDomain();
 	
 	/**
 	 * A debug rpc call that contacts the server without invoking the database.

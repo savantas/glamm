@@ -1,5 +1,6 @@
 package gov.lbl.glamm.client.map.rpc;
 
+import gov.lbl.glamm.shared.DeploymentDomain;
 import gov.lbl.glamm.shared.ExternalDataService;
 import gov.lbl.glamm.shared.model.Algorithm;
 import gov.lbl.glamm.shared.model.AnnotatedMapDescriptor;
@@ -72,5 +73,7 @@ public interface GlammServiceAsync {
 	public void getKBaseFBAResult(final String fbaId, final String workspaceId, AsyncCallback<KBFBAResult> callback);
 	public void nonDBTest(AsyncCallback<String> callback);
 	public void getStateFromHistoryToken(String token, AsyncCallback<GlammState> callback);
+	
+	public void getDeploymentDomain(AsyncCallback<DeploymentDomain> callback);
 	
 }

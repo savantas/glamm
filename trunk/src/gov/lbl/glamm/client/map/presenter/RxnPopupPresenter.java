@@ -2,6 +2,7 @@ package gov.lbl.glamm.client.map.presenter;
 
 import gov.lbl.glamm.client.map.rpc.GlammServiceAsync;
 import gov.lbl.glamm.client.map.view.ReactionView;
+import gov.lbl.glamm.shared.DeploymentDomain;
 import gov.lbl.glamm.shared.model.Organism;
 import gov.lbl.glamm.shared.model.OverlayDataGroup;
 import gov.lbl.glamm.shared.model.Reaction;
@@ -82,6 +83,8 @@ public class RxnPopupPresenter {
 	private String metagenomeHost;
 	private String host;
 	
+	private DeploymentDomain domain;
+	
 	private User user;
 
 	/**
@@ -97,7 +100,8 @@ public class RxnPopupPresenter {
 
 		this.reactions = new HashSet<Reaction>();
 		this.user = User.guestUser();
-		
+
+		loadDeploymentDomain();
 		loadIsolateHost();
 		loadMetagenomeHost();
 		
@@ -132,6 +136,8 @@ public class RxnPopupPresenter {
 			rp.setReaction(reaction);
 			rp.setUser(user);
 			
+			rp.setDomain(domain);
+			
 			view.getPanel().add(rv);
 		}
 	}
@@ -163,6 +169,22 @@ public class RxnPopupPresenter {
 			public void onSuccess(String result) {
 				isolateHost = result;
 			}
+		});
+	}
+	
+	private void loadDeploymentDomain() {
+		rpc.getDeploymentDomain(new AsyncCallback<DeploymentDomain>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				domain = DeploymentDomain.KBASE;
+			}
+
+			@Override
+			public void onSuccess(DeploymentDomain domain) {
+				RxnPopupPresenter.this.domain = domain;
+			}
+			
 		});
 	}
 

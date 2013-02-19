@@ -30,6 +30,7 @@ import gov.lbl.glamm.server.actions.requesthandlers.GetDirections;
 import gov.lbl.glamm.server.externalservice.ExternalDataServiceManager;
 import gov.lbl.glamm.server.kbase.actions.GetMetabolicModel;
 import gov.lbl.glamm.server.kbase.actions.GetWorkspaceData;
+import gov.lbl.glamm.shared.DeploymentDomain;
 import gov.lbl.glamm.shared.ExternalDataService;
 import gov.lbl.glamm.shared.model.Algorithm;
 import gov.lbl.glamm.shared.model.AnnotatedMapDescriptor;
@@ -321,5 +322,10 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	@Override
 	public List<KBWorkspaceObjectData> populateWorkspaceFbas(final String workspace) {
 		return GetWorkspaceData.getWorkspaceFbaList(getGlammSession(), workspace);
+	}
+	
+	@Override
+	public DeploymentDomain getDeploymentDomain() {
+		return ConfigurationManager.getDeploymentDomain();
 	}
 }

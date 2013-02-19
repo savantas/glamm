@@ -10,6 +10,7 @@ import gov.lbl.glamm.client.map.events.ViewResizedEvent;
 import gov.lbl.glamm.client.map.rpc.GlammServiceAsync;
 import gov.lbl.glamm.client.map.util.ReactionColor;
 import gov.lbl.glamm.client.map.util.RowDependentSelectionCell;
+import gov.lbl.glamm.shared.DeploymentDomain;
 import gov.lbl.glamm.shared.RequestParameters;
 import gov.lbl.glamm.shared.model.Algorithm;
 import gov.lbl.glamm.shared.model.AnnotatedMapData;
@@ -216,10 +217,14 @@ public class RetrosynthesisPresenter {
 
 	private String isolateHost;
 	private String metagenomeHost;
+	private DeploymentDomain domain;
 
 
 	private String genEcNumLinkForMolOrganism(String ecNum, Organism organism) {
 
+		if (domain == DeploymentDomain.KBASE)
+			return ecNum;
+		
 		String taxonomyId = organism.getTaxonomyId();
 
 		String link = "<a href=\"http://";
@@ -235,18 +240,28 @@ public class RetrosynthesisPresenter {
 
 	private String genEcNumLinkForSessionOrganism(String ecNum, Organism organism) {
 		String link = "<b>" + ecNum + "</b>";
-
-		// get set of all molTaxonomyIds
-		Set<String> metaMolTaxonomyIds = organism.getMolTaxonomyIds();
-
-		if(metagenomeHost == null || metaMolTaxonomyIds == null || metaMolTaxonomyIds.isEmpty())
+		
+		if (domain == DeploymentDomain.KBASE)
 			return link;
 
-		link = "<a href=\"http://" + metagenomeHost + "/cgi-bin/fetchEC2.cgi?ec=" + ecNum;
-		for(String taxonomyId : metaMolTaxonomyIds) 
-			link += taxonomyId != null ? "&taxId=" + taxonomyId : "";
-		link += "\" target=\"_new\">";
-		link += "<b>" + ecNum + "</b></a>";
+		switch (domain) {
+			case KBASE :
+				break;
+			case LBL :
+				// get set of all molTaxonomyIds
+				Set<String> metaMolTaxonomyIds = organism.getMolTaxonomyIds();
+	
+				if(metagenomeHost == null || metaMolTaxonomyIds == null || metaMolTaxonomyIds.isEmpty())
+					return link;
+	
+				link = "<a href=\"http://" + metagenomeHost + "/cgi-bin/fetchEC2.cgi?ec=" + ecNum;
+				for(String taxonomyId : metaMolTaxonomyIds) 
+					link += taxonomyId != null ? "&taxId=" + taxonomyId : "";
+				link += "\" target=\"_new\">";
+				link += "<b>" + ecNum + "</b></a>";
+				break;
+		}
+		
 
 		return link;
 	}
@@ -312,6 +327,7 @@ public class RetrosynthesisPresenter {
 
 		loadIsolateHost();
 		loadMetagenomeHost();
+		loadDeploymentDomain();
 
 		initTable(view.getRoutesTable(), routeDataProvider);
 		setViewState(State.INITIAL);
@@ -494,6 +510,9 @@ public class RetrosynthesisPresenter {
 
 	private String genPhyloProfileLink(final Pathway route) {
 
+		if (domain == DeploymentDomain.KBASE)
+			return "";
+		
 		String html = "No phylogenetic profile";
 
 		if(route != null) {
@@ -668,6 +687,22 @@ public class RetrosynthesisPresenter {
 			public void onSuccess(String result) {
 				metagenomeHost = result;
 			}
+		});
+	}
+	
+	private void loadDeploymentDomain() {
+		rpc.getDeploymentDomain(new AsyncCallback<DeploymentDomain>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				domain = DeploymentDomain.KBASE;
+			}
+
+			@Override
+			public void onSuccess(DeploymentDomain domain) {
+				RetrosynthesisPresenter.this.domain = domain;
+			}
+			
 		});
 	}
 

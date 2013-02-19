@@ -411,8 +411,9 @@ public class MetabolicModelPresenter {
 			public void onSuccess(KBMetabolicModel model) {
 				//fire it off to the rest of the app.
 				eventBus.fireEvent(new MetabolicModelLoadedEvent(model, view.getShowAllCheckBox().getValue()));
-				if (model == null || model.getId().length() == 0)
-					setState(State.NO_MODELS_LOADED);
+				if (model == null || model.getId().length() == 0) {
+					Window.alert("Sorry, unable to display that model. Please try again.\nIf this problem persists, please contact the site administrator.");
+				}
 				else
 					setState(State.MODEL_SELECTED);
 				eventBus.fireEvent(new LoadingEvent(true));
@@ -436,8 +437,9 @@ public class MetabolicModelPresenter {
 			@Override
 			public void onSuccess(KBFBAResult fba) {
 				//fire it off to the rest of the app.
-				if (fba == null || fba.getId().length() == 0)
-					setState(State.FBA_LOADED);
+				if (fba == null || fba.getId().length() == 0) {
+					Window.alert("Sorry, unable to display that FBA result. Please try again.\n If this problem persists, please contact the site administrator.");
+				}
 				else {
 					setState(State.FBA_SELECTED);
 					view.getFBATextBox().setText(fba.getId() + " - " + fba.getWorkspace() + " - Biomass: " + fba.getObjective());
