@@ -241,10 +241,15 @@ public class GeneMolDAOImpl implements GeneDAO {
 			List<String> locusIds = new ArrayList<String>();
 			locusIds.addAll(locusId2Gene.keySet());
 			Map<String, List<String>> locus2Fids = translator.locusIds2Fids(locusIds);
-			if (locus2Fids != null) {
+			
+			// Some kinda clunky null checking here - saw some issues in production earlier.
+			if (locus2Fids != null) {	// we have a non-null locus id
 				for (String locusId : locus2Fids.keySet()) {
-					for (String fid : locus2Fids.get(locusId)) {
-						locusId2Gene.get(locusId).addSynonym(new Synonym(fid, Gene.SYNONYM_TYPE_KBASE));
+					if (locusId != null && locus2Fids.get(locusId) != null) {	// the list of fids is non null
+						for (String fid : locus2Fids.get(locusId)) {
+							if (locusId2Gene.containsKey(locusId))
+								locusId2Gene.get(locusId).addSynonym(new Synonym(fid, Gene.SYNONYM_TYPE_KBASE));
+						}
 					}
 				}
 			}

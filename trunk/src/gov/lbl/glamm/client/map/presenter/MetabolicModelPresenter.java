@@ -515,7 +515,18 @@ public class MetabolicModelPresenter {
 				
 		}
 		eventBus.fireEvent(new ViewResizedEvent());
-
+	}
+	
+	public void setModelData(KBWorkspaceObjectData modelData) {
+		if (modelData == null)
+			return;
+		
+		modelDataProvider.getList().clear();
+		modelDataProvider.getList().add(modelData);
+		
+		modelTableSelection = modelDataProvider.getList().get(0);
+		
+		setState(State.MODEL_SELECTED);
 	}
 
 	public void populateModels(List<KBWorkspaceObjectData> modelInfo) {

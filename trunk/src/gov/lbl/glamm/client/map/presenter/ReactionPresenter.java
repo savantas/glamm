@@ -462,15 +462,6 @@ public class ReactionPresenter {
 				view.showGroupTable();
 				groupDataProvider.getList().addAll(dataGroups);
 				initGroupTable(view.getGroupTable(), groupDataProvider);
-				
-				for (OverlayDataGroup g : dataGroups) {
-					System.out.print(g.getName() + ":");
-					Set<Gene> groupGenes = g.getGenesForReaction(reaction);
-					for (Gene gene : groupGenes) {
-						System.out.print(" " + gene.getVimssId());
-					}
-					System.out.println();
-				}
 			}
 
 			StringBuilder builder = new StringBuilder();

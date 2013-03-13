@@ -25,7 +25,6 @@ public class LoginKBase implements RequestHandler {
 
 	private static final String LOGIN_ERROR_MSG = "Login incorrect - please try again.";
 	private static final String KBASE_AUTH_URL = ConfigurationManager.getKBaseServiceURL("authentication"); 
-	//"http://140.221.92.231/services/authorization";
 
 	static {
 		AuthService.setServiceUrl(KBASE_AUTH_URL);
@@ -52,7 +51,8 @@ public class LoginKBase implements RequestHandler {
 			user.setAuth(kbUser.getToken().toString());
 			user.setSessionId(kbUser.getToken().getSignature());
 			sm.setUser(user);
-		} catch (Exception e) {
+		} 
+		catch (Exception e) {
 			throw new IOException(e.getLocalizedMessage());
 		}
 		
