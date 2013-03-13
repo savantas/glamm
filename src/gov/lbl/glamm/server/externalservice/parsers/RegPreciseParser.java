@@ -188,8 +188,7 @@ public class RegPreciseParser implements ServiceJsonParser {
 		// now we can map (for all genes), which reactions they belong to (reaction -> EC set, EC -> gene set, gene -> Group)
 		
 		ReactionDAO rxnDao = new ReactionGlammDAOImpl(sm);
-		Set<Reaction> reactions = rxnDao.getReactions(
-										rxnDao.getRxnIdsForEcNums(ecNum2GroupIds.keySet()));
+		Set<Reaction> reactions = rxnDao.getReactions(rxnDao.getRxnIdsForEcNums(ecNum2GroupIds.keySet()));
 
 		for (Reaction rxn : reactions) {
 			for (String ecNum : rxn.getEcNums()) {

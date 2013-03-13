@@ -4,11 +4,10 @@
 	    	 abbreviation="rpS" 
 	    	 url="http://regprecise.lbl.gov/Services/rest/glammElements"
 	    	 parser="gov.lbl.glamm.server.externalservice.parsers.RegPreciseParser">
-		<Parameter displayName="MO taxonomy id" 
+		<Parameter displayName="Taxonomy id" 
 		    	   extUrlName="id" 
 		    	   stateUrlName="id"
 		    	   type="user" />
-		
 		<Parameter displayName="type"
 		    	   extUrlName="type"
 		    	   stateUrlName="t"
@@ -27,7 +26,7 @@
 		    	   extUrlName="type"
 		    	   stateUrlName="t"
 		    	   type="hidden"
-		    	   default="family" />
+		    	   default="tfFam" />
 	</Service>
 	<Service name="RegPrecise Regulog" 
 	    	 abbreviation="rpG"
@@ -57,4 +56,20 @@
 		    	   type="hidden"
 		    	   default="regulon" />
 	</Service>
+	<Service name="RegPrecise Effector" 
+	    	 abbreviation="rpE"
+	    	 url="http://regprecise.lbl.gov/Services/rest/glammElements"
+	    	 parser="gov.lbl.glamm.server.externalservice.parsers.RegPreciseParser">
+		<Parameter displayName="Effector id" 
+		    	   extUrlName="id" 
+		    	   stateUrlName="id"
+		    	   type="user" />
+		<Parameter displayName="type"
+		    	   extUrlName="type"
+		    	   stateUrlName="t"
+		    	   type="hidden"
+		    	   default="effector" />
+	</Service>
+		
+	
 </DataServices>

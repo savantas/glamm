@@ -2,16 +2,17 @@ package gov.lbl.glamm.server.actions;
 
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.GroupDataDAO;
-import gov.lbl.glamm.server.dao.MetabolicModelDAO;
 import gov.lbl.glamm.server.dao.OrganismDAO;
 import gov.lbl.glamm.server.dao.impl.GroupDataDAOImpl;
-import gov.lbl.glamm.server.dao.impl.MetabolicModelDAOImpl;
 import gov.lbl.glamm.server.dao.impl.OrganismDAOImpl;
 import gov.lbl.glamm.server.externalservice.ExternalDataServiceManager;
+import gov.lbl.glamm.server.kbase.dao.KBMetabolicModelDAO;
+import gov.lbl.glamm.server.kbase.dao.KBWorkspaceDAO;
+import gov.lbl.glamm.server.kbase.dao.impl.KBMetabolicModelDAOImpl;
+import gov.lbl.glamm.server.kbase.dao.impl.KBWorkspaceDAOImpl;
 import gov.lbl.glamm.shared.ExternalDataService;
 import gov.lbl.glamm.shared.model.Experiment;
 import gov.lbl.glamm.shared.model.GlammState;
-import gov.lbl.glamm.shared.model.MetabolicModel;
 import gov.lbl.glamm.shared.model.Organism;
 import gov.lbl.glamm.shared.model.OverlayDataGroup;
 
@@ -22,19 +23,21 @@ import java.util.Set;
 /**
  * glamm/#taxId=XXX&ext=rpOperon|taxonomyId=YYY&...
  * @author wjriehl
- *
+ * 
+ * 
  */
 
 public class GetGlammState {
 	
 	private enum StateParam {
-		ORGANISM("taxId"),		// taxonomy ID
-		MAP("mapId"),			// kegg map id
+		ORGANISM("tax"),		// taxonomy ID
+		MAP("map"),				// kegg map id
 		ZOOM("v"),				// zoom viewport TODO
-		MODEL("modelId"),		// metabolic model ID TODO
-		EXPERIMENT("expId"),	// experiment / sample ID TODO
+		MODEL("mod"),			// metabolic model ID
+		EXPERIMENT("exp"),		// experiment / sample ID TODO
 		GROUP("ext"),			// external service
-		UI("i");				// show UI or not (i=0 or i=1, default i=1) (might be more stateful, tailored for different views later)
+		UI("i"),				// show UI or not (i=0 or i=1, default i=1) (might be more stateful, tailored for different views later)
+		WORKSPACE("ws");		// KBase workspace
 
 		private static final Map<String, StateParam> string2State = new HashMap<String, StateParam>();
 		static{
@@ -63,8 +66,17 @@ public class GetGlammState {
 		
 		GlammState state = GlammState.defaultState();
 		
+		// FIRST, set the workspace if it exists.
+		if (tokenMap.containsKey(StateParam.WORKSPACE))
+			state.setWorkspace(tokenMap.get(StateParam.WORKSPACE));
+		
+		
 		for (StateParam p : tokenMap.keySet()) {
 			switch (p) {
+				case WORKSPACE :
+					state.setWorkspace(tokenMap.get(p));
+					break;
+			
 				case ORGANISM :
 					OrganismDAO orgDao = new OrganismDAOImpl(sm);
 					Organism org = orgDao.getOrganismForTaxonomyId(tokenMap.get(p));
@@ -85,11 +97,19 @@ public class GetGlammState {
 					//TODO - finish these cases.
 				case MODEL :
 					// look up the model using its id and send it out.
-					MetabolicModelDAO modelDao = new MetabolicModelDAOImpl(sm);
+					if (state.getWorkspace() != null && !state.getWorkspace().isEmpty()) {
+						KBMetabolicModelDAO modelDao = new KBMetabolicModelDAOImpl(sm);
+						KBWorkspaceDAO wsDao = new KBWorkspaceDAOImpl(sm);
+
+						state.setModel(modelDao.getModel(tokenMap.get(p), state.getWorkspace()));
+						state.setModelData(wsDao.getWorkspaceObjectMetadata(tokenMap.get(p), state.getWorkspace(), "Model"));
+					}
 					
-					MetabolicModel model = modelDao.getMetabolicModelFromService("kbase", tokenMap.get(p));
-					
-					state.setModel(model);
+//					MetabolicModelDAO modelDao = new MetabolicModelDAOImpl(sm);
+//					
+//					MetabolicModel model = modelDao.getMetabolicModelFromService("kbase", tokenMap.get(p));
+//					
+//					state.setModel(model);
 					break;
 					
 				case EXPERIMENT :

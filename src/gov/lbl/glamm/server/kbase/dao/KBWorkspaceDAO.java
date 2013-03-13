@@ -8,7 +8,8 @@ import java.util.List;
 public interface KBWorkspaceDAO {
 
 	public List<KBWorkspaceData> getWorkspaceList();
-	public List<KBWorkspaceObjectData> getWorkspaceModelList(String workspaceName);
-	public List<KBWorkspaceObjectData> getWorkspaceFbaList(String workspaceName);
+	public List<KBWorkspaceObjectData> getWorkspaceModelList(final String workspaceName);
+	public List<KBWorkspaceObjectData> getWorkspaceFbaList(final String workspaceName);
+	public KBWorkspaceObjectData getWorkspaceObjectMetadata(final String id, final String workspaceName, final String objectType);
 	
 }

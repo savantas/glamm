@@ -2,11 +2,11 @@
 <config>
 	<server 
 		serverdomain="default" 
-		hibernatecfg="hibernate-gtldb2.cfg.xml"
+		hibernatecfg="hibernate-kbase.cfg.xml"
 		isolatehost="microbesonline.org" 
 		loginurl="http://microbesonline.org/cgi-bin/login" 
 		metagenomehost="meta.microbesonline.org" 
-		db="gtldb2"/>
+		db="kbase"/>
 	<server 
 		serverdomain="127.0.0.1" 
 		hibernatecfg="hibernate-debug.cfg.xml"

@@ -174,7 +174,7 @@ public class AnnotatedMapPresenter {
 				break;
 			
 			case METABOLIC_MODEL:
-				updateMapForMetabolicModel(model, true);
+				updateMapForMetabolicModel(model, false);
 				break;
 			
 			case GROUP:
@@ -919,6 +919,9 @@ public class AnnotatedMapPresenter {
 		this.model = kbMetabolicModel;
 		this.viewState = ViewState.METABOLIC_MODEL;
 		
+		if (mapData == null)
+			return;
+		
 		mapData.removeUserElement();
 		
 		if (kbMetabolicModel == null || kbMetabolicModel.getReactions().size() == 0) {
@@ -1181,17 +1184,16 @@ public class AnnotatedMapPresenter {
 			Set<HasType> elements = group.getAllElements();
 			
 			for(HasType element : elements) {
-
 				Set<OMSVGElement> svgElements = mapData.getSvgElements((HasType) element);
 				if(svgElements == null)
 					continue;
 				
 				for(OMSVGElement svgElement : svgElements) {
-					svgElement.removeAttribute(AnnotatedMapData.Attribute.ABSENT);
-					svgElement.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, cssColor);
 					
-					System.out.println(element.getType() == Reaction.TYPE ? "Reaction" : element.getType() == Gene.TYPE ? "Gene" : "Compound?");
 					if (element.getType() == Reaction.TYPE) {
+						svgElement.removeAttribute(AnnotatedMapData.Attribute.ABSENT);
+						svgElement.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, cssColor);
+
 						float value = group.getMaxStrengthForReactionGenes((Reaction)element);
 						
 						String strength = "low";

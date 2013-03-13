@@ -1,5 +1,6 @@
 package gov.lbl.glamm.server.kbase.dao.impl;
 
+import gov.doe.kbase.workspaceservice.get_objectmeta_params;
 import gov.doe.kbase.workspaceservice.list_workspace_objects_params;
 import gov.doe.kbase.workspaceservice.list_workspaces_params;
 import gov.doe.kbase.workspaceservice.object_metadata;
@@ -68,7 +69,7 @@ public class KBWorkspaceDAOImpl implements KBWorkspaceDAO {
 	public KBWorkspaceDAOImpl(GlammSession sm) {
 		this.sm = sm;
 	}
-
+	
 	@Override
 	public List<KBWorkspaceData> getWorkspaceList() {
 		List<KBWorkspaceData> workspaceList = new ArrayList<KBWorkspaceData>();
@@ -112,6 +113,39 @@ public class KBWorkspaceDAOImpl implements KBWorkspaceDAO {
 	@Override
 	public List<KBWorkspaceObjectData> getWorkspaceFbaList(final String workspaceName) {
 		return getWorkspaceObjectData(workspaceName, ObjectType.FBA);
+	}
+	
+	@Override
+	public KBWorkspaceObjectData getWorkspaceObjectMetadata(final String id, final String workspaceName, final String objectType) {
+		get_objectmeta_params params = new get_objectmeta_params();
+		params.id = id;
+		params.workspace = workspaceName;
+		params.type = objectType;
+		
+		if (sm.getUser() != User.guestUser())
+			params.auth = sm.getUser().getAuth();
+		
+		try {
+			object_metadata metadata = wsClient.get_objectmeta(params);
+			
+			KBWorkspaceObjectData data = new KBWorkspaceObjectData();
+			data.setId(metadata.id);
+			data.setOwner(metadata.owner);
+			data.setCommand(metadata.command);
+			data.setChecksum(metadata.chsum);
+			data.setModDate(metadata.moddate);
+			data.setWorkspace(metadata.workspace);
+			data.setMetadataMap(metadata.metadata);
+			data.setRef(metadata.ref);
+			data.setLastModifier(metadata.lastmodifier);
+			data.setType(metadata.type);
+			data.setInstance(metadata.instance);
+			
+			return data;
+		}
+		catch (Exception e) {
+			return null;
+		}
 	}
 	
 	private List<KBWorkspaceObjectData> getWorkspaceObjectData(final String workspaceName, final ObjectType type) {

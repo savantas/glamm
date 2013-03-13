@@ -14,6 +14,7 @@ import java.util.Map;
 public class KBTranslationDAOImpl implements KBTranslationDAO {
 
 	private static final String TRANSLATION_URL = ConfigurationManager.getKBaseServiceURL("translation"); 
+	@SuppressWarnings("unused")
 	private GlammSession sm;
 
 	private static MOTranslation translationClient; 
@@ -33,8 +34,8 @@ public class KBTranslationDAOImpl implements KBTranslationDAO {
 
 	@Override
 	public Map<String, List<String>> locusIds2Fids(List<String> locusIds) {
-		if (1==1)
-			return new HashMap<String, List<String>>();
+//		if (1==1)
+//			return new HashMap<String, List<String>>();
 		
 		// Keith, why do you hate me?
 		List<Integer> intLocusIds = new ArrayList<Integer>();

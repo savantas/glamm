@@ -97,7 +97,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 
@@ -429,6 +428,11 @@ public class AppController {
 						
 						if (state.getGroupData() != null && state.getGroupData().size() != 0)
 							eventBus.fireEvent(new GroupDataLoadedEvent(state.getGroupData()));
+						
+						if (state.getModel() != null && state.getModelData() != null) {
+							metabolicModelPresenter.setModelData(state.getModelData());
+							eventBus.fireEvent(new MetabolicModelLoadedEvent(state.getModel()));
+						}
 					}
 				});
 			}
@@ -466,7 +470,6 @@ public class AppController {
 				mainPanel.setWidgetPosition(interpolatorView, Window.getClientWidth() - interpolatorView.getOffsetWidth(), Window.getClientHeight() - citationsView.getOffsetHeight() - interpolatorView.getOffsetHeight() - 5);
 				mainPanel.setWidgetPosition(helpView, Window.getClientWidth() - helpView.getOffsetWidth(), 0);
 				mainPanel.setWidgetPosition(loginView, Window.getClientWidth() - loginView.getOffsetWidth() - helpView.getOffsetWidth() - 5, 0);
-//				mainPanel.setWidgetPosition(metabolicModelView, 0, Window.getClientHeight() - miniMapView.getOffsetHeight() - amdView.getOffsetHeight() - metabolicModelView.getOffsetHeight() - 10);
 				mainPanel.setWidgetPosition(metabolicModelView, panZoomView.getOffsetWidth() + miniMapView.getOffsetWidth() + 5, Window.getClientHeight() - metabolicModelView.getOffsetHeight());
 
 				if (Window.getClientWidth() > minWidth)
@@ -544,6 +547,10 @@ public class AppController {
 		metabolicModelChooserPresenter.populateWorkspaceList();
 		fbaChooserPresenter.populateWorkspaceList();
 
+		if (state.getModel() != null)
+			metabolicModelPresenter.setModelData(state.getModelData());
+		
+		
 		eventBus.addHandler(MetabolicModelChooserEvent.TYPE, new MetabolicModelChooserEvent.Handler() {
 			@Override
 			public void onRequest(MetabolicModelChooserEvent event) {
@@ -948,6 +955,9 @@ public class AppController {
 		
 		if (state.getGroupData() != null && state.getGroupData().size() > 0)
 			mapPresenter.updateMapForGroupData(state.getGroupData());
+		
+		if (state.getModel() != null)
+			mapPresenter.updateMapForMetabolicModel(state.getModel(), false);
 		
 	}
 

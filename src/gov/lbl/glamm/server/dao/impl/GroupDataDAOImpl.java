@@ -709,26 +709,6 @@ public class GroupDataDAOImpl implements GroupDataDAO {
 		ecNums3.add("1.5.1.3");
 		ecNums3.add("3.6.3.34");
 		ecNums3.add("3.5.2.3");
-
-
-//		
-//		Set<String> ecNums = new HashSet<String>();
-//		ecNums.add("1.2.3.1");
-//		ecNums.add("1.2.3.11");
-//		ecNums.add("2.7.7.6");
-//		ecNums.add("1.2.3.4");
-//		ecNums.add("5.5.1.1");
-//		String name1 = "test 1";
-//		
-//		Set<String> ecNums2 = new HashSet<String>();
-//		ecNums2.add("2.7.7.7");
-//		ecNums2.add("6.1.1.17");
-//		ecNums2.add("2.8.1.2");
-//		ecNums2.add("2.3.3.1");
-//		String name2 = "test 2";
-//
-		
-		
 		
 		ReactionDAO reactionDao = new ReactionGlammDAOImpl(sm);
 		Set<Reaction> rxns = reactionDao.getReactionsForEcNums(ecNums);
@@ -791,7 +771,6 @@ public class GroupDataDAOImpl implements GroupDataDAO {
 			ServiceJsonParser parser = (ServiceJsonParser) parserClass.newInstance();
 			dataSet = parser.parseJson(service, stream, sm);
 			stream.close();
-			
 			
 		} catch (MalformedURLException e) {
 			System.out.println(e.getLocalizedMessage());
