@@ -15,15 +15,15 @@ import java.io.Serializable;
 public class ExternalServiceParameter implements Serializable {
 
 	public enum ParameterType {
-		USER,					// parameters set by the user
-		HIDDEN;					// hidden parameter set programmatically
+		STRING,						// parameters set by the user
+		BOOLEAN;					// hidden parameter set programmatically
 		
 		public static ParameterType fromString(String s) {
 			for (ParameterType type : ParameterType.values()) {
 				if (type.toString().equalsIgnoreCase(s))
 					return type;
 			}
-			return HIDDEN;
+			return STRING;
 		}
 	}
 	
@@ -32,6 +32,7 @@ public class ExternalServiceParameter implements Serializable {
 				   stateName,
 				   value;
 	private ParameterType type;
+	private boolean visible;
 	
 	public ExternalServiceParameter(String hrName, String extName, String stateName) {
 		this();
@@ -45,6 +46,7 @@ public class ExternalServiceParameter implements Serializable {
 		extName = "";
 		stateName = "";
 		value = "";
+		visible = true;
 	}
 	
 	public void setHumanReadableName(String hrName) {
@@ -93,5 +95,17 @@ public class ExternalServiceParameter implements Serializable {
 	
 	public void setTypeFromString(String s) {
 		this.type = ParameterType.fromString(s);
+	}
+	
+	public boolean isVisible() {
+		return visible;
+	}
+	
+	public void setVisibilityFromString(String s) {
+		visible = s.equalsIgnoreCase("user") || s.equalsIgnoreCase("true");
+	}
+	
+	public void setVisible(boolean visible) {
+		this.visible = visible;
 	}
 }

@@ -24,7 +24,7 @@ public class ExternalDataService implements Serializable {
 	private String serviceAbbrev;
 	private String serviceUrl;
 	private String serviceParser;
-	private Set<ExternalServiceParameter> parameters;
+	private List<ExternalServiceParameter> parameters;
 	private Map<String, ExternalServiceParameter> name2Parameter;
 	private List<String> allParameterNames;
 	private List<String> userParameterNames;
@@ -32,7 +32,7 @@ public class ExternalDataService implements Serializable {
 	@SuppressWarnings("unused")
 	private ExternalDataService() { }
 	
-	public ExternalDataService(String name, String abbrev, String url, String parser, Set<ExternalServiceParameter> parameters) {
+	public ExternalDataService(String name, String abbrev, String url, String parser, List<ExternalServiceParameter> parameters) {
 		serviceName = name;
 		serviceAbbrev = abbrev;
 		serviceUrl = url;
@@ -48,7 +48,7 @@ public class ExternalDataService implements Serializable {
 			name2Parameter.put(p.getStateUrlName(), p);
 
 			allParameterNames.add(p.getHumanReadableName());
-			if (p.getParameterType() != ExternalServiceParameter.ParameterType.HIDDEN)
+			if (p.isVisible())
 				userParameterNames.add(p.getHumanReadableName());
 		}
 	}
@@ -69,7 +69,7 @@ public class ExternalDataService implements Serializable {
 		return serviceAbbrev;
 	}
 	
-	public Set<ExternalServiceParameter> getParameters() {
+	public List<ExternalServiceParameter> getParameters() {
 		return parameters;
 	}
 	

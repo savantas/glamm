@@ -744,7 +744,7 @@ public class GroupDataDAOImpl implements GroupDataDAO {
 	 *  - craft a proper error (or throw a proper exception) if necessary
 	 *  - invoke the DataService's parser to properly construct the DataGroups
 	 * 
-	 * Right now, well, one of out three ain't bad. The parser is wrapped up in the code below, and this only works for
+	 * Right now, well, one of out three ain't bad. The parser is in the RegPreciseParser class, which only works for
 	 * Pavel's RegPrecise service.
 	 * 
 	 * @param serviceName the name of the service to invoke.
@@ -762,12 +762,10 @@ public class GroupDataDAOImpl implements GroupDataDAO {
 		String uri = service.getUrl() + buildParameterString(service);
 
 		try {
+			
 			URL url = new URL(uri);
-			
 			InputStream stream = url.openStream();
-			
 			Class<?> parserClass = Class.forName(service.getParser());
-			
 			ServiceJsonParser parser = (ServiceJsonParser) parserClass.newInstance();
 			dataSet = parser.parseJson(service, stream, sm);
 			stream.close();
