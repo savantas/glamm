@@ -1,11 +1,16 @@
 package gov.lbl.glamm.client.map.view;
 
+import gov.lbl.glamm.client.map.presenter.GroupDataServicePresenter;
+import gov.lbl.glamm.shared.ExternalServiceParameter;
+import gov.lbl.glamm.shared.ExternalServiceParameter.ParameterType;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -13,8 +18,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-
-import gov.lbl.glamm.client.map.presenter.GroupDataServicePresenter;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A viewer for choosing an external web service from which to collect Overlay group data.
@@ -23,8 +27,8 @@ import gov.lbl.glamm.client.map.presenter.GroupDataServicePresenter;
  */
 public class GroupDataServiceView extends DecoratedPopupPanel implements GroupDataServicePresenter.View {
 
-	private static final String SUBMIT = "Submit";
-	private static final String CANCEL = "Cancel";
+	private static final String SUBMIT =  "Submit";
+	private static final String CANCEL =  "Cancel";
 	private static final String SERVICE = "Service: ";
 	
 	private Button submitButton;
@@ -37,10 +41,10 @@ public class GroupDataServiceView extends DecoratedPopupPanel implements GroupDa
 	private HorizontalPanel buttonPanel;
 	private VerticalPanel mainPanel;
 	
-	private Map<String, TextBox> parameterMap;
+	private Map<ExternalServiceParameter, Widget> parameterMap;
 	
 	public GroupDataServiceView() {
-		parameterMap = new HashMap<String, TextBox>();
+		parameterMap = new HashMap<ExternalServiceParameter, Widget>();
 		
 		submitButton = new Button(SUBMIT);
 		cancelButton = new Button(CANCEL);
@@ -100,17 +104,29 @@ public class GroupDataServiceView extends DecoratedPopupPanel implements GroupDa
 	}
 
 	@Override
-	public void setParameters(List<String> paramNames) {
+	public void setParameters(List<ExternalServiceParameter> parameterList) {
 		removeParameters();
-		for (int i=0; i<paramNames.size(); i++) {
-			String name = paramNames.get(i);
-			TextBox paramBox = new TextBox();
-			parameterMap.put(name, paramBox);
-			parameterGrid.setWidget(i, 0, new Label(name));
-			parameterGrid.setWidget(i, 1, paramBox);
+		for (int i=0; i<parameterList.size(); i++) {
+			ExternalServiceParameter param = parameterList.get(i);
+			if (param.isVisible()) {
+				String name = param.getHumanReadableName();
+				Widget paramInput = null;
+				if (param.getParameterType() == ParameterType.STRING) {
+					paramInput = new TextBox();
+					if (param.getValue() != null)
+						((TextBox)paramInput).setText(param.getValue());
+				} else if (param.getParameterType() == ParameterType.BOOLEAN) {
+					paramInput = new CheckBox();
+					if (param.getValue() != null)
+						((CheckBox)paramInput).setValue(!param.getValue().equalsIgnoreCase("0"));
+				}
+				parameterGrid.setWidget(i, 0, new Label(name));
+				parameterGrid.setWidget(i, 1, paramInput);
+				parameterMap.put(param, paramInput);
+			}
 		}
 	}
-
+	
 	@Override
 	public void removeParameters() {
 		parameterGrid.clear();
@@ -118,7 +134,7 @@ public class GroupDataServiceView extends DecoratedPopupPanel implements GroupDa
 	}
 
 	@Override
-	public Map<String, TextBox> getParameters() {
+	public Map<ExternalServiceParameter, Widget> getParameters() {
 		return parameterMap;
 	}
 

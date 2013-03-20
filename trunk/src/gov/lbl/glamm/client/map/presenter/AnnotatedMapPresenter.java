@@ -1140,6 +1140,13 @@ public class AnnotatedMapPresenter {
 		});
 	}
 	
+	/**
+	 * 1. Darkens all reactions and compounds.
+	 * 2. Highlights all reactions and compounds present in each given datagroup - each datagroup is simply a set of
+	 *    arbitrary elements (reactions, genes, compounds).
+	 * 3. Each element is colored according to its containing datagroup.
+	 * @param dataSet
+	 */
 	public void updateMapForGroupData(final Set<OverlayDataGroup> dataSet) {
 		this.groupData = dataSet;
 		this.viewState = ViewState.GROUP;
@@ -1191,6 +1198,7 @@ public class AnnotatedMapPresenter {
 				for(OMSVGElement svgElement : svgElements) {
 					
 					if (element.getType() == Reaction.TYPE) {
+
 						svgElement.removeAttribute(AnnotatedMapData.Attribute.ABSENT);
 						svgElement.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, cssColor);
 
@@ -1523,7 +1531,14 @@ public class AnnotatedMapPresenter {
 		previousSearchTargets = searchTargets;
 	}
 
-
+	/**
+	 * Adds a list of extra reactions to the annotated map view.
+	 * While these reactions can be just arbitrary, they are intended to be chosen by a user (either uploaded directly,
+	 * or as part of another data model - Metabolic Model, Data Group, etc.)
+	 * 
+	 * These reactions are just drawn in an extended area on the right side of the main map.
+	 * @param userRxns
+	 */
 	public void addUserReactions(final Set<Reaction> userRxns) {
 		
 		eventBus.fireEvent(new LoadingEvent(false));

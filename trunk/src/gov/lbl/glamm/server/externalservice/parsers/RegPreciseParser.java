@@ -7,6 +7,7 @@ import gov.lbl.glamm.server.dao.impl.GeneDAOImpl;
 import gov.lbl.glamm.server.dao.impl.ReactionGlammDAOImpl;
 import gov.lbl.glamm.server.externalservice.ServiceJsonParser;
 import gov.lbl.glamm.shared.ExternalDataService;
+import gov.lbl.glamm.shared.ExternalServiceParameter;
 import gov.lbl.glamm.shared.model.DataGroupElement;
 import gov.lbl.glamm.shared.model.Gene;
 import gov.lbl.glamm.shared.model.OverlayDataGroup;
@@ -25,6 +26,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class RegPreciseParser implements ServiceJsonParser {
+	
+	public static final String MONOCHROME = "white";
 
 	@Override
 	public Set<OverlayDataGroup> parseJson(ExternalDataService service, InputStream dataStream, GlammSession sm) 
@@ -97,6 +100,17 @@ public class RegPreciseParser implements ServiceJsonParser {
 		 *  Now make one OverlayDataGroup for each group id/name, populate with reactions.
 		 */
 
+		// This is a RegPrecise parser, using a RegPrecise-based service.
+		// So, we should check for the colorizer parameter, and build our groups based on that.
+		// ALL RegPrecise services (maybe all external services?) have a boolean parameter with 
+		// state name = "c" for color. 
+		
+		boolean useColor = true;
+		for (ExternalServiceParameter param : service.getParameters())
+			if (param.getStateUrlName().equalsIgnoreCase("c"))
+				useColor = !param.getValue().equals("0");
+		
+		
 		// Map of all data groups by their group id.
 		Map<String, OverlayDataGroup> id2DataGroup = new HashMap<String, OverlayDataGroup>();
 		Map<String, Set<String>> locus2GroupIds = new HashMap<String, Set<String>>();
@@ -132,6 +146,8 @@ public class RegPreciseParser implements ServiceJsonParser {
 			// If there's no OverlayDataGroup yet, make one.
 			if (!id2DataGroup.containsKey(groupId)) {
 				OverlayDataGroup newGroup = new OverlayDataGroup(groupId, elem.getGroupName(), elem.getCallbackURL(), service.getServiceName());
+				if (!useColor)
+					newGroup.setCssColor(MONOCHROME);
 				newGroup.setGenomeName(genomeName);
 				id2DataGroup.put(groupId, newGroup);
 			}

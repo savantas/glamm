@@ -32,7 +32,7 @@ import org.xml.sax.SAXException;
  *     </Service>
  * </DataServices>
  *
- * Currently, it expects to append all parameters and values in a CGI service call format. EG. from above:
+ * Currently, it expects to append all parameters and values in a URL-encoded format. EG. from above:
  *     http://service_url.com/Service?machineReadableName=XXX&anotherParam=YYY
  *
  * TODO:
@@ -54,8 +54,9 @@ public class ExternalDataServiceManager {
 	private static final String ATTR_PARAM_NAME 	  = "displayName";  // Human-readable name of a parameter
 	private static final String ATTR_PARAM_URL_NAME   = "extUrlName";	// External URL id of the parameter
 	private static final String ATTR_PARAM_STATE_NAME = "stateUrlName"; // GLAMM state URl id of the parameter.
-	private static final String ATTR_PARAM_TYPE	      = "type";
+	private static final String ATTR_PARAM_VISIBILITY = "visibility";
 	private static final String ATTR_PARAM_DEFAULT	  = "default";
+	private static final String ATTR_PARAM_TYPE		  = "type";
 	
 	private static Map<String, ExternalDataService> name2DataService;
 	private static List<ExternalDataService> dataServices;
@@ -89,15 +90,21 @@ public class ExternalDataServiceManager {
 			String abbrev = serviceElem.getAttribute(ATTR_SERVICE_ABBREV);
 			
 			// Get all the parameter identifiers
-			Set<ExternalServiceParameter> parameters = new HashSet<ExternalServiceParameter>();
+			List<ExternalServiceParameter> parameters = new ArrayList<ExternalServiceParameter>();
 			NodeList paramList = serviceElem.getElementsByTagName(TAG_PARAMETER);
 			for (int j = 0; j < paramList.getLength(); j++) {
 				Element paramElem = (Element) paramList.item(j);
+				
+				@SuppressWarnings("unused")
+				String visible = paramElem.getAttribute(ATTR_PARAM_VISIBILITY);
+				@SuppressWarnings("unused")
+				String type = paramElem.getAttribute(ATTR_PARAM_TYPE);
 				
 				ExternalServiceParameter param = new ExternalServiceParameter();
 				param.setHumanReadableName(paramElem.getAttribute(ATTR_PARAM_NAME));
 				param.setExternalUrlName(paramElem.getAttribute(ATTR_PARAM_URL_NAME));
 				param.setStateUrlName(paramElem.getAttribute(ATTR_PARAM_STATE_NAME));
+				param.setVisibilityFromString(paramElem.getAttribute(ATTR_PARAM_VISIBILITY));
 				param.setTypeFromString(paramElem.getAttribute(ATTR_PARAM_TYPE));
 				
 				String value = paramElem.getAttribute(ATTR_PARAM_DEFAULT);

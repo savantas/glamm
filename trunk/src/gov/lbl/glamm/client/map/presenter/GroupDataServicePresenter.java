@@ -5,8 +5,10 @@ import gov.lbl.glamm.client.map.events.LoadingEvent;
 import gov.lbl.glamm.client.map.rpc.GlammServiceAsync;
 import gov.lbl.glamm.shared.ExternalDataService;
 import gov.lbl.glamm.shared.ExternalServiceParameter;
+import gov.lbl.glamm.shared.ExternalServiceParameter.ParameterType;
 import gov.lbl.glamm.shared.model.OverlayDataGroup;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,8 +22,10 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A presenter for the user to choose a data service and provide parameters. The data service should then be invoked, and the
@@ -65,11 +69,11 @@ public class GroupDataServicePresenter {
 		 */
 		public void hideView();
 
-		public void setParameters(List<String> paramNames);
+		public void setParameters(List<ExternalServiceParameter> paramNames);
 
 		public void removeParameters();
 
-		public Map<String, TextBox> getParameters();
+		public Map<ExternalServiceParameter, Widget> getParameters();
 	}
 	
 	private Map<String, ExternalDataService> name2DataService;
@@ -108,21 +112,33 @@ public class GroupDataServicePresenter {
 		view.getServiceListBox().addChangeHandler(new ChangeHandler() {
 			@Override
 			public void onChange(ChangeEvent event) {
-				view.removeParameters();
 				String serviceName = view.getServiceListBox().getItemText(view.getServiceListBox().getSelectedIndex());
 				if (name2DataService.containsKey(serviceName)) {
-					view.setParameters(name2DataService.get(serviceName).getUserParameterNames());
+					setServiceView(name2DataService.get(serviceName));
 				}
 			}
 		});
 	}
 
+	private void setServiceView(ExternalDataService service) {
+		view.removeParameters();
+
+		// get the parameters to be viewed
+		// send that list to the View, in the order (strings, then checkboxen)
+		
+		List<ExternalServiceParameter> params = new ArrayList<ExternalServiceParameter>();
+		for(ExternalServiceParameter param : service.getParameters()) {
+			if (param.isVisible())
+				params.add(param);
+		}
+		view.setParameters(params);
+	}
+	
 	/**
 	 * Populates the view with the loaded data services and fields for their parameters.
 	 */
 	private void populateView() {
 		view.getServiceListBox().clear();
-		view.removeParameters();
 		
 		if (name2DataService.size() == 0) {
 			view.getServiceListBox().addItem("No services available");
@@ -134,7 +150,7 @@ public class GroupDataServicePresenter {
 		}
 		view.getServiceListBox().setSelectedIndex(0);
 		
-		view.setParameters(name2DataService.get(view.getServiceListBox().getValue(0)).getUserParameterNames());
+		setServiceView(name2DataService.get(view.getServiceListBox().getValue(0)));
 	}
 	
 	/**
@@ -147,10 +163,15 @@ public class GroupDataServicePresenter {
 		final ExternalDataService service = name2DataService.get(
 												view.getServiceListBox().getItemText(
 														view.getServiceListBox().getSelectedIndex()));
-		Map<String, TextBox> paramMap = view.getParameters();
+		Map<ExternalServiceParameter, Widget> paramMap = view.getParameters();
 
-		for (String paramName : paramMap.keySet()) {
-			service.setParameterValue(paramName, paramMap.get(paramName).getText());
+		for (ExternalServiceParameter param : paramMap.keySet()) {
+			Widget paramWidget = paramMap.get(param);
+
+			if (param.getParameterType() == ParameterType.BOOLEAN)
+				param.setValue(((CheckBox)paramWidget).getValue() ? "1" : "0");
+			else
+				param.setValue(((TextBox)paramWidget).getText());		
 		}
 		
 		eventBus.fireEvent(new LoadingEvent(false));
