@@ -52,7 +52,6 @@ public class MetabolicModelView extends Composite implements MetabolicModelPrese
 	// The Title panel is separated into two rows - one for the Model and one for FBA results.
 	private VerticalPanel titlePanel;
 	// model
-	private HorizontalPanel modelTitlePanel;
 	private Label modelTitleLabel;
 	private TextBox modelTextBox;
 	private Button prevModelButton;
@@ -121,7 +120,6 @@ public class MetabolicModelView extends Composite implements MetabolicModelPrese
 		// ----------
 		titlePanel = new VerticalPanel();
 		// model row
-		modelTitlePanel = new HorizontalPanel();
 		modelTitleLabel = new Label(TEXT_MODEL);
 		modelTextBox = new TextBox();
 		prevModelButton = new Button(TEXT_PREV_BUTTON);

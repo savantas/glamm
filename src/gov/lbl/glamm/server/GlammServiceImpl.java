@@ -9,10 +9,8 @@ import gov.lbl.glamm.server.actions.GenPwyPopup;
 import gov.lbl.glamm.server.actions.GetAnnotatedMapDescriptors;
 import gov.lbl.glamm.server.actions.GetAvailableExperimentTypes;
 import gov.lbl.glamm.server.actions.GetExperimentPathwayData;
-import gov.lbl.glamm.server.actions.GetFluxes;
 import gov.lbl.glamm.server.actions.GetGlammState;
 import gov.lbl.glamm.server.actions.GetGroupData;
-import gov.lbl.glamm.server.actions.GetMetabolicModelMedia;
 import gov.lbl.glamm.server.actions.GetOrganism;
 import gov.lbl.glamm.server.actions.GetPathways;
 import gov.lbl.glamm.server.actions.GetReactions;
@@ -20,9 +18,7 @@ import gov.lbl.glamm.server.actions.GetRxnsForOrganism;
 import gov.lbl.glamm.server.actions.GetSample;
 import gov.lbl.glamm.server.actions.PopulateCompoundSearch;
 import gov.lbl.glamm.server.actions.PopulateDataServices;
-import gov.lbl.glamm.server.actions.PopulateFbaResults;
 import gov.lbl.glamm.server.actions.PopulateLocusSearch;
-import gov.lbl.glamm.server.actions.PopulateMetabolicModels;
 import gov.lbl.glamm.server.actions.PopulateOrganisms;
 import gov.lbl.glamm.server.actions.PopulateReactionSearch;
 import gov.lbl.glamm.server.actions.PopulateSamples;
@@ -35,10 +31,8 @@ import gov.lbl.glamm.shared.ExternalDataService;
 import gov.lbl.glamm.shared.model.Algorithm;
 import gov.lbl.glamm.shared.model.AnnotatedMapDescriptor;
 import gov.lbl.glamm.shared.model.Compound;
-import gov.lbl.glamm.shared.model.FluxExperiment;
 import gov.lbl.glamm.shared.model.Gene;
 import gov.lbl.glamm.shared.model.GlammState;
-import gov.lbl.glamm.shared.model.Media;
 import gov.lbl.glamm.shared.model.MetabolicModel;
 import gov.lbl.glamm.shared.model.Organism;
 import gov.lbl.glamm.shared.model.OverlayDataGroup;
@@ -235,10 +229,10 @@ public class GlammServiceImpl extends RemoteServiceServlet
 //		return GetMetabolicModel.getMetabolicModel(getGlammSession(), modelId);
 	}
 	
-	@Override
-	public Set<Reaction> getReactionFluxes(final FluxExperiment exp) {
-		return GetFluxes.getFluxes(getGlammSession(), exp);
-	}
+//	@Override
+//	public Set<Reaction> getReactionFluxes(final FluxExperiment exp) {
+//		return GetFluxes.getFluxes(getGlammSession(), exp);
+//	}
 
 	@Override
 	public Set<OverlayDataGroup> getOverlayData(final String text) {
@@ -271,33 +265,33 @@ public class GlammServiceImpl extends RemoteServiceServlet
 		String fileName = this.getServletContext().getRealPath( "/data/pathway.xml" );
 		return GetExperimentPathwayData.getPathwayData(pathwayIds, experimentIds, fileName);
 	}
-
-	@Override
-	public List<MetabolicModel> populateMetabolicModels() {
-		return PopulateMetabolicModels.populateMetabolicModels(getGlammSession());
-	}
-
-	@Override
-	public List<String> populateFbaResults(final String modelId) {
-		return PopulateFbaResults.populateFbaResults(getGlammSession(), modelId);
-	}
-
-	@Override
-	public Media getMetabolicModelMedia(final String mediaId, final String biochemistryId) {
-		return GetMetabolicModelMedia.getMetabolicModelMedia(getGlammSession(), mediaId, biochemistryId);
-	}
-
-	@Override
-	public FluxExperiment getFluxExperiment(final String expId) {
-		return GetFluxes.getFluxExperiment(getGlammSession(), expId);
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public FluxExperiment getFbaResults(final String expId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//
+//	@Override
+//	public List<MetabolicModel> populateMetabolicModels() {
+//		return PopulateMetabolicModels.populateMetabolicModels(getGlammSession());
+//	}
+//
+//	@Override
+//	public List<String> populateFbaResults(final String modelId) {
+//		return PopulateFbaResults.populateFbaResults(getGlammSession(), modelId);
+//	}
+//
+//	@Override
+//	public Media getMetabolicModelMedia(final String mediaId, final String biochemistryId) {
+//		return GetMetabolicModelMedia.getMetabolicModelMedia(getGlammSession(), mediaId, biochemistryId);
+//	}
+//
+//	@Override
+//	public FluxExperiment getFluxExperiment(final String expId) {
+//		return GetFluxes.getFluxExperiment(getGlammSession(), expId);
+//		// TODO Auto-generated method stub
+//	}
+//
+//	@Override
+//	public FluxExperiment getFbaResults(final String expId) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 	
 	@Override
 	public List<KBWorkspaceData> populateWorkspaces() {

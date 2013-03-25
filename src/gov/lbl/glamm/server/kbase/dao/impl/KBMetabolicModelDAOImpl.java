@@ -479,6 +479,7 @@ public class KBMetabolicModelDAOImpl implements KBMetabolicModelDAO {
 		return null;
 	}
 	
+	@SuppressWarnings("unused")
 	private Map<String, String> getBiochemistryForFBA(FBA fba) {
 		String modelLookupKey = fba.model + "-" + fba.model_workspace;
 

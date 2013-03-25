@@ -13,7 +13,6 @@ import gov.lbl.glamm.shared.model.AnnotatedMapData;
 import gov.lbl.glamm.shared.model.AnnotatedMapData.State;
 import gov.lbl.glamm.shared.model.AnnotatedMapDescriptor;
 import gov.lbl.glamm.shared.model.Compound;
-import gov.lbl.glamm.shared.model.FluxExperiment;
 import gov.lbl.glamm.shared.model.Gene;
 import gov.lbl.glamm.shared.model.Measurement;
 import gov.lbl.glamm.shared.model.MetabolicNetwork.MNNode;
@@ -789,72 +788,72 @@ public class AnnotatedMapPresenter {
 	 * Overlays metabolic flux data on the current reactions.
 	 * @param exp
 	 */
-	public void updateMapForFluxes(final FluxExperiment exp) {
-		if (exp == null || model == null) {
-			updateMapForOrganism(this.organism);
-		}
-		else {
-			eventBus.fireEvent(new LoadingEvent(false));
-			
-			rpc.getReactionFluxes(exp, new AsyncCallback<Set<Reaction>>() {
-				
-				@Override
-				public void onFailure(Throwable caught) {
-					eventBus.fireEvent(new LoadingEvent(true));
-					Window.alert("Remove procedure call failure: getFluxes");
-				}
-				
-				@Override
-				public void onSuccess(Set<Reaction> result) {
-					executeOnMapElements(new MapElementCommand() {
-						@Override
-						public void execute(OMSVGElement element) {
-							element.removeAttribute(AnnotatedMapData.Attribute.ROUTE);
-							element.removeAttribute(AnnotatedMapData.Attribute.SEARCH_TARGET);
-							element.removeAttribute(AnnotatedMapData.Attribute.PATHWAY);
-							element.removeAttribute(AnnotatedMapData.Attribute.STRENGTH);
-							element.setAttribute(AnnotatedMapData.Attribute.HAS_DATA, "false");
-							if(element.getTagName().equals(SVGConstants.SVG_ELLIPSE_TAG)) {
-								element.removeAttribute(AnnotatedMapData.Attribute.CPD_DST);
-								element.removeAttribute(AnnotatedMapData.Attribute.CPD_SRC);
-							}
-						}
-					});
-					
-					Interpolator interpolator = new Interpolator("mmol/(gDW*h)", -10, 0, 10);
-					for (Reaction rxn : result) {
-						// we only deal with Genes associated with Reactions right now
-						int numMeasurements = 0;
-						float mean = 0.0f;
-	
-	
-						for(Measurement measurement : rxn.getMeasurementSet().getMeasurements()) {
-							mean += measurement.getValue();
-							numMeasurements++;
-						}
-	
-						mean /= (float) numMeasurements;
-	
-						// calculate the css color for the mean
-						String cssColor = interpolator.calcCssColor(mean);
-	
-						// set the css color on all SVG elements associated with id
-						Set<OMSVGElement> elements = mapData.getSvgElements((HasType) rxn);
-						if(elements == null)
-							continue;
-						for(OMSVGElement element : elements) {
-							if(element.hasAttribute(AnnotatedMapData.Attribute.ABSENT) && 
-									element.getAttribute(AnnotatedMapData.Attribute.ABSENT).equals("true"))
-								continue;
-							element.setAttribute(AnnotatedMapData.Attribute.HAS_DATA, "true");
-							element.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, cssColor);
-						}
-					}
-					eventBus.fireEvent(new LoadingEvent(true));
-				}
-			});
-		}
-	}
+//	public void updateMapForFluxes(final FluxExperiment exp) {
+//		if (exp == null || model == null) {
+//			updateMapForOrganism(this.organism);
+//		}
+//		else {
+//			eventBus.fireEvent(new LoadingEvent(false));
+//			
+//			rpc.getReactionFluxes(exp, new AsyncCallback<Set<Reaction>>() {
+//				
+//				@Override
+//				public void onFailure(Throwable caught) {
+//					eventBus.fireEvent(new LoadingEvent(true));
+//					Window.alert("Remove procedure call failure: getFluxes");
+//				}
+//				
+//				@Override
+//				public void onSuccess(Set<Reaction> result) {
+//					executeOnMapElements(new MapElementCommand() {
+//						@Override
+//						public void execute(OMSVGElement element) {
+//							element.removeAttribute(AnnotatedMapData.Attribute.ROUTE);
+//							element.removeAttribute(AnnotatedMapData.Attribute.SEARCH_TARGET);
+//							element.removeAttribute(AnnotatedMapData.Attribute.PATHWAY);
+//							element.removeAttribute(AnnotatedMapData.Attribute.STRENGTH);
+//							element.setAttribute(AnnotatedMapData.Attribute.HAS_DATA, "false");
+//							if(element.getTagName().equals(SVGConstants.SVG_ELLIPSE_TAG)) {
+//								element.removeAttribute(AnnotatedMapData.Attribute.CPD_DST);
+//								element.removeAttribute(AnnotatedMapData.Attribute.CPD_SRC);
+//							}
+//						}
+//					});
+//					
+//					Interpolator interpolator = new Interpolator("mmol/(gDW*h)", -10, 0, 10);
+//					for (Reaction rxn : result) {
+//						// we only deal with Genes associated with Reactions right now
+//						int numMeasurements = 0;
+//						float mean = 0.0f;
+//	
+//	
+//						for(Measurement measurement : rxn.getMeasurementSet().getMeasurements()) {
+//							mean += measurement.getValue();
+//							numMeasurements++;
+//						}
+//	
+//						mean /= (float) numMeasurements;
+//	
+//						// calculate the css color for the mean
+//						String cssColor = interpolator.calcCssColor(mean);
+//	
+//						// set the css color on all SVG elements associated with id
+//						Set<OMSVGElement> elements = mapData.getSvgElements((HasType) rxn);
+//						if(elements == null)
+//							continue;
+//						for(OMSVGElement element : elements) {
+//							if(element.hasAttribute(AnnotatedMapData.Attribute.ABSENT) && 
+//									element.getAttribute(AnnotatedMapData.Attribute.ABSENT).equals("true"))
+//								continue;
+//							element.setAttribute(AnnotatedMapData.Attribute.HAS_DATA, "true");
+//							element.setAttribute(SVGConstants.SVG_STROKE_ATTRIBUTE, cssColor);
+//						}
+//					}
+//					eventBus.fireEvent(new LoadingEvent(true));
+//				}
+//			});
+//		}
+//	}
 
 	/**
 	 * Overlays metabolic flux data on the current reactions.
