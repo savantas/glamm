@@ -7,7 +7,6 @@ import gov.lbl.glamm.client.map.events.MetabolicModelChooserEvent;
 import gov.lbl.glamm.client.map.events.MetabolicModelLoadedEvent;
 import gov.lbl.glamm.client.map.events.ViewResizedEvent;
 import gov.lbl.glamm.client.map.rpc.GlammServiceAsync;
-import gov.lbl.glamm.shared.model.FluxExperiment;
 import gov.lbl.glamm.shared.model.kbase.fba.KBFBAResult;
 import gov.lbl.glamm.shared.model.kbase.fba.model.KBMetabolicModel;
 import gov.lbl.glamm.shared.model.kbase.workspace.KBWorkspaceObjectData;
@@ -95,7 +94,7 @@ public class MetabolicModelPresenter {
 		}
 	}
 	
-	private static final String TEXT_NO_MODEL_LOADED = "No model loaded";
+//	private static final String TEXT_NO_MODEL_LOADED = "No model loaded";
 	
 	private static final String TEXT_ID_COL = "Id";
 	private static final String TEXT_WORKSPACE_COL = "Workspace";
@@ -449,23 +448,6 @@ public class MetabolicModelPresenter {
 			}
 			
 		});
-	}
-	
-	
-	public void loadFbaFromId(String id) {
-		eventBus.fireEvent(new LoadingEvent(false));
-
-		rpc.getFbaResults(id, new AsyncCallback<FluxExperiment>() {
-			public void onFailure(Throwable caught) {
-				Window.alert("Remote procedure call failure: getFbaResults");
-			}
-			
-			public void onSuccess(FluxExperiment exp) {
-				
-			}
-		});
-		
-		eventBus.fireEvent(new LoadingEvent(true));
 	}
 	
 	private void setState(State state) {

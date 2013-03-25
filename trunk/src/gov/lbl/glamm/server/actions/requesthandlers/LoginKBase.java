@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class LoginKBase implements RequestHandler {
 
+	private static final String LOGIN_NO_EMAIL = "Login incorrect - please provide your KBase username";
 	private static final String LOGIN_ERROR_MSG = "Login incorrect - please try again.";
 	private static final String KBASE_AUTH_URL = ConfigurationManager.getKBaseServiceURL("authentication"); 
 
@@ -41,7 +42,7 @@ public class LoginKBase implements RequestHandler {
 		final String password = fh.getFormField(LoginPresenter.FormField.PASSWORD.toString());
 
 		if(email == null || email.isEmpty()) {
-			ResponseHandler.asHtml(response, LOGIN_ERROR_MSG, HttpServletResponse.SC_OK);
+			ResponseHandler.asHtml(response, LOGIN_NO_EMAIL, HttpServletResponse.SC_OK);
 			return;
 		}
 
@@ -53,7 +54,7 @@ public class LoginKBase implements RequestHandler {
 			sm.setUser(user);
 		} 
 		catch (Exception e) {
-			throw new IOException(e.getLocalizedMessage());
+			ResponseHandler.asHtml(response, LOGIN_ERROR_MSG, HttpServletResponse.SC_OK);
 		}
 		
 		ResponseHandler.asHtml(response, "", HttpServletResponse.SC_OK);

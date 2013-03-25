@@ -1,15 +1,13 @@
 package gov.lbl.glamm.server.externalservice;
 
-import gov.lbl.glamm.shared.ExternalServiceParameter;
 import gov.lbl.glamm.shared.ExternalDataService;
+import gov.lbl.glamm.shared.ExternalServiceParameter;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;

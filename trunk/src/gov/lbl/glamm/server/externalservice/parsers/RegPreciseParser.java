@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class RegPreciseParser implements ServiceJsonParser {
 	
-	public static final String MONOCHROME = "white";
+	public static final String MONOCHROME = "cyan";
 
 	@Override
 	public Set<OverlayDataGroup> parseJson(ExternalDataService service, InputStream dataStream, GlammSession sm) 

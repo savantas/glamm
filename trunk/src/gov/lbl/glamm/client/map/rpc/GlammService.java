@@ -5,10 +5,8 @@ import gov.lbl.glamm.shared.ExternalDataService;
 import gov.lbl.glamm.shared.model.Algorithm;
 import gov.lbl.glamm.shared.model.AnnotatedMapDescriptor;
 import gov.lbl.glamm.shared.model.Compound;
-import gov.lbl.glamm.shared.model.FluxExperiment;
 import gov.lbl.glamm.shared.model.Gene;
 import gov.lbl.glamm.shared.model.GlammState;
-import gov.lbl.glamm.shared.model.Media;
 import gov.lbl.glamm.shared.model.MetabolicModel;
 import gov.lbl.glamm.shared.model.Organism;
 import gov.lbl.glamm.shared.model.OverlayDataGroup;
@@ -221,15 +219,15 @@ public interface GlammService extends RemoteService {
 	
 	public GlammState getStateFromHistoryToken(final String token);
 	
-	public List<MetabolicModel> populateMetabolicModels();
-	
-	public List<String> populateFbaResults(final String modelId);
-	
-	public FluxExperiment getFbaResults(final String expId);
-	
-	public Media getMetabolicModelMedia(final String mediaId, final String biochemistryId);
-	
-	public Set<Reaction> getReactionFluxes(final FluxExperiment exp);
+//	public List<MetabolicModel> populateMetabolicModels();
+//	
+//	public List<String> populateFbaResults(final String modelId);
+//	
+//	public FluxExperiment getFbaResults(final String expId);
+//	
+//	public Media getMetabolicModelMedia(final String mediaId, final String biochemistryId);
+//	
+//	public Set<Reaction> getReactionFluxes(final FluxExperiment exp);
 	
 	public List<KBWorkspaceData> populateWorkspaces();
 	public List<KBWorkspaceObjectData> populateWorkspaceModels(final String workspace);
@@ -246,5 +244,5 @@ public interface GlammService extends RemoteService {
 	 */
 	public String nonDBTest();
 
-	public FluxExperiment getFluxExperiment(final String expId);
+//	public FluxExperiment getFluxExperiment(final String expId);
 }
