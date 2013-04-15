@@ -6,10 +6,10 @@
 	    	 url="http://www.kbase.us/services/authorization" />
 	
 	<Service name="workspace"
-	    	 url="http://bio-data-1.mcs.anl.gov/services/fba_gapfill" />
+	    	 url="http://www.kbase.us/services/workspace" />
 
 	<Service name="fba"
-	    	 url="http://bio-data-1.mcs.anl.gov/services/fba" />
+	    	 url="http://www.kbase.us/services/fba_model_services" />
 	
 	<Service name="translation"
 	    	 url="http://140.221.84.191/services/translation" />

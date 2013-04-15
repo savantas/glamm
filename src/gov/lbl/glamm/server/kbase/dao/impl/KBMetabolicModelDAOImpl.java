@@ -67,10 +67,15 @@ public class KBMetabolicModelDAOImpl implements KBMetabolicModelDAO {
 	// key = "biochemistry-biochemistry_workspace"
 	// value = Map<seed_id, kegg_id>
 	private static Map<String, Map<String, String>> biochemistrySeed2Kegg;
+	
 	// key = "model-model_workspace" 
-	// value = "biochemistry-biochemistry-workspace"
+	// value = "biochemistry-biochemistry_workspace"
 	private static Map<String, String> model2Biochemistry;
 	
+	/**
+	 * Initialize the biochemistry and model maps.
+	 * Initialize the fbaModelServices client.
+	 */
 	static {
 		biochemistrySeed2Kegg = new HashMap<String, Map<String, String>>();
 		model2Biochemistry = new HashMap<String, String>();
@@ -86,6 +91,13 @@ public class KBMetabolicModelDAOImpl implements KBMetabolicModelDAO {
 		this.sm = sm;
 	}
 	
+	/**
+	 * Returns a single model from a user's workspace. All reaction and compound IDs should be in KEGG format.
+	 * 
+	 * @param modelId the workspace ID of a model
+	 * @param workspaceId the ID of the workspace to retrive the model from
+	 * @return KBMetabolicModel
+	 */
 	public KBMetabolicModel getModel(final String modelId, final String workspaceId) {
 		if (modelId == null || workspaceId == null)
 			return null;
@@ -104,6 +116,14 @@ public class KBMetabolicModelDAOImpl implements KBMetabolicModelDAO {
 		return null;
 	}
 	
+	/**
+	 * Returns a list of FBAModels matching a list of modelIds and workspaceIds. These are parallel lists - modelIds[i] is in workspaceIds[i].
+	 * TODO - do some intelligent error checking and throwing, rather than returning a null list.
+	 * 
+	 * @param modelIds
+	 * @param workspaceIds
+	 * @return a list of FBAModels, or null if an error occurs
+	 */
 	private List<FBAModel> getModels(List<String> modelIds, List<String> workspaceIds) {
 		if (modelIds == null || workspaceIds == null || modelIds.size() != workspaceIds.size())
 			return null;
@@ -120,6 +140,9 @@ public class KBMetabolicModelDAOImpl implements KBMetabolicModelDAO {
 				return null;
 			else {
 				for (FBAModel model : modelList) {
+					// if we have a model id, biochem, workspace, and biochem_workspace
+					// link this model to its biochemistry
+					// and store it statically
 					if (model.id != null && model.biochemistry != null && 
 						model.workspace != null && model.biochemistry_workspace != null)
 						model2Biochemistry.put(model.id + "-" + model.workspace, model.biochemistry + "-" + model.biochemistry_workspace);
@@ -127,14 +150,14 @@ public class KBMetabolicModelDAOImpl implements KBMetabolicModelDAO {
 				return modelList;
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 		return null;
-
 	}
 	
+	/**
+	 * Returns a single KBMetabolicModel by using the given workspace object data.
+	 */
 	public KBMetabolicModel getModel(KBWorkspaceObjectData modelData) {
 		return getModel(modelData.getId(), modelData.getWorkspace());
 	}
@@ -163,7 +186,7 @@ public class KBMetabolicModelDAOImpl implements KBMetabolicModelDAO {
 		List<String> rxnIds = new ArrayList<String>();
 		for(ModelReaction mRxn : kbModel.reactions) {
 			rxnIds.add(biochem.get(mRxn.reaction));
-//			System.out.println(mRxn.id + "\t" + mRxn.name + "\t" + mRxn.reaction);
+//			System.out.println(mRxn.id + "\t" + mRxn.name + "\t" + mRxn.reaction + "\t" + biochem.get(mRxn.reaction));
 		}
 	
 		ReactionDAO reactionDao = new ReactionGlammDAOImpl(sm);
@@ -509,18 +532,27 @@ public class KBMetabolicModelDAOImpl implements KBMetabolicModelDAO {
 		// need to fetch biochemistry, if we don't have it already.
 		if (!biochemistrySeed2Kegg.containsKey(mapId)) {
 			try {
+				/**
+				 * This goes in two parts.
+				 * 1. Get biochemistry in SEED id format (same as for models)
+				 * 2. Get biochemistry in KEGG format (for GLAMM)
+				 * 3. Map from SEED to KEGG.
+				 */
+				
+				// Set biochemistry fetcher params for SEED
 				get_biochemistry_params params = new get_biochemistry_params();
 				if (sm.getUser() != User.guestUser())
 					params.auth = sm.getUser().getAuth();
 				params.biochemistry = model.biochemistry;
 				params.biochemistry_workspace = model.biochemistry_workspace;
 				params.id_type = "ModelSEED";
-
 				Biochemistry biochemSEED = fbaClient.get_biochemistry(params);
 				
+				// Now get the KEGG version.
 				params.id_type = "KEGG";
 				Biochemistry biochemKEGG = fbaClient.get_biochemistry(params);
 				
+				// Finally, map them onto each other.				
 				Map<String, String> lookup = new HashMap<String, String>();
 
 				for (int i=0; i<biochemSEED.compounds.size(); i++) {

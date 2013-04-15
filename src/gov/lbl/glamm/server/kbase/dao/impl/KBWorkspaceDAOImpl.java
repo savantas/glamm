@@ -21,6 +21,7 @@ import java.util.List;
 
 public class KBWorkspaceDAOImpl implements KBWorkspaceDAO {
 
+	// Current list of allowed workspace object types
 	private enum ObjectType {
 		MODEL("Model"),
 		FBA("FBA"),
@@ -54,10 +55,10 @@ public class KBWorkspaceDAOImpl implements KBWorkspaceDAO {
 	}
 	
 	private static final String WORKSPACE_URL = ConfigurationManager.getKBaseServiceURL("workspace"); 
-	//"http://bio-data-1.mcs.anl.gov/services/fba_gapfill";
 	private GlammSession sm;
 	private static workspaceService wsClient;
-	
+
+	// Instantiates the KBase workspace service client.
 	static {
 		try {
 			wsClient = new workspaceService(WORKSPACE_URL);
@@ -183,5 +184,4 @@ public class KBWorkspaceDAOImpl implements KBWorkspaceDAO {
 		}
 		return dataList;
 	}
-	
 }
