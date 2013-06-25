@@ -1,6 +1,6 @@
 package gov.lbl.glamm.server.kbase.dao;
 
-import gov.lbl.glamm.client.map.exceptions.UnauthorizedException;
+import gov.lbl.glamm.shared.exceptions.UnauthorizedException;
 import gov.lbl.glamm.shared.model.kbase.fba.KBFBAResult;
 import gov.lbl.glamm.shared.model.kbase.fba.model.KBMetabolicModel;
 import gov.lbl.glamm.shared.model.kbase.workspace.KBWorkspaceObjectData;

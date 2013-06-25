@@ -1,6 +1,5 @@
 package gov.lbl.glamm.server.actions;
 
-import gov.lbl.glamm.client.map.exceptions.UnauthorizedException;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.GroupDataDAO;
 import gov.lbl.glamm.server.dao.OrganismDAO;
@@ -12,6 +11,7 @@ import gov.lbl.glamm.server.kbase.dao.KBWorkspaceDAO;
 import gov.lbl.glamm.server.kbase.dao.impl.KBMetabolicModelDAOImpl;
 import gov.lbl.glamm.server.kbase.dao.impl.KBWorkspaceDAOImpl;
 import gov.lbl.glamm.shared.ExternalDataService;
+import gov.lbl.glamm.shared.exceptions.UnauthorizedException;
 import gov.lbl.glamm.shared.model.Experiment;
 import gov.lbl.glamm.shared.model.GlammState;
 import gov.lbl.glamm.shared.model.Organism;

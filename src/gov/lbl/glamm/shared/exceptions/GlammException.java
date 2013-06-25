@@ -1,4 +1,4 @@
-package gov.lbl.glamm.client.map.exceptions;
+package gov.lbl.glamm.shared.exceptions;
 
 import java.io.Serializable;
 

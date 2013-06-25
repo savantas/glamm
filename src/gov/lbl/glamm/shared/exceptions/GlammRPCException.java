@@ -1,4 +1,4 @@
-package gov.lbl.glamm.client.map.exceptions;
+package gov.lbl.glamm.shared.exceptions;
 
 /**
  * This extends GlammException to deal specifically with passing Server-side exceptions to the invoking Client-side class.
