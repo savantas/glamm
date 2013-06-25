@@ -1,4 +1,4 @@
-package gov.lbl.glamm.client.map.exceptions;
+package gov.lbl.glamm.shared.exceptions;
 
 @SuppressWarnings("serial")
 public class UnauthorizedException extends GlammException {
