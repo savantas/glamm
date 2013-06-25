@@ -28,6 +28,7 @@ import gov.lbl.glamm.client.map.events.RouteStepPickedEvent;
 import gov.lbl.glamm.client.map.events.SamplePickedEvent;
 import gov.lbl.glamm.client.map.events.SearchTargetEvent;
 import gov.lbl.glamm.client.map.events.ViewResizedEvent;
+import gov.lbl.glamm.client.map.exceptions.UnauthorizedException;
 import gov.lbl.glamm.client.map.presenter.AMDPresenter;
 import gov.lbl.glamm.client.map.presenter.AnnotatedMapPresenter;
 import gov.lbl.glamm.client.map.presenter.CpdDisambiguationPresenter;
@@ -323,8 +324,15 @@ public class AppController {
 		rpc.getStateFromHistoryToken(History.getToken(), new AsyncCallback<GlammState>() {
 			@Override
 			public void onFailure(Throwable caught) {
-				Window.alert("Unable to resolve optional state.\nStarting with default options...");
+				
+				if (caught instanceof UnauthorizedException) {
+					Window.alert(caught.getMessage() + "\n\nStarting with default options...");
+				}
+				else {
+					Window.alert("Unable to resolve optional state.\nStarting with default options...");
+				}
 				initialize(GlammState.defaultState());
+				
 			}
 			
 			@Override

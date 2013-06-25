@@ -20,18 +20,15 @@ import java.util.Set;
 @SuppressWarnings("serial")
 public class GlammState implements Serializable {
 
-	private Organism organism = null;
-	private String amdId = null;
-	private Experiment exp = null;
+	private Organism organism 				= null;
+	private String amdId 					= null;
+	private Experiment exp 					= null;
 	private Set<OverlayDataGroup> groupData = null;
-	private KBMetabolicModel model = null;
+	private KBMetabolicModel model 			= null;
 	private KBWorkspaceObjectData modelData = null;
-	private String workspace = null;
-
-	private String viewport = null;
-
-	
-	private boolean uiState = true;
+	private String workspace 				= null;
+	private String viewport 				= null;
+	private boolean uiState 				= true;
 	
 	private GlammState() {
 		setOrganism(Organism.globalMap());

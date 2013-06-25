@@ -1,5 +1,6 @@
 package gov.lbl.glamm.server.actions;
 
+import gov.lbl.glamm.client.map.exceptions.UnauthorizedException;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.GroupDataDAO;
 import gov.lbl.glamm.server.dao.OrganismDAO;
@@ -61,7 +62,7 @@ public class GetGlammState {
 	}
 	
 	
-	public static GlammState getStateFromHistoryToken(GlammSession sm, String token) {
+	public static GlammState getStateFromHistoryToken(GlammSession sm, String token) throws UnauthorizedException {
 		Map<StateParam, String> tokenMap = parseHistoryToken(token);
 		
 		GlammState state = GlammState.defaultState();

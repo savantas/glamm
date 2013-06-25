@@ -1,11 +1,11 @@
 package gov.lbl.glamm.server.kbase.dao.impl;
 
-import gov.doe.kbase.workspaceservice.get_objectmeta_params;
-import gov.doe.kbase.workspaceservice.list_workspace_objects_params;
-import gov.doe.kbase.workspaceservice.list_workspaces_params;
-import gov.doe.kbase.workspaceservice.object_metadata;
-import gov.doe.kbase.workspaceservice.workspaceService;
-import gov.doe.kbase.workspaceservice.workspace_metadata;
+import gov.doe.kbase.workspace.get_objectmeta_params;
+import gov.doe.kbase.workspace.list_workspace_objects_params;
+import gov.doe.kbase.workspace.list_workspaces_params;
+import gov.doe.kbase.workspace.object_metadata;
+import gov.doe.kbase.workspace.workspaceService;
+import gov.doe.kbase.workspace.workspace_metadata;
 import gov.lbl.glamm.server.ConfigurationManager;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.kbase.dao.KBWorkspaceDAO;

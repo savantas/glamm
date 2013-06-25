@@ -1,5 +1,6 @@
 package gov.lbl.glamm.client.map.rpc;
 
+import gov.lbl.glamm.client.map.exceptions.UnauthorizedException;
 import gov.lbl.glamm.shared.DeploymentDomain;
 import gov.lbl.glamm.shared.ExternalDataService;
 import gov.lbl.glamm.shared.model.Algorithm;
@@ -217,24 +218,17 @@ public interface GlammService extends RemoteService {
 	
 	public Organism getOrganismForTaxId(final String taxId);
 	
-	public GlammState getStateFromHistoryToken(final String token);
-	
-//	public List<MetabolicModel> populateMetabolicModels();
-//	
-//	public List<String> populateFbaResults(final String modelId);
-//	
-//	public FluxExperiment getFbaResults(final String expId);
-//	
-//	public Media getMetabolicModelMedia(final String mediaId, final String biochemistryId);
-//	
-//	public Set<Reaction> getReactionFluxes(final FluxExperiment exp);
+	public GlammState getStateFromHistoryToken(final String token) throws UnauthorizedException;
 	
 	public List<KBWorkspaceData> populateWorkspaces();
+
 	public List<KBWorkspaceObjectData> populateWorkspaceModels(final String workspace);
+	
 	public List<KBWorkspaceObjectData> populateWorkspaceFbas(final String workspace);
 	
-	public KBMetabolicModel getKBaseMetabolicModel(final String modelId, final String workspaceId);
-	public KBFBAResult getKBaseFBAResult(final String fbaId, final String workspaceId);
+	public KBMetabolicModel getKBaseMetabolicModel(final String modelId, final String workspaceId) throws UnauthorizedException;
+
+	public KBFBAResult getKBaseFBAResult(final String fbaId, final String workspaceId) throws UnauthorizedException;
 	
 	public DeploymentDomain getDeploymentDomain();
 	
@@ -243,6 +237,4 @@ public interface GlammService extends RemoteService {
 	 * @return a success or fail String.
 	 */
 	public String nonDBTest();
-
-//	public FluxExperiment getFluxExperiment(final String expId);
 }

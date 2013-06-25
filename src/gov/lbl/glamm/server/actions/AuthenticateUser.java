@@ -38,6 +38,9 @@ public class AuthenticateUser {
 		
 		UserDAO userDao = new UserDAOImpl(sm);
 
+		/*
+		 * If we're deployed in LBL, get the authentication from LBL servers.
+		 */
 		if (ConfigurationManager.getDeploymentDomain() == DeploymentDomain.LBL) {
 			if(auth.equals(GlammUtils.genBase64MD5String(userId + "|" + remoteAddr))) {
 				User user = userDao.getUserForUserId(userId);
@@ -48,6 +51,9 @@ public class AuthenticateUser {
 				return user;
 			}
 		}
+		/*
+		 * If we're deployed in KBase, use the KBase auth stack to authenticate a user.
+		 */
 		if (ConfigurationManager.getDeploymentDomain() == DeploymentDomain.KBASE) {
 			try {
 				AuthToken token = new AuthToken(auth);
