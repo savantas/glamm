@@ -2,6 +2,7 @@ package gov.lbl.glamm.server;
 
 import gov.lbl.glamm.client.experiment.model.PathwayExperimentData;
 import gov.lbl.glamm.client.experiment.rpc.PathwayExperimentService;
+import gov.lbl.glamm.client.map.exceptions.UnauthorizedException;
 import gov.lbl.glamm.client.map.rpc.GlammService;
 import gov.lbl.glamm.server.actions.AuthenticateUser;
 import gov.lbl.glamm.server.actions.GenCpdPopup;
@@ -255,7 +256,7 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	}
 	
 	@Override
-	public GlammState getStateFromHistoryToken(final String token) {
+	public GlammState getStateFromHistoryToken(final String token) throws UnauthorizedException {
 		return GetGlammState.getStateFromHistoryToken(getGlammSession(), token);
 	}
 
@@ -265,33 +266,6 @@ public class GlammServiceImpl extends RemoteServiceServlet
 		String fileName = this.getServletContext().getRealPath( "/data/pathway.xml" );
 		return GetExperimentPathwayData.getPathwayData(pathwayIds, experimentIds, fileName);
 	}
-//
-//	@Override
-//	public List<MetabolicModel> populateMetabolicModels() {
-//		return PopulateMetabolicModels.populateMetabolicModels(getGlammSession());
-//	}
-//
-//	@Override
-//	public List<String> populateFbaResults(final String modelId) {
-//		return PopulateFbaResults.populateFbaResults(getGlammSession(), modelId);
-//	}
-//
-//	@Override
-//	public Media getMetabolicModelMedia(final String mediaId, final String biochemistryId) {
-//		return GetMetabolicModelMedia.getMetabolicModelMedia(getGlammSession(), mediaId, biochemistryId);
-//	}
-//
-//	@Override
-//	public FluxExperiment getFluxExperiment(final String expId) {
-//		return GetFluxes.getFluxExperiment(getGlammSession(), expId);
-//		// TODO Auto-generated method stub
-//	}
-//
-//	@Override
-//	public FluxExperiment getFbaResults(final String expId) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
 	
 	@Override
 	public List<KBWorkspaceData> populateWorkspaces() {
@@ -304,12 +278,12 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	}
 	
 	@Override
-	public KBMetabolicModel getKBaseMetabolicModel(final String modelId, final String workspaceId) {
+	public KBMetabolicModel getKBaseMetabolicModel(final String modelId, final String workspaceId) throws UnauthorizedException {
 		return GetMetabolicModel.getMetabolicModel(getGlammSession(), modelId, workspaceId);
 	}
 	
 	@Override
-	public KBFBAResult getKBaseFBAResult(final String fbaId, final String workspaceId) {
+	public KBFBAResult getKBaseFBAResult(final String fbaId, final String workspaceId) throws UnauthorizedException {
 		return GetMetabolicModel.getFBAResult(getGlammSession(), fbaId, workspaceId);
 	}
 	

@@ -20,7 +20,7 @@ public class KBWorkspaceData implements Serializable {
 		userPermission = "";
 		globalPermission = "";
 	}
-
+	
     public String getId() {
     	return id;
     }

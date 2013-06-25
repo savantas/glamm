@@ -18,6 +18,7 @@ import gov.doe.kbase.fba.get_biochemistry_params;
 import gov.doe.kbase.fba.get_fbas_params;
 import gov.doe.kbase.fba.get_models_params;
 import gov.doe.kbase.fba.term;
+import gov.lbl.glamm.client.map.exceptions.UnauthorizedException;
 import gov.lbl.glamm.server.ConfigurationManager;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.dao.CompoundDAO;
@@ -52,7 +53,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class KBMetabolicModelDAOImpl implements KBMetabolicModelDAO {
-	private static final String FBA_URL = ConfigurationManager.getKBaseServiceURL("fba"); //"http://bio-data-1.mcs.anl.gov/services/fba";
+	private static final String FBA_URL = ConfigurationManager.getKBaseServiceURL("fba");
 	private GlammSession sm;
 	private static fbaModelServices fbaClient;
 
@@ -98,7 +99,7 @@ public class KBMetabolicModelDAOImpl implements KBMetabolicModelDAO {
 	 * @param workspaceId the ID of the workspace to retrive the model from
 	 * @return KBMetabolicModel
 	 */
-	public KBMetabolicModel getModel(final String modelId, final String workspaceId) {
+	public KBMetabolicModel getModel(final String modelId, final String workspaceId) throws UnauthorizedException {
 		if (modelId == null || workspaceId == null)
 			return null;
 
@@ -124,7 +125,7 @@ public class KBMetabolicModelDAOImpl implements KBMetabolicModelDAO {
 	 * @param workspaceIds
 	 * @return a list of FBAModels, or null if an error occurs
 	 */
-	private List<FBAModel> getModels(List<String> modelIds, List<String> workspaceIds) {
+	private List<FBAModel> getModels(List<String> modelIds, List<String> workspaceIds) throws UnauthorizedException {
 		if (modelIds == null || workspaceIds == null || modelIds.size() != workspaceIds.size())
 			return null;
 
@@ -134,6 +135,9 @@ public class KBMetabolicModelDAOImpl implements KBMetabolicModelDAO {
 
 		params.workspaces = workspaceIds;
 		params.models = modelIds;
+		
+		// putting these here so they can be included in the exception
+		// initing to null so the exception doesn't whine.
 		try {
 			List<FBAModel> modelList = fbaClient.get_models(params);
 			if (modelList == null || modelList.isEmpty())
@@ -150,7 +154,24 @@ public class KBMetabolicModelDAOImpl implements KBMetabolicModelDAO {
 				return modelList;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			String permissionError = "User lacks permissions for the specified activity!";
+			if (e.getMessage().contains(permissionError)) {
+				StringBuilder builder = new StringBuilder("Unable to fetch ");
+				if (modelIds.size() == 1) {
+					builder.append("model '" + modelIds.get(0) + "'\nfrom workspace '" + workspaceIds.get(0) + "'");
+				}
+				if (modelIds.size() > 1) {
+					builder.append("at least one of the (model, workspace) pairs:");
+					for (int i=0; i<modelIds.size(); i++) {
+						builder.append("\n'" + modelIds.get(i) + "', '" + workspaceIds.get(i) + "'");
+					}
+				}
+				if (sm.getUser() == User.guestUser())
+					builder.append("\nThat is not a public workspace. Please log in to GLAMM and try again.");
+				else
+					builder.append("\nSorry, you don't appear to have permission to view that workspace.");
+				throw new UnauthorizedException(builder.toString());				
+			}
 		}
 		return null;
 	}
@@ -158,7 +179,7 @@ public class KBMetabolicModelDAOImpl implements KBMetabolicModelDAO {
 	/**
 	 * Returns a single KBMetabolicModel by using the given workspace object data.
 	 */
-	public KBMetabolicModel getModel(KBWorkspaceObjectData modelData) {
+	public KBMetabolicModel getModel(KBWorkspaceObjectData modelData) throws UnauthorizedException {
 		return getModel(modelData.getId(), modelData.getWorkspace());
 	}
 	
@@ -503,7 +524,7 @@ public class KBMetabolicModelDAOImpl implements KBMetabolicModelDAO {
 	}
 	
 	@SuppressWarnings("unused")
-	private Map<String, String> getBiochemistryForFBA(FBA fba) {
+	private Map<String, String> getBiochemistryForFBA(FBA fba) throws UnauthorizedException {
 		String modelLookupKey = fba.model + "-" + fba.model_workspace;
 
 		if (model2Biochemistry.containsKey(modelLookupKey) &&
