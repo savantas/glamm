@@ -11,6 +11,7 @@ import gov.lbl.glamm.server.kbase.dao.KBWorkspaceDAO;
 import gov.lbl.glamm.server.kbase.dao.impl.KBMetabolicModelDAOImpl;
 import gov.lbl.glamm.server.kbase.dao.impl.KBWorkspaceDAOImpl;
 import gov.lbl.glamm.shared.ExternalDataService;
+import gov.lbl.glamm.shared.exceptions.GlammStateException;
 import gov.lbl.glamm.shared.exceptions.UnauthorizedException;
 import gov.lbl.glamm.shared.model.Experiment;
 import gov.lbl.glamm.shared.model.GlammState;
@@ -31,14 +32,16 @@ import java.util.Set;
 public class GetGlammState {
 	
 	private enum StateParam {
-		ORGANISM("tax"),		// taxonomy ID
-		MAP("map"),				// kegg map id
-		ZOOM("v"),				// zoom viewport TODO
-		MODEL("mod"),			// metabolic model ID
 		EXPERIMENT("exp"),		// experiment / sample ID TODO
-		GROUP("ext"),			// external service
-		UI("i"),				// show UI or not (i=0 or i=1, default i=1) (might be more stateful, tailored for different views later)
-		WORKSPACE("ws");		// KBase workspace
+		FBA		  ("fba"),		// FBA results
+		GROUP     ("ext"),		// external service
+		MAP       ("map"),		// kegg map id
+		MODEL     ("mod"),		// metabolic model ID
+		ORGANISM  ("tax"),		// taxonomy ID
+		UI        ("i"),		// show UI or not (i=0 or i=1, default i=1) (might be more stateful, tailored for different views later)
+		WORKSPACE ("ws"),		// KBase workspace
+		ZOOM      ("z");		// zoom viewport TODO
+		
 
 		private static final Map<String, StateParam> string2State = new HashMap<String, StateParam>();
 		static{
@@ -62,57 +65,20 @@ public class GetGlammState {
 	}
 	
 	
-	public static GlammState getStateFromHistoryToken(GlammSession sm, String token) throws UnauthorizedException {
+	public static GlammState getStateFromHistoryToken(GlammSession sm, String token) throws UnauthorizedException, GlammStateException {
 		Map<StateParam, String> tokenMap = parseHistoryToken(token);
 		
 		GlammState state = GlammState.defaultState();
 		
 		// FIRST, set the workspace if it exists.
-		if (tokenMap.containsKey(StateParam.WORKSPACE))
+		if (tokenMap.containsKey(StateParam.WORKSPACE)) {
 			state.setWorkspace(tokenMap.get(StateParam.WORKSPACE));
-		
+			tokenMap.remove(StateParam.WORKSPACE);
+		}
+	
 		
 		for (StateParam p : tokenMap.keySet()) {
 			switch (p) {
-				case WORKSPACE :
-					state.setWorkspace(tokenMap.get(p));
-					break;
-			
-				case ORGANISM :
-					OrganismDAO orgDao = new OrganismDAOImpl(sm);
-					Organism org = orgDao.getOrganismForTaxonomyId(tokenMap.get(p));
-					if (org == null)
-						org = Organism.globalMap();
-					state.setOrganism(org);
-					break;
-				
-				case MAP :
-					state.setAMDId(tokenMap.get(p));
-					break;
-					
-				case ZOOM :
-					// some kind of zoom state class, or a map or something.
-					state.setViewport(tokenMap.get(p));
-					break;
-				
-					//TODO - finish these cases.
-				case MODEL :
-					// look up the model using its id and send it out.
-					if (state.getWorkspace() != null && !state.getWorkspace().isEmpty()) {
-						KBMetabolicModelDAO modelDao = new KBMetabolicModelDAOImpl(sm);
-						KBWorkspaceDAO wsDao = new KBWorkspaceDAOImpl(sm);
-
-						state.setModel(modelDao.getModel(tokenMap.get(p), state.getWorkspace()));
-						state.setModelData(wsDao.getWorkspaceObjectMetadata(tokenMap.get(p), state.getWorkspace(), "Model"));
-					}
-					
-//					MetabolicModelDAO modelDao = new MetabolicModelDAOImpl(sm);
-//					
-//					MetabolicModel model = modelDao.getMetabolicModelFromService("kbase", tokenMap.get(p));
-//					
-//					state.setModel(model);
-					break;
-					
 				case EXPERIMENT :
 					// get the experiment from its id and append it to the state.
 					@SuppressWarnings("unused")
@@ -122,6 +88,18 @@ public class GetGlammState {
 					state.setExperiment(exp);
 					break;
 				
+				case FBA:
+					// get the FBA results from its id 
+					if (state.getWorkspace() != null && !state.getWorkspace().isEmpty()) {
+						KBMetabolicModelDAO modelDao = new KBMetabolicModelDAOImpl(sm);
+						KBWorkspaceDAO wsDao = new KBWorkspaceDAOImpl(sm);
+						
+						state.setFBAResult(modelDao.getFBAResult(tokenMap.get(p), state.getWorkspace()));
+						state.setFBAResultData(wsDao.getWorkspaceObjectMetadata(tokenMap.get(p), state.getWorkspace(), "FBA"));
+					} else {
+						throw new GlammStateException("A workspace is required to load an FBA result from the URL.");
+					}
+					
 				case GROUP:
 					// deal with group data
 					ExternalDataService service = buildExternalService(tokenMap.get(p));
@@ -133,7 +111,32 @@ public class GetGlammState {
 					Set<OverlayDataGroup> groupData = dataDao.getGroupDataFromService(service);
 					state.setGroupData(groupData);
 					break;
+
+				case MAP :
+					state.setAMDId(tokenMap.get(p));
+					break;
 					
+				case MODEL :
+					// look up the model using its id and send it out.
+					if (state.getWorkspace() != null && !state.getWorkspace().isEmpty()) {
+						KBMetabolicModelDAO modelDao = new KBMetabolicModelDAOImpl(sm);
+						KBWorkspaceDAO wsDao = new KBWorkspaceDAOImpl(sm);
+
+						state.setModel(modelDao.getModel(tokenMap.get(p), state.getWorkspace()));
+						state.setModelData(wsDao.getWorkspaceObjectMetadata(tokenMap.get(p), state.getWorkspace(), "Model"));
+					} else {
+						throw new GlammStateException("A workspace is required to load a model from the URL.");
+					}
+					break;
+					
+				case ORGANISM :
+					OrganismDAO orgDao = new OrganismDAOImpl(sm);
+					Organism org = orgDao.getOrganismForTaxonomyId(tokenMap.get(p));
+					if (org == null)
+						org = Organism.globalMap();
+					state.setOrganism(org);
+					break;
+				
 				case UI:
 					boolean uiState = true;
 					if (tokenMap.get(p).equals("0"))
@@ -141,9 +144,17 @@ public class GetGlammState {
 					
 					state.setUIState(uiState);
 					
-				default :
-					// throw an error?
+				case WORKSPACE :
+					// just here for consistency - this is handled before this switch statement
 					break;
+			
+				case ZOOM :
+					// some kind of zoom state class, or a map or something.
+					state.setViewport(tokenMap.get(p));
+					break;
+				
+				default :
+					throw new GlammStateException("Sorry, '" + p + "' is an unknown URL tag.");
 			}
 		}
 		

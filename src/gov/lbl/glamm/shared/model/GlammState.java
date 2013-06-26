@@ -10,6 +10,7 @@ package gov.lbl.glamm.shared.model;
  */
 
 
+import gov.lbl.glamm.shared.model.kbase.fba.KBFBAResult;
 import gov.lbl.glamm.shared.model.kbase.fba.model.KBMetabolicModel;
 import gov.lbl.glamm.shared.model.kbase.workspace.KBWorkspaceObjectData;
 
@@ -20,15 +21,17 @@ import java.util.Set;
 @SuppressWarnings("serial")
 public class GlammState implements Serializable {
 
-	private Organism organism 				= null;
-	private String amdId 					= null;
-	private Experiment exp 					= null;
-	private Set<OverlayDataGroup> groupData = null;
-	private KBMetabolicModel model 			= null;
-	private KBWorkspaceObjectData modelData = null;
-	private String workspace 				= null;
-	private String viewport 				= null;
-	private boolean uiState 				= true;
+	private Organism organism 					= null;
+	private String amdId 						= null;
+	private Experiment exp 						= null;
+	private Set<OverlayDataGroup> groupData 	= null;
+	private KBMetabolicModel model 				= null;
+	private KBWorkspaceObjectData modelData 	= null;
+	private KBFBAResult fbaResult				= null;
+	private KBWorkspaceObjectData fbaResultData = null;
+	private String workspace 					= null;
+	private String viewport 					= null;
+	private boolean uiState 					= true;
 	
 	private GlammState() {
 		setOrganism(Organism.globalMap());
@@ -100,6 +103,22 @@ public class GlammState implements Serializable {
 		return modelData;
 	}
 
+	public void setFBAResult(KBFBAResult fbaResult) {
+		this.fbaResult = fbaResult;
+	}
+	
+	public KBFBAResult getFBAResult() {
+		return fbaResult;
+	}
+	
+	public void setFBAResultData(KBWorkspaceObjectData fbaResultData) {
+		this.fbaResultData = fbaResultData;
+	}
+	
+	public KBWorkspaceObjectData getFBAResultData() {
+		return fbaResultData;
+	}
+	
 	public void setExperiment(Experiment exp) {
 		this.exp = exp;
 	}

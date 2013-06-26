@@ -510,6 +510,18 @@ public class MetabolicModelPresenter {
 		
 		setState(State.MODEL_SELECTED);
 	}
+	
+	public void setFBAResultData(KBWorkspaceObjectData fbaResultData) {
+		if (fbaResultData == null)
+			return;
+		
+		fbaDataProvider.getList().clear();
+		fbaDataProvider.getList().add(fbaResultData);
+		
+		fbaTableSelection = fbaDataProvider.getList().get(0);
+		
+		setState(State.FBA_SELECTED);
+	}
 
 	public void populateModels(List<KBWorkspaceObjectData> modelInfo) {
 		modelDataProvider.getList().clear();

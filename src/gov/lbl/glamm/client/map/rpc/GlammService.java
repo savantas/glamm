@@ -2,6 +2,7 @@ package gov.lbl.glamm.client.map.rpc;
 
 import gov.lbl.glamm.shared.DeploymentDomain;
 import gov.lbl.glamm.shared.ExternalDataService;
+import gov.lbl.glamm.shared.exceptions.GlammStateException;
 import gov.lbl.glamm.shared.exceptions.UnauthorizedException;
 import gov.lbl.glamm.shared.model.Algorithm;
 import gov.lbl.glamm.shared.model.AnnotatedMapDescriptor;
@@ -218,7 +219,7 @@ public interface GlammService extends RemoteService {
 	
 	public Organism getOrganismForTaxId(final String taxId);
 	
-	public GlammState getStateFromHistoryToken(final String token) throws UnauthorizedException;
+	public GlammState getStateFromHistoryToken(final String token) throws UnauthorizedException, GlammStateException;
 	
 	public List<KBWorkspaceData> populateWorkspaces();
 

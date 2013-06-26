@@ -28,6 +28,7 @@ import gov.lbl.glamm.server.kbase.actions.GetMetabolicModel;
 import gov.lbl.glamm.server.kbase.actions.GetWorkspaceData;
 import gov.lbl.glamm.shared.DeploymentDomain;
 import gov.lbl.glamm.shared.ExternalDataService;
+import gov.lbl.glamm.shared.exceptions.GlammStateException;
 import gov.lbl.glamm.shared.exceptions.UnauthorizedException;
 import gov.lbl.glamm.shared.model.Algorithm;
 import gov.lbl.glamm.shared.model.AnnotatedMapDescriptor;
@@ -256,7 +257,7 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	}
 	
 	@Override
-	public GlammState getStateFromHistoryToken(final String token) throws UnauthorizedException {
+	public GlammState getStateFromHistoryToken(final String token) throws UnauthorizedException, GlammStateException {
 		return GetGlammState.getStateFromHistoryToken(getGlammSession(), token);
 	}
 
