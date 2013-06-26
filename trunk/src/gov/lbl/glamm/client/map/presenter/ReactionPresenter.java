@@ -192,7 +192,7 @@ public class ReactionPresenter {
 			
 			String fid = gene.getSynonymWithType(Gene.SYNONYM_TYPE_KBASE);
 			if (fid != null) {
-				builder.append("<a href=\"http://140.221.92.12/feature_info/feature.html?id=");
+				builder.append("<a href=\"http://140.221.84.217/feature_info/feature.html?id=");
 				builder.append(fid);
 				builder.append("\" target=\"_new\">");
 				builder.append("<b>" + fid + "</b></a>");

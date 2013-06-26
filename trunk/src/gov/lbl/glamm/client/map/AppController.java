@@ -77,7 +77,6 @@ import gov.lbl.glamm.client.map.view.PanZoomControlView;
 import gov.lbl.glamm.client.map.view.PwyPopupView;
 import gov.lbl.glamm.client.map.view.RetrosynthesisView;
 import gov.lbl.glamm.client.map.view.RxnPopupView;
-import gov.lbl.glamm.shared.exceptions.UnauthorizedException;
 import gov.lbl.glamm.shared.model.AnnotatedMapData;
 import gov.lbl.glamm.shared.model.GlammState;
 import gov.lbl.glamm.shared.model.Sample;
@@ -324,15 +323,20 @@ public class AppController {
 		rpc.getStateFromHistoryToken(History.getToken(), new AsyncCallback<GlammState>() {
 			@Override
 			public void onFailure(Throwable caught) {
+				StringBuilder builder = new StringBuilder(caught.getMessage() + "\nStarting with default options...");
 				
-				if (caught instanceof UnauthorizedException) {
-					Window.alert(caught.getMessage() + "\n\nStarting with default options...");
-				}
-				else {
-					Window.alert("Unable to resolve optional state.\nStarting with default options...");
-				}
+//				if (caught instanceof UnauthorizedException) {
+//					builder.insert(0, caught.getMessage() + "\n");
+//				} 
+//				else if (caught instanceof GlammStateException) {
+//					builder.insert(0, caught.getMessage() + "\n");
+//				}
+//				else {
+//					builder.insert(0, caught.getMessage());
+//				}
+				Window.alert(builder.toString());
+				
 				initialize(GlammState.defaultState());
-				
 			}
 			
 			@Override
@@ -419,8 +423,8 @@ public class AppController {
 
 					@Override
 					public void onFailure(Throwable caught) {
-						Window.alert("RPC failed: getStateFromHistoryToken\nNot changing state.");
-						
+						StringBuilder builder = new StringBuilder(caught.getMessage() + "\nNot changing state.");
+						Window.alert(builder.toString());
 					}
 
 					@Override
@@ -440,6 +444,11 @@ public class AppController {
 						if (state.getModel() != null && state.getModelData() != null) {
 							metabolicModelPresenter.setModelData(state.getModelData());
 							eventBus.fireEvent(new MetabolicModelLoadedEvent(state.getModel()));
+						}
+						
+						if (state.getFBAResult() != null && state.getFBAResultData() != null) {
+							metabolicModelPresenter.setFBAResultData(state.getFBAResultData());
+							eventBus.fireEvent(new FBAResultLoadedEvent(state.getFBAResult()));
 						}
 					}
 				});
