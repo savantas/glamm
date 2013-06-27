@@ -9,6 +9,7 @@ import gov.doe.kbase.workspace.workspace_metadata;
 import gov.lbl.glamm.server.ConfigurationManager;
 import gov.lbl.glamm.server.GlammSession;
 import gov.lbl.glamm.server.kbase.dao.KBWorkspaceDAO;
+import gov.lbl.glamm.shared.exceptions.GlammRPCException;
 import gov.lbl.glamm.shared.model.User;
 import gov.lbl.glamm.shared.model.kbase.workspace.KBWorkspaceData;
 import gov.lbl.glamm.shared.model.kbase.workspace.KBWorkspaceObjectData;
@@ -183,5 +184,50 @@ public class KBWorkspaceDAOImpl implements KBWorkspaceDAO {
 			dataList.clear();
 		}
 		return dataList;
+	}
+
+	@Override
+	public Boolean userHasObjectPermissions(KBWorkspaceObjectData data) throws GlammRPCException {
+		/*
+		 * 1. Get user.
+		 * 2. make get_objectmeta_params from data (include auth if user != User.guestUser())
+		 * 3. just try to get the metadata.
+		 * 4. if success, then user has access.
+		 * 5. if exception, then user doesn't have access.
+		 */
+		
+		get_objectmeta_params params = new get_objectmeta_params();
+		params.id = data.getId();
+		params.type = data.getType();
+		params.workspace = data.getWorkspace();
+		
+		if (sm.getUser() != User.guestUser())
+			params.auth = sm.getUser().getAuth();
+		
+		try {
+			object_metadata metadata = wsClient.get_objectmeta(params);
+			if (metadata.id.equals(params.id))
+				return true;
+			else
+				return false;
+		} catch (Exception e) {
+			String permissionError = "User lacks permissions for the specified activity!";
+			if (e.getMessage().contains(permissionError))
+				return false;
+			else
+				throw new GlammRPCException(e);
+		}
+	}
+
+	@Override
+	public List<KBWorkspaceObjectData> getObjectsWithValidPermissions(final List<KBWorkspaceObjectData> dataList) throws GlammRPCException {
+		List<KBWorkspaceObjectData> validDataList = new ArrayList<KBWorkspaceObjectData>();
+
+		for (final KBWorkspaceObjectData data : dataList) {
+			if (userHasObjectPermissions(data))
+				validDataList.add(data);
+		}
+		
+		return validDataList;
 	}
 }
