@@ -28,6 +28,7 @@ import gov.lbl.glamm.server.kbase.actions.GetMetabolicModel;
 import gov.lbl.glamm.server.kbase.actions.GetWorkspaceData;
 import gov.lbl.glamm.shared.DeploymentDomain;
 import gov.lbl.glamm.shared.ExternalDataService;
+import gov.lbl.glamm.shared.exceptions.GlammRPCException;
 import gov.lbl.glamm.shared.exceptions.GlammStateException;
 import gov.lbl.glamm.shared.exceptions.UnauthorizedException;
 import gov.lbl.glamm.shared.model.Algorithm;
@@ -87,7 +88,6 @@ public class GlammServiceImpl extends RemoteServiceServlet
 		GlammSession glammSession = GlammSession.getGlammSession(request);
 		
 		sessions.add(glammSession);
-//		System.out.println(glammSession);
 		
 		return glammSession;
 	}
@@ -228,14 +228,8 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	@Override
 	public MetabolicModel getMetabolicModel(final String modelId) {
 		return null;
-//		return GetMetabolicModel.getMetabolicModel(getGlammSession(), modelId);
 	}
 	
-//	@Override
-//	public Set<Reaction> getReactionFluxes(final FluxExperiment exp) {
-//		return GetFluxes.getFluxes(getGlammSession(), exp);
-//	}
-
 	@Override
 	public Set<OverlayDataGroup> getOverlayData(final String text) {
 		return GetGroupData.getOverlayData(getGlammSession(), text);
@@ -296,5 +290,15 @@ public class GlammServiceImpl extends RemoteServiceServlet
 	@Override
 	public DeploymentDomain getDeploymentDomain() {
 		return ConfigurationManager.getDeploymentDomain();
+	}
+
+	@Override
+	public Boolean userHasKBObjectPermissions(KBWorkspaceObjectData data) throws GlammRPCException {
+		return GetWorkspaceData.userHasObjectPermissions(getGlammSession(), data);
+	}
+
+	@Override
+	public List<KBWorkspaceObjectData> getObjectsWithValidPermissions(List<KBWorkspaceObjectData> data) throws GlammRPCException {
+		return GetWorkspaceData.getObjectsWithValidPermissions(getGlammSession(), data);
 	}
 }

@@ -11,6 +11,7 @@ import gov.lbl.glamm.shared.model.kbase.fba.KBFBAResult;
 import gov.lbl.glamm.shared.model.kbase.fba.model.KBMetabolicModel;
 import gov.lbl.glamm.shared.model.kbase.workspace.KBWorkspaceObjectData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -172,8 +173,6 @@ public class MetabolicModelPresenter {
 		final SingleSelectionModel<KBWorkspaceObjectData> selectionModel = new SingleSelectionModel<KBWorkspaceObjectData>(KBWorkspaceObjectData.KEY_PROVIDER);
 		table.setSelectionModel(selectionModel);
 	
-//		view.getFBAPanel().setVisible(false);
-//		view.getModelTextBox().setText(TEXT_NO_MODEL_LOADED);
 	}
 	
 	private void bindView() {
@@ -535,5 +534,73 @@ public class MetabolicModelPresenter {
 		fbaDataProvider.getList().addAll(fbaInfo);
 
 		setState(State.FBA_LOADED);
+	}
+	
+	/**
+	 * Should be invoked when a user logs in or out.
+	 * In either case, it should check whether the current user has access to currently loaded models or FBA results.
+	 */
+	public void processUserChange() {
+		/* Do a lookup (getModel or get FBA result) on each item in order.
+		 * Keep the keepable ones, remove, but tag the non-keepable ones.
+		 * If any were removed from the list, alert the user.	
+		 */
+		if (!modelDataProvider.getList().isEmpty()) {
+			List<KBWorkspaceObjectData> modelData = new ArrayList<KBWorkspaceObjectData>();
+			modelData.addAll(modelDataProvider.getList());
+
+			eventBus.fireEvent(new LoadingEvent(false));
+			rpc.getObjectsWithValidPermissions(modelData, new AsyncCallback<List<KBWorkspaceObjectData>>() {
+				@Override
+				public void onFailure(Throwable caught) {
+					eventBus.fireEvent(new LoadingEvent(true));
+					Window.alert("Sorry, an error occurred while checking model\nviewing permissions");
+				}
+	
+				@Override
+				public void onSuccess(List<KBWorkspaceObjectData> validData) {
+					if (validData.size() < modelDataProvider.getList().size()) {
+						Window.alert("Changing login status has removed access to some models.\nResetting view...");
+						modelDataProvider.getList().clear();
+						if (validData.size() > 0) {
+							modelDataProvider.getList().addAll(validData);
+						}
+						else
+							setState(State.NO_MODELS_LOADED);
+						eventBus.fireEvent(new MetabolicModelLoadedEvent(null));
+					}
+					eventBus.fireEvent(new LoadingEvent(true));					
+				}
+			});
+		}
+		
+		if (!fbaDataProvider.getList().isEmpty()) {
+			List<KBWorkspaceObjectData> fbaData = new ArrayList<KBWorkspaceObjectData>();
+			fbaData.addAll(fbaDataProvider.getList());
+
+			eventBus.fireEvent(new LoadingEvent(false));
+			rpc.getObjectsWithValidPermissions(fbaDataProvider.getList(), new AsyncCallback<List<KBWorkspaceObjectData>>() {
+				@Override
+				public void onFailure(Throwable caught) {
+					eventBus.fireEvent(new LoadingEvent(true));					
+					Window.alert("Sorry, an error occurred while checking fba\nresult viewing permissions");
+				}
+	
+				@Override
+				public void onSuccess(List<KBWorkspaceObjectData> validData) {
+					if (validData.size() < fbaDataProvider.getList().size()) {
+						Window.alert("Changing login status has removed access to some FBA results.\nResetting view...");
+						fbaDataProvider.getList().clear();
+						if (validData.size() > 0) {
+							fbaDataProvider.getList().addAll(validData);
+							setState(State.FBA_LOADED);
+						}
+						eventBus.fireEvent(new FBAResultLoadedEvent(null));
+					}
+					eventBus.fireEvent(new LoadingEvent(true));					
+				}
+				
+			});
+		}
 	}
 }

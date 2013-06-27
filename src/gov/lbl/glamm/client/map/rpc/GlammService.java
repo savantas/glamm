@@ -2,6 +2,7 @@ package gov.lbl.glamm.client.map.rpc;
 
 import gov.lbl.glamm.shared.DeploymentDomain;
 import gov.lbl.glamm.shared.ExternalDataService;
+import gov.lbl.glamm.shared.exceptions.GlammRPCException;
 import gov.lbl.glamm.shared.exceptions.GlammStateException;
 import gov.lbl.glamm.shared.exceptions.UnauthorizedException;
 import gov.lbl.glamm.shared.model.Algorithm;
@@ -226,6 +227,10 @@ public interface GlammService extends RemoteService {
 	public List<KBWorkspaceObjectData> populateWorkspaceModels(final String workspace);
 	
 	public List<KBWorkspaceObjectData> populateWorkspaceFbas(final String workspace);
+
+	public Boolean userHasKBObjectPermissions(final KBWorkspaceObjectData data) throws GlammRPCException;
+	
+	public List<KBWorkspaceObjectData> getObjectsWithValidPermissions(final List<KBWorkspaceObjectData> data) throws GlammRPCException;
 	
 	public KBMetabolicModel getKBaseMetabolicModel(final String modelId, final String workspaceId) throws UnauthorizedException;
 

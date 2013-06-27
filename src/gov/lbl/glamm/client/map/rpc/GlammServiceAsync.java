@@ -39,7 +39,6 @@ public interface GlammServiceAsync {
 	public void getAnnotatedMapDescriptors(AsyncCallback<List<AnnotatedMapDescriptor>> callback);
 	public void getAvailableSampleTypes(AsyncCallback<List<Sample.DataType>> callback);
 	public void getDirections(final Organism organism, final Compound cpdSrc, final Compound cpdDst, final String mapTitle, final Algorithm algorithm, AsyncCallback<List<Pathway>> callback);
-//	public void getFbaResults(final String fbaId, AsyncCallback<FluxExperiment> callback);
 	public void getIsolateHost(AsyncCallback<String> callback);
 	public void getMetabolicModel(final String modelId, AsyncCallback<MetabolicModel> callback);
 	public void getSample(final Sample sample, AsyncCallback<Set<? extends HasMeasurements>> callback);
@@ -54,9 +53,7 @@ public interface GlammServiceAsync {
 	public void logOutUser(AsyncCallback<Void> callback);
 	public void populateCompoundSearch(String mapId, AsyncCallback<Set<Compound>> callback);
 	public void populateDataServices(AsyncCallback<List<ExternalDataService>> callback);
-//	public void populateFbaResults(final String modelId, AsyncCallback<List<String>> callback);
 	public void populateLocusSearch(final Organism organism, AsyncCallback<Set<Gene>> callback);
-//	public void populateMetabolicModels(AsyncCallback<List<MetabolicModel>> callback);
 	public void populateOrganisms(final Sample.DataType dataType, AsyncCallback<List<Organism>> callback);
 	public void populateReactionSearch(final String mapId, AsyncCallback<Set<Reaction>> callback);
 	public void populateSamples(final Organism organism, AsyncCallback<List<Sample>> callback);
@@ -64,14 +61,13 @@ public interface GlammServiceAsync {
 	public void populateWorkspaceModels(final String workspace, AsyncCallback<List<KBWorkspaceObjectData>> modelList);
 	public void populateWorkspaceFbas(final String workspace, AsyncCallback<List<KBWorkspaceObjectData>> fbaList);
 	
-//	public void getFluxExperiment(final String expId, AsyncCallback<FluxExperiment> callback);
-//	public void getMetabolicModelMedia(final String mediaId, final String biochemistryId, AsyncCallback<Media> callback);
-//	public void getReactionFluxes(final FluxExperiment exp, AsyncCallback<Set<Reaction>> callback);
 	public void getKBaseMetabolicModel(final String modelId, final String workspaceId, AsyncCallback<KBMetabolicModel> callback);
 	public void getKBaseFBAResult(final String fbaId, final String workspaceId, AsyncCallback<KBFBAResult> callback);
 	public void nonDBTest(AsyncCallback<String> callback);
 	public void getStateFromHistoryToken(String token, AsyncCallback<GlammState> callback);
 	
 	public void getDeploymentDomain(AsyncCallback<DeploymentDomain> callback);
+	public void userHasKBObjectPermissions(final KBWorkspaceObjectData data, AsyncCallback<Boolean> callback);
+	public void getObjectsWithValidPermissions(final List<KBWorkspaceObjectData> data, AsyncCallback<List<KBWorkspaceObjectData>> callback);
 	
 }

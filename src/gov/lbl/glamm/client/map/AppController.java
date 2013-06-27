@@ -592,6 +592,20 @@ public class AppController {
 				
 			}
 		});
+		
+		eventBus.addHandler(LogInEvent.TYPE, new LogInEvent.Handler() {
+			@Override
+			public void onLogIn(LogInEvent event) {
+				metabolicModelPresenter.processUserChange();
+			}
+		});
+		
+		eventBus.addHandler(LogOutEvent.TYPE, new LogOutEvent.Handler() {
+			@Override
+			public void onLogOut(LogOutEvent event) {
+				metabolicModelPresenter.processUserChange();
+			}			
+		});
 	}
 	
 	private void loadAnnotatedMapPicker(GlammState state) {
