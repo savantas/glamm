@@ -1,0 +1,87 @@
+<!doctype html>
+<!-- The DOCTYPE declaration above will set the    -->
+<!-- browser's rendering engine into               -->
+<!-- "Standards Mode". Replacing this declaration  -->
+<!-- with a "Quirks Mode" doctype may lead to some -->
+<!-- differences in layout.                        -->
+
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+	<link rel="shortcut icon" href="KBase_favicon.ico" type="image/x-icon">
+    <link type="text/css" rel="stylesheet" href="Glamm.css">
+
+   
+    <title>GLAMM v2.2.4</title>
+    
+ 
+ 	<!--  Detect whether or not a browser has native SVG support -->
+    <script>
+    	
+    	if(document.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#BasicStructure", "1.1")) {
+    		document.write("<script type=\"text/javascript\" language=\"javascript\" src=\"glamm/glamm.nocache.js\"><\/script>");
+    	}
+    	else {
+
+    		var staticUrl = "http://www.microbesonline.org/cgi-bin/browseKegg?type=3&mapId=01100&forceStatic=1&keggCid=0&ec=0&term=1&locus=0&hit=0&disp=0&homolog=0&format=1&favorites=&byFavorites=1";
+    		
+        	document.write(
+    			"<div style=\"width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif\">" + "\n" +
+            	"Your web browser must have native SVG support" + "\n" +
+            	"in order for this application to display correctly." + "<br><br>\n" +
+            	"For best performance, we recommend the latest version of <a href=\"http://www.firefox.com\">Mozilla Firefox<\/a>." + "<br><br>\n" +
+            	"- or -" + "<br><br>\n" +
+            	"Please click <a href=\"" + staticUrl + "\">here<\/a> to view the static KEGG global map on MicrobesOnline." + "\n" +
+          		"<\/div>" + "\n"
+        	);
+    	}
+    </script>
+  </head>
+
+  <body style="background-color: #000000;">
+  
+  	<div id="loading" style="color: #FFFFFF; text-align: center;">
+  			<br><br><br><br>
+  			GLAMM: The Genome-Linked Application for Metabolic Maps
+  			<br>
+  			<br>
+  			<img src="images/glamm_logo.png"/>
+  			<br>
+  			<br>
+  			This work was part of the DOE <a href=\"http://www.jbei.org\">Joint BioEnergy Institute</a>, the ENIGMA Scientific Focus Area Program, and Genomics:GTL Foundational Science<br>
+  			supported by the U. S. Department of Energy, Office of Science, Office of Biological and Environmental Research,<br>
+  			through contract DE-AC02-05CH11231 between Lawrence Berkeley National Laboratory and the U. S. Department of Energy.
+  			<p>This program and its accompanying materials are made available under the terms of the 
+	New BSD License which accompanies this distribution, and is available <a href="http://www.opensource.org/licenses/bsd-license">here</a>.</p>
+	<p>The source code for this program is hosted on Google Code <a href="http://code.google.com/p/glamm/">here</a>.</p>
+			<p>When using this work or data derived from this work, please cite:<br>
+			GLAMM: Genome-Linked Application for Metabolic Maps John T. Bates; Dylan Chivian; Adam P. Arkin Nucleic Acids Research 2011; doi: 10.1093/nar/gkr433</p>
+  			<br>
+  			<br>
+  			<br>
+  			<span id="loadingMsg" style="font-size: 25px;">Loading</span>
+  	
+  	</div>
+
+    <!-- OPTIONAL: include this if you want history support -->
+    <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
+    
+    <!-- RECOMMENDED if your web app will not function without JavaScript enabled -->
+    <noscript>
+      <div style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif">
+      	Your web browser must have JavaScript enabled
+      	in order for this application to display correctly.
+      	<br>
+		<br>
+      	For best performance, we recommend the latest version of <a href=\"http://www.firefox.com\">Mozilla Firefox</a>.
+      	<br>
+		<br>
+		- or -
+		<br>
+		<br>
+      	Please click <a href="http://www.microbesonline.org/cgi-bin/browseKegg?type=3&mapId=01100&forceStatic=1&keggCid=0&ec=0&term=1&locus=0&hit=0&disp=0&homolog=0&format=1&favorites=&byFavorites=1">here</a> to view the static KEGG global map on MicrobesOnline.
+    </div>
+    </noscript>
+  </body>
+</html>

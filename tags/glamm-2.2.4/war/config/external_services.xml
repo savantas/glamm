@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<DataServices>
+	<Service name="RegPrecise Species Regulons"
+	    	 abbreviation="rpS" 
+	    	 url="http://regprecise.lbl.gov/Services/rest/glammElements"
+	    	 parser="gov.lbl.glamm.server.externalservice.parsers.RegPreciseParser">
+		<Parameter displayName="Taxonomy id" 
+		    	   extUrlName="id" 
+		    	   stateUrlName="id"
+		    	   visibility="user"
+		    	   type="string" />
+		<Parameter displayName="type"
+		    	   extUrlName="type"
+		    	   stateUrlName="t"
+		    	   visibility="hidden"
+		    	   default="taxonomy"
+		    	   type="string" />
+		<Parameter displayName="Use Color?"
+		    	   stateUrlName="c"
+		    	   visibility="user"
+		    	   type="boolean"
+		    	   default="1"  />
+	</Service>
+	
+	<Service name="RegPrecise TF Family" 
+	    	 abbreviation="rpF"
+	         url="http://regprecise.lbl.gov/Services/rest/glammElements"
+	    	 parser="gov.lbl.glamm.server.externalservice.parsers.RegPreciseParser">
+	    <Parameter displayName="TF Family id" 
+		    	   extUrlName="id" 
+		    	   stateUrlName="id" 
+		    	   visibility="user" 
+		    	   type="string" />
+		<Parameter displayName="type"
+		    	   extUrlName="type"
+		    	   stateUrlName="t"
+		    	   visibility="hidden"
+		    	   default="tfFam"
+		    	   type="string" />
+		<Parameter displayName="Use Color?"
+		    	   stateUrlName="c"
+		    	   visibility="user"
+		    	   type="boolean"
+		    	   default="1"  />
+	</Service>
+
+	<Service name="RegPrecise Regulog" 
+	    	 abbreviation="rpG"
+	    	 url="http://regprecise.lbl.gov/Services/rest/glammElements"
+	    	 parser="gov.lbl.glamm.server.externalservice.parsers.RegPreciseParser">
+	    <Parameter displayName="Regulog id" 
+	        	   extUrlName="id" 
+	        	   stateUrlName="id" 
+	        	   visibility="user"
+	        	   type="string" />
+		<Parameter displayName="type"
+		    	   extUrlName="type"
+		    	   stateUrlName="t"
+		    	   visibility="hidden"
+		    	   default="regulog"
+		    	   type="string" />
+		<Parameter displayName="Use Color?"
+		    	   stateUrlName="c"
+		    	   visibility="user"
+		    	   type="boolean"
+		    	   default="1"  />
+	</Service>
+	
+	<Service name="RegPrecise Single Regulon" 
+	    	 abbreviation="rpR"
+	    	 url="http://regprecise.lbl.gov/Services/rest/glammElements"
+	    	 parser="gov.lbl.glamm.server.externalservice.parsers.RegPreciseParser">
+		<Parameter displayName="Regulon id" 
+		    	   extUrlName="id" 
+		    	   stateUrlName="id"
+		    	   visibility="user"
+		    	   type="string" />
+		<Parameter displayName="type"
+		    	   extUrlName="type"
+		    	   stateUrlName="t"
+		    	   visibility="hidden"
+		    	   default="regulon"
+		    	   type="string" />
+		<Parameter displayName="Use Color?"
+		    	   stateUrlName="c"
+		    	   visibility="user"
+		    	   type="boolean" 
+		    	   default="1" />
+	</Service>
+	
+	<Service name="RegPrecise Effector" 
+	    	 abbreviation="rpE"
+	    	 url="http://regprecise.lbl.gov/Services/rest/glammElements"
+	    	 parser="gov.lbl.glamm.server.externalservice.parsers.RegPreciseParser">
+		<Parameter displayName="Effector id" 
+		    	   extUrlName="id" 
+		    	   stateUrlName="id"
+		    	   visibility="user"
+		    	   type="string" />
+		<Parameter displayName="type"
+		    	   extUrlName="type"
+		    	   stateUrlName="t"
+		    	   visibility="hidden"
+		    	   default="effector"
+		    	   type="string" />
+		<Parameter displayName="Use Color?"
+		    	   stateUrlName="c"
+		    	   visibility="user"
+		    	   type="boolean"
+		    	   default="1"  />
+	</Service>
+</DataServices>

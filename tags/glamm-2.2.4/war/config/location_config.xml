@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<Location>
+    <Deployment domain="lbl" />
+	
+	<Service name="authentication"
+	    	 url="http://www.kbase.us/services/authorization" />
+	
+	<Service name="workspace"
+	    	 url="http://www.kbase.us/services/workspace" />
+
+	<Service name="fba"
+	    	 url="http://www.kbase.us/services/fba_model_services" />
+	
+	<Service name="translation"
+	    	 url="http://140.221.84.191/services/translation" />
+</Location>

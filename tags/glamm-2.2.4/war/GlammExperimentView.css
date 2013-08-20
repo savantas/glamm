@@ -1,0 +1,143 @@
+/** Add css rules here for your application. */
+
+.break-word {
+  word-wrap: break-word;
+}
+
+.sendButton {
+  display: block;
+  font-size: 16pt;
+}
+
+/** Most GWT widgets already have a style name defined */
+.gwt-DialogBox {
+  width: 400px;
+}
+
+.dialogVPanel {
+  margin: 5px;
+}
+
+.serverResponseLabelError {
+  color: red;
+}
+
+.closeButton {
+  margin: 15px 6px 6px;
+}
+
+/** Glamm experiment panel styles */
+.ge {
+	color: #666666;
+}
+
+.ge .dataTypeLabelPanel {
+	border-top-width: 0px;
+	border-bottom-width: 1px;
+	border-left-width: 1px;
+	border-right-width: 1px;
+	border-color: gray;
+	border-style: solid;
+}
+
+.ge .dataTypeLabel {
+  margin: 5px 10px;
+  font-size: 11pt;
+}
+
+.ge .boundedPanel {
+	border-top-width: 1px;
+	border-bottom-width: 1px;
+	border-left-width: 1px;
+	border-right-width: 1px;
+	border-color: gray;
+	border-style: solid;
+}
+
+.ge .primaryPanel {
+	border-top-width: 1px;
+	border-bottom-width: 2px;
+	border-left-width: 1px;
+	border-right-width: 1px;
+	border-color: gray;
+	border-style: solid;
+}
+
+.ge .secondaryPanel {
+	border-top-width: 1px;
+	border-bottom-width: 1px;
+	border-left-width: 1px;
+	border-right-width: 1px;
+	border-color: gray;
+	border-style: solid;
+}
+
+.ge .leftPanel {
+	border-left-width: 2px;
+}
+
+.ge .rightPanel {
+	border-right-width: 2px;
+}
+
+.ge .labelControlWrapper {
+	background-color: #f0ffff;
+	font-weight: bold;
+}
+
+
+/** Info pop-up styles */
+.nodeInfo {
+	padding: 20px 25px;
+	border-radius: 15px;
+	-moz-border-radius: 10px;
+	border-width: 1px;
+	border-color: #faf6cc;
+	border-style: outset;
+	background-color: #fdfaef;
+}
+
+.nodeInfo .type {
+	font-weight: bolder;
+}
+
+.nodeInfo .title {
+	font-size: 1.1em;
+	font-weight: bolder;
+}
+
+.nodeInfo .subtitle {
+	font-size: 1.1em;
+}
+
+.nodeInfo .attributeName {
+	font-weight: bold;
+	color: #575757;
+}
+
+.nodeInfo .attribute {
+
+}
+
+.nodeInfo .child .type {
+	font-weight: bold;
+}
+
+.nodeInfo .child .title {
+	font-size: 1.0em;
+	font-weight: bold;
+}
+
+.nodeInfo .child .subtitle {
+	font-size: 1.0em;
+}
+
+.nodeInfo .child .attributeName {
+	font-size: 0.9em;
+	font-weight: bold;
+	color: #595959;
+}
+
+.nodeInfo .child .attribute {
+	font-size: 0.9em;
+}

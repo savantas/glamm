@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="ReactionFunData" type="ReactionFunDataType"/>
+  <xs:complexType name="PathwayType">
+    <xs:sequence>
+      <xs:element type="PathwayStepType" name="PathwayStep" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="name" use="optional"/>
+    <xs:attribute type="xs:byte" name="order" use="optional"/>
+    <xs:attribute type="xs:string" name="extIdName" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="GeneReferencesType">
+    <xs:sequence>
+      <xs:element type="GeneReferenceType" name="GeneReference" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="OrganismsType">
+    <xs:sequence>
+      <xs:element type="OrganismType" name="Organism"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="MeasurementReferencesType">
+    <xs:sequence>
+      <xs:element type="MeasurementReferenceType" name="MeasurementReference" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="PathwayStepType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:byte" name="order" use="optional"/>
+        <xs:attribute type="xs:string" name="reactionRef" use="optional"/>
+        <xs:attribute type="xs:string" name="direction" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="ReactionType">
+    <xs:sequence>
+      <xs:element type="MeasurementReferencesType" name="MeasurementReferences"/>
+      <xs:element type="ProductsType" name="Products"/>
+      <xs:element type="ReactantsType" name="Reactants"/>
+      <xs:element type="GeneReferencesType" name="GeneReferences" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="id" use="optional"/>
+    <xs:attribute type="xs:string" name="extId" use="optional"/>
+    <xs:attribute type="xs:string" name="extIdName" use="optional"/>
+    <xs:attribute type="xs:string" name="ecNum" use="optional"/>
+    <xs:attribute type="xs:string" name="definition" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="MeasurementsType">
+    <xs:sequence>
+      <xs:element type="MeasurementType" name="Measurement" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="CompoundType">
+    <xs:sequence>
+      <xs:element type="MeasurementReferencesType" name="MeasurementReferences"/>
+      <xs:element type="PathwayLinksType" name="PathwayLinks" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="id" use="optional"/>
+    <xs:attribute type="xs:string" name="extId" use="optional"/>
+    <xs:attribute type="xs:string" name="name" use="optional"/>
+    <xs:attribute type="xs:string" name="extIdName" use="optional"/>
+    <xs:attribute type="xs:string" name="formula" use="optional"/>
+    <xs:attribute type="xs:float" name="mass" use="optional"/>
+    <xs:attribute type="xs:string" name="inchi" use="optional"/>
+    <xs:attribute type="xs:string" name="smiles" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="ReactionFunDataType">
+    <xs:sequence>
+      <xs:element type="CompoundsType" name="Compounds"/>
+      <xs:element type="ExperimentsType" name="Experiments"/>
+      <xs:element type="GenesType" name="Genes"/>
+      <xs:element type="OrganismsType" name="Organisms"/>
+      <xs:element type="PathwaysType" name="Pathways"/>
+      <xs:element type="ReactionsType" name="Reactions"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ReactantType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="compoundRef" use="optional"/>
+        <xs:attribute type="xs:string" name="coefficient" use="optional"/>
+        <xs:attribute type="xs:string" name="role" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="PathwayLinkType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="id" use="optional"/>
+        <xs:attribute type="xs:string" name="extId" use="optional"/>
+        <xs:attribute type="xs:string" name="name" use="optional"/>
+        <xs:attribute type="xs:string" name="extIdName" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="MeasurementReferenceType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="refId" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="SampleType">
+    <xs:sequence>
+      <xs:element type="MeasurementsType" name="Measurements"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="id" use="optional"/>
+    <xs:attribute type="xs:short" name="extId" use="optional"/>
+    <xs:attribute type="xs:string" name="extIdName" use="optional"/>
+    <xs:attribute type="xs:string" name="cChannel" use="optional"/>
+    <xs:attribute type="xs:string" name="cFactor" use="optional"/>
+    <xs:attribute type="xs:string" name="cTime" use="optional"/>
+    <xs:attribute type="xs:string" name="factorUnit" use="optional"/>
+    <xs:attribute type="xs:string" name="setId" use="optional"/>
+    <xs:attribute type="xs:string" name="tChannel" use="optional"/>
+    <xs:attribute type="xs:string" name="tFactor" use="optional"/>
+    <xs:attribute type="xs:string" name="tTime" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="ProductType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="compoundRef" use="optional"/>
+        <xs:attribute type="xs:string" name="coefficient" use="optional"/>
+        <xs:attribute type="xs:string" name="role" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="MeasurementType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="id" use="optional"/>
+        <xs:attribute type="xs:string" name="extId" use="optional"/>
+        <xs:attribute type="xs:float" name="value" use="optional"/>
+        <xs:attribute type="xs:float" name="confidence" use="optional"/>
+        <xs:attribute type="xs:string" name="confidenceType" use="optional"/>
+        <xs:attribute type="xs:string" name="dataType" use="optional"/>
+        <xs:attribute type="xs:string" name="extIdName" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="GenesType">
+    <xs:sequence>
+      <xs:element type="GeneType" name="Gene" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ExperimentType">
+    <xs:sequence>
+      <xs:element type="SamplesType" name="Samples"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="id" use="optional"/>
+    <xs:attribute type="xs:string" name="extId" use="optional"/>
+    <xs:attribute type="xs:string" name="extIdName" use="optional"/>
+    <xs:attribute type="xs:string" name="chipSource" use="optional"/>
+    <xs:attribute type="xs:string" name="chipType" use="optional"/>
+    <xs:attribute type="xs:string" name="info" use="optional"/>
+    <xs:attribute type="xs:string" name="stress" use="optional"/>
+    <xs:attribute type="xs:string" name="source" use="optional"/>
+    <xs:attribute type="xs:string" name="type" use="optional"/>
+    <xs:attribute type="xs:string" name="updated" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="PathwayLinksType">
+    <xs:sequence>
+      <xs:element type="PathwayLinkType" name="PathwayLink" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ReactantsType">
+    <xs:sequence>
+      <xs:element type="ReactantType" name="Reactant" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="GeneType">
+    <xs:sequence>
+      <xs:element type="MeasurementReferencesType" name="MeasurementReferences"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="id" use="optional"/>
+    <xs:attribute type="xs:string" name="extId" use="optional"/>
+    <xs:attribute type="xs:string" name="name" use="optional"/>
+    <xs:attribute type="xs:string" name="extIdName" use="optional"/>
+    <xs:attribute type="xs:string" name="synonym" use="optional"/>
+    <xs:attribute type="xs:string" name="ecNum" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="CompoundsType">
+    <xs:sequence>
+      <xs:element type="CompoundType" name="Compound" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="GeneReferenceType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="refId" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="ReactionsType">
+    <xs:sequence>
+      <xs:element type="ReactionType" name="Reaction" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ExperimentsType">
+    <xs:sequence>
+      <xs:element type="ExperimentType" name="Experiment" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SamplesType">
+    <xs:sequence>
+      <xs:element type="SampleType" name="Sample" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="PathwaysType">
+    <xs:sequence>
+      <xs:element type="PathwayType" name="Pathway" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="OrganismType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="id"/>
+        <xs:attribute type="xs:string" name="extId"/>
+        <xs:attribute type="xs:string" name="name"/>
+        <xs:attribute type="xs:string" name="extIdName"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="ProductsType">
+    <xs:sequence>
+      <xs:element type="ProductType" name="Product" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
