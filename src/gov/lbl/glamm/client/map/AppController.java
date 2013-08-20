@@ -382,10 +382,10 @@ public class AppController {
 		loadHelp();
 		loadRetrosynthesis();
 
-/**/	loadMetabolicModelPicker(state);
-/**/	loadDataOverlayControl(state);
-		loadDataOverlayUpload();
-/**/	loadDataOverlayService();
+//		loadMetabolicModelPicker(state);
+//		loadDataOverlayControl(state);
+//		loadDataOverlayUpload();
+//		loadDataOverlayService();
 
 		loadLogin(); // always load last
 
@@ -487,12 +487,12 @@ public class AppController {
 				mainPanel.setWidgetPosition(interpolatorView, Window.getClientWidth() - interpolatorView.getOffsetWidth(), Window.getClientHeight() - citationsView.getOffsetHeight() - interpolatorView.getOffsetHeight() - 5);
 				mainPanel.setWidgetPosition(helpView, Window.getClientWidth() - helpView.getOffsetWidth(), 0);
 				mainPanel.setWidgetPosition(loginView, Window.getClientWidth() - loginView.getOffsetWidth() - helpView.getOffsetWidth() - 5, 0);
-				mainPanel.setWidgetPosition(metabolicModelView, panZoomView.getOffsetWidth() + miniMapView.getOffsetWidth() + 5, Window.getClientHeight() - metabolicModelView.getOffsetHeight());
+//				mainPanel.setWidgetPosition(metabolicModelView, panZoomView.getOffsetWidth() + miniMapView.getOffsetWidth() + 5, Window.getClientHeight() - metabolicModelView.getOffsetHeight());
 
-				if (Window.getClientWidth() > minWidth)
-					mainPanel.setWidgetPosition(dataOverlayView, panZoomView.getOffsetWidth() + miniMapView.getOffsetWidth() + metabolicModelView.getOffsetWidth() + 10, Window.getClientHeight() - dataOverlayView.getOffsetHeight());
-				else
-					mainPanel.setWidgetPosition(dataOverlayView, panZoomView.getOffsetWidth() + miniMapView.getOffsetWidth() + 5, Window.getClientHeight() - dataOverlayView.getOffsetHeight() - metabolicModelView.getOffsetHeight() - 5);;
+//				if (Window.getClientWidth() > minWidth)
+//					mainPanel.setWidgetPosition(dataOverlayView, panZoomView.getOffsetWidth() + miniMapView.getOffsetWidth() + metabolicModelView.getOffsetWidth() + 10, Window.getClientHeight() - dataOverlayView.getOffsetHeight());
+//				else
+//					mainPanel.setWidgetPosition(dataOverlayView, panZoomView.getOffsetWidth() + miniMapView.getOffsetWidth() + 5, Window.getClientHeight() - dataOverlayView.getOffsetHeight() - metabolicModelView.getOffsetHeight() - 5);;
 
 				mainPanel.setWidgetPosition(uiCheckBox, Window.getClientWidth() - uiCheckBox.getOffsetWidth(), helpView.getOffsetHeight());
 				mainPanel.setWidgetPosition(showUILabel, Window.getClientWidth() - 60, helpView.getOffsetHeight());
@@ -506,8 +506,8 @@ public class AppController {
 		experimentView.setVisible(show);
 		loginView.setVisible(show);
 		amdView.setVisible(show);
-		metabolicModelView.setVisible(show);
-		dataOverlayView.setVisible(show);
+//		metabolicModelView.setVisible(show);
+//		dataOverlayView.setVisible(show);
 		retrosynthesisView.setVisible(show);
 		miniMapView.setVisible(show);
 		panZoomView.setVisible(show);
