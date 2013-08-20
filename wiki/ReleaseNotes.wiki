@@ -7,7 +7,10 @@ Better late than never, the official GLAMM release notes wiki.
 
 = Releases =
 
-*Current: v2.2.3*
+*Current: v2.2.4*
+
+*GLAMM v2.2.4 - 8/20/2013*
+  * Fixed an issue where experiment uploads by gene name were not working.
 
 *GLAMM v2.2.3 - 06/05/2012*
   * Fixed a bug where (sometimes) using the retrosynthesis tool to select from one of several compounds with ambiguous names (e.g. D-glucose leads to alpha and beta versions) would cause a crash.
