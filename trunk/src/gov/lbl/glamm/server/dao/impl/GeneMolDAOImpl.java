@@ -263,10 +263,47 @@ public class GeneMolDAOImpl implements GeneDAO {
 	
 
 	@Override
-	public Set<Gene> getGenesForSynonyms(String taxonomyId,
-			Collection<String> synonyms) {
-		//TODO get genes for synonyms other than VIMSS ids
-		return getGenesForVimssIds(taxonomyId, synonyms);
+	public Set<Gene> getGenesForSynonyms(String taxonomyId, Collection<String> synonyms) {
+		Set<Gene> genes = null;
+		
+		if (synonyms != null && synonyms.size() > 0) {
+			String sql = "SELECT DISTINCT L2E.ecNum, L.locusId, SY.name, SY.type " +
+						 "FROM Synonym SY " +
+						 "INNER JOIN Locus L ON (L.locusId = SY.locusId) AND (L.version = SY.version) " +
+						 "INNER JOIN Scaffold SC ON (L.scaffoldId = SC.scaffoldId) " + 
+						 "JOIN Locus2Ec L2E on (L2E.locusId = L.locusId) " +
+						 "WHERE L.priority = 1 AND " +
+						 "SC.isActive = 1 AND " +
+						 "SC.isGenomic = 1 AND ";
+			
+			if (taxonomyId != null && !taxonomyId.isEmpty())
+				sql += "SC.taxonomyId = " + taxonomyId + " AND ";
+			
+			sql += "SY.name IN " + GlammUtils.genSQLPlaceholderList(synonyms.size()) + ";";
+			
+			try {
+				Connection connection = GlammDbConnectionPool.getConnection(sm);
+				PreparedStatement statement = connection.prepareStatement(sql);
+				
+				String[] synArray = synonyms.toArray(new String[synonyms.size()]);
+				for (int i=0; i<synonyms.size(); i++) {
+					statement.setString(i+1, synArray[i]);
+				}
+				
+				ResultSet rs = statement.executeQuery();
+				
+				genes = processResultSet(rs);
+				rs.close();
+				statement.close();
+				connection.close();
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+		}
+			
+		return genes;
 	}
 	
 	

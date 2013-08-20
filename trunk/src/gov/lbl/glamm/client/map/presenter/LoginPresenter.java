@@ -131,7 +131,8 @@ public class LoginPresenter {
 		
 	}
 
-	private static final String ACTION_LOGIN = "loginKBase";
+	private static final String ACTION_LOGIN_KBASE = "loginKBase";
+	private static final String ACTION_LOGIN_LBL = "login";
 
 	public static final String COOKIE_AUTH = "auth";
 	public static final String COOKIE_USERID = "userId";
@@ -256,7 +257,11 @@ public class LoginPresenter {
 			urlBuilder.setPath(Window.Location.getPath() + "glamm/glammServlet");
 		else
 			urlBuilder.setPath("glamm/glammServlet");
-		urlBuilder.setParameter("action", ACTION_LOGIN);
+		
+		if (domain == DeploymentDomain.KBASE)
+			urlBuilder.setParameter("action", ACTION_LOGIN_KBASE);
+		else
+			urlBuilder.setParameter("action", ACTION_LOGIN_LBL);
 
 		view.getForm().setAction(urlBuilder.buildString());
 		view.getForm().setEncoding(FormPanel.ENCODING_MULTIPART);
@@ -358,7 +363,10 @@ public class LoginPresenter {
 			view.getButtonPanel().setVisible(false);
 			break;
 		case LOGGED_IN:
-			view.getStatusLabel().setText(MSG_LOGGED_IN_PREFIX + user.getUserId());
+			if (domain == DeploymentDomain.KBASE)
+				view.getStatusLabel().setText(MSG_LOGGED_IN_PREFIX + user.getUserId());
+			else
+				view.getStatusLabel().setText(MSG_LOGGED_IN_PREFIX + user.getEmail());
 			view.getButtonPanel().setVisible(true);
 			break;
 		}

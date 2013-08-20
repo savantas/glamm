@@ -89,6 +89,25 @@ public abstract class GlammUtils {
 		return html;
 	}
 
+	/**
+	 * Generates a comma-separated string of question marks, all enclosed in parentheses. This is to be used with SQL calls on
+	 * sets of objects with a PreparedStatement to avoid SQL injection attacks.
+	 * @param numPlaceholders
+	 * @return a String like this: (?, ?, ?)
+	 */
+	public static String genSQLPlaceholderList ( int numPlaceholders ) {
+		if (numPlaceholders <= 0)
+			return "()";
+
+		StringBuffer sb = new StringBuffer();
+		sb.append("(?");
+		for (int i = 1; i < numPlaceholders; i++) {
+			sb.append(", ?");
+		}
+		sb.append(")");
+		
+		return sb.toString();
+	}
 	
 	/**
 	 * Generates a comma-separated string consisting of quoted string representations of an array of objects.
