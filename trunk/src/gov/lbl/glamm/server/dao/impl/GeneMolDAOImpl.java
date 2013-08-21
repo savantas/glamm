@@ -279,7 +279,8 @@ public class GeneMolDAOImpl implements GeneDAO {
 			if (taxonomyId != null && !taxonomyId.isEmpty())
 				sql += "SC.taxonomyId = " + taxonomyId + " AND ";
 			
-			sql += "SY.name IN " + GlammUtils.genSQLPlaceholderList(synonyms.size()) + ";";
+			sql += "(SY.name IN " + GlammUtils.genSQLPlaceholderList(synonyms.size()) + 
+					"OR L.locusId IN " + GlammUtils.genSQLPlaceholderList(synonyms.size()) + ");";
 			
 			try {
 				Connection connection = GlammDbConnectionPool.getConnection(sm);
@@ -288,6 +289,7 @@ public class GeneMolDAOImpl implements GeneDAO {
 				String[] synArray = synonyms.toArray(new String[synonyms.size()]);
 				for (int i=0; i<synonyms.size(); i++) {
 					statement.setString(i+1, synArray[i]);
+					statement.setString(i+1+synonyms.size(), synArray[i]);
 				}
 				
 				ResultSet rs = statement.executeQuery();
@@ -302,7 +304,9 @@ public class GeneMolDAOImpl implements GeneDAO {
 			}
 			
 		}
-			
+
+		// The 'synonyms' might contain valid locusIds, too. Pretend that 
+		
 		return genes;
 	}
 	
